@@ -1,9 +1,10 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v4';
+const CACHE = 'ylenpass-v5';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js',
   '學習中心.html', '錯題本.html',
+  'glossary.js', 'dict.json',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png',
   '106年_外語英語_詳解.html', '107年_外語英語_詳解.html', '108年_外語英語_詳解.html',
   '109年_外語英語_詳解.html', '110年_外語英語_詳解.html', '111年_外語英語_詳解.html',
