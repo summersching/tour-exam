@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#b91c1c">
+<title>錯題本</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --ok:#15904a; --okbg:#e5f6ec; --no:#c62a2a; --nobg:#fbe9e9;
+    --chipv:#eef2ff; --chipvk:#3b4fd6; --chipd:#e8f7ee; --chipdk:#1f8a4c;
+    --chipr:#f4ecfb; --chiprk:#7a3fc0; --chipt:#eef1f5; --chiptk:#55647a;
+    --blank:#fff4cc; --blankk:#8a6d1a; --star:#e8a72b;
+    --skillbg:#eaf1ff; --skillk:#1d4ed8; --skillbd:#93b4f7;
+    --notebg:#fff3e6; --notek:#b5560c; --notebd:#f3bd7e;
+    --grambg:#f0ecfb; --gramk:#6b34c9; --grambd:#c2a8ef;
+    --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
+    --kk:#0e7c86; --hd1:#b91c1c; --hd2:#dc2626;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+    --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+    --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+    --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+    --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+    --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+    --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+    --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+    --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+    --kk:#57cdd8; --hd1:#7f1d1d; --hd2:#b91c1c;
+  }}
+  *{box-sizing:border-box}
+  html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 18px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 5px;font-size:1.3rem}
+  header p{margin:2px 0;opacity:.92;font-size:.84rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.danger{color:var(--no);border-color:var(--no)} .btn.danger:hover{background:var(--nobg)}
+  .cnt{font-size:.82rem;color:var(--sub);margin-left:auto}
+  .cnt b{color:var(--no)}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 2px}
+  .fchip{font-size:.78rem;padding:4px 11px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  .fchip.on{background:var(--chipv);color:var(--chipvk);border-color:var(--chipvk);font-weight:700}
+  .hint{flex-basis:100%;font-size:.75rem;color:var(--sub);margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04);transition:.2s}
+  .card.mastered{opacity:.62;border-color:var(--ok)}
+  .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .qno{background:var(--ink);color:var(--card);font-weight:700;border-radius:8px;padding:2px 10px;font-size:.85rem}
+  .ybadge{background:var(--blank);color:var(--blankk);border-radius:8px;padding:2px 9px;font-size:.8rem;font-weight:700}
+  .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
+  .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)}
+  .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
+  .wrongn{font-size:.7rem;color:var(--no);font-weight:700}
+  .stars{color:var(--star);font-size:.85rem;letter-spacing:1px;margin-left:auto} .stars .dim{opacity:.28}
+  .del{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;padding:1px 8px;cursor:pointer;font-size:.75rem}
+  .del:hover{color:var(--no);border-color:var(--no)}
+  .stem{font-size:1.02rem;margin:6px 0 12px} .stem .say{margin-left:6px}
+  .blank{background:var(--blank);color:var(--blankk);border-radius:5px;padding:0 22px;margin:0 3px;font-weight:700}
+  .opts{display:grid;gap:8px;margin:6px 0}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.15s}
+  .opt:hover{border-color:var(--accent)} .opt .lab{font-weight:700;color:var(--sub);min-width:18px}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.ok .lab{color:var(--ok)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk{margin-left:auto;font-weight:700}
+  .ozh{color:var(--sub);margin-left:4px}
+  body.hide-zh .ozh{display:none}
+  .fb{min-height:20px;margin:8px 0 2px;font-size:.9rem;font-weight:700}
+  .fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+  .reveal{margin:12px 0 8px;border-top:1px dashed var(--line);padding-top:10px}
+  .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:10px 0 4px;letter-spacing:.03em} .lbl:first-child{margin-top:0}
+  .zh{color:var(--sub);font-size:.95rem} .ana{font-size:.95rem}
+  .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.92rem}
+  .box .h{display:block;margin-bottom:2px;font-size:.82rem}
+  .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
+  .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--grambg);border-color:var(--grambd)} .box.gram .h{color:var(--gramk)}
+  .box.real{background:var(--realbg);border-color:var(--realbd)} .box.real .h{color:var(--realk)}
+  table.vocab{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:.9rem}
+  table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top} table.vocab td:first-child{width:46%}
+  .vw{font-weight:700;color:var(--accent)} .kk{color:var(--kk);font-style:italic;font-size:.86rem;margin-left:5px}
+  .say{cursor:pointer;color:var(--accent);font-size:.85rem;user-select:none;border:1px solid var(--line);border-radius:6px;padding:0 5px;background:var(--card)}
+  .say:hover{background:var(--chipv)}
+  .ok2{color:var(--ok);font-weight:700} .no2{color:var(--no);font-weight:700}
+  .fold{display:none} .show .fold{display:block}
+  .empty{text-align:center;color:var(--sub);padding:56px 20px}
+  .empty .ic{font-size:3rem;margin-bottom:8px}
+  .empty h2{margin:6px 0;font-size:1.1rem;color:var(--ink)}
+  .empty a{color:var(--accent);font-weight:700;text-decoration:none}
+  .empty .note{font-size:.78rem;margin-top:16px;background:var(--chipt);border-radius:10px;padding:10px 14px;display:inline-block;text-align:left;max-width:440px}
+  @media print{.toolbar,.home,.del{display:none} .say{display:none}
+    header{background:#b91c1c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .fold{display:block!important} .card{break-inside:avoid} body{background:#fff}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📌 錯題本</h1>
+  <p id="subline">測驗答錯的題目自動收錄 · 跨 10 屆一起複習</p>
+</div></header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <button class="btn on" id="mReview">📖 複習</button>
+    <button class="btn" id="mQuiz">✍️ 再測</button>
+    <span class="sep"></span>
+    <button class="btn" id="zhToggle">🈚 選項中文</button>
+    <button class="btn" id="printBtn">🖨️ 匯出 PDF</button>
+    <button class="btn danger" id="clearBtn">🗑️ 清空</button>
+    <span class="cnt" id="cnt"></span>
+  </div>
+  <div class="wrap"><div class="filters" id="fYear"></div></div>
+  <div class="wrap"><div class="filters" id="fType"></div></div>
+  <div class="wrap"><span class="hint" id="hint"></span></div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const WB_KEY='wrongbook_en_leader';
+const LAB=['A','B','C','D'];
+const app=document.getElementById('app');
+let mode='review', fy='all', ft='all', clearArm=false;
+
+function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return{};}}
+function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
+function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
+function splitOpt(o){const m=o.match(/^(.*?)([一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
+const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
+function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
+
+function allEntries(){const o=wbLoad();return Object.keys(o).map(k=>Object.assign({id:k},o[k]));}
+function entries(){
+  let arr=allEntries().filter(e=>(fy==='all'||String(e.y)===fy)&&(ft==='all'||e.type===ft));
+  arr.sort((a,b)=>(a.y-b.y)||(a.no-b.no));
+  return arr;
+}
+
+function buildFilters(){
+  const all=allEntries();
+  const years=[...new Set(all.map(e=>String(e.y)))].sort();
+  const types=[...new Set(all.map(e=>e.type))];
+  document.getElementById('fYear').innerHTML =
+    `<span class="fchip ${fy==='all'?'on':''}" data-fy="all">全部年份 (${all.length})</span>`+
+    years.map(y=>`<span class="fchip ${fy===y?'on':''}" data-fy="${y}">${y} 年 (${all.filter(e=>String(e.y)===y).length})</span>`).join('');
+  document.getElementById('fType').innerHTML = types.length>1 ?
+    `<span class="fchip ${ft==='all'?'on':''}" data-ft="all">全部題型</span>`+
+    types.map(t=>`<span class="fchip ${ft===t?'on':''}" data-ft="${t}">${t} (${all.filter(e=>e.type===t).length})</span>`).join('') : '';
+}
+
+function cardEl(e){
+  const cls=e.type==='字彙'?'c-v':e.type==='對話'?'c-d':'c-r';
+  const stem=String(e.stem).replace('__BLANK__','<span class="blank"></span>');
+  const rawStem=String(e.stem).replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
+  const el=document.createElement('div');el.className='card'+(mode==='review'?' show':'');
+  el.innerHTML=`
+    <div class="qhead"><span class="qno">第 ${e.no} 題</span><span class="ybadge">${e.y} 年</span>
+      <span class="chip ${cls}">${e.type}</span><span class="chip c-t">${e.topic}</span>
+      ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}
+      <span class="stars">${stars(e.star)}</span>
+      <button class="del" data-del="${e.id}" title="從錯題本移除">✕ 移除</button></div>
+    <div class="stem">${stem} ${sayBtn(rawStem)}</div>
+    <div class="opts">${e.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`).join('')}</div>
+    <div class="fb"></div>
+    <div class="reveal fold">
+      <div class="lbl">整句中譯</div><div class="zh">${e.zh}</div>
+      <div class="lbl">解析</div><div class="ana">${e.ana}</div>
+      ${e.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${e.skill}</div>`:''}
+      ${e.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${e.note}</div>`:''}
+      ${e.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${e.gram}</div>`:''}
+      ${e.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${e.real}</div>`:''}
+      ${(e.vocab&&e.vocab.length)?`<div class="lbl">難字 / 片語</div><table class="vocab">${vRows(e.vocab)}</table>`:''}
+    </div>`;
+  const opts=[...el.querySelectorAll('.opt')];
+  const fb=el.querySelector('.fb');
+  function reveal(picked){
+    opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
+    opts[e.ans].classList.add('ok');opts[e.ans].querySelector('.mk').textContent='✓';
+    if(picked!=null&&picked!==e.ans){opts[picked].classList.add('no');opts[picked].querySelector('.mk').textContent='✗';}
+  }
+  if(mode==='review'){ reveal(e.picked); }
+  opts.forEach(b=>b.addEventListener('click',()=>{
+    if(mode!=='quiz'||el.dataset.done)return;
+    el.dataset.done='1';
+    const i=+b.dataset.i; reveal(i); el.classList.add('show');
+    if(i===e.ans){
+      const o=wbLoad(); delete o[e.id]; wbSave(o);
+      el.classList.add('mastered'); fb.textContent='✅ 答對了!已從錯題本移除'; fb.className='fb ok';
+      updCnt();
+    }else{
+      const o=wbLoad(); if(o[e.id]){o[e.id].wrong=(o[e.id].wrong||1)+1; o[e.id].picked=i; wbSave(o);}
+      fb.textContent='✗ 又錯了,正解是 '+LAB[e.ans]+' — 這題留在錯題本繼續練'; fb.className='fb no';
+    }
+  }));
+  el.querySelector('[data-del]').addEventListener('click',()=>{
+    const o=wbLoad(); delete o[e.id]; wbSave(o);
+    el.style.opacity='0'; setTimeout(()=>{buildFilters();render();},180); updCnt();
+  });
+  return el;
+}
+
+function updCnt(){
+  const n=allEntries().length;
+  document.getElementById('cnt').innerHTML=n?`錯題 <b>${n}</b> 題`:'錯題 0 題 🎉';
+}
+
+function render(){
+  const arr=entries();
+  updCnt();
+  document.getElementById('hint').textContent = mode==='review'
+    ? '複習模式:答案與完整詳解全部攤開;點 🔊 聽發音;「移除」把已會的題刪掉'
+    : '再測模式:先作答,答對自動移出錯題本,答錯留著繼續練';
+  const total=allEntries().length;
+  if(!total){
+    app.innerHTML=`<div class="empty"><div class="ic">🗒️</div>
+      <h2>目前沒有錯題</h2>
+      <p>到各年份的<b>自測模式</b>作答,答錯的題目會自動收進這裡,方便你反覆複習。</p>
+      <p><a href="index.html">← 回首頁選年份</a></p>
+      <div class="note">💡 錯題本要能<b>跨年度</b>一起收錄,需把整包放到同一網址(安裝成 App / GitHub Pages)。在本機直接開單一 HTML 檔時,各檔的紀錄不共用。</div></div>`;
+    return;
+  }
+  if(!arr.length){app.innerHTML=`<div class="empty"><div class="ic">🔍</div><h2>這個篩選沒有錯題</h2><p>換個年份或題型看看。</p></div>`;return;}
+  app.innerHTML='';
+  arr.forEach(e=>app.appendChild(cardEl(e)));
+}
+
+/* 事件 */
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;speak(s.dataset.say);});
+document.getElementById('fYear').addEventListener('click',e=>{const c=e.target.closest('[data-fy]');if(!c)return;fy=c.dataset.fy;buildFilters();render();});
+document.getElementById('fType').addEventListener('click',e=>{const c=e.target.closest('[data-ft]');if(!c)return;ft=c.dataset.ft;buildFilters();render();});
+const mReview=document.getElementById('mReview'),mQuiz=document.getElementById('mQuiz');
+mReview.onclick=()=>{mode='review';mReview.classList.add('on');mQuiz.classList.remove('on');render();};
+mQuiz.onclick=()=>{mode='quiz';mQuiz.classList.add('on');mReview.classList.remove('on');render();};
+const zhToggle=document.getElementById('zhToggle');
+function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';}
+zhToggle.onclick=()=>setHideZh(!document.body.classList.contains('hide-zh'));
+document.getElementById('printBtn').onclick=()=>{const om=mode;mode='review';render();setTimeout(()=>window.print(),120);mode=om;};
+document.getElementById('clearBtn').onclick=function(){
+  if(!clearArm){clearArm=true;this.textContent='⚠️ 確定清空?';this.classList.add('on');
+    setTimeout(()=>{clearArm=false;this.textContent='🗑️ 清空';this.classList.remove('on');},3000);return;}
+  wbSave({});clearArm=false;this.textContent='🗑️ 清空';this.classList.remove('on');buildFilters();render();
+};
+
+buildFilters();
+render();
+</script>
+</body>
+</html>

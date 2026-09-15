@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>115年 外語領隊(英語) 逐題完整詳解</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --ok:#15904a; --okbg:#e5f6ec; --no:#c62a2a; --nobg:#fbe9e9;
+    --chipv:#eef2ff; --chipvk:#3b4fd6; --chipd:#e8f7ee; --chipdk:#1f8a4c;
+    --chipr:#f4ecfb; --chiprk:#7a3fc0; --chipt:#eef1f5; --chiptk:#55647a;
+    --blank:#fff4cc; --blankk:#8a6d1a; --star:#e8a72b;
+    --skillbg:#eaf1ff; --skillk:#1d4ed8; --skillbd:#93b4f7;
+    --notebg:#fff3e6; --notek:#b5560c; --notebd:#f3bd7e;
+    --grambg:#f0ecfb; --gramk:#6b34c9; --grambd:#c2a8ef;
+    --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
+    --kk:#0e7c86;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+      --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+      --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+      --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+      --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+      --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+      --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+      --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+      --kk:#57cdd8;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:26px 20px 20px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 6px;font-size:1.3rem}
+  header p{margin:2px 0;opacity:.92;font-size:.86rem}
+  .stat{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .stat span{background:rgba(255,255,255,.18);padding:3px 10px;border-radius:20px;font-size:.76rem}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .score{margin-left:auto;font-size:.82rem;font-weight:700;color:var(--accent);background:var(--chipv);padding:5px 12px;border-radius:20px}
+  .hint{flex-basis:100%;font-size:.75rem;color:var(--sub);margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .qno{background:var(--ink);color:var(--card);font-weight:700;border-radius:8px;padding:2px 10px;font-size:.85rem}
+  .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
+  .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)}
+  .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
+  .stars{color:var(--star);font-size:.85rem;letter-spacing:1px;margin-left:auto} .stars .dim{opacity:.28}
+  .stem{font-size:1.02rem;margin:6px 0 12px} .stem .say{margin-left:6px}
+  .blank{background:var(--blank);color:var(--blankk);border-radius:5px;padding:0 22px;margin:0 3px;font-weight:700}
+  .opts{display:grid;gap:8px;margin:6px 0}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.15s}
+  .opt:hover{border-color:var(--accent)} .opt .lab{font-weight:700;color:var(--sub);min-width:18px}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.ok .lab{color:var(--ok)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk{margin-left:auto;font-weight:700}
+  .oen{}
+  .ozh{color:var(--sub);margin-left:4px}
+  body.hide-zh .ozh{display:none}
+  .reveal{margin:12px 0 8px;border-top:1px dashed var(--line);padding-top:10px}
+  .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:10px 0 4px;letter-spacing:.03em} .lbl:first-child{margin-top:0}
+  .zh{color:var(--sub);font-size:.95rem} .ana{font-size:.95rem}
+  .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.92rem}
+  .box .h{display:block;margin-bottom:2px;font-size:.82rem}
+  .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
+  .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--grambg);border-color:var(--grambd)} .box.gram .h{color:var(--gramk)}
+  .box.real{background:var(--realbg);border-color:var(--realbd)} .box.real .h{color:var(--realk)}
+  table.vocab{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:.9rem}
+  table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top} table.vocab td:first-child{width:46%}
+  .vw{font-weight:700;color:var(--accent)} .kk{color:var(--kk);font-style:italic;font-size:.86rem;margin-left:5px}
+  .say{cursor:pointer;color:var(--accent);font-size:.85rem;user-select:none;border:1px solid var(--line);border-radius:6px;padding:0 5px;background:var(--card)}
+  .say:hover{background:var(--chipv)}
+  .guide{background:var(--realbg);border:1px solid var(--realbd);border-radius:12px;padding:14px 16px;margin:18px 0 8px;font-size:.92rem}
+  .guide .lbl{color:var(--realk)}
+  .guide ol{margin:6px 0 0;padding-left:20px}
+  .passage{background:var(--chipt);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;font-size:.93rem}
+  .passage .lbl{color:var(--chiptk)} .passage p{margin:6px 0}
+  .strategy{background:var(--grambg);border:1px solid var(--grambd);border-radius:12px;margin:18px 0 8px;overflow:hidden}
+  .stgh{width:100%;text-align:left;background:transparent;border:0;color:var(--gramk);font-weight:700;font-size:1rem;padding:13px 16px;cursor:pointer;font-family:inherit}
+  .stgb{display:none;padding:0 16px 14px;font-size:.9rem}
+  .strategy.open .stgb{display:block}
+  .stgb h4{color:var(--gramk);margin:14px 0 6px;font-size:.92rem}
+  .stgb table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.85rem}
+  .stgb td,.stgb th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .stgb ol{padding-left:20px;margin:4px 0}
+  table.opta{width:100%;border-collapse:collapse;margin:8px 0;font-size:.88rem}
+  table.opta td{border:1px solid var(--line);padding:6px 9px;vertical-align:top}
+  table.opta td:first-child{width:44%}
+  .cite{background:var(--chipt);border-left:3px solid var(--chiptk);padding:6px 10px;margin:6px 0;border-radius:6px;font-size:.9rem;font-style:italic}
+  .ok2{color:var(--ok);font-weight:700} .no2{color:var(--no);font-weight:700}
+  .fold{display:none} .show .fold{display:block}
+  footer{max-width:840px;margin:30px auto 0;padding:0 16px;color:var(--sub);font-size:.8rem;text-align:center}
+  @media print{
+    .toolbar{display:none} .say{display:none}
+    header{background:#1e3a8a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .fold{display:block!important} .card,.passage,.guide{break-inside:avoid;box-shadow:none} body{background:#fff}
+  }
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>115年 外語領隊(英語)— 逐題完整詳解</h1>
+    <p>科目:外國語(英語) · 代號 4201 · 交通部觀光署評量</p>
+    <p>每題:整句中譯 · 四選項中英+KK · 正解 · 解析 · 💡技巧 · ⚠️注意 · 📝文法 · 🎧現場實用 · ★重要度</p>
+    <div class="stat"><span id="prog">進度:115 年 完整 80 題 ✅</span><span>可自測計分</span><span>單字/題幹可朗讀</span><span>可匯出 PDF</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <button class="btn" id="mode">✍️ 自測模式</button>
+    <button class="btn" id="zhToggle">🈚 選項中文</button>
+    <button class="btn" id="printBtn">🖨️ 匯出 PDF</button>
+    <span class="score" id="score"></span>
+    <span class="hint">點選項即時批改;切「複習模式」全攤開;點 🔊 聽發音(口試練唸);匯出 PDF 會自動展開全部。</span>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+<footer>115年 外語(英語)逐題詳解 · 題目來源:交通部觀光署考畢試題(公開) · 詳解由 Claude 整理,供個人備考複習</footer>
+
+<script>
+const DATA = [
+ {kind:`strategy`,title:`⚡ 字彙 · 對話題 快速解題法`,html:`<h4>⚡ 快速解題口訣(先背這個)</h4><ul><li><b>字彙四招</b>:「<b>情境鎖 → 套回唸 → 記搭配 → 刷詞性</b>」</li><li><b>對話題</b>:「<b>先看回應,反推問題</b>」</li><li><b>完全不會</b>:「<b>刪兩個、猜一個、絕不空</b>」</li></ul><h4>一、四大快速招式(8 成題用得上)</h4><ol><li><b>情境關鍵字定位</b>:題幹一定有情境線索(機場/海關/飯店/殺價…)→ 鎖定情境找關鍵字。例:看到 Green Channel → declare(申報)</li><li><b>套回原句法</b>:4 個選項一個個填回去唸,只有一個通順(不確定字義時最有效)</li><li><b>搭配詞</b>:背固定搭配比背單字快——tax <b>refund</b>、<b>bargain</b> for、keep a safe <b>distance</b>、in case of <b>emergency</b></li><li><b>詞性先刷</b>:看空格要名詞/動詞/形容詞,詞性不對先刪(dishes 前要形容詞 → 名詞 instinct 先刪)</li></ol><h4>二、對話題專用(比字彙題更簡單)</h4><ol><li><b>看「回應」反推「問題」</b>:回答提到 camera flash → 問題必跟拍照有關</li><li><b>靠常識刷</b>:對話多是日常情境,不合常理的先刪</li></ol><h4>三、字彙題三大陷阱</h4><table><tr><th>陷阱</th><th>例</th></tr><tr><td><b>形近字</b>(長得像意思不同)</td><td>refund 退稅 / evasion 逃稅;custom 習俗 / customs 海關;quite 相當 / quiet 安靜</td></tr><tr><td><b>一詞多義</b>(看情境選對意思)</td><td>fair 公道/展覽;tip 訣竅/小費;decline 婉拒/下降;take off 起飛/脫下</td></tr><tr><td><b>同字根不同字首</b></td><td>attract/distract/retract;appropriate/approximate;deport/depart</td></tr></table><h4>四、高頻主題速記(考點集中,背這些)</h4><ul><li><b>機場/航班</b>:boarding、take off、aisle seat、immigration、arrival、turbulence</li><li><b>海關/出入境</b>:customs、declare、Green/Red Channel、tax refund、validity</li><li><b>飯店</b>:reception、amenities、check in</li><li><b>購物</b>:bargain、vendor、souvenir、boutique、groceries</li><li><b>片語動詞(每年 5–10 題必考!)</b>:take off、put out、put off、add up to、fed up with、get rid of</li></ul><h4>五、遇到完全不會的字</h4><ol><li>用<b>字根字首</b>猜(de-=去/離 → deport 遣返;-tion=名詞)</li><li><b>刪去法</b>:先刪明顯不合情境的 2 個,剩 2 個猜(命中率 50%)</li><li><b>絕不空著</b>:選擇題沒倒扣,一定要選!</li></ol>`},
+
+ {kind:`q`,no:1,type:`字彙`,topic:`餐飲 · 飲食限制`,star:2,
+  stem:`A gluten-__BLANK__ meal does not contain any gluten-based product.`,
+  zh:`(給)<b>麩質不耐</b>者的餐點不含任何麩質製品。`,
+  opts:[`accepting 接受的`,`indulgent 縱容的`,`intolerant 不耐的、無法耐受的`,`rich 豐富的`],ans:2,
+  ana:`<b>gluten-intolerant</b>=對麩質不耐(乳糜瀉)。rich、accepting、indulgent 語意不合。`,
+  skill:`💡 <b>套回原句</b>:gluten-intolerant 是固定搭配(對麩質不耐);rich/accepting 語意不合。`,
+  note:`⚠️ 別跟 <b>gluten-free</b>(無麩質)搞混:<b>gluten-free</b> 形容「食物」(不含麩質);<b>gluten-intolerant</b> 形容「人」(對麩質不耐)。`,
+  real:`帶團先問飲食需求:<i>"Does anyone have dietary restrictions or allergies — vegetarian, gluten-intolerant?"</i>`,
+  vocab:[[`intolerant (adj.)`,`ɪnˈtɑlərənt`,`不耐的;無法容忍的`],[`gluten (n.)`,`ˈɡlutn̩`,`麩質、麵筋`],[`gluten-free`,``,`無麩質的`],[`dietary restriction`,``,`飲食限制`]]},
+
+ {kind:`q`,no:2,type:`字彙`,topic:`住宿 · 入住`,star:2,
+  stem:`Guests checked in at the hotel __BLANK__ before going to their rooms.`,
+  zh:`客人先在飯店<b>接待櫃台</b>辦理入住,然後才進房間。`,
+  opts:[`conference room 會議室`,`elevator 電梯`,`reception 接待櫃台`,`concierge service 禮賓服務`],ans:2,
+  ana:`辦理入住(check in)的地點是「接待櫃台」<b>reception</b>(=front desk)。其餘地點與辦理入住無關。`,
+  skill:`💡 <b>情境鎖</b>:辦入住(check in)的地方 = 櫃台 reception。`,
+  real:`帶團到飯店:<i>"Please wait in the lobby while I check us in at the reception."</i> 禮賓(concierge)則是幫忙訂位、叫車的服務。`,
+  vocab:[[`reception (n.)`,`rɪˈsɛpʃən`,`接待櫃台;接待`],[`check in`,``,`辦理入住/報到`],[`concierge (n.)`,`ˌkɑnsɪˈɛrʒ`,`(飯店)禮賓`],[`lobby (n.)`,`ˈlɑbɪ`,`大廳`]]},
+
+ {kind:`q`,no:3,type:`字彙`,topic:`出入境 · 查驗`,star:3,
+  stem:`Before entering the country, each visitor must have a valid __BLANK__ ready for inspection.`,
+  zh:`入境前,每位旅客都必須備妥有效<b>護照</b>以供查驗。`,
+  opts:[`travel brochure 旅遊手冊`,`passport 護照`,`souvenir 紀念品`,`receipt 收據`],ans:1,
+  ana:`入境查驗(inspection)要備妥「有效護照」<b>a valid passport</b>。手冊、紀念品、收據都不是查驗文件。`,
+  skill:`送分題:看到 <i>entering the country</i>(入境)+ <i>valid</i>(有效)+ <i>inspection</i>(查驗)→ 只有護照符合,秒選。`,
+  real:`過海關:<i>"Please have your passport ready for inspection."</i> 相關:visa 簽證、immigration 入境查驗、boarding pass 登機證。`,
+  vocab:[[`passport (n.)`,`ˈpæsˌpɔrt`,`護照`],[`valid (adj.)`,`ˈvælɪd`,`有效的`],[`inspection (n.)`,`ɪnˈspɛkʃən`,`查驗`],[`receipt (n.)`,`rɪˈsit`,`收據(p 不發音!)`]]},
+
+ {kind:`q`,no:4,type:`對話`,topic:`餐飲 · 訂位`,star:3,
+  stem:`Peter: Judy, I hope our __BLANK__ at the restaurant is confirmed.　Judy: Don't worry, I received the confirmation email this morning.`,
+  zh:`Peter:Judy,希望我們餐廳的<b>訂位</b>已經確認了。　Judy:別擔心,我今早收到確認信了。`,
+  opts:[`reservation 訂位、預約`,`city map 城市地圖`,`travel guidebook 旅遊指南`,`luggage tag 行李吊牌`],ans:0,
+  ana:`餐廳 + confirmed / confirmation email(確認)→「訂位」<b>reservation</b>。`,
+  skill:`💡 <b>情境鎖</b>:餐廳 + confirmation(確認)→ 訂位 reservation。`,
+  note:`⚠️ <b>reservation</b>(美式常用)≈ <b>booking</b>(英式常用),訂位/訂房兩字都會考,意思相同。`,
+  real:`帶團訂餐廳:<i>"I have a reservation for ten under the name Chen."</i>(我用陳的名字訂了十人的位)。`,
+  vocab:[[`reservation (n.)`,`ˌrɛzɚˈveʃən`,`訂位、預約`],[`confirm (v.)`,`kənˈfɝm`,`確認`],[`booking (n.)`,`ˈbʊkɪŋ`,`預訂(英式)`]]},
+
+ {kind:`q`,no:5,type:`字彙`,topic:`餐飲 · 異國美食`,star:2,
+  stem:`If you plan to try some __BLANK__ dishes when traveling to a different country, please do some research about what those dishes are.`,
+  zh:`如果你到不同國家想嘗試一些<b>異國風味</b>的菜,請先研究一下那些是什麼菜。`,
+  opts:[`exotic 異國風情的`,`instinct 本能(名詞)`,`contrastive 對比的`,`known 已知的`],ans:0,
+  ana:`到不同國家嘗試的料理 →「異國(風味)的」<b>exotic</b> dishes。known(已知)與「不同國家、要先研究」矛盾。`,
+  skill:`💡 選項詞性不一致時,先判斷「空格要什麼詞」:dishes 前面要<b>形容詞</b> → instinct(名詞)先刷掉。這招常能一秒排除。`,
+  vocab:[[`exotic (adj.)`,`ɪɡˈzɑtɪk`,`異國情調的;奇特的`],[`dish (n.)`,`dɪʃ`,`菜餚`],[`instinct (n.)`,`ˈɪnstɪŋkt`,`本能、直覺`]]},
+
+ {kind:`q`,no:6,type:`字彙`,topic:`購物 · 商圈`,star:2,
+  stem:`In many major US cities, people can visit the shopping __BLANK__ there to make purchases.`,
+  zh:`在許多美國大城市,人們可以去<b>購物區</b>採買。`,
+  opts:[`locales 場所`,`hallmarks 標誌、特徵`,`mansions 豪宅`,`districts 區、地段`],ans:3,
+  ana:`購物的地方 →「購物區」<b>shopping district</b>。hallmark(特徵)、mansion(豪宅)語意不合。`,
+  skill:`💡 <b>搭配詞</b>:shopping district(購物區)固定搭配,其他字不搭 shopping。`,
+  real:`導覽介紹:<i>"This is the main shopping district, famous for its boutiques and department stores."</i> 相關:business district 商業區、red-light district 紅燈區。`,
+  vocab:[[`district (n.)`,`ˈdɪstrɪkt`,`區、地段`],[`hallmark (n.)`,`ˈhɔlˌmɑrk`,`標誌、特徵`],[`mansion (n.)`,`ˈmænʃən`,`豪宅`]]},
+
+ {kind:`q`,no:7,type:`字彙`,topic:`購物 · 攤販`,star:3,
+  stem:`Be ready for the warm-hearted __BLANK__ on these streets; they are super friendly and always eager to persuade you to buy their items.`,
+  zh:`要有心理準備,這些街上有熱情的<b>攤販</b>;他們超友善,總是急著說服你買他們的東西。`,
+  opts:[`vendors 攤販`,`passersby 路人`,`pedestrians 行人`,`residents 居民`],ans:0,
+  ana:`「熱心 + 想說服你買東西」→ 街頭「攤販」<b>vendors</b>。路人、行人、居民不會 persuade you to buy。`,
+  skill:`💡 <b>情境鎖</b>:街上 + 想說服你買東西 = 攤販 vendors。`,
+  note:`⚠️ <b>passersby</b> 是 passerby(路人)的複數(不規則:passers+by);pedestrian 偏「步行者」(交通用語)。`,
+  real:`提醒團員:<i>"Street vendors here can be pushy, but bargaining is expected."</i>(這裡攤販很會推銷,但殺價很正常)。`,
+  vocab:[[`vendor (n.)`,`ˈvɛndɚ`,`攤販、小販`],[`passerby (n.)`,`ˈpæsɚˌbaɪ`,`路人(複 passersby)`],[`pedestrian (n.)`,`pəˈdɛstrɪən`,`行人`],[`persuade (v.)`,`pɚˈswed`,`說服`]]},
+
+ {kind:`q`,no:8,type:`字彙`,topic:`購物 · 殺價`,star:3,
+  stem:`If you buy some souvenirs from local vendors in Thailand, you should try to __BLANK__ for a good deal because the first price offered is usually much higher.`,
+  zh:`如果你在泰國向當地攤販買紀念品,應該試著<b>殺價</b>以爭取好價錢,因為對方開出的第一個價通常高很多。`,
+  opts:[`commute 通勤`,`disguise 偽裝`,`strive 努力奮鬥`,`bargain 討價還價、殺價`],ans:3,
+  ana:`關鍵 <b>for a good deal</b> ＋「攤販開價偏高」→「殺價」= <b>bargain (for)</b>。commute、disguise 語意不合。`,
+  skill:`💡 選項<b>都是動詞</b>時靠「搭配詞」:bargain 接 <i>for/with</i>、strive 接 <i>for success</i>。看到 for + 議價情境 → 鎖 bargain。`,
+  note:`⚠️ <b>bargain</b> 當名詞是「便宜貨、划算交易」(a good bargain),當動詞才是「殺價」——兩義都常考。`,
+  real:`夜市教客人殺價:<i>"Can you give me a discount?"</i> / <i>"That's a bit pricey — can you come down a little?"</i>`,
+  vocab:[[`bargain (v.)`,`ˈbɑrɡɪn`,`討價還價、殺價`],[`strive (v.)`,`straɪv`,`努力(strive for)`],[`vendor (n.)`,`ˈvɛndɚ`,`攤販`],[`discount (n.)`,`ˈdɪskaʊnt`,`折扣`]]},
+
+ {kind:`q`,no:9,type:`對話`,topic:`住宿 · 客訴`,star:2,
+  stem:`Guest: The toilet won't __BLANK__.　Receptionist: We'll send a repairperson within half an hour.`,
+  zh:`房客:馬桶<b>沖不了水</b>。　櫃台:我們半小時內派維修人員過去。`,
+  opts:[`block 阻塞`,`flash 閃爍`,`flush 沖水`,`crush 壓碎`],ans:2,
+  ana:`馬桶(toilet)+ 要派人修 →「沖水」<b>flush</b>。"The toilet won't flush"(馬桶沖不了水)是固定說法。`,
+  skill:`💡 <b>搭配詞</b>:馬桶(toilet)固定搭 flush(沖水);the toilet won’t flush = 沖不了水。`,
+  real:`幫客人向櫃台反映客房問題:<i>"The toilet won't flush / The sink is clogged / The AC isn't working."</i>`,
+  vocab:[[`flush (v.)`,`flʌʃ`,`沖水`],[`clogged (adj.)`,`klɑɡd`,`阻塞的(水管/馬桶)`],[`leak (v./n.)`,`lik`,`漏(水)`],[`repairperson`,``,`維修人員`]]},
+
+ {kind:`q`,no:10,type:`字彙`,topic:`文化 · 古城`,star:2,
+  stem:`This ancient city is a must-visit destination for every tourist to experience the __BLANK__ culture and old town atmosphere.`,
+  zh:`這座古城是每位遊客必訪的目的地,可體驗<b>傳統</b>文化與老城氛圍。`,
+  opts:[`modern 現代的`,`temporary 暫時的`,`traditional 傳統的`,`brief 簡短的`],ans:2,
+  ana:`古城(ancient)+ 老城氛圍(old town)→「傳統」<b>traditional</b> culture。modern(現代)與 ancient 矛盾。`,
+  skill:`💡 <b>情境對比</b>:ancient / old town → traditional(對比 modern)。`,
+  vocab:[[`traditional (adj.)`,`trəˈdɪʃənl̩`,`傳統的`],[`ancient (adj.)`,`ˈenʃənt`,`古老的`],[`must-visit`,``,`必訪的`],[`atmosphere (n.)`,`ˈætməsˌfɪr`,`氛圍、氣氛`]]},
+
+ {kind:`q`,no:11,type:`字彙`,topic:`文化 · 節慶`,star:2,
+  stem:`The view gets even more romantic at night as cherry trees along the river are lighted up by charming paper __BLANK__.`,
+  zh:`夜裡景色更浪漫,沿河的櫻花樹被迷人的紙<b>燈籠</b>點亮。`,
+  opts:[`events 活動`,`lanterns 燈籠`,`festivals 節慶`,`rituals 儀式`],ans:1,
+  ana:`「紙(paper)+ 點亮(lighted up)」→ 紙「燈籠」<b>paper lanterns</b>。event/festival/ritual 是抽象活動,不會被 paper 形容。`,
+  skill:`💡 <b>情境鎖</b>:紙(paper)+ 點亮 = 燈籠;抽象字(event/festival)不能被 paper 形容。`,
+  real:`介紹台灣:平溪天燈 <b>sky lanterns</b>、燈會 <b>Lantern Festival</b> 是口試熱門景點題材,可先準備一段介紹。`,
+  vocab:[[`lantern (n.)`,`ˈlæntɚn`,`燈籠`],[`ritual (n.)`,`ˈrɪtʃʊəl`,`(宗教)儀式`],[`charming (adj.)`,`ˈtʃɑrmɪŋ`,`迷人的`]]},
+
+ {kind:`q`,no:12,type:`字彙`,topic:`生態 · 星空`,star:2,
+  stem:`Hanle rates as one of the darkest places on the Bortle scale; locals switch off lights to __BLANK__ splendid starry skies.`,
+  zh:`Hanle 是全球最暗的地點之一;當地人關燈以<b>顯現</b>璀璨的星空。`,
+  opts:[`reveal 顯露、展現`,`ignore 忽視`,`replace 取代`,`block 阻擋`],ans:0,
+  ana:`關燈(switch off lights)是為了「顯現」<b>reveal</b> 星空。block(阻擋)、ignore(忽視)與「關燈看星」矛盾。`,
+  skill:`💡 <b>情境對比</b>:關燈是為了「顯現」星空;reveal ⇄ hide(反義)。`,
+  note:`⚠️ <b>reveal</b>(顯露)⇄ <b>conceal / hide</b>(隱藏)是常考反義字。`,
+  vocab:[[`reveal (v.)`,`rɪˈvil`,`顯露、揭示`],[`conceal (v.)`,`kənˈsil`,`隱藏(反義)`],[`splendid (adj.)`,`ˈsplɛndɪd`,`壯麗的`],[`starry (adj.)`,`ˈstɑrɪ`,`布滿星星的`]]},
+
+ {kind:`q`,no:13,type:`字彙`,topic:`換匯`,star:3,
+  stem:`We don't recommend exchanging your money at the hotel because you won't get a __BLANK__ rate.`,
+  zh:`我們不建議在飯店換錢,因為你拿不到<b>公道的</b>匯率。`,
+  opts:[`limited 有限的`,`wrong 錯誤的`,`visible 可見的`,`fair 公道的`],ans:3,
+  ana:`匯率(rate)+「不推薦在飯店換」→ 換不到「公道的」<b>fair</b> rate(飯店匯率通常較差)。`,
+  skill:`💡 <b>搭配 + 一詞多義</b>:a fair rate(公道匯率);fair 也有展覽/白皙意,看情境。`,
+  note:`⚠️ <b>fair</b> 一詞多義:公道的/公平的(a fair rate)、(名詞)展覽會(a book fair)、(膚色)白皙的。三義都考。`,
+  real:`換匯提醒:<i>"Don't change money at the hotel; the exchange rate is poor. Use a bank or an ATM."</i> 相關:commission 手續費。`,
+  vocab:[[`fair (adj./n.)`,`fɛr`,`公道的;展覽會`],[`exchange rate`,``,`匯率`],[`commission (n.)`,`kəˈmɪʃən`,`手續費;佣金`]]},
+
+ {kind:`q`,no:14,type:`字彙`,topic:`交通 · 票券`,star:3,
+  stem:`To make getting around the city easier, the tour leader suggested that everyone buy a __BLANK__, which allows unlimited travel on buses and trains for a set period.`,
+  zh:`為了方便在市區移動,領隊建議大家買一張<b>交通票券</b>,可在一段期間內無限搭乘公車和火車。`,
+  opts:[`brochure 手冊`,`transportation pass 交通票券`,`boarding pass 登機證`,`luggage tag 行李吊牌`],ans:1,
+  ana:`「公車+火車無限搭 + 一段期間」→「交通票券」<b>transportation pass</b>(如一日券/週票)。boarding pass 是登機證,別被 pass 誤導。`,
+  skill:`💡 <b>情境鎖</b>:無限搭公車火車 = 交通票券;boarding pass 是登機證,別被 pass 騙。`,
+  gram:`📝 <b>suggest that + 人 + (should) 原形V</b>:建議句型,that 子句用<b>原形動詞</b>(buy,不是 buys)——常考的假設/建議語氣。`,
+  real:`帶團實用:悠遊卡 EasyCard、一日券 one-day pass、無限搭乘 unlimited rides。`,
+  vocab:[[`transportation (n.)`,`ˌtrænspɚˈteʃən`,`交通、運輸`],[`unlimited (adj.)`,`ʌnˈlɪmɪtɪd`,`無限的`],[`pass (n.)`,`pæs`,`通行證、票券`]]},
+
+ {kind:`q`,no:15,type:`對話`,topic:`海關 · 申報`,star:2,
+  stem:`John: Do we need to fill anything out for the souvenirs we bought abroad?　Mary: Yes, we need to complete the __BLANK__ at the airport for items that may be restricted or taxable.`,
+  zh:`John:我們在國外買的紀念品需要填什麼嗎?　Mary:要,對於可能受限制或需課稅的物品,得在機場填「海關申報單」。`,
+  opts:[`passport 護照`,`travel insurance 旅遊保險`,`boarding pass 登機證`,`customs declaration form 海關申報單`],ans:3,
+  ana:`關鍵 <i>at the airport</i> ＋ <i>restricted or taxable</i>(受限/應課稅)→ 海關申報單 <b>customs declaration form</b>。`,
+  note:`⚠️ 拼字:<b>customs</b>(海關,恆複數)≠ <b>custom</b>(習俗,單數)。少個 s 差很多。`,
+  gram:`📝 <b>fill ... out</b> 是可分片語動詞,受詞為代名詞時放中間(fill it out,不可 fill out it)。`,
+  real:`過海關:<i>"Nothing to declare → Green Channel; goods to declare → Red Channel."</i>(綠線無申報、紅線有申報)。`,
+  vocab:[[`customs (n.)`,`ˈkʌstəmz`,`海關(恆複數)`],[`declaration (n.)`,`ˌdɛkləˈreʃən`,`申報`],[`restricted (adj.)`,`rɪˈstrɪktɪd`,`受限制的`],[`declare (v.)`,`dɪˈklɛr`,`申報`]]},
+
+ {kind:`q`,no:16,type:`字彙`,topic:`住宿 · 環保`,star:3,
+  stem:`As an effort to protect our environment, the hotels in this region do not provide __BLANK__ and you need to prepare those items by yourself.`,
+  zh:`為了保護環境,這個地區的飯店不提供<b>備品</b>,你需要自備那些用品。`,
+  opts:[`booklets 小冊子`,`notepads 便條本`,`issues 議題`,`amenities (旅館)備品`],ans:3,
+  ana:`「環保 + 要自備 + those items」→ 旅館不提供「備品」<b>amenities</b>(牙刷、拖鞋等一次性用品)。`,
+  skill:`💡 <b>情境鎖</b>:旅館不提供、要自備 = 備品 amenities。`,
+  note:`⚠️ <b>amenities</b> 在旅館=「(客房)備品/盥洗用品」;別跟 <b>facilities</b>(設施,如泳池、健身房)混。`,
+  real:`環保旅館:<i>"To go green, this hotel doesn't provide single-use amenities. Please bring your own toothbrush and slippers."</i>`,
+  vocab:[[`amenities (n.)`,`əˈmɛnətɪz`,`(旅館)備品;便利設施`],[`facilities (n.)`,`fəˈsɪlətɪz`,`設施`],[`single-use`,``,`一次性的`],[`go green`,``,`響應環保`]]},
+
+ {kind:`q`,no:17,type:`對話`,topic:`導覽`,star:2,
+  stem:`Tour Leader: How much time should we allow inside the British Museum?　Local Guide: About two hours is ideal to see the __BLANK__.`,
+  zh:`領隊:大英博物館裡面要預留多少時間?　當地導遊:大約兩小時剛好看完<b>精華</b>。`,
+  opts:[`highlights 精華、重點`,`tickets 門票`,`staircases 樓梯`,`restaurants 餐廳`],ans:0,
+  ana:`「兩小時看完」→ 看「精華/重點」<b>highlights</b>。tickets/staircases/restaurants 不是參觀重點。`,
+  skill:`💡 <b>情境鎖</b>:兩小時看完 = 精華/重點 highlights。`,
+  real:`導覽用語:<i>"Let me show you the highlights of this museum."</i>(帶你看博物館精華)。highlight 也當動詞「強調」。`,
+  vocab:[[`highlight (n./v.)`,`ˈhaɪˌlaɪt`,`精華、重點;強調`],[`ideal (adj.)`,`aɪˈdiəl`,`理想的`],[`allow (v.)`,`əˈlaʊ`,`允許;預留(時間)`]]},
+
+ {kind:`q`,no:18,type:`字彙`,topic:`景觀`,star:2,
+  stem:`The magnificent waterfall is truly the most __BLANK__ feature of this national park.`,
+  zh:`那壯麗的瀑布真是這座國家公園最<b>令人屏息</b>的特色。`,
+  opts:[`remote 偏遠的`,`average 普通的`,`breathtaking 令人屏息的`,`boring 無聊的`],ans:2,
+  ana:`壯麗瀑布(magnificent)→「令人屏息的」<b>breathtaking</b>。average(普通)、boring(無聊)與 magnificent 矛盾。`,
+  skill:`💡 <b>形容美景的一組字(導遊必備)</b>:breathtaking、spectacular、magnificent、stunning、picturesque、scenic——這科超愛考,一起背最划算。`,
+  vocab:[[`breathtaking (adj.)`,`ˈbrɛθˌtekɪŋ`,`令人屏息的`],[`magnificent (adj.)`,`mæɡˈnɪfəsnt`,`壯麗的`],[`spectacular (adj.)`,`spɛkˈtækjəlɚ`,`壯觀的`],[`picturesque (adj.)`,`ˌpɪktʃəˈrɛsk`,`風景如畫的`]]},
+
+ {kind:`q`,no:19,type:`字彙`,topic:`參觀資訊`,star:3,
+  stem:`Tourists are highly recommended to pay attention to the __BLANK__ hours of different museums because they vary a lot.`,
+  zh:`強烈建議遊客留意各博物館的<b>開放</b>時間,因為差異很大。`,
+  opts:[`establishing 建立`,`commercial 商業的`,`remodeling 改建`,`opening 開放`],ans:3,
+  ana:`博物館的「hours」+ they vary(各不同)→「開放時間」<b>opening hours</b>。`,
+  skill:`💡 <b>搭配詞</b>:opening hours(開放時間)固定搭配。`,
+  note:`⚠️ <b>opening hours</b>(開放時間)≈ <b>business hours</b>(營業時間)。`,
+  real:`導覽必問:<i>"What are the opening hours?"</i> / <i>"It's open from 9 to 5, closed on Mondays."</i>(週一休館)。`,
+  vocab:[[`opening hours`,``,`開放時間`],[`vary (v.)`,`ˈvɛrɪ`,`不同、有差異`],[`business hours`,``,`營業時間`]]},
+
+ {kind:`q`,no:20,type:`字彙`,topic:`自由活動`,star:2,
+  stem:`We will stop at this location for two hours, and you are __BLANK__ to walk around and make some small purchases.`,
+  zh:`我們會在這裡停留兩小時,你可以<b>自由</b>四處走走、買點小東西。`,
+  opts:[`available 可獲得的`,`free 自由的`,`pleased 高興的`,`surprised 驚訝的`],ans:1,
+  ana:`「停兩小時,可四處走走購物」→「自由(去做)」<b>be free to</b> walk around。available(可取得/有空,形容物或人)語意不合。`,
+  skill:`💡 <b>搭配詞</b>:be free to V(可自由做);free 也有免費意。`,
+  gram:`📝 <b>be free to + 原形V</b>=可自由地做…;<b>free</b> 也有「免費」意(free of charge)。`,
+  real:`帶團宣布自由時間:<i>"You're free to explore on your own. Let's meet back here at 3."</i>(自由活動,三點原地集合)。`,
+  vocab:[[`free (adj.)`,`fri`,`自由的;免費的`],[`available (adj.)`,`əˈveləbl̩`,`可取得的;有空的`],[`explore (v.)`,`ɪkˈsplor`,`探索、遊覽`]]},
+
+ {kind:`q`,no:21,type:`字彙`,topic:`景觀`,star:2,
+  stem:`The __BLANK__ Northeast Coast is a popular tourist destination that serves both as a fascinating natural classroom and as an enchanting coastal playground.`,
+  zh:`<b>壯觀的</b>東北角海岸是熱門觀光勝地,既是迷人的天然教室,也是迷人的海岸遊樂場。`,
+  opts:[`spectacular 壯觀的`,`hostile 有敵意的`,`artificial 人造的`,`ordinary 普通的`],ans:0,
+  ana:`形容海岸美景 + 天然教室 + 遊樂場 →「壯觀的」<b>spectacular</b>。hostile(有敵意)、artificial(人造,與 natural 矛盾)、ordinary(普通)不合。`,
+  skill:`💡 <b>字群</b>:形容美景 6 字群 spectacular/breathtaking/magnificent/stunning/scenic。`,
+  skill:`💡 又見「形容美景字群」(第 18 題):spectacular / breathtaking / magnificent / stunning / scenic——同組反覆考,背熟必拿分。`,
+  vocab:[[`spectacular (adj.)`,`spɛkˈtækjəlɚ`,`壯觀的`],[`hostile (adj.)`,`ˈhɑstl̩`,`有敵意的`],[`artificial (adj.)`,`ˌɑrtəˈfɪʃəl`,`人造的`],[`enchanting (adj.)`,`ɪnˈtʃæntɪŋ`,`迷人的`]]},
+
+ {kind:`q`,no:22,type:`字彙`,topic:`景點 · 整修`,star:3,
+  stem:`Seriously impacted by a storm last year, this tourist site was under a major __BLANK__ for eight months.`,
+  zh:`去年遭風暴嚴重侵襲後,這個觀光景點進行了為期八個月的大規模<b>整修</b>。`,
+  opts:[`renovation 整修、翻新`,`rejuvenation 恢復活力`,`imposition 強加`,`declaration 宣告`],ans:0,
+  ana:`景點被風暴破壞 → 進行「整修」<b>renovation</b>(under renovation 整修中)。`,
+  skill:`💡 <b>情境 + 形近字</b>:景點被風暴壞 → 整修(under renovation);別選形近的 rejuvenation。`,
+  note:`⚠️ <b>renovation</b>(建築整修)vs <b>rejuvenation</b>(使恢復活力,多指人/身心)。字長得像,意思差很多。`,
+  real:`景點導覽:<i>"The temple is currently under renovation, so some areas are closed."</i>(整修中,部分區域關閉)。`,
+  vocab:[[`renovation (n.)`,`ˌrɛnəˈveʃən`,`整修、翻新`],[`renovate (v.)`,`ˈrɛnəˌvet`,`整修`],[`under renovation`,``,`整修中`],[`impact (v.)`,`ɪmˈpækt`,`衝擊、影響`]]},
+
+ {kind:`q`,no:23,type:`字彙`,topic:`行程 · 加購`,star:2,
+  stem:`In a tour package with a set content, if you want to __BLANK__ an additional service, you might not get it.`,
+  zh:`在內容固定的套裝行程中,如果你想<b>要求</b>額外服務,可能不會得到。`,
+  opts:[`advocate 提倡`,`suggest 建議`,`request 要求、請求`,`introduce 介紹`],ans:2,
+  ana:`「額外服務」+「可能得不到」→「要求」<b>request</b> an additional service。advocate(提倡)、suggest(建議)、introduce(介紹)語意不合。`,
+  skill:`💡 <b>詞性 + 語意</b>:4 選項都動詞,靠語意——想「要」額外服務 = request。`,
+  vocab:[[`request (v./n.)`,`rɪˈkwɛst`,`要求、請求`],[`advocate (v.)`,`ˈædvəˌket`,`提倡`],[`additional (adj.)`,`əˈdɪʃənl̩`,`額外的`],[`tour package`,``,`套裝行程`]]},
+
+ {kind:`q`,no:24,type:`字彙`,topic:`參觀禮儀`,star:3,
+  stem:`When you enter churches or cathedrals, please remember to turn your phone to __BLANK__ mode.`,
+  zh:`進入教堂或大教堂時,請記得把手機轉為<b>靜音</b>。`,
+  opts:[`quite 相當`,`mobile 行動的`,`shared 共享的`,`silent 靜音的`],ans:3,
+  ana:`參觀教堂的禮儀 → 手機轉「靜音」<b>silent mode</b>。`,
+  skill:`💡 <b>搭配 + 形近字</b>:silent mode(靜音);注意 quite ≠ quiet 陷阱。`,
+  note:`⚠️ 雙陷阱:(1)選項 <b>quite</b>(相當)≠ <b>quiet</b>(安靜),只差一個字母;(2)手機模式固定說法是 <b>silent mode</b>。`,
+  real:`參觀提醒:<i>"Please set your phone to silent mode; no flash photography inside."</i>(手機靜音、館內禁閃光燈)。`,
+  vocab:[[`silent (adj.)`,`ˈsaɪlənt`,`靜音的、沉默的`],[`quiet (adj.)`,`ˈkwaɪət`,`安靜的`],[`quite (adv.)`,`kwaɪt`,`相當(易混!)`],[`cathedral (n.)`,`kəˈθidrəl`,`大教堂`]]},
+
+ {kind:`q`,no:25,type:`字彙`,topic:`帶團 · 識別`,star:2,
+  stem:`We have prepared a pin for you to wear on your backpack, so the members in our group can __BLANK__ one another very easily.`,
+  zh:`我們幫你準備了別在背包上的別針,這樣團員可以很容易<b>認出</b>彼此。`,
+  opts:[`recognize 辨認、認出`,`witness 目擊`,`splash 潑濺`,`conduct 進行`],ans:0,
+  ana:`別針幫助團員「認出」彼此 → <b>recognize</b> one another。witness(目擊)、splash(潑濺)、conduct(進行)不合。`,
+  skill:`💡 <b>情境鎖</b>:別針幫團員「認出」彼此 recognize。`,
+  vocab:[[`recognize (v.)`,`ˈrɛkəɡˌnaɪz`,`辨認、認出`],[`witness (v.)`,`ˈwɪtnəs`,`目擊`],[`one another`,``,`彼此`],[`pin (n.)`,`pɪn`,`別針、胸針`]]},
+
+ {kind:`q`,no:26,type:`字彙`,topic:`餐飲 · 吃到飽`,star:3,
+  stem:`Even though this is an all-you-can-eat restaurant, you should still try to get only the __BLANK__ of food that you need to prevent unnecessary waste.`,
+  zh:`即使這是吃到飽餐廳,你仍應只拿你需要的<b>份量</b>,以免不必要的浪費。`,
+  opts:[`form 形式`,`portion 份量`,`value 價值`,`mass 大量`],ans:1,
+  ana:`吃到飽 + 避免浪費 → 只拿需要的「份量」<b>portion</b>。`,
+  skill:`💡 <b>情境鎖</b>:吃到飽只拿需要的「份量」portion。`,
+  real:`吃到飽提醒:<i>"It's a buffet, but please take only the portion you can finish to avoid food waste."</i> all-you-can-eat=吃到飽、food waste=剩食。`,
+  vocab:[[`portion (n.)`,`ˈpɔrʃən`,`份量、一份`],[`all-you-can-eat`,``,`吃到飽`],[`waste (n.)`,`west`,`浪費;廢棄物`],[`buffet (n.)`,`bəˈfe`,`自助餐(t 不發音)`]]},
+
+ {kind:`q`,no:27,type:`字彙`,topic:`海關 · 綠線`,star:3,
+  stem:`If you have nothing to __BLANK__, simply walk through the Green Channel, stopping only if asked to do so by a customs agent.`,
+  zh:`如果你沒有任何東西要<b>申報</b>,就直接走綠線通道,除非海關人員要求你停下。`,
+  opts:[`pay 支付`,`declare 申報`,`hide 隱藏`,`regret 後悔`],ans:1,
+  ana:`綠線通道(Green Channel)→ 沒東西「申報」<b>declare</b>(呼應第 15 題海關申報單)。`,
+  skill:`💡 <b>情境鎖</b>:Green Channel(綠線)= 沒東西申報(nothing to declare)。`,
+  note:`⚠️ 海關經典:<b>nothing to declare</b>(無申報,走綠線)vs <b>goods to declare</b>(有申報,走紅線)。`,
+  real:`過海關:<i>"If you have nothing to declare, use the Green Channel."</i> customs agent=海關人員。`,
+  vocab:[[`declare (v.)`,`dɪˈklɛr`,`申報`],[`Green Channel`,``,`(海關)綠線通道`],[`customs agent`,``,`海關人員`]]},
+
+ {kind:`q`,no:28,type:`字彙`,topic:`購物 · 拒絕`,star:3,
+  stem:`Politely __BLANK__ and walk away if you feel uncomfortable with a taxi driver's or a vendor's offer.`,
+  zh:`如果你對計程車司機或攤販的開價感到不舒服,就禮貌地<b>婉拒</b>然後走開。`,
+  opts:[`hide 隱藏`,`excite 使興奮`,`decline 婉拒`,`struggle 掙扎`],ans:2,
+  ana:`「感到不舒服」+「走開」→ 禮貌地「婉拒」<b>decline</b>。`,
+  skill:`💡 <b>情境 + 一詞多義</b>:不舒服就禮貌「婉拒」;decline 婉拒/下降兩義。`,
+  note:`⚠️ <b>decline</b> 一詞多義:婉拒(politely decline)、下降(sales decline)。這裡是「婉拒」。`,
+  real:`拒絕推銷:<i>"If you're not interested, just politely decline and walk away."</i>(不感興趣就婉拒走開)。`,
+  vocab:[[`decline (v.)`,`dɪˈklaɪn`,`婉拒;下降`],[`offer (n.)`,`ˈɔfɚ`,`開價、提議`],[`struggle (v.)`,`ˈstrʌɡl̩`,`掙扎`]]},
+
+ {kind:`q`,no:29,type:`對話`,topic:`票券 · 效期`,star:3,
+  stem:`Passenger: How long is my ticket good for?　Station staff: It's good until the __BLANK__ date written on the ticket.`,
+  zh:`乘客:我的票有效到什麼時候?　站務員:到票上寫的<b>到期</b>日為止。`,
+  opts:[`inspiration 靈感`,`deduction 扣除`,`depression 沮喪`,`expiration 到期`],ans:3,
+  ana:`票「有效到…」→ 票上的「到期」日 <b>expiration date</b>。`,
+  skill:`💡 <b>字根 + 搭配</b>:票的「到期」日 expiration date;字根 expire。`,
+  note:`⚠️ 四選項字尾都是 -tion,靠字根:<b>expire</b>(到期)→ expiration。inspiration(靈感)、deduction(扣除)、depression(沮喪)語意不合。`,
+  real:`票券/護照:<i>"Please check the expiration date."</i>(確認有效期限)。英式也用 expiry date。`,
+  vocab:[[`expiration (n.)`,`ˌɛkspəˈreʃən`,`到期、期滿`],[`expire (v.)`,`ɪkˈspaɪr`,`到期、失效`],[`expiration date`,``,`到期日、有效期限`]]},
+
+ {kind:`q`,no:30,type:`對話`,topic:`機場 · 登機`,star:3,
+  stem:`Mary: John, do you know when __BLANK__ will start for our flight?　John: Yes, it begins at 9:15 A.M. at Gate 7.`,
+  zh:`Mary:John,你知道我們班機什麼時候開始<b>登機</b>嗎?　John:知道,上午 9:15 在 7 號登機門開始。`,
+  opts:[`boarding 登機`,`duty-free shopping 免稅購物`,`terminal 航廈`,`luggage 行李`],ans:0,
+  ana:`「班機」+「Gate 7 開始」→「登機」<b>boarding</b>(start/begin boarding 開始登機)。`,
+  skill:`💡 <b>情境鎖</b>:班機 + Gate 開始 = 登機 boarding。`,
+  real:`登機廣播:<i>"Boarding for flight BR225 will begin shortly at Gate 7."</i> 相關:boarding pass 登機證、boarding gate 登機門、final call 最後登機廣播。`,
+  vocab:[[`boarding (n.)`,`ˈbɔrdɪŋ`,`登機`],[`terminal (n.)`,`ˈtɝmənl̩`,`航廈`],[`duty-free`,``,`免稅的`],[`gate (n.)`,`ɡet`,`登機門`]]},
+
+ {kind:`q`,no:31,type:`字彙`,topic:`參觀 · 預約`,star:2,
+  stem:`When visiting museums and other attractions in Paris, even if you have purchased a museum pass, making a(n) __BLANK__ is still required.`,
+  zh:`在巴黎參觀博物館等景點時,即使買了博物館通票,仍需要事先<b>預約</b>。`,
+  opts:[`recommendation 推薦`,`reservation 預約`,`accommodation 住宿`,`assimilation 同化`],ans:1,
+  ana:`即使有通票仍需事先「預約」<b>reservation</b>(呼應第 4 題)。accommodation(住宿)、assimilation(同化)不合。`,
+  skill:`💡 <b>語意</b>:即使有通票仍需「預約」reservation;-tion 長字靠語意刷。`,
+  vocab:[[`reservation (n.)`,`ˌrɛzɚˈveʃən`,`預約`],[`accommodation (n.)`,`əˌkɑməˈdeʃən`,`住宿`],[`museum pass`,``,`博物館通票`]]},
+
+ {kind:`q`,no:32,type:`字彙`,topic:`入境 · 查驗`,star:3,
+  stem:`Officers at __BLANK__ check all passports and visas before travelers can enter the country.`,
+  zh:`<b>入境查驗處</b>的官員會查驗所有護照和簽證,旅客才能入境。`,
+  opts:[`baggage claim 行李提領`,`lounge 貴賓室`,`information desk 服務台`,`immigration 入境查驗`],ans:3,
+  ana:`「查驗護照簽證 + 才能入境」→「入境查驗(處)」<b>immigration</b>。`,
+  skill:`💡 <b>情境 + 順序</b>:查驗護照簽證的關卡 = immigration;記機場順序 Immigration→Baggage→Customs。`,
+  note:`⚠️ 機場關卡別搞混,順序也常考:<b>Immigration</b>(證照查驗)→ <b>Baggage Claim</b>(提行李)→ <b>Customs</b>(海關申報)。`,
+  real:`入境流程:<i>"After landing: Immigration → Baggage Claim → Customs."</i>`,
+  vocab:[[`immigration (n.)`,`ˌɪməˈɡreʃən`,`入境查驗;移民`],[`baggage claim`,``,`行李提領處`],[`lounge (n.)`,`laʊndʒ`,`貴賓室、休息室`],[`visa (n.)`,`ˈvizə`,`簽證`]]},
+
+ {kind:`q`,no:33,type:`字彙`,topic:`安全 · 提醒`,star:2,
+  stem:`Please keep a safe __BLANK__ between yourself and the cliff edge while taking photos.`,
+  zh:`拍照時請與懸崖邊緣保持安全<b>距離</b>。`,
+  opts:[`vehicle 交通工具`,`direction 方向`,`guide 導遊`,`distance 距離`],ans:3,
+  ana:`懸崖邊 + 安全 → 保持安全「距離」<b>keep a safe distance</b>。`,
+  skill:`💡 <b>搭配詞</b>:keep a safe distance(保持安全距離)。`,
+  real:`安全提醒:<i>"Please keep a safe distance from the edge and watch your step."</i>(保持安全距離、小心腳步)。`,
+  vocab:[[`distance (n.)`,`ˈdɪstəns`,`距離`],[`cliff (n.)`,`klɪf`,`懸崖`],[`edge (n.)`,`ɛdʒ`,`邊緣`]]},
+
+ {kind:`q`,no:34,type:`字彙`,topic:`機場 · 接機`,star:3,
+  stem:`The crowd waited anxiously at the terminal for the __BLANK__ of the VIP guests.`,
+  zh:`群眾在航廈焦急地等待貴賓的<b>到來</b>。`,
+  opts:[`preference 偏好`,`decoration 裝飾`,`agony 極度痛苦`,`arrival 抵達`],ans:3,
+  ana:`在航廈等待貴賓 → 等待「到來」<b>arrival</b>。`,
+  skill:`💡 <b>情境 + 反義</b>:航廈等貴賓「到來」arrival;arrival ⇄ departure。`,
+  note:`⚠️ 機場常考反義:<b>arrival</b>(抵達)⇄ <b>departure</b>(出發);看板 Arrivals(入境/抵達)、Departures(出境/出發)。`,
+  real:`接機:<i>"We'll wait at the Arrivals hall for the guests."</i>(在入境大廳等客人)。`,
+  vocab:[[`arrival (n.)`,`əˈraɪvl̩`,`抵達、到來`],[`departure (n.)`,`dɪˈpɑrtʃɚ`,`出發、離開(反義)`],[`anxiously (adv.)`,`ˈæŋkʃəslɪ`,`焦急地`]]},
+
+ {kind:`q`,no:35,type:`字彙`,topic:`市區 · 遊覽`,star:2,
+  stem:`The city's urban center is quite compact and easy to __BLANK__ on foot or by bike.`,
+  zh:`這座城市的市中心相當緊湊,很適合步行或騎單車<b>遊覽</b>。`,
+  opts:[`permit 允許`,`explore 探索、遊覽`,`break 打破`,`restore 修復`],ans:1,
+  ana:`市中心緊湊 + 步行/單車 → 適合「遊覽/探索」<b>explore</b>(呼應第 20 題)。`,
+  skill:`💡 <b>情境鎖</b>:市中心緊湊、步行單車「遊覽」explore。`,
+  vocab:[[`explore (v.)`,`ɪkˈsplor`,`探索、遊覽`],[`compact (adj.)`,`kəmˈpækt`,`緊湊的、小巧的`],[`on foot`,``,`步行`]]},
+
+ {kind:`q`,no:36,type:`字彙`,topic:`環保 · 公德`,star:2,
+  stem:`Littering in natural parks can __BLANK__ the beauty tourists come to admire.`,
+  zh:`在自然公園亂丟垃圾會<b>破壞</b>遊客前來欣賞的美景。`,
+  opts:[`protect 保護`,`repair 修理`,`decorate 裝飾`,`destroy 破壞`],ans:3,
+  ana:`亂丟垃圾(littering)→「破壞」<b>destroy</b> 美景。protect(保護)、repair(修理)意思相反。`,
+  skill:`💡 <b>情境對比</b>:亂丟垃圾「破壞」美景 destroy(對比 protect)。`,
+  real:`環保宣導:<i>"Please don't litter; it destroys the natural beauty."</i> litter=亂丟垃圾(動詞/名詞)。`,
+  vocab:[[`destroy (v.)`,`dɪˈstrɔɪ`,`破壞、摧毀`],[`litter (v./n.)`,`ˈlɪtɚ`,`亂丟垃圾`],[`admire (v.)`,`ədˈmaɪr`,`欣賞、讚賞`]]},
+
+ {kind:`q`,no:37,type:`對話`,topic:`參觀 · 詢問`,star:2,
+  stem:`Tourist: __BLANK__　Tour Guide: Yes, but please turn off the camera flash.`,
+  zh:`遊客:<b>我們可以在寺廟內拍照嗎?</b>　導遊:可以,但請關閉相機閃光燈。`,
+  opts:[`Can we take photos inside the temple? 可以在寺廟內拍照嗎?`,`How much does the entrance ticket cost today? 今天門票多少?`,`Where is the nearest souvenir shop? 最近的紀念品店在哪?`,`Do we have lunch included today? 今天含午餐嗎?`],ans:0,
+  ana:`導遊回答「可以,但請關閃光燈」→ 問題一定是「可否拍照」<b>Can we take photos?</b>(閃光燈是拍照相關)。`,
+  skill:`💡 對話「補問句」題:先看「回答」反推問題。回答提到 camera flash → 問題必和拍照有關,門票/紀念品店/午餐都對不上。`,
+  vocab:[[`flash (n.)`,`flæʃ`,`閃光燈`],[`temple (n.)`,`ˈtɛmpl̩`,`寺廟`],[`entrance (n.)`,`ˈɛntrəns`,`入口;入場`]]},
+
+ {kind:`q`,no:38,type:`字彙`,topic:`景點 · 數量`,star:2,
+  stem:`The destination is a big city with __BLANK__ tourist attractions; we plan to visit at least six or more of the most recommended ones.`,
+  zh:`這個目的地是個有<b>無數</b>觀光景點的大城市;我們計畫至少參觀六個以上最推薦的。`,
+  opts:[`few 很少的`,`limited 有限的`,`narrow 狹窄的`,`countless 無數的`],ans:3,
+  ana:`「大城市」+「至少六個以上」→「無數的」<b>countless</b> attractions。few(很少)、limited(有限)與情境矛盾。`,
+  skill:`💡 <b>情境鎖</b>:大城市 + 六個以上 = 無數的 countless。`,
+  vocab:[[`countless (adj.)`,`ˈkaʊntlɪs`,`無數的`],[`attraction (n.)`,`əˈtrækʃən`,`景點;吸引力`],[`recommended (adj.)`,`ˌrɛkəˈmɛndɪd`,`推薦的`]]},
+
+ {kind:`q`,no:39,type:`字彙`,topic:`購物 · 退稅`,star:3,
+  stem:`In England, tax __BLANK__ is done in airports rather than in the shops where you make purchases.`,
+  zh:`在英國,<b>退稅</b>是在機場辦理,而不是在你購物的商店。`,
+  opts:[`recharge 充電、儲值`,`evasion 逃避、規避`,`refund 退款、退稅`,`production 生產`],ans:2,
+  ana:`<b>tax refund</b>=退稅,觀光客購物退稅一般在機場離境辦理。`,
+  skill:`💡 <b>形近字 + 搭配</b>:tax refund(退稅);別選形近的 evasion(逃稅)。`,
+  note:`⚠️ 經典陷阱:<b>tax refund</b> 退稅(合法)vs <b>tax evasion</b> 逃稅(違法)。機場辦的一定是退稅。`,
+  real:`歐洲退稅:<i>"Remember to get your tax refund (VAT refund) at the airport before check-in."</i> 招牌:Tax-Free Shopping。`,
+  vocab:[[`refund (n./v.)`,`ˈrifʌnd / rɪˈfʌnd`,`退款、退稅`],[`evasion (n.)`,`ɪˈveʒən`,`逃避(tax evasion 逃稅)`],[`VAT`,``,`加值稅`]]},
+
+ {kind:`q`,no:40,type:`字彙`,topic:`航班 · 異常`,star:3,
+  stem:`As a result of __BLANK__ caused by the air-traffic controllers' strike, our flight couldn't land in Paris.`,
+  zh:`由於航管人員罷工造成的<b>混亂/中斷</b>,我們的班機無法在巴黎降落。`,
+  opts:[`disruption 中斷、混亂`,`construction 建造`,`instruction 指示`,`destination 目的地`],ans:0,
+  ana:`罷工(strike)→ 造成「中斷/混亂」<b>disruption</b> → 班機無法降落。construction(建造)、instruction(指示)、destination(目的地)不合。`,
+  skill:`💡 <b>情境 + 字根</b>:罷工造成「混亂/中斷」disruption;-tion 靠語意。`,
+  note:`⚠️ 四選項都以 -tion 結尾,靠語意 + 字根:disrupt(擾亂)→ disruption。`,
+  real:`航班異常:<i>"Due to the strike, there are major disruptions to flights today."</i> 相關:delay 延誤、cancellation 取消、strike 罷工。`,
+  vocab:[[`disruption (n.)`,`dɪsˈrʌpʃən`,`中斷、混亂`],[`strike (n.)`,`straɪk`,`罷工`],[`air-traffic controller`,``,`航管人員`]]},
+
+ {kind:`q`,no:41,type:`字彙`,topic:`保險`,star:3,
+  stem:`Before going on the adventure tour, the travel agency advised all participants to check their __BLANK__ to ensure medical expenses and trip cancellations are included.`,
+  zh:`出發冒險行程前,旅行社建議所有團員確認他們的<b>保險範圍</b>,以確保涵蓋醫療費用和行程取消。`,
+  opts:[`hotel booking 訂房`,`travel itinerary 行程表`,`insurance coverage 保險範圍`,`flight ticket 機票`],ans:2,
+  ana:`「確認…以確保涵蓋醫療費用 + 行程取消」→「保險範圍」<b>insurance coverage</b>。`,
+  skill:`💡 <b>情境鎖</b>:確保涵蓋醫療 + 取消 = 保險範圍 insurance coverage。`,
+  real:`帶團前提醒:<i>"Please make sure your travel insurance covers medical expenses and trip cancellations."</i> travel insurance=旅遊平安險。`,
+  vocab:[[`insurance coverage`,``,`保險範圍、保障`],[`itinerary (n.)`,`aɪˈtɪnəˌrɛri`,`行程表(重音在第 2 音節)`],[`medical expenses`,``,`醫療費用`],[`cancellation (n.)`,`ˌkænsəˈleʃən`,`取消`]]},
+
+ {kind:`q`,no:42,type:`字彙`,topic:`交通 · 儲值卡`,star:3,
+  stem:`Passengers simply add value to a smart card and swipe it at the gate to enter. The fare is automatically __BLANK__.`,
+  zh:`乘客只要為智慧卡加值,在閘門刷卡進入,車資就會自動<b>扣除</b>。`,
+  opts:[`deducted 扣除`,`increased 增加`,`reduced 減少`,`returned 歸還`],ans:0,
+  ana:`儲值卡(悠遊卡類)刷卡進站 → 車資自動「扣除」<b>deducted</b>。`,
+  skill:`💡 <b>情境 + 形近</b>:刷卡車資自動「扣除」deducted;deduct ≠ reduce。`,
+  note:`⚠️ <b>deduct</b>(扣除,從帳戶/卡扣款)≠ <b>reduce</b>(減少,降低數量/程度)。`,
+  real:`悠遊卡:<i>"Just tap your card and the fare is automatically deducted."</i> add value=加值、tap/swipe=刷卡。`,
+  vocab:[[`deduct (v.)`,`dɪˈdʌkt`,`扣除`],[`fare (n.)`,`fɛr`,`車資、票價`],[`swipe (v.)`,`swaɪp`,`刷(卡)`],[`add value`,``,`加值`]]},
+
+ {kind:`q`,no:43,type:`字彙`,topic:`片語 · 客訴`,star:3,
+  stem:`__BLANK__ the noise from the hallway, the couple decided to call the front desk and file a formal complaint.`,
+  zh:`<b>受夠了</b>走廊的噪音,這對夫妻決定打電話到櫃台正式投訴。`,
+  opts:[`Responsible for 對…負責`,`In lieu of 代替`,`Being stuck with 被迫接受`,`Fed up with 受夠了`],ans:3,
+  ana:`噪音 + 投訴 →「受夠了」<b>fed up with</b>(對…感到厭煩)。放句首當分詞片語修飾主詞 couple。`,
+  note:`⚠️ <b>be fed up with</b>=受夠了、厭煩;In lieu of=代替(較少見);Being stuck with=被迫接受。`,
+  gram:`📝 分詞片語當開頭:Fed up with... = Because they were fed up with...(省略「主詞 + be」)。`,
+  real:`客訴:<i>"I'm fed up with the noise; I'd like to file a complaint."</i> file a complaint=投訴、正式申訴。`,
+  vocab:[[`fed up with`,``,`受夠了、厭煩`],[`file a complaint`,``,`投訴、申訴`],[`hallway (n.)`,`ˈhɔlˌwe`,`走廊`],[`in lieu of`,`ɪn ˈlu əv`,`代替`]]},
+
+ {kind:`q`,no:44,type:`對話`,topic:`機上 · Wi-Fi`,star:2,
+  stem:`Passenger: Is there Wi-Fi available on this flight?　Flight Attendant: Yes, you can __BLANK__ after takeoff using the instructions provided.`,
+  zh:`乘客:這班機有 Wi-Fi 嗎?　空服員:有,起飛後你可以依照提供的說明<b>連線</b>。`,
+  opts:[`connect 連線`,`sleep 睡覺`,`stretch 伸展`,`clap 拍手`],ans:0,
+  ana:`Wi-Fi →「連線」<b>connect</b>。`,
+  skill:`💡 <b>情境鎖</b>:Wi-Fi 就是「連線」connect。`,
+  real:`機上 Wi-Fi:<i>"You can connect to the in-flight Wi-Fi after takeoff."</i> in-flight=機上的。`,
+  vocab:[[`connect (v.)`,`kəˈnɛkt`,`連接、連線`],[`in-flight`,``,`機上的`],[`instruction (n.)`,`ɪnˈstrʌkʃən`,`說明、指示`]]},
+
+ {kind:`q`,no:45,type:`字彙`,topic:`參觀 · 服裝`,star:3,
+  stem:`In Japan, if you want to enter a shrine, you have to pay attention to see if your outfit is __BLANK__ or not; for example, sandals are not suggested.`,
+  zh:`在日本,若想進入神社,要注意你的服裝是否<b>合宜</b>;例如,不建議穿涼鞋。`,
+  opts:[`approximate 大約的`,`aggravating 惱人的`,`accelerated 加速的`,`appropriate 合宜的`],ans:3,
+  ana:`進神社 + 注意服裝 + 涼鞋不建議 → 服裝是否「合宜」<b>appropriate</b>。`,
+  skill:`💡 <b>語意刷</b>:進神社注意服裝是否「合宜」appropriate;4 個 a 開頭長字靠語意。`,
+  note:`⚠️ 四個 a 開頭長字陷阱:appropriate(合宜)、approximate(大約)、aggravating(惱人)、accelerated(加速)。只有 appropriate 搭配「服裝合不合宜」。`,
+  real:`服裝規定:<i>"Please dress appropriately when visiting shrines — no shorts or sandals."</i> dress code=服裝規定。`,
+  vocab:[[`appropriate (adj.)`,`əˈproprɪɪt`,`合宜的、適當的`],[`approximate (adj.)`,`əˈprɑksəmɪt`,`大約的(易混)`],[`outfit (n.)`,`ˈaʊtˌfɪt`,`服裝、裝扮`],[`shrine (n.)`,`ʃraɪn`,`神社、神龕`]]},
+
+ {kind:`q`,no:46,type:`字彙`,topic:`旅遊 · 訣竅`,star:2,
+  stem:`These essential travel __BLANK__ will help you avoid common travel mistakes and make the most of your journey.`,
+  zh:`這些必備的旅遊<b>訣竅</b>能幫你避免常見的旅行錯誤,充分享受旅程。`,
+  opts:[`pickpockets 扒手`,`tips 訣竅、小費`,`vouchers 兌換券`,`peaks 頂峰`],ans:1,
+  ana:`「幫你避免錯誤 + 享受旅程」→ 旅遊「訣竅」<b>travel tips</b>。`,
+  skill:`💡 <b>一詞多義</b>:旅遊「訣竅」tips;tip 也有小費意。`,
+  note:`⚠️ <b>tip</b> 一詞多義:訣竅(travel tips)、小費(leave a tip)、尖端。`,
+  vocab:[[`tip (n.)`,`tɪp`,`訣竅;小費;尖端`],[`voucher (n.)`,`ˈvaʊtʃɚ`,`兌換券、憑證`],[`make the most of`,``,`充分利用`]]},
+
+ {kind:`q`,no:47,type:`對話`,topic:`參觀 · 排隊`,star:3,
+  stem:`Tour Guide: Everyone, please form a __BLANK__ to enter the gallery in an orderly manner.　Tour Member: Okay, we'll wait our turn.`,
+  zh:`導遊:各位,請排成一<b>列</b>,依序進入展廳。　團員:好,我們會等輪到我們。`,
+  opts:[`path 小徑`,`shortcut 捷徑`,`queue 隊伍`,`detour 繞道`],ans:2,
+  ana:`「依序進入 + 等輪到」→ 排「隊伍」<b>form a queue</b>(排隊)。`,
+  note:`⚠️ 發音陷阱字!<b>queue</b> 唸 /kju/(像字母 Q),5 個字母只唸一個音。英式=queue、美式=line。`,
+  real:`帶團排隊:<i>"Please form a queue / line up here and wait for your turn."</i> line up=排隊(動詞)。`,
+  vocab:[[`queue (n./v.)`,`kju`,`隊伍;排隊(唸 Q)`],[`detour (n.)`,`ˈditʊr`,`繞道`],[`orderly (adj.)`,`ˈɔrdɚlɪ`,`有秩序的`],[`wait one's turn`,``,`等輪到`]]},
+
+ {kind:`q`,no:48,type:`字彙`,topic:`景點 · 地標`,star:3,
+  stem:`On the city tour, the guide asked everyone to take a photo in front of the famous __BLANK__ that represents the history of the area.`,
+  zh:`市區觀光時,導遊請大家在代表當地歷史的著名<b>地標</b>前拍照。`,
+  opts:[`magnitude 規模`,`landmark 地標`,`brochure 手冊`,`souvenir 紀念品`],ans:1,
+  ana:`「著名的 + 代表歷史 + 前面拍照」→「地標」<b>landmark</b>。`,
+  skill:`💡 <b>情境鎖</b>:著名 + 代表歷史 + 拍照 = 地標 landmark。`,
+  real:`導覽:<i>"This is the most famous landmark in the city — a great spot for photos."</i> spot=地點。`,
+  vocab:[[`landmark (n.)`,`ˈlændˌmɑrk`,`地標`],[`magnitude (n.)`,`ˈmæɡnəˌtjud`,`規模、震級`],[`brochure (n.)`,`broˈʃʊr`,`手冊(重音在後)`],[`represent (v.)`,`ˌrɛprɪˈzɛnt`,`代表`]]},
+
+ {kind:`q`,no:49,type:`字彙`,topic:`購物 · 雜貨`,star:2,
+  stem:`Our hotel is a bit far away from the city center; if you need to buy some __BLANK__, there is a small store nearby.`,
+  zh:`我們飯店離市中心有點遠;如果你需要買些<b>生活雜貨</b>,附近有間小店。`,
+  opts:[`groceries 生活雜貨`,`categories 類別`,`warnings 警告`,`reminders 提醒`],ans:0,
+  ana:`「小店買」→「生活雜貨」<b>groceries</b>(食品日用品)。`,
+  skill:`💡 <b>情境鎖</b>:小店買「生活雜貨」groceries。`,
+  note:`⚠️ groceries(生活雜貨,恆複數)、grocery store=雜貨店/超市。`,
+  vocab:[[`groceries (n.)`,`ˈɡrosərɪz`,`生活雜貨、食品`],[`grocery store`,``,`雜貨店、超市`],[`category (n.)`,`ˈkætəˌɡɔri`,`類別`]]},
+
+ {kind:`q`,no:50,type:`字彙`,topic:`行銷 · 招攬`,star:2,
+  stem:`A local travel agency hung several scenic posters in the company window to __BLANK__ pedestrians to come inside and purchase their historical tour.`,
+  zh:`當地旅行社在櫥窗掛了幾張風景海報,以<b>吸引</b>行人進來購買他們的歷史導覽行程。`,
+  opts:[`retract 收回`,`attract 吸引`,`distract 使分心`,`deprive 剝奪`],ans:1,
+  ana:`「海報 + 吸引行人進來買」→「吸引」<b>attract</b>。`,
+  skill:`💡 <b>字根家族</b>:海報「吸引」行人 attract;-tract 家族 attract/distract/retract。`,
+  note:`⚠️ <b>-tract</b> 家族:attract(吸引)、distract(使分心)、retract(收回)、extract(抽取)。字首不同,意思差很多。`,
+  vocab:[[`attract (v.)`,`əˈtrækt`,`吸引`],[`distract (v.)`,`dɪˈstrækt`,`使分心`],[`retract (v.)`,`rɪˈtrækt`,`收回`],[`scenic (adj.)`,`ˈsinɪk`,`風景優美的`]]},
+
+ {kind:`q`,no:51,type:`字彙`,topic:`機艙 · 座位`,star:3,
+  stem:`During a crowded flight, she requested __BLANK__ to avoid disturbing neighbors when standing up.`,
+  zh:`在擁擠的班機上,她要求<b>走道座位</b>,以免起身時打擾鄰座。`,
+  opts:[`reclined seat 後傾的座位`,`window seat 靠窗座`,`middle seat 中間座`,`aisle seat 走道座`],ans:3,
+  ana:`「起身 + 不打擾鄰座」→「走道座」<b>aisle seat</b>(方便進出)。window seat 靠窗但進出不便。`,
+  skill:`💡 <b>情境 + 發音</b>:不打擾鄰座 = 走道座 aisle seat;aisle 唸 /aɪl/(s 不發音)。`,
+  note:`⚠️ 發音陷阱!<b>aisle</b> 唸 /aɪl/(s 不發音,像 I'll)。座位三選:window(靠窗)/middle(中間)/aisle(走道)。`,
+  real:`劃位:<i>"I'd like an aisle seat, please."</i>(我要走道座)。`,
+  vocab:[[`aisle (n.)`,`aɪl`,`走道(s 不發音)`],[`aisle seat`,``,`走道座位`],[`window seat`,``,`靠窗座位`],[`recline (v.)`,`rɪˈklaɪn`,`(椅背)後傾`]]},
+
+ {kind:`q`,no:52,type:`對話`,topic:`機艙 · 換位`,star:2,
+  stem:`Passenger: Can I change my seat to 22K?　Flight Attendant: I'll check __BLANK__ and let you know immediately.`,
+  zh:`乘客:我可以把座位換到 22K 嗎?　空服員:我查一下<b>是否有空位</b>,馬上告訴你。`,
+  opts:[`luggage 行李`,`availability 是否有空位`,`passport 護照`,`schedule 時刻表`],ans:1,
+  ana:`換座位 → 查「是否有空(位)」<b>availability</b>。`,
+  skill:`💡 <b>情境鎖</b>:換座位查「是否有空位」availability。`,
+  vocab:[[`availability (n.)`,`əˌveləˈbɪlətɪ`,`可獲得性、是否有空`],[`available (adj.)`,`əˈveləbl̩`,`可用的、有空的`],[`immediately (adv.)`,`ɪˈmidɪɪtlɪ`,`立刻`]]},
+
+ {kind:`q`,no:53,type:`對話`,topic:`機場 · 片語動詞`,star:3,
+  stem:`Flight Attendant: Sir, please switch off your mobile phone as we are about to __BLANK__.`,
+  zh:`空服員:先生,我們即將<b>起飛</b>,請關閉您的手機。`,
+  opts:[`get rid of 擺脫`,`put off 延後`,`remove 移除`,`take off 起飛`],ans:3,
+  ana:`飛機 + 關手機 + about to(即將)→ 即將「起飛」<b>take off</b>。`,
+  note:`⚠️ 片語三兄弟:take off(起飛/脫下)、put off(延後)、get rid of(擺脫)。take off 一詞多義最愛出題。`,
+  gram:`📝 <b>be about to + 原形V</b>=即將、正要(近未來)。`,
+  real:`登機廣播:<i>"We're about to take off, please fasten your seatbelt."</i>`,
+  vocab:[[`take off`,``,`起飛;脫下;(事業)起飛`],[`put off`,``,`延後`],[`fasten (v.)`,`ˈfæsn̩`,`繫緊`],[`turbulence (n.)`,`ˈtɝbjələns`,`亂流`]]},
+
+ {kind:`q`,no:54,type:`字彙`,topic:`安全 · 警覺`,star:3,
+  stem:`When you encounter crowds in a popular tourist site, remember to pay more attention to your __BLANK__.`,
+  zh:`在熱門觀光景點遇到人潮時,記得多留意你的<b>周遭環境</b>。`,
+  opts:[`locals 當地人`,`simulations 模擬`,`indications 跡象`,`surroundings 周遭環境`],ans:3,
+  ana:`人潮 + 多留意 → 留意「周遭環境」<b>surroundings</b>(防扒手/走失)。`,
+  skill:`💡 <b>情境鎖</b>:人潮多留意「周遭環境」surroundings(防扒手)。`,
+  note:`⚠️ <b>surroundings</b>(周遭環境,恆複數)。be aware of your surroundings=注意周遭。`,
+  real:`安全提醒:<i>"In crowded areas, please stay alert and watch your belongings."</i> stay alert=保持警覺、belongings=隨身物品。`,
+  vocab:[[`surroundings (n.)`,`səˈraʊndɪŋz`,`周遭環境(複數)`],[`stay alert`,``,`保持警覺`],[`belongings (n.)`,`bəˈlɔŋɪŋz`,`隨身物品`],[`encounter (v.)`,`ɪnˈkaʊntɚ`,`遇到`]]},
+
+ {kind:`q`,no:55,type:`字彙`,topic:`片語 · 禁菸`,star:3,
+  stem:`This is a non-smoking restaurant. Please __BLANK__ your cigarette at once.`,
+  zh:`這是禁菸餐廳,請立刻<b>熄滅</b>你的香菸。`,
+  opts:[`put in 投入`,`put on 穿上`,`put out 熄滅`,`put up 舉起、搭建`],ans:2,
+  ana:`禁菸 + 香菸 →「熄滅」<b>put out</b>(熄滅火/菸)。`,
+  skill:`💡 <b>片語家族</b>:禁菸 + 香菸 = 熄滅 put out;背 put 家族(out/on/off/up)。`,
+  note:`⚠️ <b>put</b> 片語家族(必背):put out(熄滅)、put on(穿上)、put off(延後)、put up(搭建/舉起)、put up with(忍受)、put in(投入)。`,
+  real:`禁菸提醒:<i>"This is a non-smoking area. Please put out your cigarette."</i>`,
+  vocab:[[`put out`,``,`熄滅(火/菸)`],[`put up with`,``,`忍受`],[`put on`,``,`穿上`],[`at once`,``,`立刻`]]},
+
+ {kind:`q`,no:56,type:`字彙`,topic:`購物 · 精品店`,star:2,
+  stem:`In the areas around this lake, you can find many __BLANK__ selling refined clothes and local handicrafts.`,
+  zh:`在這座湖周邊,你可以找到許多販售精緻服飾和當地手工藝品的<b>精品店</b>。`,
+  opts:[`buildings 建築`,`centers 中心`,`cascades 小瀑布`,`boutiques 精品店`],ans:3,
+  ana:`「賣精緻服飾 + 手工藝品」→「精品店」<b>boutiques</b>(小型時尚店)。`,
+  skill:`💡 <b>情境鎖</b>:賣精緻服飾手工藝 = 精品店 boutiques。`,
+  vocab:[[`boutique (n.)`,`buˈtik`,`精品店(源自法語)`],[`refined (adj.)`,`rɪˈfaɪnd`,`精緻的`],[`handicraft (n.)`,`ˈhændɪˌkræft`,`手工藝品`],[`cascade (n.)`,`kæsˈked`,`小瀑布`]]},
+
+ {kind:`q`,no:57,type:`對話`,topic:`機上 · 協助`,star:2,
+  stem:`Passenger: Could you help me place my bag overhead?　Flight Attendant: __BLANK__`,
+  zh:`乘客:可以幫我把包包放到上方置物櫃嗎?　空服員:<b>當然,我幫你安全抬上去。</b>`,
+  opts:[`The movie will start in ten minutes. 電影十分鐘後播放`,`Absolutely, let me lift it for you safely. 當然,我幫你安全抬上去`,`Would you like water or juice? 要水還是果汁?`,`The restroom is at the back. 洗手間在後方`],ans:1,
+  ana:`請求「幫忙放包包」→ 回應要對應「幫忙」→「當然,我幫你抬」<b>Absolutely, let me lift it</b>。其他(電影/飲料/洗手間)都答非所問。`,
+  skill:`💡 對話「選回應」題:看清「請求/問題」是什麼,回應要對得上。請求幫放行李 → 只有「我幫你抬」對應。`,
+  vocab:[[`overhead (adv.)`,`ˈovɚˌhɛd`,`在頭頂上方`],[`lift (v.)`,`lɪft`,`抬起`],[`aircraft (n.)`,`ˈɛrˌkræft`,`飛機、航空器`]]},
+
+ {kind:`q`,no:58,type:`字彙`,topic:`服務 · 圓夢`,star:2,
+  stem:`Find out why customers have come on holidays, what they want to do, and then help them to __BLANK__ their dream.`,
+  zh:`找出顧客為何來度假、他們想做什麼,然後幫他們<b>實現</b>夢想。`,
+  opts:[`alternate 交替`,`achieve 達成`,`authorize 授權`,`amend 修正`],ans:1,
+  ana:`「幫他們…夢想」→「實現/達成」<b>achieve their dream</b>。`,
+  skill:`💡 <b>情境鎖</b>:幫客人「實現」夢想 achieve。`,
+  vocab:[[`achieve (v.)`,`əˈtʃiv`,`達成、實現`],[`alternate (v.)`,`ˈɔltɚˌnet`,`交替`],[`authorize (v.)`,`ˈɔθəˌraɪz`,`授權`]]},
+
+ {kind:`q`,no:59,type:`字彙`,topic:`宗教 · 儀式`,star:2,
+  stem:`When our group visited a church this morning, we got a glimpse of how the priest performed a local __BLANK__.`,
+  zh:`今早我們團體參觀一間教堂時,得以一瞥神父如何進行當地的<b>儀式</b>。`,
+  opts:[`holiday 假日`,`contest 競賽`,`ritual 儀式`,`stanza 詩節`],ans:2,
+  ana:`「神父 + 教堂 + 進行」→ 宗教「儀式」<b>ritual</b>。`,
+  skill:`💡 <b>情境鎖</b>:神父在教堂進行的「儀式」ritual。`,
+  vocab:[[`ritual (n.)`,`ˈrɪtʃʊəl`,`(宗教)儀式`],[`priest (n.)`,`prist`,`神父、祭司`],[`get a glimpse of`,``,`一瞥、瞥見`]]},
+
+ {kind:`q`,no:60,type:`字彙`,topic:`參觀 · 禁止`,star:3,
+  stem:`In many museums, touching the exhibited items is a behavior that is absolutely __BLANK__.`,
+  zh:`在許多博物館,觸摸展示品是絕對<b>被禁止</b>的行為。`,
+  opts:[`regulated 受規範的`,`prohibited 被禁止的`,`discussed 被討論的`,`persecuted 被迫害的`],ans:1,
+  ana:`「絕對 + 觸摸展品」→「被禁止」<b>prohibited</b>(=forbidden)。`,
+  skill:`💡 <b>情境鎖</b>:博物館「絕對禁止」觸摸 prohibited(= forbidden)。`,
+  note:`⚠️ prohibited(禁止)≈ forbidden ≈ not allowed。博物館告示常見 "Photography prohibited"(禁止攝影)。`,
+  real:`館內告示:<i>"Touching the exhibits is strictly prohibited."</i> strictly=嚴格地、exhibit=展示品。`,
+  vocab:[[`prohibited (adj.)`,`proˈhɪbɪtɪd`,`被禁止的`],[`forbidden (adj.)`,`fɚˈbɪdn̩`,`被禁止的`],[`exhibit (n.)`,`ɪɡˈzɪbɪt`,`展示品`],[`strictly (adv.)`,`ˈstrɪktlɪ`,`嚴格地`]]},
+
+ {kind:`q`,no:61,type:`字彙`,topic:`片語 · 結帳`,star:3,
+  stem:`Let me calculate your bill for you. It all __BLANK__ NT$15,000, Sir.`,
+  zh:`先生,我幫您算帳,全部<b>加起來總共</b>台幣 15,000 元。`,
+  opts:[`stands for 代表`,`adds up to 加起來總共`,`checks out 結帳退房`,`brings down to 降到`],ans:1,
+  ana:`算帳(calculate the bill)→ 金額「加起來總共」<b>add up to</b>。`,
+  skill:`💡 <b>片語</b>:算帳金額「加起來總共」add up to;背 add up to/stand for/check out。`,
+  note:`⚠️ 片語:add up to(總計)、stand for(代表/象徵)、check out(退房/結帳)。`,
+  real:`結帳:<i>"That adds up to NT$15,000 in total."</i> bill=帳單、in total=總共。`,
+  vocab:[[`add up to`,``,`加起來總共、總計`],[`stand for`,``,`代表、象徵`],[`check out`,``,`退房;結帳`],[`bill (n.)`,`bɪl`,`帳單`]]},
+
+ {kind:`q`,no:62,type:`字彙`,topic:`移民 · 遣返`,star:3,
+  stem:`Aliens who overstay their visas would be __BLANK__ back to their country of birth.`,
+  zh:`逾期居留簽證的外國人會被<b>遣返</b>回其出生國。`,
+  opts:[`deported 遣返`,`discharged 解僱、出院`,`departed 離開`,`disclaimed 否認`],ans:0,
+  ana:`「逾期居留簽證」→ 被「遣返」<b>deported</b>(強制送回)。departed(離開)是自願,語意不同。`,
+  skill:`💡 <b>情境 + 形近</b>:逾期簽證被「遣返」deported;deported ≠ departed。`,
+  note:`⚠️ deported(遣返,被官方強制)vs departed(離開,中性)。字長得像,意思差很多。alien=外國人(法律用語)。`,
+  vocab:[[`deport (v.)`,`dɪˈport`,`遣返、驅逐出境`],[`overstay (v.)`,`ˌovɚˈste`,`逾期居留`],[`alien (n.)`,`ˈelɪən`,`外國人;外星人`],[`visa (n.)`,`ˈvizə`,`簽證`]]},
+
+ {kind:`q`,no:63,type:`字彙`,topic:`藝術 · 傑作`,star:3,
+  stem:`This artist's __BLANK__ are on exhibition at the museum.`,
+  zh:`這位藝術家的<b>傑作</b>正在博物館展出。`,
+  opts:[`workouts 健身`,`presences 存在`,`masterminds 主謀`,`masterpieces 傑作`],ans:3,
+  ana:`「藝術家 + 展出」→「傑作」<b>masterpieces</b>。`,
+  skill:`💡 <b>情境 + 形近</b>:藝術家展出的「傑作」masterpieces;別選形近的 masterminds。`,
+  note:`⚠️ master- 家族:masterpiece(傑作)、mastermind(主謀/策劃者)。別選錯。`,
+  real:`導覽:<i>"This is one of the artist's most famous masterpieces."</i> on exhibition=展出中。`,
+  vocab:[[`masterpiece (n.)`,`ˈmæstɚˌpis`,`傑作、代表作`],[`mastermind (n.)`,`ˈmæstɚˌmaɪnd`,`主謀、策劃者`],[`on exhibition`,``,`展出中`],[`exhibit (v.)`,`ɪɡˈzɪbɪt`,`展出`]]},
+
+ {kind:`q`,no:64,type:`字彙`,topic:`護照 · 效期`,star:3,
+  stem:`It is common sense that before booking your international flight, you should always check the __BLANK__ of your passport to ensure it meets the entry requirements for your destination country.`,
+  zh:`常識是,預訂國際航班前,你應該先檢查護照的<b>有效性(效期)</b>,以確保符合目的地國的入境要求。`,
+  opts:[`effect 效果`,`validity 有效性`,`inquiry 詢問`,`limit 限制`],ans:1,
+  ana:`「檢查護照…以符合入境要求」→ 護照「有效性/效期」<b>validity</b>(呼應第 3 題 valid)。`,
+  skill:`💡 <b>字根家族</b>:護照的「有效性/效期」validity;valid → validity。`,
+  note:`⚠️ 字族:valid(有效的,adj.)→ validity(有效性,n.)。護照效期是出國必查。`,
+  real:`出國前:<i>"Check the validity of your passport — most countries require six months' validity."</i>(多數國家要求至少 6 個月效期)。`,
+  vocab:[[`validity (n.)`,`vəˈlɪdətɪ`,`有效性、效期`],[`valid (adj.)`,`ˈvælɪd`,`有效的`],[`entry requirements`,``,`入境要求`],[`inquiry (n.)`,`ɪnˈkwaɪrɪ`,`詢問`]]},
+
+ {kind:`q`,no:65,type:`字彙`,topic:`安全 · 緊急`,star:3,
+  stem:`Tourists on the plane were reminded how to use oxygen masks in case of __BLANK__.`,
+  zh:`機上乘客被提醒如何在<b>緊急情況</b>下使用氧氣面罩。`,
+  opts:[`ambulance 救護車`,`emergency 緊急情況`,`evacuation 疏散`,`rescue 救援`],ans:1,
+  ana:`「以防…使用氧氣面罩」→「緊急情況」<b>in case of emergency</b>(固定用法)。evacuation(疏散)雖也相關,但固定搭配是 in case of emergency。`,
+  skill:`💡 <b>搭配詞</b>:in case of emergency(緊急時)固定用法。`,
+  note:`⚠️ 固定用法 <b>in case of emergency</b>(以防緊急)。相關:emergency exit 緊急出口、oxygen mask 氧氣面罩、life vest 救生衣。`,
+  real:`安全示範:<i>"In case of emergency, oxygen masks will drop from above."</i>`,
+  vocab:[[`emergency (n.)`,`ɪˈmɝdʒənsɪ`,`緊急情況`],[`oxygen mask`,``,`氧氣面罩`],[`evacuation (n.)`,`ɪˌvækjuˈeʃən`,`疏散、撤離`],[`in case of`,``,`以防、萬一`]]},
+
+ {kind:`q`,no:66,type:`字彙`,topic:`景點`,star:2,
+  stem:`Drawing many people's attention, Jurassic World: The Experience at Cloud Forest is one of the most recently added __BLANK__ in Singapore.`,
+  zh:`吸引眾人目光的「侏羅紀世界:雲霧森林體驗」是新加坡最新增設的<b>景點</b>之一。`,
+  opts:[`enterprises 企業`,`amenities 便利設施`,`expenses 費用`,`attractions 景點`],ans:3,
+  ana:`「吸引目光 + 新增設」→「景點」<b>attractions</b>(呼應第 38 題)。`,
+  skill:`💡 <b>情境鎖</b>:吸引目光 + 新增 = 景點 attractions。`,
+  vocab:[[`attraction (n.)`,`əˈtrækʃən`,`景點;吸引力`],[`enterprise (n.)`,`ˈɛntɚˌpraɪz`,`企業`],[`draw attention`,``,`吸引注意`]]},
+
+ {kind:`q`,no:67,type:`字彙`,topic:`無障礙`,star:2,
+  stem:`That museum is very old and not friendly to tourists who need elevator __BLANK__.`,
+  zh:`那間博物館很老舊,對需要電梯<b>通道(使用)</b>的遊客不太友善。`,
+  opts:[`access 通道、使用權`,`report 報告`,`faculty 教職員`,`entrance 入口`],ans:0,
+  ana:`「需要電梯…」→ 電梯「通道/使用」<b>elevator access</b>(無障礙進出)。`,
+  skill:`💡 <b>搭配 + 一詞多義</b>:elevator/wheelchair access(通道);access 通道/使用權。`,
+  note:`⚠️ access 一詞多用:通道/使用權(have access to)。wheelchair access=輪椅通道(無障礙)。`,
+  real:`無障礙:<i>"Is there wheelchair access / elevator access to the site?"</i>(有輪椅/電梯通道嗎?)。`,
+  vocab:[[`access (n.)`,`ˈæksɛs`,`通道、使用權`],[`wheelchair access`,``,`輪椅通道`],[`faculty (n.)`,`ˈfækl̩tɪ`,`教職員;學院`]]},
+
+ {kind:`q`,no:68,type:`字彙`,topic:`建築`,star:3,
+  stem:`The __BLANK__ of this building is typical of the Renaissance age, and many tourists enjoy visiting this place.`,
+  zh:`這棟建築的<b>建築(風格)</b>是文藝復興時期的典型,許多遊客喜歡來參觀。`,
+  opts:[`formulation 制定`,`speculation 推測`,`architecture 建築(風格)`,`affiliation 隸屬`],ans:2,
+  ana:`「這棟建築的…是文藝復興典型」→「建築(風格)」<b>architecture</b>。`,
+  skill:`💡 <b>情境 + 字族</b>:建築的「建築風格」architecture;≠ architect(建築師)。`,
+  note:`⚠️ architecture(建築、建築風格)vs architect(建築師,人)。Renaissance=文藝復興。`,
+  real:`導覽:<i>"The architecture here is typical of the Baroque / Gothic / Renaissance style."</i> 建築風格是導遊常介紹的主題。`,
+  vocab:[[`architecture (n.)`,`ˈɑrkəˌtɛktʃɚ`,`建築、建築風格`],[`architect (n.)`,`ˈɑrkəˌtɛkt`,`建築師`],[`Renaissance (n.)`,`ˈrɛnəˌsɑns`,`文藝復興`],[`typical of`,``,`典型的`]]},
+
+ {kind:`q`,no:69,type:`對話`,topic:`車輛 · 緊急`,star:3,
+  stem:`Escort: Could you pull over safely and switch on the __BLANK__ warning lights, please? We have a guest who needs medical help.　Driver: Understood.`,
+  zh:`領隊:可以請你安全地靠邊停,並打開<b>危險</b>警示燈嗎?我們有位客人需要醫療協助。　司機:了解。`,
+  opts:[`hazard 危險(警示燈)`,`headlights 大燈`,`turn-signal 方向燈`,`cabin 車廂、船艙`],ans:0,
+  ana:`「靠邊停 + 警示燈」→ 打開「危險警示燈」<b>hazard (warning) lights</b>(雙黃燈/故障燈)。`,
+  skill:`💡 <b>搭配 + 情境</b>:靠邊停 + 警示燈 = hazard lights(危險警示燈)。`,
+  note:`⚠️ 車燈字:hazard lights(危險/故障警示燈,雙閃)、headlights(前大燈)、turn signal(方向燈)。`,
+  real:`突發狀況:<i>"Please pull over and turn on the hazard lights."</i> pull over=靠邊停、escort=領隊。`,
+  vocab:[[`hazard (n.)`,`ˈhæzɚd`,`危險、危害`],[`hazard lights`,``,`危險警示燈(雙閃)`],[`pull over`,``,`(車)靠邊停`],[`escort (n.)`,`ˈɛskɔrt`,`領隊、隨團人員`]]},
+
+ {kind:`q`,no:70,type:`字彙`,topic:`途中 · 解說`,star:3,
+  stem:`While we are __BLANK__ to our next destination, I will point out the beautiful beach and the famous golf course for your reference.`,
+  zh:`在我們前往下一個目的地的<b>途中</b>,我會為各位指出美麗的海灘和著名的高爾夫球場。`,
+  opts:[`en route 在途中`,`scheduling 排程`,`declining 婉拒`,`digressive 離題的`],ans:0,
+  ana:`「前往下一目的地…我會指出景點」→「在途中」<b>en route</b>。`,
+  skill:`💡 <b>情境 + 發音</b>:前往下一站的「途中」en route;法語源唸 /ɑn ˈrut/。`,
+  note:`⚠️ <b>en route</b>(源自法語,唸 /ɑn ˈrut/)=在途中、在路上。導遊沿途解說常用。`,
+  real:`沿途解說:<i>"En route to our hotel, you'll see the famous harbor on your right."</i>(前往飯店途中,右手邊會看到港口)。`,
+  vocab:[[`en route`,`ɑn ˈrut`,`在途中(法語源)`],[`destination (n.)`,`ˌdɛstəˈneʃən`,`目的地`],[`point out`,``,`指出`]]},
+
+ {kind:`strategy`,title:`📖 閱讀解題技巧總攻略`,html:`<h4>📖 閱讀口訣(先背這個)</h4><ul><li><b>選對答案</b>:「<b>回文定位,換句話說</b>」</li><li><b>八大陷阱</b>:「<b>反、沒、過、偏、換、張、絕、湊</b>」(相反/沒提/過度推論/以偏概全/偷換概念/張冠李戴/絕對化/硬湊因果)</li><li><b>推論題</b>:「<b>不找對的,先刪錯的</b>」</li></ul><h4>一、開考戰術(時間 &amp; 順序)</h4><ol><li><b>閱讀擺最後寫</b>:前 70 題字彙/對話先秒殺,留 15–20 分給 2 篇(每篇約 8 分)。</li><li><b>先讀題目、再讀文章</b>:帶問題找答案,別先逐字精讀。</li><li><b>細節題按文章順序出</b>:第 1 題答案多在前段、最後題在後段。</li><li><b>略讀骨架</b>:首段 + 每段第一句 + 結論 = 全文主旨。</li></ol>
+<h4>二、六大題型速查</h4><table><tr><th>題型</th><th>題目長相</th><th>破解法</th></tr><tr><td><b>主旨/標題</b></td><td>title / mainly about</td><td>選涵蓋全文;太窄太寬都刪</td></tr><tr><td><b>細節</b></td><td>According to / Why / What</td><td>關鍵字回文;答案是原文換句話說</td></tr><tr><td><b>NOT 題</b></td><td>NOT true / EXCEPT</td><td>先圈 NOT!選與原文矛盾/沒出現的</td></tr><tr><td><b>推論</b></td><td>inferred / imply</td><td>刪 4 種雷;選溫和有依據的</td></tr><tr><td><b>字義</b></td><td>the word "X" means</td><td>代入原句 + 字根 + 上下文褒貶</td></tr><tr><td><b>目的/態度</b></td><td>purpose / tone</td><td>看作者立場;語氣太偏必錯</td></tr></table>
+<h4>三、干擾選項 8 大陷阱</h4><ol><li><b>與原文相反</b>(回文一比就露餡)</li><li><b>文章沒提</b>(無中生有:政府、政策…)</li><li><b>過度推論</b>(outweigh/best/most 講太滿)</li><li><b>以偏概全</b>(只涵蓋一部分,主旨題最愛)</li><li><b>偷換概念</b>(local↔foreign)</li><li><b>張冠李戴</b>(對的資訊安到錯的題)</li><li><b>絕對化</b>(only/all/never/must/completely)</li><li><b>硬湊因果</b>(兩件無關的事說成因果)</li></ol>
+<h4>四、這科(旅遊觀光閱讀)命題特點</h4><ul><li><b>常考主題</b>:觀光經濟影響、永續/淨零、過度觀光、文化遺產、旅遊安全、旅宿趨勢。</li><li><b>超愛正反並陳</b>:先好處再壞處 → <b>「說死一邊」的選項幾乎必錯</b>,答案通常兩面兼顧。</li><li><b>學術詞不用怕</b>:考的是主旨/細節/態度,抓大意就能答。</li></ul>
+<h4>五、卡關搶救</h4><ol><li>字義題不會 → 看<b>字根</b> + 上下文褒貶。</li><li>細節找不到 → 用<b>關鍵字/專有名詞/數字</b>回文掃。</li><li>兩選項難選 → 找有原文依據的,避開「絕對化」「文章沒提」。</li><li>時間不夠 → 主旨、字義題最快先搶;推論題擺最後。</li></ol>`},
+
+ {kind:`passage`,label:`閱讀第 1 篇(第 71–75 題)· 主題:觀光對地方的影響`,
+  text:[`When people travel to other parts of the world, their footprints often leave effects on the visited places. One of the most immediate and visible effects brought by tourism onto local communities can be seen in the aspect of economic growth. Tourism is often a primary source of income for many regions, especially those rich in natural beauty, historical importance, or cultural heritage. When most tourists visit a location, they spend money on accommodation, food, transportation, and entertainment, all directly contributing to the local economy.`,`This influx of capital also creates many job opportunities, not only in tourism-related industries like hotels, restaurants, and travel agencies but also in other sectors that support tourism, such as construction and retail business. However, some negative effects also exist. For example, the economic benefits of tourism are not always equitably distributed. In some cases, the majority of profits go to large, foreign-owned companies, leaving local businesses and workers with only a small percentage of the generated income. In other cases, tourism leads to inflation and drives up the cost of living for local residents, particularly in areas where the demand for goods and services rises sharply during peak tourist seasons. Clearly, when promoting tourism, both the positive and negative effects must be taken into consideration.`],
+  real:`🎧 這篇主題「觀光的正負面 / 永續觀光」是<b>導遊口試常見議題</b>。可準備:sustainable tourism(永續觀光)、overtourism(過度觀光)、carrying capacity(承載量)。`,
+  vocab:[[`equitably (adv.)`,`ˈɛkwɪtəblɪ`,`公平地`],[`influx (n.)`,`ˈɪnflʌks`,`湧入`],[`inflation (n.)`,`ɪnˈfleʃən`,`通貨膨脹`],[`heritage (n.)`,`ˈhɛrətɪdʒ`,`(文化)遺產`],[`sustainable (adj.)`,`səˈstenəbl̩`,`永續的`],[`retail (n.)`,`ˈritel`,`零售`]]},
+
+ {kind:`q`,no:71,type:`閱讀`,topic:`主旨 · 標題`,star:2,
+  stem:`What is a suitable title for this passage?`,
+  zh:`本文適合的標題為何?`,
+  opts:[`Making Plans for Traveling 規劃旅行`,`Benefits Brought by Tourism 觀光帶來的好處`,`Effects Caused by Tourism 觀光造成的影響`,`Tips on Tourism Development 觀光開發的訣竅`],ans:2,
+  ana:`<b>① 定位骨架</b>:首段談經濟成長(正面),第 2 段 <i>However</i> 轉折談 negative effects(負面),結論 both must be considered。<br><b>② 選項逐一辨析</b>:<table class="opta"><tr><td>(A) 規劃旅行</td><td><span class="no2">✗</span>　<b>文章沒提</b>「怎麼規劃」</td></tr><tr><td>(B) 觀光的好處</td><td><span class="no2">✗</span>　<b>以偏概全</b>:只涵蓋正面,漏了負面</td></tr><tr><td>(C) 觀光造成的影響</td><td><span class="ok2">✓ 正解</span>　正反面都涵蓋 = 全文</td></tr><tr><td>(D) 觀光開發訣竅</td><td><span class="no2">✗</span>　<b>偷換概念</b>:文章不是教學文</td></tr></table>`,
+  skill:`<b>主旨題「涵蓋全文」原則</b>:看到文章有 <i>However / but</i> 轉折(正反並陳),標題就要「兩面都含」。B 這種「只對一半」的最愛騙人。`,
+  note:`⚠️ 這科套路:觀光文幾乎必「正反並陳」,主旨選<b>中性、涵蓋雙面</b>的字(Effects/Impact),不選帶褒貶的(Benefits/Problems)。`,
+  vocab:[[`suitable (adj.)`,`ˈsutəbl̩`,`合適的`],[`effect (n.)`,`ɪˈfɛkt`,`影響`]]},
+
+ {kind:`q`,no:72,type:`閱讀`,topic:`細節 · NOT true`,star:2,
+  stem:`Which of the following statements is NOT true?`,
+  zh:`下列敘述何者「不正確」?`,
+  opts:[`For an area rich in natural beauty, tourism often becomes a primary source of income. 自然美景豐富的地區,觀光常成為主要收入來源`,`Tourism-related industries are the only ones benefiting from tourists. 只有旅遊相關產業能從觀光客受惠`,`The money brought in by tourism can create job opportunities. 觀光帶進的錢能創造就業機會`,`One negative effect is that the money generated is not equally distributed. 負面效應之一是收益分配不均`],ans:1,
+  ana:`<b>① 先圈 NOT!</b>要選「與原文矛盾」那個。<br><b>② 逐項回文</b>:<table class="opta"><tr><td>(A) 自然美景區是主要收入</td><td><span class="ok2">真</span>　第 1 段有 → 不選</td></tr><tr><td>(B) <b>只有</b>旅遊業受惠</td><td><span class="no2">✗ 選這</span>　<b>與原文相反</b>:原文 not only…but also 營建、零售</td></tr><tr><td>(C) 能創造就業</td><td><span class="ok2">真</span>　第 2 段 job opportunities → 不選</td></tr><tr><td>(D) 分配不均</td><td><span class="ok2">真</span>　第 2 段 not equitably → 不選</td></tr></table>`,
+  skill:`<b>NOT 題陷阱在「絕對字」</b>:B 的 <b>only</b>(只有)最可疑。看到 only/all/never 先回文查,幾乎都是矛盾點。`,
+  note:`⚠️ NOT 題最常粗心選成「對的」。動筆前把題目的 <b>NOT / EXCEPT</b> 圈起來。`,
+  vocab:[[`not only...but also...`,``,`不僅…而且…`],[`sector (n.)`,`ˈsɛktɚ`,`產業、部門`]]},
+
+ {kind:`q`,no:73,type:`閱讀`,topic:`推論(較難)`,star:3,
+  stem:`Based on the information presented in this passage, what can be inferred?`,
+  zh:`根據本文資訊,可以推論出什麼?`,
+  opts:[`Towns around national parks often benefit from tourism development. 國家公園周邊城鎮常受惠於觀光發展`,`Most revenues go to the companies owned by locals. 觀光收益大多流向當地人擁有的公司`,`City governments benefit a lot from the income. 市政府從觀光收入獲益良多`,`The benefits outweigh the disadvantages. 觀光的好處大於壞處`],ans:0,
+  ana:`<b>① 定位線索</b>(推論題文章不直接寫答案):<div class="cite">"Tourism is often a primary source of income… especially those rich in <b>natural beauty</b>"</div><b>② 逐一辨析</b>(推論題精髓 = 刪 3 個錯的):<table class="opta"><tr><td>(A) 國家公園周邊受惠</td><td><span class="ok2">✓ 正解</span>　國家公園=自然美景代表 → 可合理推論(有根據+沒說死)</td></tr><tr><td>(B) 收益多流向<b>當地人</b>公司</td><td><span class="no2">✗</span>　<b>與原文相反</b>:原文是 foreign-owned(外資)</td></tr><tr><td>(C) <b>市政府</b>獲益良多</td><td><span class="no2">✗</span>　<b>文章沒提</b>政府</td></tr><tr><td>(D) 好處<b>大於</b>壞處</td><td><span class="no2">✗</span>　<b>過度推論</b>:文章刻意中立,講太滿</td></tr></table>`,
+  skill:`<b>推論題別找對的,先刪錯的</b>:錯誤選項幾乎只有 4 種雷——①與原文相反 ②文章沒提 ③過度推論(outweigh/best 講太滿)④硬湊因果。刪完剩「有依據又沒說死」的就是答案。`,
+  note:`⚠️ 觀光文超愛正反並陳 → 任何「說死一邊」(D 好處大於壞處)幾乎必錯;答案通常是溫和、有依據的那個。`,
+  vocab:[[`infer (v.)`,`ɪnˈfɝ`,`推論`],[`revenue (n.)`,`ˈrɛvəˌnju`,`收益`],[`outweigh (v.)`,`ˌaʊtˈwe`,`勝過`]]},
+
+ {kind:`q`,no:74,type:`閱讀`,topic:`細節 · 因果`,star:1,
+  stem:`Why is the money generated from tourism development not equitably distributed?`,
+  zh:`為什麼觀光發展產生的錢沒有被公平分配?`,
+  opts:[`There are too many parties involved. 參與觀光發展的方太多`,`The money goes to local companies rather than local communities. 錢多流向當地公司而非當地社區`,`The money mostly goes to large, foreign-owned companies, not small local businesses. 錢多流向大型外資公司,而非當地小企業`,`Most money has gone to the central government. 大部分錢流向中央政府`],ans:2,
+  ana:`<b>① 定位</b>(關鍵字 not equitably distributed 回文):<div class="cite">"the majority of profits go to large, <b>foreign-owned</b> companies, leaving local businesses… small percentage"</div><b>② 逐一辨析</b>:<table class="opta"><tr><td>(A) 參與方太多</td><td><span class="no2">✗</span>　<b>文章沒提</b></td></tr><tr><td>(B) 流向當地公司非社區</td><td><span class="no2">✗</span>　<b>偷換概念</b>:原文是外資 vs 當地,非公司 vs 社區</td></tr><tr><td>(C) 流向大型外資,非當地小企業</td><td><span class="ok2">✓ 正解</span>　就是原文換句話說(foreign-owned=外資)</td></tr><tr><td>(D) 流向中央政府</td><td><span class="no2">✗</span>　<b>文章沒提</b>政府</td></tr></table>`,
+  skill:`<b>細節題 = 找原文的「換句話說」</b>。C 把 foreign-owned companies 譯成「大型外資公司」——認出 paraphrase 就是答案。送分題!`,
+  vocab:[[`generate (v.)`,`ˈdʒɛnəˌret`,`產生`],[`distribute (v.)`,`dɪˈstrɪbjut`,`分配`],[`the majority of`,``,`大多數的`]]},
+
+ {kind:`q`,no:75,type:`閱讀`,topic:`寫作目的`,star:2,
+  stem:`What can be described as the purpose of this passage?`,
+  zh:`本文的寫作目的為何?`,
+  opts:[`Reminding readers the merits and concerns about tourism development 提醒讀者觀光發展的優點與隱憂`,`Warning readers about the existence of foreign-owned companies 警告讀者外資公司的存在`,`Explaining why tourism development should be encouraged 解釋為何應鼓勵觀光發展`,`Emphasizing the intervention of government agencies 強調政府機關的介入`],ans:0,
+  ana:`<b>① 看作者立場</b>:全文「先好處(經濟、就業)、再壞處(分配不均、通膨)」,結論 both must be considered = 中立、提醒兩面。<br><b>② 逐一辨析</b>:<table class="opta"><tr><td>(A) 提醒優點與隱憂</td><td><span class="ok2">✓ 正解</span>　對應「兩面兼顧」立場</td></tr><tr><td>(B) 警告外資存在</td><td><span class="no2">✗</span>　<b>以偏概全</b>:只抓負面一點放大</td></tr><tr><td>(C) 解釋為何應鼓勵觀光</td><td><span class="no2">✗</span>　<b>與原文相反</b>:那是單面推銷</td></tr><tr><td>(D) 強調政府介入</td><td><span class="no2">✗</span>　<b>文章沒提</b>政府</td></tr></table>`,
+  skill:`<b>目的題 = 作者立場</b>。文章正反並陳 → 目的必是「提醒/呈現兩面」;選項語氣太偏(警告、強調、鼓勵)通常錯。`,
+  note:`⚠️ 目的題(75)和主旨題(71)方向要一致(都「兩面」);若兩題立場矛盾,一定有一題錯,回頭檢查。`,
+  vocab:[[`purpose (n.)`,`ˈpɝpəs`,`目的`],[`merits and concerns`,``,`優點與隱憂`],[`intervention (n.)`,`ˌɪntɚˈvɛnʃən`,`介入`]]},
+
+ {kind:`passage`,label:`閱讀第 2 篇(第 76–80 題)· 主題:觀光業邁向淨零碳排(較難)`,
+  text:[`While progress towards decarbonisation has been made, this research highlights the diversity within the sector and variety in commitments across industries and companies in Travel & Tourism. The sector must continue developing long-term strategies and targets consistent with the Paris Agreement and latest scientific recommendations to achieve net zero emissions goals.`,`The analysis showed that 53% of the Travel & Tourism businesses analysed currently have publicly announced climate targets. Though many targets are not yet based on the latest science, it is promising to see that many businesses are currently in the process of revising and adapting their targets to reach standards like those set by SBTi, putting climate action much higher on their priority lists.`,`Moving forward, progress will depend on addressing various challenges: emission measurement, especially Scope 3 emissions, the fragmented regulatory landscape, inconsistencies in reporting standards, and insufficient budgets. There are clear opportunities to achieve net zero even before 2050. However, the sector will have to strengthen the innovation needed for new technologies and alternative fuels to decouple Travel & Tourism growth from emissions for a net zero future.`],
+  real:`🎧 <b>永續 / 淨零觀光</b>是近年熱門議題。口試被問「觀光業如何減碳」可提:carbon footprint(碳足跡)、eco-friendly(環保)、renewable energy(再生能源)。`,
+  vocab:[[`decarbonisation (n.)`,``,`去碳化、減碳`],[`net zero emissions`,``,`淨零排放`],[`climate target`,``,`氣候(減碳)目標`],[`fragmented (adj.)`,`ˈfræɡmɛntɪd`,`破碎的`],[`alternative fuels`,``,`替代燃料`],[`decouple (v.)`,`diˈkʌpl̩`,`脫鉤`]]},
+
+ {kind:`q`,no:76,type:`閱讀`,topic:`主旨`,star:2,
+  stem:`What is the main focus of this passage?`,
+  zh:`本文的主要焦點為何?`,
+  opts:[`The economic growth of Travel & Tourism 觀光業的經濟成長`,`The challenges and progress towards net zero in Travel & Tourism 觀光業邁向淨零的挑戰與進展`,`The decline of SMEs in global industries 中小企業在全球產業的衰退`,`The development of new luxury travel destinations 新奢華旅遊目的地的開發`],ans:1,
+  ana:`<b>① 略讀骨架</b>:反覆出現 net zero / decarbonisation / challenges / progress → 談觀光業減碳的「進展與挑戰」。<br><b>② 逐一辨析</b>:<table class="opta"><tr><td>(A) 經濟成長</td><td><span class="no2">✗</span>　<b>張冠李戴</b>:那是第 1 篇的主題</td></tr><tr><td>(B) 淨零的挑戰與進展</td><td><span class="ok2">✓ 正解</span>　涵蓋全文(progress + challenges)</td></tr><tr><td>(C) 中小企業衰退</td><td><span class="no2">✗</span>　<b>與原文相反</b>:文章說 SMEs 需支持,沒說衰退</td></tr><tr><td>(D) 新奢華旅遊</td><td><span class="no2">✗</span>　<b>文章沒提</b></td></tr></table>`,
+  skill:`<b>主旨題掃「反覆出現的關鍵詞」</b>(net zero 出現多次)→ 選含它的。A 這種「別篇主題」是兩篇一起考時的跨篇陷阱。`,
+  note:`⚠️ 兩篇文章一起考時,小心「把 A 篇主題安到 B 篇」的張冠李戴。`,
+  vocab:[[`focus (n.)`,`ˈfokəs`,`焦點`],[`decarbonisation`,``,`去碳化`],[`sector (n.)`,`ˈsɛktɚ`,`產業`]]},
+
+ {kind:`q`,no:77,type:`閱讀`,topic:`細節`,star:2,
+  stem:`What does the article say about many businesses' climate targets?`,
+  zh:`文章對許多企業的氣候目標怎麼說?`,
+  opts:[`They are already fully aligned with the latest science. 已完全符合最新科學`,`They are not yet based on the latest science, but many are revising them. 尚未依最新科學,但許多企業正在修訂`,`They are mostly focused on reducing plastic waste. 大多聚焦於減少塑膠廢棄物`,`They are unnecessary because of strong recovery. 因觀光強勁復甦而沒有必要`],ans:1,
+  ana:`<b>① 定位</b>(climate targets 回文):<div class="cite">"Though many targets are <b>not yet</b> based on the latest science… in the process of <b>revising</b>"</div><b>② 逐一辨析</b>:<table class="opta"><tr><td>(A) 已完全符合最新科學</td><td><span class="no2">✗</span>　<b>與原文相反</b>:原文 not yet(尚未)</td></tr><tr><td>(B) 尚未依科學但修訂中</td><td><span class="ok2">✓ 正解</span>　就是原文(not yet + revising)</td></tr><tr><td>(C) 聚焦減塑膠</td><td><span class="no2">✗</span>　<b>文章沒提</b>塑膠</td></tr><tr><td>(D) 因復甦沒必要</td><td><span class="no2">✗</span>　<b>與原文相反</b>:文章說要加速</td></tr></table>`,
+  skill:`<b>注意原文「轉折詞」</b>:<i>Though</i>(雖然)後面才是重點——「雖然尚未依科學,但正在修訂」。A 和 B 是「相反對」(already fully ↔ not yet),回文查 not yet 就定案。`,
+  vocab:[[`climate target`,``,`氣候目標`],[`revise (v.)`,`rɪˈvaɪz`,`修訂`],[`the latest science`,``,`最新科學`]]},
+
+ {kind:`q`,no:78,type:`閱讀`,topic:`字義`,star:1,
+  stem:`What does the word "fragmented" most nearly mean?`,
+  zh:`"fragmented" 一字最接近的意思是?`,
+  opts:[`Well-organized 井然有序的`,`Strong and united 強大團結的`,`Broken into parts 分裂成好幾塊的`,`Easy to manage 易於管理的`],ans:2,
+  ana:`<b>① 代入原句</b>:the <b>fragmented</b> regulatory landscape(破碎/不統一的法規環境)。<br><b>② 字根 + 上下文</b>(fragment=碎片;法規「破碎」是挑戰 → 負面詞):<table class="opta"><tr><td>(A) 井然有序</td><td><span class="no2">✗</span>　<b>反義字陷阱</b>(正面詞)</td></tr><tr><td>(B) 強大團結</td><td><span class="no2">✗</span>　<b>反義字陷阱</b>(正面詞)</td></tr><tr><td>(C) 分裂成塊</td><td><span class="ok2">✓ 正解</span>　= fragment(碎片)</td></tr><tr><td>(D) 易於管理</td><td><span class="no2">✗</span>　語意不合</td></tr></table>`,
+  skill:`<b>字義題兩招</b>:① <b>字根</b>(fragment→破碎)② <b>上下文褒貶</b>——法規環境是「挑戰」→ 負面。A/B 是正面詞,跟語境不合,先刪。`,
+  note:`⚠️ 字義題超愛放「反義字」當陷阱(well-organized、united 都跟 fragmented 相反)。看到明顯反義的先刪。`,
+  vocab:[[`fragmented (adj.)`,`ˈfræɡmɛntɪd`,`破碎的`],[`fragment (n.)`,`ˈfræɡmənt`,`碎片`],[`landscape (n.)`,`ˈlændˌskep`,`(整體)情勢`]]},
+
+ {kind:`q`,no:79,type:`閱讀`,topic:`細節 · NOT 提及`,star:2,
+  stem:`Which of the following is NOT mentioned as a challenge?`,
+  zh:`下列何者「未被提及」為挑戰?`,
+  opts:[`Scope 3 emission measurement　Scope 3 排放的量測`,`Inconsistencies in reporting standards 報告標準不一致`,`Insufficient budgets 預算不足`,`Lack of tourist interest 遊客缺乏興趣`],ans:3,
+  ana:`<b>① 先圈 NOT!</b>找「文章沒出現」的。<br><b>② 逐項回文</b>(挑戰都在第 3 段):<table class="opta"><tr><td>(A) Scope 3 排放量測</td><td><span class="ok2">有提</span>　第 3 段 → 不選</td></tr><tr><td>(B) 報告標準不一致</td><td><span class="ok2">有提</span>　inconsistencies in reporting → 不選</td></tr><tr><td>(C) 預算不足</td><td><span class="ok2">有提</span>　insufficient budgets → 不選</td></tr><tr><td>(D) 遊客缺乏興趣</td><td><span class="no2">✗ 選這</span>　<b>文章沒提</b>「遊客興趣」</td></tr></table>`,
+  skill:`<b>NOT mentioned 題 = 刪掉有出現的,剩沒出現的</b>。A/B/C 都能在第 3 段找到出處,只有 D 全文沒談 → 答案。`,
+  note:`⚠️ 有出現的都能定位到原文;<b>找不到出處</b>的那個就是答案。`,
+  vocab:[[`Scope 3 emissions`,``,`範疇 3 排放`],[`inconsistency (n.)`,`ˌɪnkənˈsɪstənsɪ`,`不一致`],[`insufficient (adj.)`,`ˌɪnsəˈfɪʃənt`,`不足的`]]},
+
+ {kind:`q`,no:80,type:`閱讀`,topic:`細節`,star:2,
+  stem:`According to the text, which of the following is necessary to achieve net zero before 2050?`,
+  zh:`根據本文,下列何者是 2050 年前達成淨零的必要條件?`,
+  opts:[`Increasing the use of new technologies and alternative fuels 增加新技術與替代燃料的使用`,`Reducing international travel completely 完全停止國際旅遊`,`Closing SMEs to reduce emissions 關閉中小企業以減排`,`Stopping volume recovery in tourism 停止觀光量的復甦`],ans:0,
+  ana:`<b>① 定位</b>(achieve net zero 回文,末段):<div class="cite">"strengthen the innovation needed for <b>new technologies and alternative fuels</b>… for a net zero future"</div><b>② 逐一辨析</b>:<table class="opta"><tr><td>(A) 增加新技術與替代燃料</td><td><span class="ok2">✓ 正解</span>　就是原文</td></tr><tr><td>(B) <b>完全</b>停止國際旅遊</td><td><span class="no2">✗</span>　<b>絕對化/過度推論</b>(completely)</td></tr><tr><td>(C) 關閉中小企業</td><td><span class="no2">✗</span>　<b>與原文相反</b>:文章說要支持 SMEs</td></tr><tr><td>(D) 停止觀光復甦</td><td><span class="no2">✗</span>　<b>與原文相反</b>:文章視復甦為正常</td></tr></table>`,
+  skill:`<b>極端選項先刪</b>:B/C/D 都是「停止、關閉」的一刀切做法。文章談「創新轉型」不是「因噎廢食」→ 看到 completely/stop/close 在講發展的文章裡幾乎必錯。`,
+  note:`⚠️ 呼應總攻略陷阱 ⑦絕對化:completely/stop/close 這種字,在「發展/轉型」主題的文章裡通常是假選項。`,
+  vocab:[[`alternative fuels`,``,`替代燃料`],[`decouple (v.)`,`diˈkʌpl̩`,`脫鉤`],[`achieve (v.)`,`əˈtʃiv`,`達成`]]}
+];
+
+const LAB=['A','B','C','D'];
+function splitOpt(o){const m=o.match(/^(.*?)([\u4e00-\u9fff].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+const app=document.getElementById('app');
+const TOTAL=DATA.filter(d=>d.kind==='q').length;
+const stars=n=>[0,1,2].map(i=>i<n?'★':'<span class="dim">☆</span>').join('');
+const sayBtn=t=>`<span class="say" data-say="${t.replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
+function vRows(v){return v.map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
+
+let answered=new Set(),correct=0;
+function updateScore(){document.getElementById('score').textContent=`作答 ${answered.size}/${TOTAL} · 答對 ${correct} · ${answered.size?Math.round(correct/answered.size*100):0}%`;}
+
+
+/* ===== 錯題本記錄(跨年共用 localStorage;安裝成 App/同一網址才跨檔共用)===== */
+var WB_KEY='wrongbook_en_leader';
+var WB_YEAR=(document.title.match(/(\d{3})\s*年/)||[])[1]||'';
+function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return {};}}
+function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
+function wbAdd(item,picked){var o=wbLoad(),id=WB_YEAR+'-'+item.no,e=o[id]||{};o[id]={y:WB_YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
+function wbRemove(no){var o=wbLoad();delete o[WB_YEAR+'-'+no];wbSave(o);}
+
+DATA.forEach(item=>{
+  if(item.kind==='guide'){
+    const el=document.createElement('div');el.className='guide';
+    el.innerHTML=`<div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div>`;
+    app.appendChild(el);return;
+  }
+  if(item.kind==='strategy'){
+    const el=document.createElement('div');el.className='strategy';
+    el.innerHTML=`<button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div>`;
+    el.querySelector('.stgh').addEventListener('click',()=>{const o=el.classList.toggle('open');el.querySelector('.stgar').textContent=o?'▲ 收合':'▼ 點開';});
+    app.appendChild(el);return;
+  }
+  if(item.kind==='passage'){
+    const el=document.createElement('div');el.className='passage';
+    el.innerHTML=`<div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+item.text.map(t=>`<p>${t}</p>`).join('')+(item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:'')+`<div class="reveal fold"><div class="lbl">難字</div><table class="vocab">${vRows(item.vocab)}</table></div>`;
+    app.appendChild(el);return;
+  }
+  const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
+  const stem=item.stem.replace('__BLANK__','<span class="blank"></span>');
+  const rawStem=item.stem.replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
+  const el=document.createElement('div');el.className='card';
+  el.innerHTML=`
+    <div class="qhead"><span class="qno">第 ${item.no} 題</span>
+      <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
+      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span></div>
+    <div class="stem">${stem} ${sayBtn(rawStem)}</div>
+    <div class="opts">${item.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`).join('')}</div>
+    <div class="reveal fold">
+      <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
+      <div class="lbl">解析</div><div class="ana">${item.ana}</div>
+      ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
+      ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
+      ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
+      ${item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:''}
+      <div class="lbl">難字 / 片語(附 KK 音標,點 🔊 聽發音)</div>
+      <table class="vocab">${vRows(item.vocab)}</table>
+    </div>`;
+  const opts=el.querySelectorAll('.opt');
+  opts.forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.i;
+    if(!answered.has(item.no)){answered.add(item.no);if(i===item.ans){correct++;wbRemove(item.no);}else{wbAdd(item,i);}updateScore();}
+    opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
+    opts[item.ans].classList.add('ok');opts[item.ans].querySelector('.mk').textContent='✓';
+    if(i!==item.ans){b.classList.add('no');b.querySelector('.mk').textContent='✗';}
+    el.classList.add('show');
+  }));
+  app.appendChild(el);
+});
+
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;
+  const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);});
+document.getElementById('printBtn').addEventListener('click',()=>{
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('show'));setTimeout(()=>window.print(),100);});
+const modeBtn=document.getElementById('mode');let review=false;
+modeBtn.addEventListener('click',()=>{review=!review;
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('show',review));
+  if(review){modeBtn.textContent='📖 複習模式';modeBtn.classList.add('on');setHideZh(false);
+    document.querySelectorAll('.card').forEach(c=>{const no=c.querySelector('.qno').textContent.replace(/\D/g,'');
+      const item=DATA.find(d=>d.kind==='q'&&String(d.no)===no);
+      if(item){const o=c.querySelectorAll('.opt');o.forEach(x=>x.classList.remove('ok','no'));
+        o[item.ans].classList.add('ok');o[item.ans].querySelector('.mk').textContent='✓';}});
+  }else{modeBtn.textContent='✍️ 自測模式';modeBtn.classList.remove('on');setHideZh(true);
+    document.querySelectorAll('.opt').forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});}});
+const zhToggle=document.getElementById('zhToggle');
+function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';}
+zhToggle.addEventListener('click',function(){setHideZh(!document.body.classList.contains('hide-zh'));});
+setHideZh(true);
+updateScore();
+</script>
+</body>
+</html>

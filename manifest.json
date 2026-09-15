@@ -1,0 +1,18 @@
+{
+  "id": "ylen-pass",
+  "name": "外語英檢 考照中心",
+  "short_name": "外語英檢",
+  "description": "領隊・導遊 外語(英語)歷屆試題逐題完整詳解、學習中心與錯題本,100% 離線免費",
+  "lang": "zh-Hant",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f9",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
