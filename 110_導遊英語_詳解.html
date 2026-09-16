@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>110年 外語導遊(英語) 逐題完整詳解</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --ok:#15904a; --okbg:#e5f6ec; --no:#c62a2a; --nobg:#fbe9e9;
+    --chipv:#eef2ff; --chipvk:#3b4fd6; --chipd:#e8f7ee; --chipdk:#1f8a4c;
+    --chipr:#f4ecfb; --chiprk:#7a3fc0; --chipt:#eef1f5; --chiptk:#55647a;
+    --blank:#fff4cc; --blankk:#8a6d1a; --star:#e8a72b;
+    --skillbg:#eaf1ff; --skillk:#1d4ed8; --skillbd:#93b4f7;
+    --notebg:#fff3e6; --notek:#b5560c; --notebd:#f3bd7e;
+    --grambg:#f0ecfb; --gramk:#6b34c9; --grambd:#c2a8ef;
+    --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
+    --kk:#0e7c86;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+      --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+      --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+      --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+      --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+      --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+      --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+      --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+      --kk:#57cdd8;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:26px 20px 20px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 6px;font-size:1.3rem}
+  header p{margin:2px 0;opacity:.92;font-size:.86rem}
+  .stat{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .stat span{background:rgba(255,255,255,.18);padding:3px 10px;border-radius:20px;font-size:.76rem}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .score{margin-left:auto;font-size:.82rem;font-weight:700;color:var(--accent);background:var(--chipv);padding:5px 12px;border-radius:20px}
+  .hint{flex-basis:100%;font-size:.75rem;color:var(--sub);margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .qno{background:var(--ink);color:var(--card);font-weight:700;border-radius:8px;padding:2px 10px;font-size:.85rem}
+  .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
+  .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)}
+  .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
+  .stars{color:var(--star);font-size:.85rem;letter-spacing:1px;margin-left:auto} .stars .dim{opacity:.28}
+  .stem{font-size:1.02rem;margin:6px 0 12px} .stem .say{margin-left:6px}
+  .blank{background:var(--blank);color:var(--blankk);border-radius:5px;padding:0 22px;margin:0 3px;font-weight:700}
+  .opts{display:grid;gap:8px;margin:6px 0}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.15s}
+  .opt:hover{border-color:var(--accent)} .opt .lab{font-weight:700;color:var(--sub);min-width:18px}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.ok .lab{color:var(--ok)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk{margin-left:auto;font-weight:700}
+  .oen{}
+  .ozh{color:var(--sub);margin-left:4px}
+  body.hide-zh .ozh{display:none}
+  .reveal{margin:12px 0 8px;border-top:1px dashed var(--line);padding-top:10px}
+  .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:10px 0 4px;letter-spacing:.03em} .lbl:first-child{margin-top:0}
+  .zh{color:var(--sub);font-size:.95rem} .ana{font-size:.95rem}
+  .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.92rem}
+  .box .h{display:block;margin-bottom:2px;font-size:.82rem}
+  .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
+  .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--grambg);border-color:var(--grambd)} .box.gram .h{color:var(--gramk)}
+  .box.real{background:var(--realbg);border-color:var(--realbd)} .box.real .h{color:var(--realk)}
+  table.vocab{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:.9rem}
+  table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top} table.vocab td:first-child{width:46%}
+  .vw{font-weight:700;color:var(--accent)} .kk{color:var(--kk);font-style:italic;font-size:.86rem;margin-left:5px}
+  .say{cursor:pointer;color:var(--accent);font-size:.85rem;user-select:none;border:1px solid var(--line);border-radius:6px;padding:0 5px;background:var(--card)}
+  .say:hover{background:var(--chipv)}
+  .guide{background:var(--realbg);border:1px solid var(--realbd);border-radius:12px;padding:14px 16px;margin:18px 0 8px;font-size:.92rem}
+  .guide .lbl{color:var(--realk)}
+  .guide ol{margin:6px 0 0;padding-left:20px}
+  .passage{background:var(--chipt);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;font-size:.93rem}
+  .passage .lbl{color:var(--chiptk)} .passage p{margin:6px 0}
+  .strategy{background:var(--grambg);border:1px solid var(--grambd);border-radius:12px;margin:18px 0 8px;overflow:hidden}
+  .stgh{width:100%;text-align:left;background:transparent;border:0;color:var(--gramk);font-weight:700;font-size:1rem;padding:13px 16px;cursor:pointer;font-family:inherit}
+  .stgb{display:none;padding:0 16px 14px;font-size:.9rem}
+  .strategy.open .stgb{display:block}
+  .stgb h4{color:var(--gramk);margin:14px 0 6px;font-size:.92rem}
+  .stgb table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.85rem}
+  .stgb td,.stgb th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .stgb ol{padding-left:20px;margin:4px 0}
+  table.opta{width:100%;border-collapse:collapse;margin:8px 0;font-size:.88rem}
+  table.opta td{border:1px solid var(--line);padding:6px 9px;vertical-align:top}
+  table.opta td:first-child{width:44%}
+  .cite{background:var(--chipt);border-left:3px solid var(--chiptk);padding:6px 10px;margin:6px 0;border-radius:6px;font-size:.9rem;font-style:italic}
+  .ok2{color:var(--ok);font-weight:700} .no2{color:var(--no);font-weight:700}
+  .fold{display:none} .show .fold{display:block}
+  footer{max-width:840px;margin:30px auto 0;padding:0 16px;color:var(--sub);font-size:.8rem;text-align:center}
+  @media print{
+    .toolbar{display:none} .say{display:none}
+    header{background:#1e3a8a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .fold{display:block!important} .card,.passage,.guide{break-inside:avoid;box-shadow:none} body{background:#fff}
+  }
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+<script src="glossary.js" defer></script>
+<style>header{position:relative}.home{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px;z-index:3}</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="home" href="index.html">← 首頁</a>
+    <h1>110年 外語導遊(英語)— 逐題完整詳解</h1>
+    <p>科目:外國語(英語) · 代號 4201 · 考選部專技考試</p>
+    <p>每題:整句中譯 · 四選項中英+KK · 正解 · 解析 · 💡技巧 · ⚠️注意 · 📝文法 · 🎧現場實用 · ★重要度</p>
+    <div class="stat"><span id="prog">進度:導遊 110 · 完整 80 題 ✅(第 5/29/34/61/78 題官方送分)</span><span>可自測計分</span><span>單字/題幹可朗讀</span><span>可匯出 PDF</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <button class="btn" id="mode">✍️ 自測模式</button>
+    <button class="btn" id="zhToggle">🈚 選項中文</button>
+    <button class="btn" id="printBtn">🖨️ 匯出 PDF</button>
+    <span class="score" id="score"></span>
+    <span class="hint">點選項即時批改;切「複習模式」全攤開;點 🔊 聽發音(口試練唸);匯出 PDF 會自動展開全部。</span>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+<footer>110年 外語導遊(英語)逐題詳解 · 題目來源:交通部觀光署考畢試題(公開) · 詳解由 Claude 整理,供個人備考複習</footer>
+
+<script>
+const DATA = [
+  {kind:`q`,no:1,type:`字彙`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`The greatest tour guides are __BLANK__ and organized, helping their guests get to where they need to be on time.`,
+   zh:`最優秀的導遊<b>準時</b>又有條理,幫助客人準時抵達該去的地方。`,
+   opts:[`tardy 遲到的`,`punctual 準時的`,`arrogant 傲慢的`,`deceptive 欺騙的`],
+   ans:1,
+   ana:`「organized + on time(有條理、準時)」→ 準時的 punctual。tardy(遲到,相反)/arrogant/deceptive 不合。`,
+   vocab:[[`punctual (adj.)`,``,`準時的`],[`organized (adj.)`,`ˈɔrɡəˌnaɪzd`,`有條理的`],[`on time`,``,`準時`]]},
+  {kind:`q`,no:2,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`Many countries closed their __BLANK__ to flights from the UK due to a new variant of the disease COVID-19 that had been spreading in London and the southeast of England.`,
+   zh:`由於在倫敦與英格蘭東南部蔓延的 COVID-19 新變種,許多國家對來自英國的航班關閉了<b>邊境(國界)</b>。`,
+   opts:[`booths 攤位`,`bombs 炸彈`,`borders 邊境、國界`,`bonds 債券`],
+   ans:2,
+   ana:`「closed their ___ to flights(對航班關閉…)」→ 邊境 borders。形近 booths/bombs/bonds 刷掉。`,
+   vocab:[[`border (n.)`,`ˈbɔrdɚ`,`邊境、國界`],[`variant (n.)`,`ˈvɛrɪənt`,`變種`],[`flight (n.)`,`flaɪt`,`航班`]]},
+  {kind:`q`,no:3,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Telluride, a Victorian-era mining town in Colorado, is a winter __BLANK__ offering plenty to do and isn't as crowded as some of Colorado's other destinations.`,
+   zh:`泰勒瑞德是科羅拉多州一座維多利亞時代的礦業小鎮,是個冬季<b>天堂</b>,有很多活動,也不像科羅拉多其他景點那麼擁擠。`,
+   opts:[`promise 承諾`,`phase 階段`,`pointer 指標`,`paradise 天堂`],
+   ans:3,
+   ana:`「winter ___ + plenty to do(冬季…、很多活動)」→ 天堂 paradise。promise/phase/pointer 不合。`,
+   vocab:[[`paradise (n.)`,`ˈpærəˌdaɪs`,`天堂`],[`mining town`,``,`礦鎮`],[`crowded (adj.)`,`ˈkraʊdɪd`,`擁擠的`]]},
+  {kind:`q`,no:4,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`Taiwan has become the first country in Asia to totally __BLANK__ the eating of dog and cat meat, and violating the rule is punishable by up to $8,000 in fines.`,
+   zh:`台灣成為亞洲第一個完全<b>禁止</b>食用貓狗肉的國家,違規者最高可罰 8,000 元。`,
+   opts:[`permit 允許`,`prove 證明`,`ban 禁止`,`inspire 啟發`],
+   ans:2,
+   ana:`「violating ... punishable by fines(違規會被罰)」→ 禁止 ban。permit(允許,相反)/prove/inspire 不合。`,
+   vocab:[[`ban (v.)`,`bæn`,`禁止`],[`violate (v.)`,``,`違反`],[`fine (n.)`,`fain`,`罰款`]]},
+  {kind:`q`,no:5,type:`字彙`,topic:`⚠ 安全・緊急`,star:2,
+   stem:`During the COVID-19 pandemic, travelers should remember to share their previous travel history with their health care providers and make every effort to __BLANK__ them by phone before visiting a medical facility.`,
+   zh:`疫情期間,旅客應記得與醫療人員分享先前的旅遊史,並在就醫前盡力以電話<b>通知</b>他們。`,
+   opts:[`refer 提及`,`inform 通知`,`avert 避免`,`pose 擺姿勢`],
+   ans:1,
+   ana:`「___ them by phone(以電話…他們)」→ 通知 inform。refer/avert/pose 不合。`,
+   vocab:[[`inform (v.)`,``,`通知`],[`health care provider`,``,`醫療人員`],[`medical facility`,``,`醫療機構`]]},
+  {kind:`q`,no:6,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`Despite global __BLANK__ on travel due to the coronavirus pandemic, travel between the United States and Mexico has continued relatively unchecked through 2020.`,
+   zh:`儘管因新冠疫情全球對旅行實施<b>限制</b>,美墨之間的旅行在整個 2020 年仍相對不受阻礙地持續著。`,
+   opts:[`supports 支持`,`permission 許可`,`fashion 時尚`,`restrictions 限制`],
+   ans:3,
+   ana:`「Despite global ___ on travel(儘管全球對旅行的…)」→ 限制 restrictions。supports/permission/fashion 不合。`,
+   vocab:[[`restriction (n.)`,`rɪˈstrɪkʃən`,`限制`],[`pandemic (n.)`,`pæn'demik`,`大流行`],[`unchecked (adj.)`,``,`不受阻礙的`]]},
+  {kind:`q`,no:7,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Air travel in the US took its biggest __BLANK__ since World War II at the beginning of the pandemic in 2020. The number of passengers dropped from 2.3 million on Mar. 1 to a low of 87,500 on Apr. 14.`,
+   zh:`2020 年疫情之初,美國的航空旅行出現自二戰以來最大的<b>暴跌</b>。旅客人數從 3 月 1 日的 230 萬跌到 4 月 14 日的低點 87,500 人。`,
+   opts:[`increase 增加`,`dive 暴跌`,`slope 斜坡`,`shape 形狀`],
+   ans:1,
+   ana:`「number of passengers dropped(旅客人數暴跌)」→ 暴跌 dive(take a dive)。increase(增加,相反)/slope/shape 不合。`,
+   note:`take a dive = 暴跌。`,
+   vocab:[[`dive (n.)`,``,`暴跌`],[`pandemic (n.)`,`pæn'demik`,`大流行`],[`passenger (n.)`,`ˈpæsn̩dʒɚ`,`旅客`]]},
+  {kind:`q`,no:8,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`A report indicates that Taiwanese people __BLANK__ almost 7.9 kilograms of apples per person every year, comparable to the quantity of bananas a Taiwanese has a year.`,
+   zh:`一份報告指出,台灣人每人每年<b>食用</b>將近 7.9 公斤蘋果,和台灣人一年吃的香蕉量相當。`,
+   opts:[`cost 花費`,`compromise 妥協`,`confuse 混淆`,`consume 食用、消耗`],
+   ans:3,
+   ana:`「___ 7.9 kilograms of apples(…7.9 公斤蘋果)」→ 食用 consume。cost/compromise/confuse 不合。`,
+   vocab:[[`consume (v.)`,`kənˈsum`,`食用、消耗`],[`comparable (adj.)`,`'kɒmpәrәbl`,`相當的`],[`quantity (n.)`,`ˈkwɑntətɪ`,`數量`]]},
+  {kind:`q`,no:9,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Summertime is __BLANK__ the best time to visit Penghu Islands. There are eateries open the whole day, and mini cruise ships would take you to fascinating places.`,
+   zh:`夏天<b>絕對</b>是造訪澎湖群島的最佳時機。整天都有餐館營業,迷你郵輪還會帶你到迷人的地方。`,
+   opts:[`doubtfully 懷疑地`,`definitely 絕對地`,`suspiciously 可疑地`,`slightly 稍微`],
+   ans:1,
+   ana:`「the best time to visit(最佳時機)」→ 絕對 definitely。doubtfully/suspiciously/slightly 不合。`,
+   vocab:[[`definitely (adv.)`,``,`絕對`],[`eatery (n.)`,``,`餐館`],[`cruise ship`,``,`郵輪`]]},
+  {kind:`q`,no:10,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Before the pandemic, microtrips were becoming __BLANK__ common because fares were cheap and the sharing economy, like Airbnb, was booming.`,
+   zh:`疫情前,由於機票便宜且像 Airbnb 的共享經濟蓬勃發展,微旅行變得<b>越來越</b>普遍。`,
+   opts:[`dully 乏味地`,`eternally 永遠地`,`increasingly 越來越`,`unfortunately 不幸地`],
+   ans:2,
+   ana:`「becoming ___ common(變得…普遍)」→ 越來越 increasingly。dully/eternally/unfortunately 不合。`,
+   vocab:[[`increasingly (adv.)`,`in'kri:siŋli`,`越來越`],[`fare (n.)`,`fɛr`,`票價`],[`sharing economy`,``,`共享經濟`]]},
+  {kind:`q`,no:11,type:`字彙`,topic:`⚠ 安全・緊急`,star:2,
+   stem:`Coronavirus has been described as an __BLANK__ bullet, silently piercing human's vital organs.`,
+   zh:`新冠病毒被形容為<b>隱形的</b>子彈,無聲地刺穿人類的重要器官。`,
+   opts:[`insensible 無感覺的`,`intricate 複雜的`,`invisible 隱形的`,`invaluable 無價的`],
+   ans:2,
+   ana:`「silently piercing(無聲刺穿)」→ 隱形的 invisible bullet。形近 insensible/intricate/invaluable 刷掉。`,
+   vocab:[[`invisible (adj.)`,`in'vizәbl`,`隱形的`],[`pierce (v.)`,``,`刺穿`],[`vital organ`,``,`重要器官`]]},
+  {kind:`q`,no:12,type:`字彙`,topic:`📖 閱讀・學術`,star:2,
+   stem:`We don't really know what's going to happen, but we need to plan for the worst-case __BLANK__.`,
+   zh:`我們不太確定會發生什麼,但我們得為最壞的<b>情況</b>做規劃。`,
+   opts:[`savor 滋味`,`saint 聖人`,`scenario 情境、局面`,`slang 俚語`],
+   ans:2,
+   ana:`「worst-case ___(最壞的…)」→ 情境/局面 scenario。savor/saint/slang 不合。`,
+   note:`worst-case scenario = 最壞情況。`,
+   vocab:[[`scenario (n.)`,``,`情境、局面`],[`worst-case`,``,`最壞情況的`]]},
+  {kind:`q`,no:13,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Unexpectedly, a __BLANK__ number of people turned out at the debut of the movie and made the director laugh with tears.`,
+   zh:`出乎意料地,<b>驚人</b>數量的人出席了這部電影的首映,讓導演喜極而泣。`,
+   opts:[`miserable 悲慘的`,`surprising 驚人的`,`decimal 小數的`,`minimal 極少的`],
+   ans:1,
+   ana:`「Unexpectedly + laugh with tears(出乎意料、喜極而泣)」→ 驚人的 surprising number。miserable/decimal/minimal(極少,相反)不合。`,
+   vocab:[[`surprising (adj.)`,``,`驚人的`],[`debut (n.)`,``,`首映`],[`turn out`,``,`出席、到場`]]},
+  {kind:`q`,no:14,type:`字彙`,topic:`📖 閱讀・學術`,star:2,
+   stem:`It is hard to predict the success of space travel since it is an __BLANK__ territory.`,
+   zh:`太空旅行的成功難以預測,因為它是一個<b>未探索的</b>領域。`,
+   opts:[`unexplored 未探索的`,`unlucky 不幸的`,`unsuitable 不適合的`,`unaffordable 負擔不起的`],
+   ans:0,
+   ana:`「hard to predict + space travel(難預測、太空旅行)」→ 未探索的 unexplored territory。unlucky/unsuitable/unaffordable 不合。`,
+   vocab:[[`unexplored (adj.)`,``,`未探索的`],[`territory (n.)`,`ˈtɛrəˌtɔrɪ`,`領域`],[`predict (v.)`,`prɪˈdɪkt`,`預測`]]},
+  {kind:`q`,no:15,type:`字彙`,topic:`🔌 生活實用`,star:2,
+   stem:`The temperature has __BLANK__ so low that the mountain is blanketed with snow.`,
+   zh:`氣溫<b>驟降</b>到很低,以致山上覆滿了雪。`,
+   opts:[`dipped 下降`,`hiked 上漲`,`slipped 滑`,`increased 增加`],
+   ans:0,
+   ana:`「temperature ___ so low + blanketed with snow(氣溫…很低、覆雪)」→ 下降 dipped。hiked/increased(上漲,相反)/slipped 不合。`,
+   vocab:[[`dip (v.)`,``,`下降、驟降`],[`blanket (v.)`,`ˈblæŋkɪt`,`覆蓋`],[`temperature (n.)`,`ˈtɛmprətʃɚ`,`氣溫`]]},
+  {kind:`q`,no:16,type:`字彙`,topic:`⚠ 安全・緊急`,star:2,
+   stem:`It takes the joint efforts of both the government and the general public to __BLANK__ the spread of the virus.`,
+   zh:`需要政府與大眾共同努力才能<b>遏止</b>病毒的傳播。`,
+   opts:[`drop 掉落`,`push 推`,`spark 引發`,`halt 遏止、停止`],
+   ans:3,
+   ana:`「___ the spread of the virus(…病毒傳播)」→ 遏止 halt。drop/push/spark(引發,相反)不合。`,
+   vocab:[[`halt (v.)`,``,`遏止、停止`],[`joint effort`,``,`共同努力`],[`spread (n.)`,`sprɛd`,`傳播`]]},
+  {kind:`q`,no:17,type:`字彙`,topic:`🔌 生活實用`,star:2,
+   stem:`The yoga instructor believes that yoga should be __BLANK__ to all people regardless of body-type, level of athleticism, and age.`,
+   zh:`這位瑜伽老師相信,不論體型、運動能力和年齡,瑜伽都應該人人<b>都能接觸/從事</b>。`,
+   opts:[`accessible 可及的`,`excusable 可原諒的`,`inconsiderable 微不足道的`,`incontrollable 難控制的`],
+   ans:0,
+   ana:`「should be ___ to all people(對所有人…)」→ 可及的 accessible。excusable/inconsiderable/incontrollable 不合。`,
+   vocab:[[`accessible (adj.)`,`әk'sesәbl`,`可及的、人人可用的`],[`regardless of`,``,`不論`],[`athleticism (n.)`,``,`運動能力`]]},
+  {kind:`q`,no:18,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The Atacama Desert in Peru and Chile __BLANK__ Mars in many ways. Soil samples taken from Mars have been found to be surprisingly similar to those taken from this desert.`,
+   zh:`祕魯和智利的阿他加馬沙漠在許多方面<b>類似</b>火星。從火星取得的土壤樣本被發現與這座沙漠取得的驚人地相似。`,
+   opts:[`resigns 辭職`,`resents 憎恨`,`resembles 類似`,`rescues 拯救`],
+   ans:2,
+   ana:`「soil samples surprisingly similar(土壤樣本驚人相似)」→ 類似 resembles。形近 resigns/resents/rescues 刷掉。`,
+   vocab:[[`resemble (v.)`,`rɪˈzɛmbl̩`,`類似`],[`desert (n.)`,`ˈdɛzɚt`,`沙漠`],[`soil sample`,``,`土壤樣本`]]},
+  {kind:`q`,no:19,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`Although there is an intentional absence of maintenance, the garden remains a pleasing sight to __BLANK__.`,
+   zh:`儘管刻意不加維護,這座花園仍是<b>值得一看</b>的怡人景象。`,
+   opts:[`besiege 圍攻`,`behave 行為`,`benefit 受益`,`behold 觀看`],
+   ans:3,
+   ana:`「a pleasing sight to ___(怡人的…景象)」→ 值得一看 a sight to behold。形近 besiege/behave/benefit 刷掉。`,
+   note:`a sight to behold = 值得一看的景象。`,
+   vocab:[[`behold (v.)`,``,`觀看`],[`maintenance (n.)`,`ˈmentənəns`,`維護`],[`pleasing (adj.)`,``,`怡人的`]]},
+  {kind:`q`,no:20,type:`字彙`,topic:`🗣 生活對話`,star:3,
+   stem:`The winner of five Olympic medals participating in the vicious riot was a __BLANK__ to his sport and his country.`,
+   zh:`這位奪得五面奧運獎牌的贏家參與了兇殘的暴動,對他的運動項目和國家都是一種<b>恥辱</b>。`,
+   opts:[`disgrace 恥辱`,`glory 榮耀`,`raise 加薪`,`abyss 深淵`],
+   ans:0,
+   ana:`「vicious riot(兇殘暴動)」負面 → 恥辱 disgrace。glory(榮耀,相反)/raise/abyss 不合。`,
+   vocab:[[`disgrace (n.)`,``,`恥辱`],[`vicious (adj.)`,``,`兇殘的`],[`riot (n.)`,``,`暴動`]]},
+  {kind:`q`,no:21,type:`文法`,topic:`🏛 景點・文化`,star:2,
+   stem:`In Taiwan, you don't have to worry about traveling far to find beautiful places that __BLANK__ perfect for a winter vacation.`,
+   zh:`在台灣,你不必擔心要跑很遠才能找到適合冬季度假的美麗地方。`,
+   opts:[`are 是(複數現在)`,`is 是(單數)`,`was 是(過去)`,`had been 曾是(過去完成)`],
+   ans:0,
+   ana:`「places that ___ perfect(…完美的地方)」關係子句,先行詞 places(複數)+ 現在事實 → are。is(單數)/was/had been(過去)不合。`,
+   gram:`關係子句動詞與先行詞、時態一致:places(複)+ 現在 → are。`,
+   vocab:[[`perfect (adj.)`,`'pә:fikt`,`完美的`],[`winter vacation`,``,`寒假、冬季度假`]]},
+  {kind:`q`,no:22,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Vacations are a much-needed break from life at work and home, but they can cause __BLANK__ because many vacation packages include all-you-can-eat and all-you-can-drink options.`,
+   zh:`度假是逃離工作與居家生活的必要喘息,但它們可能造成<b>體重增加</b>,因為許多度假套裝包含吃到飽、喝到飽的選項。`,
+   opts:[`weight gain 體重增加`,`hunger awareness 飢餓意識`,`back pain 背痛`,`test anxiety 考試焦慮`],
+   ans:0,
+   ana:`「all-you-can-eat and all-you-can-drink(吃到飽喝到飽)」→ 體重增加 weight gain。hunger awareness/back pain/test anxiety 不合。`,
+   vocab:[[`weight gain`,``,`體重增加`],[`all-you-can-eat`,``,`吃到飽`],[`package (n.)`,`'pækidʒ`,`套裝行程`]]},
+  {kind:`q`,no:23,type:`字彙`,topic:`📖 閱讀・學術`,star:3,
+   stem:`Do we want to become a country where the top tier remains wealthy __BLANK__, and the rest are working in jobs that help make the lives of the rich more comfortable?`,
+   zh:`我們想成為一個上層階級<b>富有到超乎想像</b>、其餘人卻在替富人讓生活更舒適的工作中打拼的國家嗎?`,
+   opts:[`beyond imagination 超乎想像`,`under construction 施工中`,`under consideration 考慮中`,`beyond the call of duty 超越職責`],
+   ans:0,
+   ana:`「top tier remains wealthy ___(上層富有到…)」→ 超乎想像 beyond imagination。under construction/under consideration/beyond the call of duty 不合。`,
+   vocab:[[`beyond imagination`,``,`超乎想像`],[`top tier`,``,`上層、頂層`],[`wealthy (adj.)`,`'welθi`,`富有的`]]},
+  {kind:`q`,no:24,type:`文法`,topic:`🏛 景點・文化`,star:2,
+   stem:`A beautiful wild hot spring in Taiwan's east, Lisong is __BLANK__ away in Taitung's mountains.`,
+   zh:`栗松是台灣東部一處美麗的野溪溫泉,<b>隱藏</b>在台東的群山之中。`,
+   opts:[`hid 隱藏(過去式)`,`hide 隱藏(原形)`,`hiding 隱藏(-ing)`,`hidden 被隱藏的(過去分詞)`],
+   ans:3,
+   ana:`「Lisong is ___ away(栗松被…起來)」→ 被動過去分詞 hidden away(隱藏)。hid/hide/hiding 不合『be + p.p.』被動。`,
+   gram:`be + 過去分詞(被動):is hidden away(被隱藏)。`,
+   vocab:[[`hidden away`,``,`隱藏`],[`hot spring`,``,`溫泉`],[`wild (adj.)`,`waild`,`野生的`]]},
+  {kind:`q`,no:25,type:`文法`,topic:`⚠ 安全・緊急`,star:3,
+   stem:`__BLANK__ the pandemic situation, getting out of the city and social distancing up in the hills has never been a better idea in Taiwan.`,
+   zh:`<b>考量到</b>疫情狀況,在台灣,離開城市、到山上保持社交距離從沒像現在這麼好的主意。`,
+   opts:[`Giving 給(-ing)`,`Given 考量到`,`To give 給(不定詞)`,`Give 給(原形)`],
+   ans:1,
+   ana:`「___ the pandemic situation(…疫情狀況)」→ 考量到 Given(= considering)。Giving/To give/Give 不合此『考量到』用法。`,
+   gram:`Given + 名詞 = 考量到、鑑於(= considering)。`,
+   vocab:[[`given (prep.)`,`'givәn`,`考量到`],[`social distancing`,``,`社交距離`],[`pandemic (n.)`,`pæn'demik`,`大流行`]]},
+  {kind:`q`,no:26,type:`文法`,topic:`🍽 餐飲`,star:3,
+   stem:`Maokong in Taipei produces more than 60 tons of tea per year, most of __BLANK__ is used up in the tea houses spread across Maokong's hillsides.`,
+   zh:`台北貓空每年生產超過 60 噸茶,其中大部分都在遍布貓空山坡的茶館裡消耗掉。`,
+   opts:[`that 那個`,`this 這個`,`which 哪個(關代)`,`where 哪裡`],
+   ans:2,
+   ana:`「most of ___ is used up(其中大部分被…)」→ 關係代名詞 which(most of which,先行詞 tea)。that(不用於 of which)/this/where 不合。`,
+   gram:`名詞 + , most of which + V(非限定關係子句):tea, most of which is used up。`,
+   vocab:[[`ton (n.)`,``,`噸`],[`tea house`,``,`茶館`],[`use up`,``,`用盡`]]},
+  {kind:`q`,no:27,type:`字彙`,topic:`🛍 購物・消費`,star:2,
+   stem:`The __BLANK__ chocolate is a must-buy souvenir for tourists.`,
+   zh:`這款<b>高級</b>巧克力是遊客必買的伴手禮。`,
+   opts:[`humble 謙卑的`,`undistinguished 平凡的`,`premium 高級的`,`unsavory 難吃的`],
+   ans:2,
+   ana:`「must-buy souvenir(必買伴手禮)」→ 高級的 premium。humble/undistinguished/unsavory(難吃,相反)不合。`,
+   vocab:[[`premium (adj.)`,`'pri:miәm`,`高級的`],[`must-buy (adj.)`,``,`必買的`],[`souvenir (n.)`,`ˌsuvəˈnɪr`,`伴手禮`]]},
+  {kind:`q`,no:28,type:`字彙`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`Tour guides' __BLANK__ responsibility is to make sure the tour is safe for the group of tourists.`,
+   zh:`導遊的<b>首要</b>責任是確保旅程對整團遊客而言是安全的。`,
+   opts:[`elusive 難以捉摸的`,`minor 次要的`,`negligible 微不足道的`,`primary 首要的`],
+   ans:3,
+   ana:`「responsibility to make sure the tour is safe(確保安全的責任)」→ 首要的 primary。elusive/minor(次要,相反)/negligible 不合。`,
+   vocab:[[`primary (adj.)`,`ˈpraɪˌmɛrɪ`,`首要的`],[`responsibility (n.)`,`ri.spɒnsә'biliti`,`責任`],[`tour (n.)`,`tʊr`,`旅程`]]},
+  {kind:`q`,no:29,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`In recent years, food tourism has been __BLANK__ by a single phrase: “Eat like a local.”`,
+   zh:`近年來,美食旅遊被一句話<b>定義</b>:「像當地人一樣吃。」`,
+   opts:[`deterred 阻止`,`defined 定義`,`declined 下降`,`decayed 腐爛`],
+   ans:1,
+   ana:`「___ by a single phrase(被一句話…)」→ 定義 defined。形近 deterred/declined/decayed 刷掉。`,
+   vocab:[[`define (v.)`,``,`定義`],[`food tourism`,``,`美食旅遊`],[`phrase (n.)`,`freiz`,`短語`]]},
+  {kind:`q`,no:30,type:`對話`,topic:`🚌 交通・票券`,star:1,
+   stem:`Flight attendant: Do you want a can, Sir?　Passenger: __BLANK__`,
+   zh:`空服員:先生,您要罐裝飲料嗎?　乘客:<b>一罐健怡可樂,謝謝。</b>`,
+   opts:[`Where is seat 30E? 30E 座位在哪?`,`One extra blanket, please. 請再給我一條毯子。`,`A diet coke, please. 一罐健怡可樂,謝謝。`,`I need a Customs Declaration Form. 我需要一張海關申報單。`],
+   ans:2,
+   ana:`問「要罐裝飲料嗎(a can)」→ 回答飲料『健怡可樂』(C)。(A) 問座位、(B) 要毯子、(D) 要申報單,均不對應『飲料』。`,
+   vocab:[[`can (n.)`,`kæn`,`罐`],[`diet coke`,``,`健怡可樂`],[`blanket (n.)`,`ˈblæŋkɪt`,`毯子`]]},
+  {kind:`q`,no:31,type:`文法`,topic:`🚌 交通・票券`,star:2,
+   stem:`Where do we store carry-on baggage __BLANK__ the plane?`,
+   zh:`我們要把隨身行李放在飛機<b>上</b>哪裡?`,
+   opts:[`at 在(點)`,`on 在…上`,`in 在…裡`,`above 在…上方`],
+   ans:1,
+   ana:`「___ the plane(在飛機…)」→ on the plane(在飛機上)。at/in/above 不合『在(交通工具)上』慣用 on。`,
+   gram:`on the plane / on the bus / on the train(在交通工具上用 on)。`,
+   vocab:[[`carry-on baggage`,``,`隨身行李`],[`store (v.)`,`stɒ:`,`存放`]]},
+  {kind:`q`,no:32,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`As a rule of thumb, you need to be at the airport at least 3 hours before __BLANK__ when flying international.`,
+   zh:`一般經驗法則,搭國際線時你需要在<b>正式起飛時間</b>前至少 3 小時抵達機場。`,
+   opts:[`Gate 20 20 號登機門`,`Terminal A A 航廈`,`the official time of departure 正式起飛時間`,`boarding pass 登機證`],
+   ans:2,
+   ana:`「3 hours before ___(前 3 小時)」需時間點 → 正式起飛時間 the official time of departure。Gate 20/Terminal A(地點)/boarding pass(物品)非時間點。`,
+   note:`a rule of thumb = 經驗法則。`,
+   vocab:[[`departure (n.)`,`dɪˈpɑrtʃɚ`,`起飛、離境`],[`rule of thumb`,``,`經驗法則`]]},
+  {kind:`q`,no:33,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Would you like something to drink? We have __BLANK__ drinks and alcoholic drinks.`,
+   zh:`您想喝點什麼嗎?我們有<b>無酒精</b>飲料和含酒精飲料。`,
+   opts:[`firm 堅固的`,`medium 中等的`,`soft 軟性(無酒精)的`,`mixed 混合的`],
+   ans:2,
+   ana:`「___ drinks and alcoholic drinks(…飲料與含酒精飲料)」對比 → 無酒精 soft drinks(soft ↔ alcoholic)。firm/medium/mixed 不合對比。`,
+   note:`soft drinks = 無酒精飲料(汽水等),對比 alcoholic drinks。`,
+   vocab:[[`soft drink`,``,`軟性飲料、無酒精飲料`],[`alcoholic (adj.)`,`.ælkә'hɒlik`,`含酒精的`]]},
+  {kind:`q`,no:34,type:`文法`,topic:`🚌 交通・票券`,star:1,
+   stem:`__BLANK__ can his car accelerate?`,
+   zh:`他的車能加速到<b>多快</b>?`,
+   opts:[`How far 多遠`,`How long 多久`,`How tall 多高`,`How fast 多快`],
+   ans:3,
+   ana:`「___ can his car accelerate(車能加速到…)」→ 速度 How fast。How far/How long/How tall 不合『加速』。`,
+   vocab:[[`accelerate (v.)`,`ækˈsɛləˌret`,`加速`],[`How fast`,``,`多快`]]},
+  {kind:`q`,no:35,type:`文法`,topic:`🚌 交通・票券`,star:2,
+   stem:`I will fly to Rome from London on __BLANK__.`,
+   zh:`我會在<b>1 月 24 日</b>從倫敦飛往羅馬。`,
+   opts:[`2 weeks 兩週`,`the 24th of January 1 月 24 日`,`12:35 a.m. 凌晨 12:35`,`July 七月`],
+   ans:1,
+   ana:`「on ___」→ on 接『日期』→ the 24th of January(on + 日期)。2 weeks(需 in)/12:35 a.m.(需 at)/July(需 in)搭配介系詞不同。`,
+   gram:`時間介系詞:on + 日期(星期);at + 時刻;in + 月份/週/年。`,
+   vocab:[[`fly to`,``,`飛往`],[`Rome`,``,`羅馬`],[`London`,`'lʌndәn`,`倫敦`]]},
+  {kind:`q`,no:36,type:`文法`,topic:`🚌 交通・票券`,star:3,
+   stem:`Could you tell me where __BLANK__?`,
+   zh:`你能告訴我漢莎航空的報到櫃台<b>在哪裡</b>嗎?`,
+   opts:[`is the check-in counter for Lufthansa 疑問語序`,`the check-in counter for Lufthansa is 直述語序`,`has the check-in counter for Lufthansa has 語序`,`the check-in counter for Lufthansa has 直述+has`],
+   ans:1,
+   ana:`「Could you tell me where ___(告訴我…在哪)」間接問句 → 用『直述語序(主詞 + 動詞)』→ the check-in counter for Lufthansa is。(A) 疑問語序(is the counter)錯誤;(C)/(D) has 語意不合。`,
+   gram:`間接問句(嵌入疑問句)用『主詞 + 動詞』直述語序,不用倒裝:where the counter IS。`,
+   vocab:[[`check-in counter`,``,`報到櫃台`],[`Lufthansa`,``,`漢莎航空`]]},
+  {kind:`q`,no:37,type:`字彙`,topic:`🚌 交通・票券`,star:1,
+   stem:`Can I __BLANK__ to business class?`,
+   zh:`我可以<b>升等</b>到商務艙嗎?`,
+   opts:[`upstream 上游`,`uprising 起義`,`upload 上傳`,`upgrade 升等`],
+   ans:3,
+   ana:`「___ to business class(…到商務艙)」→ 升等 upgrade。形近 upstream/uprising/upload 刷掉。`,
+   vocab:[[`upgrade (v.)`,`ˌʌpˈɡred`,`升等`],[`business class`,``,`商務艙`]]},
+  {kind:`q`,no:38,type:`對話`,topic:`🚌 交通・票券`,star:2,
+   stem:`Passenger: What is the baggage allowance?　Officer: __BLANK__`,
+   zh:`乘客:行李限額是多少?　地勤:<b>經濟艙是 20 公斤。</b>`,
+   opts:[`It is 20 kg for the economy class. 經濟艙是 20 公斤。`,`It is NTD 1,000. 是新台幣 1,000 元。`,`Prices may vary on routes. 價格可能因航線而異。`,`You can pay with credit card. 你可以用信用卡付款。`],
+   ans:0,
+   ana:`問「baggage allowance(行李限額)」→ 回答重量『經濟艙 20 公斤』(A)。(B) 金額、(C) 價格、(D) 付款方式,均不對應『行李限額(重量)』。`,
+   vocab:[[`baggage allowance`,``,`行李限額`],[`economy class`,``,`經濟艙`]]},
+  {kind:`q`,no:39,type:`文法`,topic:`🏛 景點・文化`,star:2,
+   stem:`When I was in London, I __BLANK__ usually walk along the Piccadilly Circus after dinner.`,
+   zh:`我在倫敦時,晚餐後<b>常會</b>沿著皮卡迪利圓環散步。`,
+   opts:[`has 有(現在三單)`,`have 有(現在)`,`will 將會(未來)`,`would 過去常`],
+   ans:3,
+   ana:`「When I was in London(過去)+ usually(習慣性)」→ 過去習慣 would。has/have(現在)/will(未來)時態不合過去。`,
+   gram:`would + 原形 = 過去經常/習慣(= used to):would usually walk。`,
+   vocab:[[`would (aux.)`,`wud`,`過去常`],[`Piccadilly Circus`,``,`皮卡迪利圓環`]]},
+  {kind:`q`,no:40,type:`文法`,topic:`🍽 餐飲`,star:2,
+   stem:`I am allergic to pork. Is there __BLANK__ in this Pepper Bun?`,
+   zh:`我對豬肉過敏。這個胡椒餅裡有<b>任何(豬肉)</b>嗎?`,
+   opts:[`any 任何(疑問/否定)`,`each 每個`,`every 每個`,`some 一些(肯定)`],
+   ans:0,
+   ana:`「Is there ___ in this Pepper Bun?(疑問句…?)」→ 疑問句用 any。each/every(修飾單數可數)/some(多用於肯定句)不合此疑問句。`,
+   gram:`疑問/否定句多用 any;肯定句用 some。`,
+   vocab:[[`allergic to`,``,`對…過敏`],[`pork (n.)`,``,`豬肉`],[`pepper bun`,``,`胡椒餅`]]},
+  {kind:`q`,no:41,type:`字彙`,topic:`🍽 餐飲`,star:3,
+   stem:`While many people are __BLANK__ by the smell of stinky tofu, those who take the plunge are usually won over by its unique taste.`,
+   zh:`雖然許多人被臭豆腐的氣味<b>嚇退(倒胃口)</b>,但敢嘗試的人通常會被它獨特的味道征服。`,
+   opts:[`pull on 穿上`,`put on 穿上`,`put off 使反感、倒胃口`,`suit up 著裝`],
+   ans:2,
+   ana:`「smell of stinky tofu(臭豆腐氣味)→ but won over by taste(但被味道征服)」對比 → 使反感 put off。pull on/put on/suit up 不合。`,
+   note:`put sb off = 使反感、倒胃口。`,
+   vocab:[[`put off`,``,`使反感、倒胃口`],[`stinky tofu`,``,`臭豆腐`],[`take the plunge`,``,`放手一試`]]},
+  {kind:`q`,no:42,type:`字彙`,topic:`🛍 購物・消費`,star:2,
+   stem:`Planning how to spend next month's income will help you to save money and avoid the temptation to make an __BLANK__ purchase.`,
+   zh:`規劃下個月收入怎麼花,能幫你省錢並避免<b>衝動</b>購物的誘惑。`,
+   opts:[`impulse 衝動`,`impact 衝擊`,`impression 印象`,`immune 免疫`],
+   ans:0,
+   ana:`「avoid the temptation(避免誘惑)」→ 衝動 impulse purchase。形近 impact/impression/immune 刷掉。`,
+   note:`impulse purchase/buy = 衝動購物。`,
+   vocab:[[`impulse (n.)`,``,`衝動`],[`temptation (n.)`,`tɛmpˈteʃən`,`誘惑`],[`income (n.)`,`'inkʌm`,`收入`]]},
+  {kind:`q`,no:43,type:`字彙`,topic:`📄 證件・保險`,star:3,
+   stem:`In response to the current virus pandemic, the Tourism Bureau is providing financial aid to city and county governments to encourage hotels to participate in the “__BLANK__ Hotels” program.`,
+   zh:`為因應當前疫情,交通部觀光局提供財務補助給縣市政府,鼓勵飯店參加「<b>防疫(隔離)</b>旅館」計畫。`,
+   opts:[`Customs 海關`,`Emigration 移出境`,`Kosher 猶太潔食`,`Quarantine 防疫、隔離`],
+   ans:3,
+   ana:`「virus pandemic + 政府補助飯店(防疫)」→ 防疫旅館 Quarantine Hotels。Customs(海關)/Emigration(移民)/Kosher(潔食)不合。`,
+   note:`Quarantine Hotels = 防疫旅館(隔離旅館)。`,
+   vocab:[[`quarantine (n.)`,`ˈkwɔrənˌtin`,`防疫、隔離`],[`financial aid`,``,`財務補助`],[`pandemic (n.)`,`pæn'demik`,`大流行`]]},
+  {kind:`q`,no:44,type:`字彙`,topic:`🏛 景點・文化`,star:1,
+   stem:`The “Yehliu Geopark” is one of the most famous __BLANK__ of Taiwan.`,
+   zh:`「野柳地質公園」是台灣最著名的<b>地標</b>之一。`,
+   opts:[`feline parks 貓科公園`,`festivals 節慶`,`landmarks 地標`,`parking lots 停車場`],
+   ans:2,
+   ana:`野柳地質公園(女王頭)是台灣著名「地標」→ landmarks。feline parks(貓科公園,無此類景點)/festivals/parking lots 不合。`,
+   vocab:[[`landmark (n.)`,`ˈlændˌmɑrk`,`地標`],[`geopark (n.)`,``,`地質公園`]]},
+  {kind:`q`,no:45,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`These Herbal Mineral Springs provide herbal __BLANK__ springs and beautifying mineral baths.`,
+   zh:`這些草本礦泉提供草本<b>療效</b>溫泉與美容礦物浴。`,
+   opts:[`corporeal 肉體的`,`spiritual 靈性的`,`surgical 外科的`,`therapeutic 療效的`],
+   ans:3,
+   ana:`「Herbal Mineral Springs + beautifying baths(草本礦泉、美容浴)」→ 療效的 therapeutic。corporeal/spiritual/surgical 不合。`,
+   vocab:[[`therapeutic (adj.)`,``,`療效的、治療的`],[`herbal (adj.)`,``,`草本的`],[`mineral spring`,``,`礦泉`]]},
+  {kind:`q`,no:46,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`The restaurant is well known for its __BLANK__ Taiwanese cuisines to receive three Michelin stars for two consecutive years.`,
+   zh:`這家餐廳以其<b>道地</b>的台灣菜聞名,連續兩年獲得米其林三星。`,
+   opts:[`authentic 道地的`,`copy 仿冒`,`hoax 騙局`,`spurious 假的`],
+   ans:0,
+   ana:`「well known + three Michelin stars(聞名、米其林三星)」→ 道地的 authentic。copy/hoax/spurious(假,相反)不合。`,
+   vocab:[[`authentic (adj.)`,`ɔˈθɛntɪk`,`道地的`],[`cuisine (n.)`,`kwɪˈzin`,`料理`],[`Michelin star`,``,`米其林星`]]},
+  {kind:`q`,no:47,type:`字彙`,topic:`🏨 住宿`,star:2,
+   stem:`Rain __BLANK__ are known for producing rain-like sprays.`,
+   zh:`雨林<b>蓮蓬頭</b>以產生如雨般的水花聞名。`,
+   opts:[`bathtubs 浴缸`,`bidets 免治馬桶`,`dryers 烘乾機`,`showerheads 蓮蓬頭`],
+   ans:3,
+   ana:`「Rain ___ + rain-like sprays(雨…、如雨水花)」→ 蓮蓬頭 showerheads。bathtubs/bidets/dryers 不合。`,
+   vocab:[[`showerhead (n.)`,``,`蓮蓬頭`],[`spray (n.)`,``,`噴霧、水花`]]},
+  {kind:`q`,no:48,type:`字彙`,topic:`⚠ 安全・緊急`,star:1,
+   stem:`In case of __BLANK__, open the transparent plastic cover and press the red button to stop the escalator.`,
+   zh:`<b>緊急情況</b>時,打開透明塑膠蓋並按紅色按鈕停止手扶梯。`,
+   opts:[`calmness 平靜`,`closure 關閉`,`emergency 緊急情況`,`tranquility 寧靜`],
+   ans:2,
+   ana:`「press the red button to stop the escalator(按紅鈕停手扶梯)」→ 緊急情況 emergency。calmness/closure/tranquility 不合。`,
+   note:`in case of emergency = 緊急情況時。`,
+   vocab:[[`emergency (n.)`,`ɪˈmɝdʒənsɪ`,`緊急情況`],[`escalator (n.)`,`ˈɛskəˌletɚ`,`手扶梯`],[`transparent (adj.)`,`træns'pærәnt`,`透明的`]]},
+  {kind:`q`,no:49,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Every station has a ticket gate for the __BLANK__, wheelchair users, or passengers with strollers or bulky packages.`,
+   zh:`每個車站都有一個給<b>身障者</b>、輪椅使用者,或帶嬰兒車、大型包裹旅客的票閘。`,
+   opts:[`able-bodied 健全的`,`disabled 身障的`,`robust 強壯的`,`sturdy 結實的`],
+   ans:1,
+   ana:`「wheelchair users + strollers(輪椅、嬰兒車)」並列 → 身障者 the disabled。able-bodied(健全,相反)/robust/sturdy(強壯,相反)不合。`,
+   vocab:[[`disabled (adj.)`,`dɪsˈebl̩d`,`身障的`],[`wheelchair (n.)`,`ˈhwilˌtʃɛr`,`輪椅`],[`stroller (n.)`,``,`嬰兒車`]]},
+  {kind:`q`,no:50,type:`字彙`,topic:`⚠ 安全・緊急`,star:2,
+   stem:`According to a newspaper report, blood __BLANK__ are running low across Taiwan, with blood banks reporting an average of less than five days of stock.`,
+   zh:`根據報導,全台血液<b>供應</b>吃緊,血庫平均庫存不到五天。`,
+   opts:[`needs 需求`,`supplies 供應`,`shortages 短缺`,`debts 債務`],
+   ans:1,
+   ana:`「running low + less than five days of stock(存量不足)」→ 血液供應 supplies(running low = 供應吃緊)。needs/shortages(短缺,語意重複)/debts 不合。`,
+   vocab:[[`supply (n.)`,`səˈplaɪ`,`供應`],[`blood bank`,``,`血庫`],[`stock (n.)`,`stɒk`,`庫存`]]},
+  {kind:`q`,no:51,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Guide signs are __BLANK__ to direct disabled passengers to the trains.`,
+   zh:`車站<b>裝設</b>了引導標誌,以引導身障旅客前往列車。`,
+   opts:[`removed 移除`,`separated 分開`,`installed 裝設`,`taken off 取下`],
+   ans:2,
+   ana:`「Guide signs ___ to direct passengers(引導標誌…引導旅客)」→ 裝設 installed。removed(移除,相反)/separated/taken off(取下,相反)不合。`,
+   vocab:[[`install (v.)`,``,`裝設`],[`guide sign`,``,`引導標誌`],[`direct (v.)`,`di'rekt`,`引導`]]},
+  {kind:`q`,no:52,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The temple is unique in that the burning of __BLANK__ is banned in the interest of the environment.`,
+   zh:`這座廟宇獨特之處在於,為了環境,禁止燒<b>香</b>。`,
+   opts:[`diesel oil 柴油`,`essential oil 精油`,`incense 香`,`polymers 聚合物`],
+   ans:2,
+   ana:`「temple + burning of ___ banned(廟宇、禁燒…)」→ 香 incense(廟裡燒香)。diesel oil/essential oil/polymers 不合廟宇。`,
+   vocab:[[`incense (n.)`,``,`香`],[`temple (n.)`,`ˈtɛmpl̩`,`廟`],[`ban (v.)`,`bæn`,`禁止`]]},
+  {kind:`q`,no:53,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`One of the most popular pieces of jade __BLANK__ in the museum is the Jadeite Cabbage.`,
+   zh:`博物館裡最受歡迎的玉<b>雕</b>之一是翠玉白菜。`,
+   opts:[`calligraphy 書法`,`carvings 雕刻`,`etchings 蝕刻版畫`,`paintings 畫作`],
+   ans:1,
+   ana:`「jade ___ + Jadeite Cabbage(玉…、翠玉白菜)」→ 玉雕 carvings。calligraphy/etchings/paintings 不合玉器。`,
+   vocab:[[`carving (n.)`,``,`雕刻`],[`jade (n.)`,`dʒed`,`玉`],[`Jadeite Cabbage`,``,`翠玉白菜`]]},
+  {kind:`q`,no:54,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`The interior surface of the Mao Gong Ding is covered in a/an __BLANK__ of 500 characters.`,
+   zh:`毛公鼎的內壁刻滿了 500 字的<b>銘文</b>。`,
+   opts:[`inscription 銘文`,`lyric 歌詞`,`melody 旋律`,`subtitle 字幕`],
+   ans:0,
+   ana:`「interior surface + 500 characters(內壁、500 字)」→ 銘文 inscription(青銅器銘文)。lyric/melody/subtitle 不合。`,
+   vocab:[[`inscription (n.)`,``,`銘文`],[`Mao Gong Ding`,``,`毛公鼎`],[`character (n.)`,`ˈkærɪktɚ`,`文字`]]},
+  {kind:`q`,no:55,type:`字彙`,topic:`🏨 住宿`,star:3,
+   stem:`Use of the fitness center is restricted to __BLANK__ guests and members only.`,
+   zh:`健身中心僅限<b>館內(住宿)</b>賓客與會員使用。`,
+   opts:[`in-situ 原位的`,`in-vitro 試管內的`,`in-vivo 活體內的`,`in-house 館內的、內部的`],
+   ans:3,
+   ana:`「restricted to ___ guests(僅限…賓客)」→ 館內的 in-house guests(住宿房客)。in-situ/in-vitro/in-vivo 為科學術語,不合。`,
+   vocab:[[`in-house (adj.)`,``,`館內的、內部的`],[`fitness center`,``,`健身中心`],[`restricted (adj.)`,`rɪˈstrɪktɪd`,`限制的`]]},
+  {kind:`q`,no:56,type:`字彙`,topic:`🏨 住宿`,star:2,
+   stem:`A __BLANK__ room is a guest room for which no charge is made.`,
+   zh:`<b>免費招待</b>房是不收費的客房。`,
+   opts:[`complimentary 免費招待的`,`laundry 洗衣`,`maid 房務`,`meeting 會議`],
+   ans:0,
+   ana:`「no charge is made(不收費)」→ 免費招待 complimentary room。laundry/maid/meeting 不合。`,
+   vocab:[[`complimentary (adj.)`,`ˌkɑmpləˈmɛntərɪ`,`免費招待的`],[`guest room`,``,`客房`],[`charge (n.)`,`tʃɑrdʒ`,`收費`]]},
+  {kind:`q`,no:57,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`By combining traditional culture with __BLANK__ technology, Taiwan Lantern Festival presents itself as a shining fest compatible with its international counterparts.`,
+   zh:`藉由結合傳統文化與<b>頂尖</b>科技,台灣燈會呈現出可與國際同類活動媲美的璀璨節慶。`,
+   opts:[`atrocious 糟糕的`,`substandard 不合格的`,`top-notch 頂尖的`,`unsatisfactory 不滿意的`],
+   ans:2,
+   ana:`「shining fest compatible with international(璀璨、可媲美國際)」→ 頂尖的 top-notch technology。atrocious/substandard/unsatisfactory 皆負面,相反。`,
+   vocab:[[`top-notch (adj.)`,``,`頂尖的`],[`compatible (adj.)`,`kәm'pætәbl`,`相容的、可媲美的`],[`counterpart (n.)`,``,`同類`]]},
+  {kind:`q`,no:58,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The National Palace Museum houses the world's largest __BLANK__ of priceless Chinese art treasures.`,
+   zh:`故宮博物院收藏著全世界最大的無價中華藝術珍寶<b>典藏</b>。`,
+   opts:[`collection 收藏、典藏`,`crowd 人群`,`flock (鳥/羊)群`,`herd (牛)群`],
+   ans:0,
+   ana:`「the largest ___ of art treasures(最大的藝術珍寶…)」→ 收藏 collection。crowd(人群)/flock(鳥群)/herd(獸群)不用於藝術品。`,
+   note:`crowd/flock/herd 都是「群」但對象不同(人/鳥/獸);藝術品用 collection。`,
+   vocab:[[`collection (n.)`,`kəˈlɛkʃən`,`收藏、典藏`],[`priceless (adj.)`,``,`無價的`],[`treasure (n.)`,`ˈtrɛʒɚ`,`珍寶`]]},
+  {kind:`q`,no:59,type:`字彙`,topic:`📄 證件・保險`,star:1,
+   stem:`The Visitor Visa Application Form can be __BLANK__ from the website of the Bureau of Consular Affairs, Ministry of Foreign Affairs.`,
+   zh:`訪客簽證申請表可從外交部領事事務局的網站<b>下載</b>。`,
+   opts:[`backloaded 後載`,`downloaded 下載`,`overloaded 超載`,`reloaded 重新載入`],
+   ans:1,
+   ana:`「___ from the website(從網站…)」→ 下載 downloaded。形近 backloaded/overloaded/reloaded 刷掉。`,
+   vocab:[[`download (v.)`,``,`下載`],[`visa application form`,``,`簽證申請表`],[`Bureau of Consular Affairs`,``,`領事事務局`]]},
+  {kind:`q`,no:60,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The cultures of Taiwan are a __BLANK__ of various sources.`,
+   zh:`台灣的文化是各種來源的<b>混合體</b>。`,
+   opts:[`flock 群`,`hybrid 混合體`,`pocket 口袋`,`board 板`],
+   ans:1,
+   ana:`「cultures + various sources(文化、各種來源)」→ 混合體 hybrid。flock/pocket/board 不合。`,
+   vocab:[[`hybrid (n.)`,``,`混合體、混種`],[`source (n.)`,`sɒ:s`,`來源`]]},
+  {kind:`q`,no:61,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`To __BLANK__ the tax refund, foreign travelers can apply at the port of their departure from Taiwan.`,
+   zh:`要<b>請領</b>退稅,外國旅客可在離開台灣的口岸申請。`,
+   opts:[`annul 廢除`,`claim 請領、索取`,`negate 否定`,`nullify 使無效`],
+   ans:1,
+   ana:`「___ the tax refund + apply(…退稅、申請)」→ 請領 claim。annul/negate/nullify 皆『取消』義,相反。`,
+   note:`claim a refund = 請領退款。`,
+   vocab:[[`claim (v.)`,`klem`,`請領、索取`],[`tax refund`,``,`退稅`],[`departure (n.)`,`dɪˈpɑrtʃɚ`,`離境`]]},
+  {kind:`q`,no:62,type:`字彙`,topic:`🛍 購物・消費`,star:1,
+   stem:`Pineapple cakes have become one of the top-selling __BLANK__ in Taiwan.`,
+   zh:`鳳梨酥已成為台灣最暢銷的<b>伴手禮</b>之一。`,
+   opts:[`cargos 貨物`,`facilities 設施`,`fruits 水果`,`souvenirs 伴手禮`],
+   ans:3,
+   ana:`「Pineapple cakes + top-selling(鳳梨酥、暢銷)」→ 伴手禮 souvenirs。cargos/facilities/fruits(鳳梨酥非水果)不合。`,
+   vocab:[[`souvenir (n.)`,`ˌsuvəˈnɪr`,`伴手禮`],[`pineapple cake`,``,`鳳梨酥`],[`top-selling (adj.)`,``,`暢銷的`]]},
+  {kind:`q`,no:63,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Taiwanese peanut __BLANK__ are traditional Taiwanese candy with peanuts.`,
+   zh:`台灣花生<b>牛軋糖</b>是加了花生的傳統台灣糖果。`,
+   opts:[`breads 麵包`,`cakes 蛋糕`,`pies 派`,`nougats 牛軋糖`],
+   ans:3,
+   ana:`「traditional Taiwanese candy with peanuts(加花生的傳統糖果)」→ 牛軋糖 nougats。breads/cakes/pies 非『糖果 candy』。`,
+   vocab:[[`nougat (n.)`,``,`牛軋糖`],[`peanut (n.)`,``,`花生`],[`candy (n.)`,``,`糖果`]]},
+  {kind:`q`,no:64,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Mochi or muah chee is a sweet and chewy dessert made of __BLANK__ rice.`,
+   zh:`麻糬是一種用<b>糯</b>米製成、香甜有嚼勁的甜點。`,
+   opts:[`black 黑`,`brown 糙`,`glutinous 糯的`,`wild 野生`],
+   ans:2,
+   ana:`「Mochi + chewy dessert(麻糬、有嚼勁甜點)」→ 糯米 glutinous rice。black/brown/wild rice 不合麻糬。`,
+   vocab:[[`glutinous rice`,``,`糯米`],[`mochi`,``,`麻糬`],[`chewy (adj.)`,`ˈtʃuɪ`,`有嚼勁的`]]},
+  {kind:`q`,no:65,type:`字彙`,topic:`🍽 餐飲`,star:3,
+   stem:`Taiwanese Pork __BLANK__ are made of pork mixed with almond in the form of a crisp as thin as a piece of paper.`,
+   zh:`台灣豬肉<b>紙(薄片)</b>是把豬肉與杏仁混合,做成薄如紙的脆片。`,
+   opts:[`Chops 排骨`,`Knuckles 蹄膀`,`Nougats 牛軋糖`,`Sheets 薄片(肉紙)`],
+   ans:3,
+   ana:`「as thin as a piece of paper(薄如紙)」→ 肉紙/薄片 Pork Sheets。Chops(排骨)/Knuckles(蹄膀)/Nougats(牛軋糖)不合『薄如紙』。`,
+   vocab:[[`sheet (n.)`,``,`薄片、紙狀物`],[`pork (n.)`,``,`豬肉`],[`crisp (n.)`,``,`脆片`]]},
+  {kind:`q`,no:66,type:`字彙`,topic:`🍽 餐飲`,star:1,
+   stem:`__BLANK__ is a tea-based drink with chewy tapioca balls.`,
+   zh:`<b>珍珠奶茶(泡沫茶)</b>是一種加了有嚼勁粉圓的茶飲。`,
+   opts:[`Bubble tea 珍珠奶茶`,`Herbal tea 青草茶`,`Oolong tea 烏龍茶`,`Pu-erh tea 普洱茶`],
+   ans:0,
+   ana:`「tea-based + chewy tapioca balls(茶飲、有嚼勁粉圓)」→ 珍珠奶茶 Bubble tea。Herbal/Oolong/Pu-erh tea 不含粉圓。`,
+   vocab:[[`bubble tea`,``,`珍珠奶茶`],[`tapioca balls`,``,`粉圓、珍珠`],[`chewy (adj.)`,`ˈtʃuɪ`,`有嚼勁的`]]},
+  {kind:`q`,no:67,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Taiwan's __BLANK__ tribes produce a wide variety of products in their local villages and sell as souvenirs.`,
+   zh:`台灣的<b>原住民</b>部落在當地村落生產各式各樣的產品,當作伴手禮販售。`,
+   opts:[`alien 外來的`,`expatriate 僑居的`,`outer 外部的`,`indigenous 原住民的`],
+   ans:3,
+   ana:`「___ tribes + local villages(…部落、當地村落)」→ 原住民 indigenous tribes。alien(外來)/expatriate/outer 不合。`,
+   vocab:[[`indigenous (adj.)`,`ɪnˈdɪdʒənəs`,`原住民的`],[`tribe (n.)`,``,`部落`],[`souvenir (n.)`,`ˌsuvəˈnɪr`,`伴手禮`]]},
+  {kind:`q`,no:68,type:`字彙`,topic:`⚠ 安全・緊急`,star:3,
+   stem:`Organized crime has __BLANK__ rampant due to the inaction of the government.`,
+   zh:`由於政府的無作為,組織犯罪已<b>猖獗</b>橫行。`,
+   opts:[`fallen 落下`,`driven 驅使`,`raised 舉起`,`run 跑、變得`],
+   ans:3,
+   ana:`「___ rampant(…猖獗)」→ run rampant(猖獗蔓延)。fallen/driven/raised 不搭 rampant。`,
+   note:`run rampant = 猖獗、氾濫。`,
+   vocab:[[`run rampant`,``,`猖獗`],[`organized crime`,``,`組織犯罪`],[`inaction (n.)`,``,`無作為`]]},
+  {kind:`q`,no:69,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The Mazu __BLANK__ from Dajia's Zhenlan Temple takes place during the third month of the Chinese lunar calendar.`,
+   zh:`大甲鎮瀾宮的媽祖<b>遶境進香</b>在農曆三月舉行。`,
+   opts:[`collection 收藏`,`fraternization 親善`,`paradigm 典範`,`pilgrimage 進香、遶境`],
+   ans:3,
+   ana:`「Mazu ... from Zhenlan Temple + lunar calendar(媽祖、鎮瀾宮、農曆)」→ 進香/遶境 pilgrimage。collection/fraternization/paradigm 不合。`,
+   vocab:[[`pilgrimage (n.)`,``,`進香、遶境`],[`lunar calendar`,``,`農曆`],[`Zhenlan Temple`,``,`鎮瀾宮`]]},
+  {kind:`q`,no:70,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The __BLANK__ of the Plague God Boat is a folk ritual practiced by fishermen in southwestern Taiwan.`,
+   zh:`<b>燒</b>王船是台灣西南部漁民奉行的民俗儀式。`,
+   opts:[`burning 焚燒`,`construction 建造`,`soaking 浸泡`,`sinking 沉沒`],
+   ans:0,
+   ana:`「Plague God Boat + folk ritual(王船、民俗儀式)」→ 燒王船 burning(燒王船祭)。construction/soaking/sinking 不合此民俗。`,
+   vocab:[[`burning (n.)`,``,`焚燒`],[`Plague God Boat`,``,`王船`],[`folk ritual`,``,`民俗儀式`]]},
+  {kind:`passage`,
+   label:`閱讀第 1 篇(第 71–75 題)· 主題:在台灣旅遊的魅力`,
+   text:[`Traveling in Taiwan is a luxury that anyone can enjoy without spending a fortune. A small country, Taiwan is like a world in miniature that has much to offer. In fact, it is possible to find something that suits your liking the whole year round. Being an island, Taiwan has a wealth of seaside possibilities for both beachgoers and sea lovers. With its special terrain, Taiwan is home to many breathtaking mountains, hills, and valleys. In addition, the unique Taiwanese culture is a magnet that attracts new and repeated tourists to the beautiful island.`,`Taiwan has several metropolises where people of different ethnicities have formed the foundation of the rich Taiwanese culture. As you make your way through different destinations, you are bound to encounter a cultural mosaic of diverse highlights, traditions, and events. As the social landscape of Taiwan grows increasingly heterogeneous, Taiwan will open up more opportunities for visitors with different cultural appreciation.`,`One best way to appreciate a culture is through food. With its multicultural characteristics and abundant food sources, Taiwan boasts kaleidoscopic cuisines to live up to its name of a food paradise. From local delicacies to exotic culinary delights, Taiwan offers a whole array of food choices that cater to all tastes. As a dream destination, Taiwan is capable of appealing to sight, taste, and other senses of its visitors. Welcome to Taiwan to discover the gem of your own!`],
+   real:`🎧 <b>台灣旅遊魅力</b>是導遊必備介紹主題。可準備:cultural mosaic(文化馬賽克/多元融合)、food paradise(美食天堂)、multicultural(多元文化的)、diversity(多樣性)。`,
+   vocab:[[`luxury (n.)`,`ˈlʌkʃəri`,`奢侈、享受`],[`in miniature`,``,`縮小版的`],[`terrain (n.)`,`təˈren`,`地形`],[`cultural mosaic`,``,`文化馬賽克(多元融合)`],[`heterogeneous (adj.)`,`ˌhɛtərəˈdʒiniəs`,`異質的、多元的`],[`kaleidoscopic (adj.)`,`kəˌlaɪdəˈskɑpɪk`,`千變萬化的`],[`delicacy (n.)`,`ˈdɛlɪkəsi`,`佳餚`]]},
+  {kind:`q`,no:71,type:`閱讀`,topic:`主旨 · 推論`,star:2,
+   stem:`According to the passage, what can be the key that makes Taiwan a favorable tourist attraction?`,
+   zh:`根據本文,讓台灣成為受歡迎旅遊勝地的關鍵可能是什麼?`,
+   opts:[`diversity 多樣性`,`hospitality 好客`,`generosity 慷慨`,`universality 普遍性`],
+   ans:0,
+   ana:`<b>主旨/推論題</b>:全文一再強調台灣的『多元』——seaside/mountains(地形多樣)、cultural mosaic(文化多元)、kaleidoscopic cuisines(多樣美食)→ 關鍵 = diversity(多樣性)。hospitality/generosity/universality 文章未著重。`,
+   skill:`<b>『關鍵是什麼』回主旨</b>:反覆出現的核心概念(多元/多樣)就是答案 → diversity。`,
+   vocab:[[`diversity (n.)`,`dai'vә:siti`,`多樣性`],[`favorable (adj.)`,``,`受歡迎的、有利的`]]},
+  {kind:`q`,no:72,type:`閱讀`,topic:`字義 · 句意`,star:2,
+   stem:`Which of the following explains “Taiwan is home to many breathtaking mountains, hills, and valleys”?`,
+   zh:`下列何者解釋了「Taiwan is home to many breathtaking mountains, hills, and valleys」?`,
+   opts:[`Many people in Taiwan build homes in the breathtaking mountains, hills, and valleys. 許多台灣人在壯麗的山丘谷地蓋房子。`,`Taiwan calls breathtaking mountains, hills, and valleys home. 台灣把壯麗山谷稱為家。`,`Taiwan has many breathtaking mountains, hills, and valleys. 台灣擁有許多壯麗的山丘谷地。`,`Taiwanese see breathtaking mountains, hills, and valleys as homes. 台灣人把壯麗山谷視為家。`],
+   ans:2,
+   ana:`<b>句意題</b>:be home to sth = 擁有、是…的所在地(≠ 蓋房子)→ 台灣擁有許多壯麗山谷 = (C) Taiwan has many...。(A) 蓋房子、(D) 視為家 = 誤解 be home to;(B) call ... home 語意繞且不精準。`,
+   skill:`<b>片語 be home to</b> = 是…的棲息地/所在(擁有),不是『把…當家』或『在…蓋房』。選最直白的『has』(C)。`,
+   note:`⚠️ be home to sth = 擁有/是…的所在地;別誤解成 build homes / see as homes。`,
+   vocab:[[`be home to`,``,`是…的所在地、擁有`],[`breathtaking (adj.)`,`ˈbrɛθˌtekɪŋ`,`令人驚嘆的`]]},
+  {kind:`q`,no:73,type:`閱讀`,topic:`字義`,star:2,
+   stem:`Which of the following may replace “you are bound to” in the second paragraph of the above passage?`,
+   zh:`下列何者可替換本文第二段的「you are bound to」?`,
+   opts:[`you are headed to 你正前往`,`you are certain to 你必定會`,`you are oriented to 你被定向於`,`you are wounded up to 你被捲入`],
+   ans:1,
+   ana:`<div class='cite'>you are <b>bound to</b> encounter a cultural mosaic</div>be bound to = 必定、勢必 → you are certain to(必定)。you are headed to(前往)/oriented to(定向)/wounded up(無此正確用法)不合。`,
+   skill:`<b>片語替換題</b>:be bound to = be certain to = 必定、勢必。`,
+   vocab:[[`be bound to`,``,`必定、勢必`],[`certain (adj.)`,`'sә:tәn`,`確定的、必然的`]]},
+  {kind:`q`,no:74,type:`閱讀`,topic:`細節 · NOT`,star:3,
+   stem:`Which of the following is NOT related to “cultural mosaic” or “cultural appreciation”?`,
+   zh:`下列何者與「cultural mosaic(文化馬賽克)」或「cultural appreciation(文化欣賞)」「無關」?`,
+   opts:[`Cultures made up of people of the same kind. 由同一種人組成的文化。`,`Eagerness to explore diverse cultural elements. 渴望探索多元文化元素。`,`Inclusion of culturally diverse groups. 納入文化多元的群體。`,`Coexistence of contrasting cultures. 對比文化的共存。`],
+   ans:0,
+   ana:`<b>① 圈 NOT related!</b> cultural mosaic = 多元文化交融。<table class='opta'><tr><td>(A) <b>同類人</b>組成的文化</td><td><span class='no2'>✗ 選這</span> 『同一種人』與『多元』相反</td></tr><tr><td>(B) 渴望探索多元文化元素</td><td><span class='ok2'>相關</span> cultural appreciation</td></tr><tr><td>(C) 納入文化多元群體</td><td><span class='ok2'>相關</span> diverse groups</td></tr><tr><td>(D) 對比文化的共存</td><td><span class='ok2'>相關</span> mosaic = 多元共存</td></tr></table>`,
+   skill:`<b>NOT related 題找『反義』</b>:cultural mosaic 講『多元/差異』,A 說『同類人 same kind』正好相反 → 選 A。`,
+   vocab:[[`cultural mosaic`,``,`文化馬賽克(多元融合)`],[`diverse (adj.)`,`daɪˈvɝs`,`多元的`]]},
+  {kind:`q`,no:75,type:`閱讀`,topic:`細節 · NOT`,star:3,
+   stem:`Which of the following does NOT support or imply the idea of “multicultural characteristics” of Taiwan?`,
+   zh:`下列何者「不」支持或暗示台灣的「多元文化特色」?`,
+   opts:[`Kaleidoscopic cuisines. 千變萬化的料理。`,`From local delicacies to exotic culinary delights. 從在地佳餚到異國美食。`,`A whole array of food choices. 一整排的美食選擇。`,`A world in miniature with special terrain. 有特殊地形的縮小世界。`],
+   ans:3,
+   ana:`<b>① 圈 NOT support multicultural!</b> 多元『文化』多指飲食多樣。<table class='opta'><tr><td>(A) 千變萬化的料理</td><td><span class='ok2'>支持</span> 飲食多元</td></tr><tr><td>(B) 從在地佳餚到異國美食</td><td><span class='ok2'>支持</span> 飲食多元</td></tr><tr><td>(C) 一整排的美食選擇</td><td><span class='ok2'>支持</span> 飲食多元</td></tr><tr><td>(D) 有特殊<b>地形</b>的縮小世界</td><td><span class='no2'>✗ 選這</span> 講『地形/地理』,非『多元文化』</td></tr></table>`,
+   skill:`<b>NOT support 題分類</b>:A/B/C 都在講『多樣飲食(文化)』;D 講『地形(地理)』不屬文化多元 → 選 D。`,
+   vocab:[[`kaleidoscopic (adj.)`,``,`千變萬化的`],[`terrain (n.)`,``,`地形`]]},
+  {kind:`passage`,
+   label:`閱讀第 2 篇(第 76–80 題)· 主題:疫情對個人生活的影響(較難)`,
+   text:[`At a personal level, the COVID-19 pandemic has influenced individuals of all ages. The first and foremost is change in social life. Social life of youngsters and youths has been greatly compromised when school learning moved online. Rather than meeting up with others in class and studying jointly as a cohort, most students have been taking classes remotely in a home environment. It is quite concerning to think about how virtual learning might impact students' socialization and development.`,`Amid the practice of social distancing, curfews, and lockdowns, it is very difficult for ordinary people to stay mentally sane and physically fit. In some cities, seated dining is an exception rather than the norm, home parties are discouraged or banned altogether, and group gatherings are prohibited. Mandatory mask-wearing may impede the drive to communicate, and the constant fear of contagion may lead to social isolation. Nonetheless, most people have tapped into their ingenuity and creativity to maintain a decent social life during the trying times.`,`In fact, new understanding has been reached as a result of the impact of the pandemic. While there has been a huge drop in work and household travel overseas, people have come to realize the fun and beauty of domestic outings. While people have shuttled back and forth attending meetings, they are now participating in numerous meetings via online platforms with more efficiency and effectiveness. Indeed, in this ongoing war against the pandemic, we have seen the resilience and power of mankind.`],
+   real:`🎧 <b>疫情對生活的影響</b>是近年常見議題。可準備:social distancing(社交距離)、lockdown(封城)、resilience(韌性)、silver lining(一線希望)。`,
+   vocab:[[`compromise (v.)`,`ˈkɑmprəˌmaɪz`,`損害、削弱`],[`cohort (n.)`,`ˈkohɔrt`,`同儕群體`],[`curfew (n.)`,`ˈkɝfju`,`宵禁`],[`impede (v.)`,`ɪmˈpid`,`阻礙`],[`contagion (n.)`,`kənˈtedʒən`,`傳染`],[`ingenuity (n.)`,`ˌɪndʒəˈnuəti`,`巧思、獨創力`],[`resilience (n.)`,`rɪˈzɪljəns`,`韌性`]]},
+  {kind:`q`,no:76,type:`閱讀`,topic:`細節 · 因果`,star:2,
+   stem:`According to the passage, what makes it hard for people to stay mentally sound?`,
+   zh:`根據本文,是什麼讓人們難以保持心理健全?`,
+   opts:[`Difficulty in managing time with online learning. 線上學習的時間管理困難。`,`The requirement to participate in meetings via online platforms. 必須透過線上平台參加會議。`,`Reduced opportunities for normal socialization. 正常社交的機會減少。`,`Constant fear of being uncreative. 持續害怕沒有創意。`],
+   ans:2,
+   ana:`<div class='cite'>social distancing … group gatherings are prohibited … constant fear of contagion may lead to <b>social isolation</b></div>社交距離、禁聚會 → 正常社交機會減少 → 難保持心理健康 → (C)。(A) 時間管理/(B) 線上開會/(D) 怕沒創意,均非『心理難健全』的主因(社交隔離才是)。`,
+   skill:`<b>因果題回文</b>:mentally sane 附近講 social distancing / isolation → 社交機會減少(C)。`,
+   vocab:[[`socialization (n.)`,``,`社交、社會化`],[`mentally (adv.)`,``,`心理上`]]},
+  {kind:`q`,no:77,type:`閱讀`,topic:`字義`,star:2,
+   stem:`What does the word “impede” mean?`,
+   zh:`impede 這個字是什麼意思?`,
+   opts:[`Prevent. 阻止。`,`Encourage. 鼓勵。`,`Trigger. 觸發。`,`Initiate. 發起。`],
+   ans:0,
+   ana:`<div class='cite'>Mandatory mask-wearing may <b>impede</b> the drive to communicate</div>強制戴口罩可能『阻礙』溝通的動力 → impede = 阻礙 → Prevent(阻止)。Encourage(鼓勵)/Trigger(觸發)/Initiate(發起)相反或不合。`,
+   skill:`<b>字義題看上下文</b>:戴口罩對溝通是負面 → impede = 阻礙(Prevent);Encourage/Trigger 是正面/引發,相反。`,
+   vocab:[[`impede (v.)`,``,`阻礙`],[`prevent (v.)`,`prɪˈvɛnt`,`阻止`]]},
+  {kind:`q`,no:78,type:`閱讀`,topic:`主旨 · 推論`,star:3,
+   stem:`What message does the author intend to convey in the last paragraph?`,
+   zh:`作者在最後一段想傳達什麼訊息?`,
+   opts:[`Domestic sightseeing is better than traveling overseas. 國內觀光比出國旅行好。`,`There is a silver lining to the devastating corona pandemic. 毀滅性的新冠疫情也有一線希望。`,`Meeting in person is a waste of time. 面對面開會是浪費時間。`,`The pandemic has seriously compromised the power of humans. 疫情嚴重削弱了人類的力量。`],
+   ans:1,
+   ana:`<b>末段主旨</b>:雖疫情衝擊,但人們發現國內旅遊之美、線上會議更有效率、看見人類的 resilience(韌性)→ 苦難中的一線希望 → (B) silver lining(一線希望)。(A) 國內 vs 海外比較(過度)/(C) 面對面浪費時間(過度)/(D) 削弱人類力量(與 resilience 相反)。`,
+   skill:`<b>作者意圖看轉折</b>:末段用 While… people have come to realize the fun/beauty… resilience → 正向 → silver lining(B)。`,
+   note:`⚠️ silver lining = 一線希望、烏雲背後的陽光;呼應末段『苦中見韌性』。`,
+   vocab:[[`silver lining`,``,`一線希望`],[`resilience (n.)`,``,`韌性`]]},
+  {kind:`q`,no:79,type:`閱讀`,topic:`細節 · NOT`,star:2,
+   stem:`What may not be the reason of seated dining a normal practice in some cities?`,
+   zh:`在某些城市,內用不再是常態,下列何者「不」是原因?`,
+   opts:[`Social distancing. 社交距離。`,`Curfews. 宵禁。`,`Domestic outings. 國內出遊。`,`Lockdowns. 封城。`],
+   ans:2,
+   ana:`<div class='cite'>Amid the practice of <b>social distancing, curfews, and lockdowns</b> … seated dining is an exception</div>造成『內用非常態』的原因 = 社交距離、宵禁、封城 → 對應 A/B/D;<b>Domestic outings(國內出遊)</b>不是原因 → NOT 選 (C)。`,
+   skill:`<b>NOT 原因題回文對清單</b>:原文列 social distancing/curfews/lockdowns 三項 → A/B/D;沒列的 Domestic outings(C)就是答案。`,
+   vocab:[[`curfew (n.)`,``,`宵禁`],[`lockdown (n.)`,``,`封城`]]},
+  {kind:`q`,no:80,type:`閱讀`,topic:`字義 · 句意`,star:2,
+   stem:`Which of the following explains why “trying times” is used to describe the fight against coronavirus?`,
+   zh:`下列何者解釋了為何用「trying times」形容對抗新冠病毒?`,
+   opts:[`It is a time that stifles human ingenuity. 那是扼殺人類創意的時期。`,`It is a time that people are advised to maintain an active social life. 那是建議人們維持活躍社交的時期。`,`It is a time to experiment online learning at school settings. 那是在學校試行線上學習的時期。`,`It is a time of struggle, hardship, and challenge. 那是充滿掙扎、艱苦與挑戰的時期。`],
+   ans:3,
+   ana:`<b>字義/句意題</b>:trying times = 艱難時期(trying = 艱難的、考驗人的)→ (D) 充滿掙扎、艱苦與挑戰的時期。(A) 扼殺創意(原文反說人們發揮 ingenuity)/(B) 維持活躍社交(相反)/(C) 線上學習實驗(以偏概全)。`,
+   skill:`<b>字義題</b>:trying(形容詞)= 艱難的、令人難受的;trying times = 艱難時期 → struggle/hardship(D)。`,
+   note:`⚠️ trying (adj.) = 艱難的、難熬的(不是『嘗試』);trying times = 艱困時期。`,
+   vocab:[[`trying (adj.)`,`'traiiŋ`,`艱難的、難熬的`],[`hardship (n.)`,``,`艱苦`]]},
+{kind:`strategy`,title:`⚡ 字彙 · 對話題 快速解題法`,html:`<h4>⚡ 快速解題口訣(先背這個)</h4><ul><li><b>字彙四招</b>:「<b>情境鎖 → 套回唸 → 記搭配 → 刷詞性</b>」</li><li><b>對話題</b>:「<b>先看回應,反推問題</b>」</li><li><b>完全不會</b>:「<b>刪兩個、猜一個、絕不空</b>」</li></ul><h4>一、四大快速招式(8 成題用得上)</h4><ol><li><b>情境關鍵字定位</b>:題幹一定有情境線索(機場/海關/飯店/殺價…)→ 鎖定情境找關鍵字。例:看到 Green Channel → declare(申報)</li><li><b>套回原句法</b>:4 個選項一個個填回去唸,只有一個通順(不確定字義時最有效)</li><li><b>搭配詞</b>:背固定搭配比背單字快——tax <b>refund</b>、<b>bargain</b> for、keep a safe <b>distance</b>、in case of <b>emergency</b></li><li><b>詞性先刷</b>:看空格要名詞/動詞/形容詞,詞性不對先刪(dishes 前要形容詞 → 名詞 instinct 先刪)</li></ol><h4>二、對話題專用(比字彙題更簡單)</h4><ol><li><b>看「回應」反推「問題」</b>:回答提到 camera flash → 問題必跟拍照有關</li><li><b>靠常識刷</b>:對話多是日常情境,不合常理的先刪</li></ol><h4>三、字彙題三大陷阱</h4><table><tr><th>陷阱</th><th>例</th></tr><tr><td><b>形近字</b>(長得像意思不同)</td><td>refund 退稅 / evasion 逃稅;custom 習俗 / customs 海關;quite 相當 / quiet 安靜</td></tr><tr><td><b>一詞多義</b>(看情境選對意思)</td><td>fair 公道/展覽;tip 訣竅/小費;decline 婉拒/下降;take off 起飛/脫下</td></tr><tr><td><b>同字根不同字首</b></td><td>attract/distract/retract;appropriate/approximate;deport/depart</td></tr></table><h4>四、高頻主題速記(考點集中,背這些)</h4><ul><li><b>機場/航班</b>:boarding、take off、aisle seat、immigration、arrival、turbulence</li><li><b>海關/出入境</b>:customs、declare、Green/Red Channel、tax refund、validity</li><li><b>飯店</b>:reception、amenities、check in</li><li><b>購物</b>:bargain、vendor、souvenir、boutique、groceries</li><li><b>片語動詞(每年 5–10 題必考!)</b>:take off、put out、put off、add up to、fed up with、get rid of</li></ul><h4>五、遇到完全不會的字</h4><ol><li>用<b>字根字首</b>猜(de-=去/離 → deport 遣返;-tion=名詞)</li><li><b>刪去法</b>:先刪明顯不合情境的 2 個,剩 2 個猜(命中率 50%)</li><li><b>絕不空著</b>:選擇題沒倒扣,一定要選!</li></ol>`}
+
+];
+
+const LAB=['A','B','C','D'];
+function splitOpt(o){const m=o.match(/^(.*?)([\u4e00-\u9fff].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+const app=document.getElementById('app');
+const TOTAL=DATA.filter(d=>d.kind==='q').length;
+const stars=n=>[0,1,2].map(i=>i<n?'★':'<span class="dim">☆</span>').join('');
+const sayBtn=t=>`<span class="say" data-say="${t.replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
+function vRows(v){return v.map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
+
+let answered=new Set(),correct=0;
+function updateScore(){document.getElementById('score').textContent=`作答 ${answered.size}/${TOTAL} · 答對 ${correct} · ${answered.size?Math.round(correct/answered.size*100):0}%`;}
+
+
+/* ===== 錯題本記錄(跨年共用 localStorage;安裝成 App/同一網址才跨檔共用)===== */
+var WB_KEY='wrongbook_en_leader';
+var WB_YEAR=(document.title.match(/(\d{3})\s*年/)||[])[1]||'';
+function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return {};}}
+function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
+function wbAdd(item,picked){var o=wbLoad(),id=WB_YEAR+'-'+item.no,e=o[id]||{};o[id]={y:WB_YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
+function wbRemove(no){var o=wbLoad();delete o[WB_YEAR+'-'+no];wbSave(o);}
+
+DATA.forEach(item=>{
+  if(item.kind==='guide'){
+    const el=document.createElement('div');el.className='guide';
+    el.innerHTML=`<div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div>`;
+    app.appendChild(el);return;
+  }
+  if(item.kind==='strategy'){
+    const el=document.createElement('div');el.className='strategy';
+    el.innerHTML=`<button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div>`;
+    el.querySelector('.stgh').addEventListener('click',()=>{const o=el.classList.toggle('open');el.querySelector('.stgar').textContent=o?'▲ 收合':'▼ 點開';});
+    app.appendChild(el);return;
+  }
+  if(item.kind==='passage'){
+    const el=document.createElement('div');el.className='passage';
+    el.innerHTML=`<div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+item.text.map(t=>`<p>${t}</p>`).join('')+(item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:'')+`<div class="reveal fold"><div class="lbl">難字</div><table class="vocab">${vRows(item.vocab)}</table></div>`;
+    app.appendChild(el);return;
+  }
+  const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
+  const stem=item.stem.replace('__BLANK__','<span class="blank"></span>');
+  const rawStem=item.stem.replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
+  const el=document.createElement('div');el.className='card';
+  el.innerHTML=`
+    <div class="qhead"><span class="qno">第 ${item.no} 題</span>
+      <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
+      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span></div>
+    <div class="stem">${stem} ${sayBtn(rawStem)}</div>
+    <div class="opts">${item.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`).join('')}</div>
+    <div class="reveal fold">
+      <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
+      <div class="lbl">解析</div><div class="ana">${item.ana}</div>
+      ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
+      ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
+      ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
+      ${item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:''}
+      <div class="lbl">難字 / 片語(附 KK 音標,點 🔊 聽發音)</div>
+      <table class="vocab">${vRows(item.vocab)}</table>
+    </div>`;
+  const opts=el.querySelectorAll('.opt');
+  opts.forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.i;
+    if(!answered.has(item.no)){answered.add(item.no);if(i===item.ans){correct++;wbRemove(item.no);}else{wbAdd(item,i);}updateScore();}
+    opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
+    opts[item.ans].classList.add('ok');opts[item.ans].querySelector('.mk').textContent='✓';
+    if(i!==item.ans){b.classList.add('no');b.querySelector('.mk').textContent='✗';}
+    el.classList.add('show');
+  }));
+  app.appendChild(el);
+});
+
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;
+  const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);});
+document.getElementById('printBtn').addEventListener('click',()=>{
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('show'));setTimeout(()=>window.print(),100);});
+const modeBtn=document.getElementById('mode');let review=false;
+modeBtn.addEventListener('click',()=>{review=!review;
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('show',review));
+  if(review){modeBtn.textContent='📖 複習模式';modeBtn.classList.add('on');setHideZh(false);
+    document.querySelectorAll('.card').forEach(c=>{const no=c.querySelector('.qno').textContent.replace(/\D/g,'');
+      const item=DATA.find(d=>d.kind==='q'&&String(d.no)===no);
+      if(item){const o=c.querySelectorAll('.opt');o.forEach(x=>x.classList.remove('ok','no'));
+        o[item.ans].classList.add('ok');o[item.ans].querySelector('.mk').textContent='✓';}});
+  }else{modeBtn.textContent='✍️ 自測模式';modeBtn.classList.remove('on');setHideZh(true);
+    document.querySelectorAll('.opt').forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});}});
+const zhToggle=document.getElementById('zhToggle');
+function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';}
+zhToggle.addEventListener('click',function(){setHideZh(!document.body.classList.contains('hide-zh'));});
+setHideZh(true);
+updateScore();
+</script>
+</body>
+</html>
