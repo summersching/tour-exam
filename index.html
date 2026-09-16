@@ -129,8 +129,14 @@ const APP = {
         }
       ]
     },
-    { id:'guide', name:'導遊', icon:'🚩', on:false, soon:true,
-      subs: [ { id:'en', name:'外語英語', on:false } ]
+    { id:'guide', name:'導遊', icon:'🚩', on:true,
+      subs: [
+        { id:'en', name:'外語英語', on:true,
+          years:[115],
+          file: y => `${y}_導遊英語_詳解.html`,
+          meta: { 115:['new','4401'] }
+        }
+      ]
     }
   ],
   tools: [
