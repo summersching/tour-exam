@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>114年 外語導遊(英語) 逐題完整詳解</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --ok:#15904a; --okbg:#e5f6ec; --no:#c62a2a; --nobg:#fbe9e9;
+    --chipv:#eef2ff; --chipvk:#3b4fd6; --chipd:#e8f7ee; --chipdk:#1f8a4c;
+    --chipr:#f4ecfb; --chiprk:#7a3fc0; --chipt:#eef1f5; --chiptk:#55647a;
+    --blank:#fff4cc; --blankk:#8a6d1a; --star:#e8a72b;
+    --skillbg:#eaf1ff; --skillk:#1d4ed8; --skillbd:#93b4f7;
+    --notebg:#fff3e6; --notek:#b5560c; --notebd:#f3bd7e;
+    --grambg:#f0ecfb; --gramk:#6b34c9; --grambd:#c2a8ef;
+    --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
+    --kk:#0e7c86;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+      --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+      --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+      --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+      --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+      --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+      --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+      --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+      --kk:#57cdd8;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:26px 20px 20px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 6px;font-size:1.3rem}
+  header p{margin:2px 0;opacity:.92;font-size:.86rem}
+  .stat{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .stat span{background:rgba(255,255,255,.18);padding:3px 10px;border-radius:20px;font-size:.76rem}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:10px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .score{margin-left:auto;font-size:.82rem;font-weight:700;color:var(--accent);background:var(--chipv);padding:5px 12px;border-radius:20px}
+  .hint{flex-basis:100%;font-size:.75rem;color:var(--sub);margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .qno{background:var(--ink);color:var(--card);font-weight:700;border-radius:8px;padding:2px 10px;font-size:.85rem}
+  .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
+  .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)}
+  .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
+  .stars{color:var(--star);font-size:.85rem;letter-spacing:1px;margin-left:auto} .stars .dim{opacity:.28}
+  .stem{font-size:1.02rem;margin:6px 0 12px} .stem .say{margin-left:6px}
+  .blank{background:var(--blank);color:var(--blankk);border-radius:5px;padding:0 22px;margin:0 3px;font-weight:700}
+  .opts{display:grid;gap:8px;margin:6px 0}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.15s}
+  .opt:hover{border-color:var(--accent)} .opt .lab{font-weight:700;color:var(--sub);min-width:18px}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.ok .lab{color:var(--ok)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk{margin-left:auto;font-weight:700}
+  .oen{}
+  .ozh{color:var(--sub);margin-left:4px}
+  body.hide-zh .ozh{display:none}
+  .reveal{margin:12px 0 8px;border-top:1px dashed var(--line);padding-top:10px}
+  .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:10px 0 4px;letter-spacing:.03em} .lbl:first-child{margin-top:0}
+  .zh{color:var(--sub);font-size:.95rem} .ana{font-size:.95rem}
+  .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.92rem}
+  .box .h{display:block;margin-bottom:2px;font-size:.82rem}
+  .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
+  .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--grambg);border-color:var(--grambd)} .box.gram .h{color:var(--gramk)}
+  .box.real{background:var(--realbg);border-color:var(--realbd)} .box.real .h{color:var(--realk)}
+  table.vocab{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:.9rem}
+  table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top} table.vocab td:first-child{width:46%}
+  .vw{font-weight:700;color:var(--accent)} .kk{color:var(--kk);font-style:italic;font-size:.86rem;margin-left:5px}
+  .say{cursor:pointer;color:var(--accent);font-size:.85rem;user-select:none;border:1px solid var(--line);border-radius:6px;padding:0 5px;background:var(--card)}
+  .say:hover{background:var(--chipv)}
+  .guide{background:var(--realbg);border:1px solid var(--realbd);border-radius:12px;padding:14px 16px;margin:18px 0 8px;font-size:.92rem}
+  .guide .lbl{color:var(--realk)}
+  .guide ol{margin:6px 0 0;padding-left:20px}
+  .passage{background:var(--chipt);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;font-size:.93rem}
+  .passage .lbl{color:var(--chiptk)} .passage p{margin:6px 0}
+  .strategy{background:var(--grambg);border:1px solid var(--grambd);border-radius:12px;margin:18px 0 8px;overflow:hidden}
+  .stgh{width:100%;text-align:left;background:transparent;border:0;color:var(--gramk);font-weight:700;font-size:1rem;padding:13px 16px;cursor:pointer;font-family:inherit}
+  .stgb{display:none;padding:0 16px 14px;font-size:.9rem}
+  .strategy.open .stgb{display:block}
+  .stgb h4{color:var(--gramk);margin:14px 0 6px;font-size:.92rem}
+  .stgb table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.85rem}
+  .stgb td,.stgb th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .stgb ol{padding-left:20px;margin:4px 0}
+  table.opta{width:100%;border-collapse:collapse;margin:8px 0;font-size:.88rem}
+  table.opta td{border:1px solid var(--line);padding:6px 9px;vertical-align:top}
+  table.opta td:first-child{width:44%}
+  .cite{background:var(--chipt);border-left:3px solid var(--chiptk);padding:6px 10px;margin:6px 0;border-radius:6px;font-size:.9rem;font-style:italic}
+  .ok2{color:var(--ok);font-weight:700} .no2{color:var(--no);font-weight:700}
+  .fold{display:none} .show .fold{display:block}
+  footer{max-width:840px;margin:30px auto 0;padding:0 16px;color:var(--sub);font-size:.8rem;text-align:center}
+  @media print{
+    .toolbar{display:none} .say{display:none}
+    header{background:#1e3a8a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .fold{display:block!important} .card,.passage,.guide{break-inside:avoid;box-shadow:none} body{background:#fff}
+  }
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+<script src="glossary.js" defer></script>
+<style>header{position:relative}.home{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px;z-index:3}</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="home" href="index.html">← 首頁</a>
+    <h1>114年 外語導遊(英語)— 逐題完整詳解</h1>
+    <p>科目:外國語(英語) · 代號 4401 · 交通部觀光署評量</p>
+    <p>每題:整句中譯 · 四選項中英+KK · 正解 · 解析 · 💡技巧 · ⚠️注意 · 📝文法 · 🎧現場實用 · ★重要度</p>
+    <div class="stat"><span id="prog">進度:導遊 114 · 完整 80 題 ✅</span><span>可自測計分</span><span>單字/題幹可朗讀</span><span>可匯出 PDF</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <button class="btn" id="mode">✍️ 自測模式</button>
+    <button class="btn" id="zhToggle">🈚 選項中文</button>
+    <button class="btn" id="printBtn">🖨️ 匯出 PDF</button>
+    <span class="score" id="score"></span>
+    <span class="hint">點選項即時批改;切「複習模式」全攤開;點 🔊 聽發音(口試練唸);匯出 PDF 會自動展開全部。</span>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+<footer>114年 外語(英語)逐題詳解 · 題目來源:交通部觀光署考畢試題(公開) · 詳解由 Claude 整理,供個人備考複習</footer>
+
+<script>
+const DATA = [
+  {kind:`q`,no:1,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Kaohsiung Port has been a key __BLANK__ for the city's growth and modernization with many opportunities.`,
+   zh:`高雄港一直是這座城市成長與現代化的關鍵<b>資產</b>,帶來許多機會。`,
+   opts:[`obstruction 阻礙`,`hindrance 妨礙`,`asset 資產`,`challenge 挑戰`],
+   ans:2,
+   ana:`「key ___ for growth + opportunities(成長機會)」→ 正面「資產」asset。obstruction/hindrance(阻礙)是負面;challenge(挑戰)與『成長關鍵』不合。`,
+   skill:`💡 褒貶鎖:for growth/opportunities 是正面 → 選正面的 asset。`,
+   vocab:[[`asset (n.)`,`ˈæsɛt`,`資產、有利條件`],[`modernization (n.)`,``,`現代化`]]},
+  {kind:`q`,no:2,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The river basins that converge in Kaohsiung have been crucial for its early __BLANK__.`,
+   zh:`匯聚於高雄的河流流域,對其早期<b>文明</b>發展至關重要。`,
+   opts:[`depression 蕭條`,`isolation 孤立`,`civilization 文明`,`dilemma 困境`],
+   ans:2,
+   ana:`「river basins(河流流域)+ crucial for early(對早期…重要)」→ 文明 civilization(大河孕育文明)。depression/isolation/dilemma 不合。`,
+   vocab:[[`civilization (n.)`,``,`文明`],[`river basin`,``,`流域`],[`converge (v.)`,``,`匯聚`]]},
+  {kind:`q`,no:3,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Kaohsiung, which __BLANK__ from a small village to a major port city, has a rich history.`,
+   zh:`高雄從小村莊<b>演變</b>為大港市,擁有豐富的歷史。`,
+   opts:[`accelerated 加速`,`separated 分開`,`diminished 減少`,`evolved 演變`],
+   ans:3,
+   ana:`「from a small village to a major port city(從小村→大港)」→ 演變 evolved。accelerate/separate/diminish 不合。`,
+   skill:`💡 搭配鎖:evolve from A to B = 從 A 演變成 B。`,
+   vocab:[[`evolve (v.)`,``,`演變、進化`],[`major (adj.)`,`'meidʒә`,`主要的`]]},
+  {kind:`q`,no:4,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The museum holds events to __BLANK__ the significance of the February 28 Incident in Taiwan's history.`,
+   zh:`博物館舉辦活動來<b>紀念</b>二二八事件在台灣歷史上的意義。`,
+   opts:[`ignore 忽視`,`dispute 爭論`,`decorate 裝飾`,`commemorate 紀念`],
+   ans:3,
+   ana:`「holds events to ___ the significance(辦活動…其意義)+ 二二八事件」→ 紀念 commemorate。ignore/dispute/decorate 不合。`,
+   vocab:[[`commemorate (v.)`,``,`紀念`],[`significance (n.)`,``,`重要性、意義`],[`incident (n.)`,`'insidәnt`,`事件`]]},
+  {kind:`q`,no:5,type:`字彙`,topic:`🏗 建築・設計`,star:2,
+   stem:`The historical value of the museum lies in its exterior design which __BLANK__ the architectural trends of the early 20th century.`,
+   zh:`博物館的歷史價值在於其外觀設計<b>保留</b>了 20 世紀初的建築風潮。`,
+   opts:[`ignores 忽視`,`preserves 保留`,`transforms 轉變`,`challenges 挑戰`],
+   ans:1,
+   ana:`「historical value(歷史價值)+ early 20th century 建築」→ 保留 preserves。ignores/transforms/challenges 與『歷史價值』矛盾。`,
+   vocab:[[`preserve (v.)`,`prɪˈzɝv`,`保存、保留`],[`exterior (n.)`,``,`外觀`],[`architectural (adj.)`,`.ɑ:ki'tektʃәrәl`,`建築的`]]},
+  {kind:`q`,no:6,type:`文法`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`The museum offers personal audio guides in Japanese, English, and Korean. Please __BLANK__ at the service desk.`,
+   zh:`博物館提供日、英、韓語的個人語音導覽。請至服務台<b>洽詢</b>。`,
+   opts:[`inquired 詢問(過去式)`,`inquire 詢問(原形)`,`inquiring 詢問(-ing)`,`inquires 詢問(三單)`],
+   ans:1,
+   ana:`「Please ___(祈使句)」→ 用原形動詞 inquire(洽詢)。inquired/inquiring/inquires 文法不合祈使句。`,
+   gram:`祈使句(Please + ...)動詞一律用『原形』→ inquire。`,
+   vocab:[[`inquire (v.)`,``,`詢問、洽詢`],[`audio guide`,``,`語音導覽`],[`service desk`,``,`服務台`]]},
+  {kind:`q`,no:7,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`In Japan, the society is known as a(n) __BLANK__ structure, with respect for seniority.`,
+   zh:`在日本,社會以<b>階級(層級)</b>結構聞名,講究對長幼/資歷的尊重。`,
+   opts:[`individualistic 個人主義的`,`flexible 有彈性的`,`hierarchical 階級的、層級的`,`random 隨機的`],
+   ans:2,
+   ana:`「respect for seniority(尊重資歷/長幼)」→ 階級/層級 hierarchical。individualistic/flexible/random 不合。`,
+   vocab:[[`hierarchical (adj.)`,``,`階級的、層級的`],[`seniority (n.)`,``,`資歷、年資`],[`structure (n.)`,`'strʌktʃә`,`結構`]]},
+  {kind:`q`,no:8,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`The Japanese use __BLANK__ titles as a form of respect in addressing others.`,
+   zh:`日本人用<b>敬稱</b>頭銜作為稱呼他人時的一種尊重方式。`,
+   opts:[`scientific 科學的`,`political 政治的`,`religious 宗教的`,`honorific 敬稱的`],
+   ans:3,
+   ana:`「a form of respect in addressing others(稱呼他人的尊重)」→ 敬稱 honorific titles。scientific/political/religious 不合。`,
+   vocab:[[`honorific (adj.)`,``,`敬稱的、尊稱的`],[`title (n.)`,`'taitl`,`頭銜、稱謂`],[`address (v.)`,`ә'dres`,`稱呼`]]},
+  {kind:`q`,no:9,type:`字彙`,topic:`🚶 參觀・導覽`,star:3,
+   stem:`Tour guides should be __BLANK__ in the local history, landmarks, culture, and regulations.`,
+   zh:`導遊應對當地歷史、地標、文化與法規<b>十分熟稔</b>。`,
+   opts:[`well-built 健壯的`,`well-coordinated 協調良好的`,`well-versed 精通的、熟稔的`,`well-known 有名的`],
+   ans:2,
+   ana:`「be ___ in the local history...(對…)」→ 精通/熟稔 well-versed in。well-built/well-coordinated/well-known 不合。`,
+   note:`⚠️ well-versed IN sth = 精通、熟稔(固定搭配 in)。`,
+   vocab:[[`well-versed (adj.)`,``,`精通的、熟稔的`],[`landmark (n.)`,`ˈlændˌmɑrk`,`地標`],[`regulation (n.)`,`ˌrɛɡjəˈleʃən`,`法規`]]},
+  {kind:`q`,no:10,type:`字彙`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`Good interpersonal skills in guiding include understanding and respecting __BLANK__.`,
+   zh:`帶團良好的人際技巧,包括理解並尊重<b>個人界線(分際)</b>。`,
+   opts:[`local regulations 當地法規`,`personal boundaries 個人界線`,`historical details 歷史細節`,`financial incentives 財務誘因`],
+   ans:1,
+   ana:`「interpersonal skills(人際技巧)+ understanding and respecting(理解尊重)」→ 個人界線 personal boundaries。local regulations/historical details/financial incentives 與『人際尊重』不貼切。`,
+   vocab:[[`personal boundaries`,``,`個人界線、分際`],[`interpersonal (adj.)`,``,`人際的`]]},
+  {kind:`q`,no:11,type:`字彙`,topic:`🚶 參觀・導覽`,star:3,
+   stem:`An important part of guiding is building __BLANK__ with tourists to enhance their experience.`,
+   zh:`帶團的重要一環是與遊客建立<b>融洽關係</b>,以提升他們的體驗。`,
+   opts:[`rapport 融洽關係`,`report 報告`,`distance 距離`,`silence 沉默`],
+   ans:0,
+   ana:`「building ___ with tourists to enhance experience(與遊客建立…提升體驗)」→ 融洽關係 rapport。形近 report(報告);distance/silence 與『提升體驗』矛盾。`,
+   note:`⚠️ rapport(融洽關係,音 /ræˈpɔr/)≠ report(報告),形近超易混。`,
+   vocab:[[`rapport (n.)`,``,`融洽關係`],[`enhance (v.)`,`ɪnˈhæns`,`提升`]]},
+  {kind:`q`,no:12,type:`字彙`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`I'd like to take some time to __BLANK__ you with today's schedule and discuss some brief safety precautions.`,
+   zh:`我想花點時間讓你<b>熟悉</b>今天的行程,並說明一些簡短的安全注意事項。`,
+   opts:[`offend 冒犯`,`generalize 概括`,`familiarize 使熟悉`,`refer 提及`],
+   ans:2,
+   ana:`「___ you with today's schedule(讓你…今天行程)」→ 使熟悉 familiarize sb with。offend/generalize/refer 不合。`,
+   note:`familiarize sb WITH sth = 使某人熟悉某事(固定搭配 with)。`,
+   vocab:[[`familiarize (v.)`,``,`使熟悉`],[`precaution (n.)`,`prɪˈkɔʃən`,`預防措施、注意事項`],[`schedule (n.)`,`ˈskɛdʒul`,`行程`]]},
+  {kind:`q`,no:13,type:`對話`,topic:`🗣 生活對話`,star:2,
+   stem:`Let's cross our __BLANK__ that the worst of the storm misses us.`,
+   zh:`讓我們<b>祈求好運</b>,希望暴風雨最猛烈的部分別掃到我們。`,
+   opts:[`legs 腿`,`hands 手`,`arms 手臂`,`fingers 手指`],
+   ans:3,
+   ana:`慣用語 cross one's fingers(交叉手指)= 祈求好運。legs/hands/arms 不合此慣用語。`,
+   note:`⚠️ cross one's fingers = 祈求好運(慣用語),不是真的把手指交叉。`,
+   vocab:[[`cross one's fingers`,``,`祈求好運`],[`storm (n.)`,`stɒ:m`,`暴風雨`]]},
+  {kind:`q`,no:14,type:`字彙`,topic:`🛍 購物・消費`,star:3,
+   stem:`Foreign travelers who make purchases of at least NT$2,000 on the same day from the same designated stores with the “Taiwan Tax Refund”-label are __BLANK__ to request the refund.`,
+   zh:`外國旅客在同一天於同一貼有「Taiwan Tax Refund」標誌的指定商店消費滿新台幣 2,000 元,即<b>有資格</b>申請退稅。`,
+   opts:[`required 被要求`,`obligated 有義務`,`waived 被免除`,`eligible 有資格`],
+   ans:3,
+   ana:`「消費滿額 + to request the refund(申請退稅)」→ 有資格 eligible to。required/obligated(被要求/有義務)語意過強;waived(免除)相反。`,
+   note:`be eligible TO + 原形 V = 有資格做…。`,
+   vocab:[[`eligible (adj.)`,`ˈɛlɪdʒəbl̩`,`有資格的`],[`tax refund`,``,`退稅`],[`designated (adj.)`,`'deziɡ.neitid`,`指定的`]]},
+  {kind:`q`,no:15,type:`字彙`,topic:`🔌 生活實用`,star:2,
+   stem:`Taiwan uses electric current of 110 volts at 60 cycles, so appliances from Europe, Australia or South-East Asia will need an __BLANK__ or transformer.`,
+   zh:`台灣使用 110 伏特、60 赫茲的電流,所以來自歐洲、澳洲或東南亞的電器會需要<b>轉接器</b>或變壓器。`,
+   opts:[`adapter 轉接器`,`alternator 交流發電機`,`amplifier 擴大器`,`inverter 逆變器`],
+   ans:0,
+   ana:`「與 transformer(變壓器)並列」→ 轉接器 adapter。alternator/amplifier/inverter 不合旅遊電器情境。`,
+   vocab:[[`adapter (n.)`,``,`轉接器`],[`transformer (n.)`,``,`變壓器`],[`appliance (n.)`,`əˈplaɪəns`,`電器`]]},
+  {kind:`q`,no:16,type:`字彙`,topic:`⚠ 安全・緊急`,star:3,
+   stem:`__BLANK__ by all safety rules when enjoying theme-park facilities. To stay safe, listen to what staff members say and follow their instructions.`,
+   zh:`玩主題樂園設施時,請<b>遵守</b>所有安全規定。為了安全,聽從工作人員的話並遵循指示。`,
+   opts:[`Conform 順從`,`Abide 遵守`,`Obey 服從`,`Follow 遵循`],
+   ans:1,
+   ana:`「___ by all safety rules(…所有安全規則)」→ abide by(遵守)。Conform 需接 to;Obey/Follow 直接接受詞不加 by——只有 abide 搭 by。`,
+   note:`⚠️ 搭介系詞:abide BY / conform TO;obey、follow 直接接受詞(不加介系詞)。`,
+   vocab:[[`abide by`,``,`遵守`],[`theme-park`,``,`主題樂園`],[`instruction (n.)`,`ɪnˈstrʌkʃən`,`指示`]]},
+  {kind:`q`,no:17,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The people who previously __BLANK__ Taiwan also left many cultural remnants that can still be found around the island today, including traditional architecture, relics of prehistoric civilizations, folk art, and traditions.`,
+   zh:`過去<b>居住</b>在台灣的人們,也留下許多文化遺跡,至今仍能在島上各處看到,包括傳統建築、史前文明遺址、民間藝術與傳統。`,
+   opts:[`anticipated 預期`,`traveled 旅行`,`visited 造訪`,`inhabited 居住於`],
+   ans:3,
+   ana:`「left many cultural remnants(留下文化遺跡)+ prehistoric civilizations(史前文明)」→ 居住 inhabited。anticipated/traveled/visited 語意較弱,難留下『文明遺跡』。`,
+   vocab:[[`inhabit (v.)`,``,`居住於`],[`remnant (n.)`,`ˈrɛmnənt`,`遺跡、殘留`],[`relic (n.)`,``,`遺物、遺址`]]},
+  {kind:`q`,no:18,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`The medical assistive devices used by passengers may not __BLANK__ 125 cm in length, 90 cm in width, and 185 cm in height.`,
+   zh:`乘客使用的醫療輔助裝置不得<b>超過</b>長 125 公分、寬 90 公分、高 185 公分。`,
+   opts:[`exceed 超過`,`extend 延伸`,`enlarge 擴大`,`expand 擴張`],
+   ans:0,
+   ana:`「may not ___ 125 cm...(不得…尺寸)」→ 超過 exceed。extend/enlarge/expand 不合『尺寸上限』語境。`,
+   vocab:[[`exceed (v.)`,`ɪkˈsid`,`超過`],[`assistive device`,``,`輔助裝置`],[`dimension (n.)`,`dɪˈmɛnʃən`,`尺寸`]]},
+  {kind:`q`,no:19,type:`字彙`,topic:`🏛 景點・文化`,star:1,
+   stem:`Taipei 101 is a __BLANK__ of Taiwan. It is Taiwan's tallest building as well as a great place for shopping, dining and seeing sights.`,
+   zh:`台北 101 是台灣的<b>地標</b>。它是台灣最高的建築,也是購物、用餐與觀光的好去處。`,
+   opts:[`footmark 足跡`,`landmark 地標`,`bookmark 書籤`,`postmark 郵戳`],
+   ans:1,
+   ana:`「tallest building(最高建築)」→ 地標 landmark。形近 footmark/bookmark/postmark 刷掉。`,
+   skill:`💡 -mark 形近字群:landmark 地標 / footmark 足跡 / bookmark 書籤 / postmark 郵戳。`,
+   vocab:[[`landmark (n.)`,`ˈlændˌmɑrk`,`地標`],[`dining (n.)`,`ˈdaɪnɪŋ`,`用餐`],[`sights (n.)`,``,`景點`]]},
+  {kind:`q`,no:20,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Lukang lies along the west coast of Taiwan. It had the largest __BLANK__ in Taiwan during the Qing period.`,
+   zh:`鹿港位於台灣西海岸。它在清代擁有全台最多的<b>人口</b>。`,
+   opts:[`population 人口`,`solution 解答`,`exaction 勒索`,`eviction 驅逐`],
+   ans:0,
+   ana:`「the largest ___ during the Qing period(清代最大的…)」→ 人口 population。solution/exaction/eviction 不合。`,
+   vocab:[[`population (n.)`,`.pɒpju'leiʃәn`,`人口`],[`the Qing period`,``,`清朝時期`],[`lie along`,``,`沿著…座落`]]},
+  {kind:`q`,no:21,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Taroko National Park is a popular destination for international travelers because of its __BLANK__ landscapes.`,
+   zh:`太魯閣國家公園因其<b>壯觀</b>的景觀,成為國際旅客的熱門景點。`,
+   opts:[`laboratory 實驗室`,`history 歷史`,`distraction 分心`,`spectacular 壯觀的`],
+   ans:3,
+   ana:`空格修飾 landscapes(景觀)需形容詞 → 壯觀的 spectacular。laboratory/history/distraction 都是名詞,先刷掉。`,
+   skill:`💡 詞性鎖:空格 + landscapes 需形容詞 → 只有 spectacular 是形容詞。`,
+   vocab:[[`spectacular (adj.)`,`spɛkˈtækjəlɚ`,`壯觀的`],[`landscape (n.)`,`ˈlændˌskep`,`景觀`],[`destination (n.)`,`ˌdɛstəˈneʃən`,`景點`]]},
+  {kind:`q`,no:22,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Qixingtan in Hualien County is known for its unique __BLANK__ beach where visitors can create art works with small stones.`,
+   zh:`花蓮縣的七星潭以獨特的<b>礫石(鵝卵石)</b>海灘聞名,遊客可用小石頭創作藝術品。`,
+   opts:[`pebble 鵝卵石、礫石`,`mystery 神秘`,`seawall 海堤`,`whale 鯨`],
+   ans:0,
+   ana:`「small stones(小石頭)」→ 礫石 pebble beach。mystery/seawall/whale 不合。`,
+   vocab:[[`pebble (n.)`,``,`鵝卵石、礫石`],[`artwork (n.)`,`'ɑ:twә:k`,`藝術品`]]},
+  {kind:`q`,no:23,type:`字彙`,topic:`💱 換匯・金錢`,star:1,
+   stem:`We recommend exchanging your money at the bank because you get a __BLANK__ rate.`,
+   zh:`我們建議在銀行換錢,因為你能拿到<b>公道</b>的匯率。`,
+   opts:[`pure 純的`,`fair 公道的`,`fast 快的`,`dairy 乳製品的`],
+   ans:1,
+   ana:`「exchange money + rate(匯率)」→ 公道的 fair rate。pure/fast/dairy 不合。`,
+   vocab:[[`fair (adj.)`,`fɛr`,`公平的、公道的`],[`exchange rate`,``,`匯率`]]},
+  {kind:`q`,no:24,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Xiaoyoukeng, located in Yangmingshan National Park, is probably one of the best places to feel the pulsation of the __BLANK__ under your feet.`,
+   zh:`位於陽明山國家公園的小油坑,大概是最能感受腳下<b>火山</b>脈動的地方之一。`,
+   opts:[`people 人們`,`star 星星`,`beat 節拍`,`volcano 火山`],
+   ans:3,
+   ana:`小油坑是火山地熱景觀,「pulsation ... under your feet(腳下的脈動)」→ 火山 volcano。people/star/beat 不合。`,
+   vocab:[[`volcano (n.)`,`vɑlˈkeno`,`火山`],[`pulsation (n.)`,``,`脈動、搏動`]]},
+  {kind:`q`,no:25,type:`字彙`,topic:`🏨 住宿`,star:2,
+   stem:`If you are staying near the coast in Taiwan, some homestays might offer activities like __BLANK__ in the sea.`,
+   zh:`如果你在台灣海邊住宿,有些民宿可能提供像<b>浮潛</b>這類的海上活動。`,
+   opts:[`skateboarding 滑板`,`snorkeling 浮潛`,`skydiving 跳傘`,`gliding 滑翔`],
+   ans:1,
+   ana:`「in the sea(在海裡)」→ 浮潛 snorkeling。skateboarding/skydiving/gliding 不在海裡。`,
+   vocab:[[`snorkeling (n.)`,`ˈsnɔrkl̩ɪŋ`,`浮潛`],[`homestay (n.)`,``,`民宿`],[`coast (n.)`,`kost`,`海岸`]]},
+  {kind:`q`,no:26,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Common ingredients of Taiwanese __BLANK__ are pork, seafood, rice, soy, and chicken.`,
+   zh:`台灣<b>料理</b>常見的食材有豬肉、海鮮、米、大豆和雞肉。`,
+   opts:[`cuisine 料理、菜餚`,`tofu 豆腐`,`noodles 麵`,`hamburger 漢堡`],
+   ans:0,
+   ana:`「common ingredients of Taiwanese ___(台灣…的食材)」→ 料理 cuisine。tofu/noodles/hamburger 是『食物』不是『菜系』,且與『食材』語意重複。`,
+   vocab:[[`cuisine (n.)`,`kwɪˈzin`,`料理、菜餚`],[`ingredient (n.)`,`ɪnˈɡridɪənt`,`食材`],[`soy (n.)`,`sɒi`,`大豆`]]},
+  {kind:`q`,no:27,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The Mazu __BLANK__, which lasts over a week and covers hundreds of kilometers, is one of Taiwan's religious festivals. It is like an enormous birthday celebration for the “Goddess of the Sea.”`,
+   zh:`媽祖<b>遶境進香</b>持續一週以上、綿延數百公里,是台灣的宗教節慶之一,就像為「海上女神」舉辦的盛大生日慶典。`,
+   opts:[`introduction 介紹`,`temple 廟宇`,`palace 宮殿`,`pilgrimage 進香、朝聖`],
+   ans:3,
+   ana:`「lasts over a week + covers hundreds of km(持續一週、綿延數百公里)」→ 進香/遶境 pilgrimage。introduction/temple/palace 不合『長途宗教活動』。`,
+   vocab:[[`pilgrimage (n.)`,``,`進香、朝聖`],[`enormous (adj.)`,`ɪˈnɔrməs`,`巨大的`],[`goddess (n.)`,``,`女神`]]},
+  {kind:`q`,no:28,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`The Pingxi Lantern Festival in New Taipei City is known as one of the best festivals in Taiwan. Thousands of lanterns are sent into the air as a form of prayer for good luck and __BLANK__.`,
+   zh:`新北市的平溪天燈節是台灣最棒的節慶之一。成千上萬的天燈升空,作為祈求好運與<b>祝福</b>的一種方式。`,
+   opts:[`blessings 祝福`,`misfortune 不幸`,`objection 反對`,`mystery 神秘`],
+   ans:0,
+   ana:`「prayer for good luck and ___(祈求好運與…)」→ 祝福 blessings。misfortune(不幸)相反;objection/mystery 不合。`,
+   vocab:[[`blessing (n.)`,``,`祝福`],[`lantern (n.)`,`ˈlæntɚn`,`燈籠、天燈`],[`prayer (n.)`,``,`祈禱`]]},
+  {kind:`q`,no:29,type:`字彙`,topic:`🏛 景點・文化`,star:1,
+   stem:`Alishan Forest Railway is a hot spot in Chiayi County. The railway was used for delivering logs. Now many tourists come here to experience the __BLANK__.`,
+   zh:`阿里山森林鐵路是嘉義縣的熱門景點。這條鐵路過去用來運送木材。如今許多遊客來這裡體驗<b>搭乘(車程)</b>。`,
+   opts:[`race 比賽`,`ride 搭乘、車程`,`raft 泛舟`,`rags 破布`],
+   ans:1,
+   ana:`「come here to experience the ___(來體驗…)+ railway 鐵路」→ 搭乘 ride。race/raft/rags 不合。`,
+   vocab:[[`ride (n.)`,`raɪd`,`搭乘、車程`],[`log (n.)`,`lɒg`,`原木`],[`hot spot`,``,`熱門景點`]]},
+  {kind:`q`,no:30,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Taiwan's metro system has been praised by locals for its effectiveness in relieving growing traffic __BLANK__ in Taipei and its surrounding satellite towns.`,
+   zh:`台灣的捷運系統因有效紓解台北及周邊衛星城鎮日益嚴重的交通<b>壅塞</b>,而受到當地人稱讚。`,
+   opts:[`speed 速度`,`mileage 里程`,`congestion 壅塞`,`popularity 人氣`],
+   ans:2,
+   ana:`「relieving growing traffic ___(紓解日益嚴重的交通…)」→ 壅塞 congestion。speed/mileage/popularity 不合『紓解』對象。`,
+   vocab:[[`congestion (n.)`,`kənˈdʒɛstʃən`,`壅塞、擁擠`],[`metro (n.)`,`ˈmɛtro`,`捷運`],[`satellite town`,``,`衛星城鎮`]]},
+  {kind:`q`,no:31,type:`字彙`,topic:`🍽 餐飲`,star:3,
+   stem:`Taiwan is a food lover's paradise. Restaurants and food stalls fill the roads in any built-up area. It is said that one of the great strengths of its culinary landscape is its __BLANK__.`,
+   zh:`台灣是美食愛好者的天堂。任何鬧區的街道都擠滿餐廳與小吃攤。據說其飲食版圖的一大強項,就在於它的<b>易取得性(方便)</b>。`,
+   opts:[`possibility 可能性`,`immunity 免疫`,`reality 現實`,`accessibility 可及性、易取得`],
+   ans:3,
+   ana:`「restaurants and food stalls fill the roads(街上到處都是)」→ 隨處可得的方便性 accessibility。possibility/immunity/reality 不合。`,
+   vocab:[[`accessibility (n.)`,``,`可及性、易取得`],[`culinary (adj.)`,`ˈkjuləˌnɛrɪ`,`烹飪的、飲食的`],[`food stall`,``,`小吃攤`]]},
+  {kind:`q`,no:32,type:`字彙`,topic:`🏗 建築・設計`,star:2,
+   stem:`The __BLANK__ of the Old Taichung Train Station is a mix of traditional Japanese and late Renaissance themes. It is now listed as a national monument.`,
+   zh:`台中舊火車站的<b>建築</b>融合了傳統日式與晚期文藝復興的風格。它現在被列為國定古蹟。`,
+   opts:[`architecture 建築`,`history 歷史`,`texture 質地`,`gallery 畫廊`],
+   ans:0,
+   ana:`「a mix of Japanese and late Renaissance themes(融合日式與文藝復興風格)+ national monument(古蹟)」→ 建築 architecture。history/texture/gallery 不合。`,
+   vocab:[[`architecture (n.)`,`ˈɑrkəˌtɛktʃɚ`,`建築`],[`Renaissance (n.)`,`ˈrɛnəˌsɑns`,`文藝復興`],[`monument (n.)`,`ˈmɑnjəmənt`,`古蹟、紀念物`]]},
+  {kind:`q`,no:33,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`The National Palace Museum is home to hundreds of thousands of ancient Chinese __BLANK__ and artwork, which are of great historical value.`,
+   zh:`故宮博物院收藏著數十萬件古代中華<b>文物</b>與藝術品,深具歷史價值。`,
+   opts:[`ventifacts 風稜石`,`artifacts 文物`,`abstracts 摘要`,`impacts 衝擊`],
+   ans:1,
+   ana:`「ancient Chinese ___ and artwork(古代中華…與藝術品)」→ 文物 artifacts。形近 ventifacts(風稜石)/abstracts/impacts 刷掉。`,
+   note:`⚠️ artifact(人工製品、文物)vs ventifact(風稜石,地質名詞);形近但差很多。`,
+   vocab:[[`artifact (n.)`,`ˈɑrtɪˌfækt`,`文物、手工藝品`],[`artwork (n.)`,`'ɑ:twә:k`,`藝術品`]]},
+  {kind:`q`,no:34,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`A palm puppet museum has been established in Yunlin County, which is the “hometown of __BLANK__ puppetry.” In the museum, you can admire beautifully crafted palm puppets, costumes, and headgear.`,
+   zh:`雲林縣設立了一座布袋戲(掌中戲)博物館,雲林是「<b>手套(布袋)戲</b>之鄉」。館內可欣賞做工精美的布袋戲偶、戲服與頭飾。`,
+   opts:[`glove 手套`,`groove 溝槽`,`hoof 蹄`,`hood 兜帽`],
+   ans:0,
+   ana:`布袋戲英文 = glove puppetry(手套/掌中戲);雲林是「布袋戲之鄉」→ glove。形近 groove/hoof/hood 刷掉。`,
+   note:`布袋戲 = glove puppetry / hand puppetry(手套/掌中戲);偶像手套般套在手上操作。`,
+   vocab:[[`glove puppetry`,``,`布袋戲、掌中戲`],[`puppet (n.)`,``,`戲偶、木偶`],[`headgear (n.)`,``,`頭飾`]]},
+  {kind:`q`,no:35,type:`字彙`,topic:`🍽 餐飲`,star:1,
+   stem:`Drink stores can be found practically anywhere in built-up areas in Taiwan. Most of the __BLANK__ at these places involve tea.`,
+   zh:`在台灣的鬧區幾乎到處都能找到飲料店。這些店裡大部分的<b>飲料</b>都含茶。`,
+   opts:[`cakes 蛋糕`,`sweets 糖果`,`beverages 飲料`,`oranges 柳橙`],
+   ans:2,
+   ana:`「Drink stores(飲料店)+ involve tea(含茶)」→ 飲料 beverages。cakes/sweets/oranges 不合。`,
+   vocab:[[`beverage (n.)`,`ˈbɛvərɪdʒ`,`飲料`],[`built-up area`,``,`鬧區、建成區`]]},
+  {kind:`q`,no:36,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`When in central Taiwan, railroad __BLANK__ can plan a railway journey to Changhua Sector Garage. It has a round platform with 12 tracks that spread out like a fan—a breathtaking sight!`,
+   zh:`在中台灣時,鐵道<b>迷</b>可以規劃一趟前往彰化扇形車庫的鐵道之旅。那裡有座圓形月台、12 條軌道如扇形展開——令人驚豔!`,
+   opts:[`enginemen 火車司機`,`employees 員工`,`enthusiasts 愛好者、迷`,`conductors 車掌`],
+   ans:2,
+   ana:`「plan a railway journey(規劃鐵道之旅)+ 觀光」→ 鐵道『迷』enthusiasts。enginemen/employees/conductors 是『從業人員』,非來觀光的愛好者。`,
+   vocab:[[`enthusiast (n.)`,``,`愛好者、迷`],[`garage (n.)`,``,`車庫`],[`breathtaking (adj.)`,`ˈbrɛθˌtekɪŋ`,`令人驚嘆的`]]},
+  {kind:`q`,no:37,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Chu Lu Ranch in Taitung County is the largest hillside __BLANK__ in Taiwan. Herds of dairy cows roam leisurely on the grassland.`,
+   zh:`台東縣的初鹿牧場是台灣最大的坡地<b>牧場</b>。成群的乳牛在草原上悠閒漫步。`,
+   opts:[`exposure 曝光`,`treasure 珍寶`,`pasture 牧場`,`vulture 禿鷹`],
+   ans:2,
+   ana:`「dairy cows roam on the grassland(乳牛在草原漫步)」→ 牧場 pasture。形近 exposure/treasure/vulture 刷掉。`,
+   note:`-sure/-ture 形近字群;pasture(牧場)。`,
+   vocab:[[`pasture (n.)`,``,`牧場、草地`],[`ranch (n.)`,``,`大牧場`],[`dairy cow`,``,`乳牛`]]},
+  {kind:`q`,no:38,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`Tongpan Island in Penghu features a typical basalt mesa landform with a __BLANK__ bounded by cliffs made up of well-developed, neatly stacked basalt columns.`,
+   zh:`澎湖的桶盤嶼具有典型的玄武岩方山地形,<b>海岸線</b>被由發育良好、整齊堆疊的玄武岩柱構成的懸崖環繞。`,
+   opts:[`storyline 故事線`,`shoreline 海岸線`,`storey 樓層`,`showtime 演出時間`],
+   ans:1,
+   ana:`「bounded by cliffs(被懸崖環繞)+ island(島)」→ 海岸線 shoreline。形近 storyline/storey/showtime 刷掉。`,
+   vocab:[[`shoreline (n.)`,``,`海岸線`],[`basalt (n.)`,``,`玄武岩`],[`cliff (n.)`,`klɪf`,`懸崖`]]},
+  {kind:`q`,no:39,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`The indigenous tribes of Taiwan form the most northern branch of the Austronesia language group and __BLANK__ belong to the Malay race.`,
+   zh:`台灣的原住民部落是南島語族最北的分支,在<b>種族上</b>屬於馬來人種。`,
+   opts:[`completely 完全地`,`radically 根本地`,`ethnically 在種族上`,`religiously 在宗教上`],
+   ans:2,
+   ana:`「belong to the Malay race(屬於馬來人種)」→ 種族上 ethnically。completely/radically/religiously 不合。`,
+   vocab:[[`ethnically (adv.)`,``,`在種族上`],[`indigenous (adj.)`,`ɪnˈdɪdʒənəs`,`原住民的`],[`Austronesian`,``,`南島語系的`]]},
+  {kind:`q`,no:40,type:`字彙`,topic:`📄 證件・保險`,star:1,
+   stem:`Immigration is the place where government officials check travelers to make sure they can __BLANK__ get in or get out of the country.`,
+   zh:`證照查驗處是政府官員查驗旅客、確保他們能<b>合法</b>入境或出境的地方。`,
+   opts:[`illegally 非法地`,`secretly 祕密地`,`informally 非正式地`,`legally 合法地`],
+   ans:3,
+   ana:`「officials check ... make sure(官員查驗、確保)」→ 合法 legally。illegally(非法)相反;secretly/informally 不合。`,
+   vocab:[[`legally (adv.)`,``,`合法地`],[`immigration (n.)`,`ˌɪməˈɡreʃən`,`證照查驗、入境管理`],[`official (n.)`,`ә'fiʃәl`,`官員`]]},
+  {kind:`q`,no:41,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`You must declare or dispose of any __BLANK__ or restricted goods before you reach customs.`,
+   zh:`抵達海關前,你必須申報或丟棄任何<b>違禁</b>或受限制的物品。`,
+   opts:[`projected 投射的`,`prohibited 違禁的`,`progressed 進展的`,`proceeded 繼續的`],
+   ans:1,
+   ana:`「與 restricted(受限制的)並列 + declare/dispose(申報/丟棄)」→ 違禁的 prohibited。形近 projected/progressed/proceeded 刷掉。`,
+   note:`pro- 形近字群:prohibited 違禁 / projected 投射 / progressed 進展 / proceeded 繼續。`,
+   vocab:[[`prohibited (adj.)`,`proˈhɪbɪtɪd`,`違禁的、被禁止的`],[`declare (v.)`,`dɪˈklɛr`,`申報`],[`restricted (adj.)`,`rɪˈstrɪktɪd`,`受限制的`]]},
+  {kind:`q`,no:42,type:`字彙`,topic:`🔌 生活實用`,star:2,
+   stem:`Cryptocurrencies are __BLANK__ currencies that can be used to buy goods and services, or even traded for profit.`,
+   zh:`加密貨幣是一種<b>數位</b>貨幣,可用來購買商品和服務,甚至可交易獲利。`,
+   opts:[`digital 數位的`,`token 代幣`,`coin 硬幣`,`foreign 外國的`],
+   ans:0,
+   ana:`「Cryptocurrencies(加密貨幣)」→ 數位 digital currencies(加密貨幣=數位貨幣)。token/coin 為名詞,此處需形容詞修飾 currencies;foreign 不合。`,
+   vocab:[[`digital (adj.)`,`'didʒitәl`,`數位的`],[`cryptocurrency (n.)`,``,`加密貨幣`],[`trade (v.)`,``,`交易`]]},
+  {kind:`q`,no:43,type:`字彙`,topic:`🚶 參觀・導覽`,star:2,
+   stem:`An interpreter is a person who __BLANK__ a thought or expression of a source language into an expression with a comparable meaning in a target language.`,
+   zh:`口譯員是把來源語言的想法或表達<b>轉換</b>成目標語言中意義相當之表達的人。`,
+   opts:[`compares 比較`,`concludes 總結`,`converts 轉換`,`conducts 引導、進行`],
+   ans:2,
+   ana:`「___ a source language into a target language(把來源語…成目標語…)」→ 轉換 converts A into B。形近 compares/concludes/conducts 刷掉。`,
+   note:`convert A INTO B = 把 A 轉換成 B。`,
+   vocab:[[`convert (v.)`,`kәn'vә:t`,`轉換`],[`interpreter (n.)`,``,`口譯員`],[`target language`,``,`目標語言`]]},
+  {kind:`q`,no:44,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`The travel business has shown clearly that the largest __BLANK__ came among the relatively cheap package tour operators, and especially with tours that have a low foreign currency content.`,
+   zh:`旅遊業已清楚顯示,最大的<b>挫敗(衰退)</b>發生在相對便宜的套裝行程業者身上,尤其是外幣占比低的行程。`,
+   opts:[`services 服務`,`setbacks 挫敗、挫折`,`settings 設定`,`settlements 和解`],
+   ans:1,
+   ana:`「the largest ___ came among cheap operators(最大的…出現在廉價業者)」→ 挫敗/衝擊 setbacks。services/settings/settlements 不合語境。`,
+   vocab:[[`setback (n.)`,`'setbæk`,`挫敗、挫折`],[`package tour`,``,`套裝行程`],[`operator (n.)`,`ˈɑpəˌretɚ`,`業者`]]},
+  {kind:`q`,no:45,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`To access the business class __BLANK__ in the Taoyuan International Airport, all passengers must have already checked in for their onward flight and be in possession of a valid boarding pass.`,
+   zh:`要進入桃園國際機場的商務艙<b>貴賓室</b>,所有旅客必須已辦好接續航班的報到,並持有有效的登機證。`,
+   opts:[`carousels 行李轉盤`,`airways 航道`,`lounges 貴賓室`,`runways 跑道`],
+   ans:2,
+   ana:`「business class ___ + checked in + boarding pass(商務艙…報到、登機證)」→ 貴賓室 lounges。carousels/airways/runways 不合。`,
+   vocab:[[`lounge (n.)`,`laʊndʒ`,`貴賓室、休息室`],[`boarding pass`,``,`登機證`],[`onward flight`,``,`接續航班`]]},
+  {kind:`q`,no:46,type:`字彙`,topic:`🚶 參觀・導覽`,star:3,
+   stem:`Many explorer travelers __BLANK__ to spiritual or transcendental motivations for seeking out risky and far-away places.`,
+   zh:`許多探險型旅人把尋找危險、遙遠地點的動機<b>歸諸/提及</b>於精神或超凡的追求。`,
+   opts:[`dodge 閃避`,`allude 暗指、提及`,`evade 逃避`,`elude 躲避`],
+   ans:1,
+   ana:`「___ to spiritual motivations(…精神動機)」→ allude to(提及、歸因)。形近 dodge/evade/elude 語意不合且不搭 to。`,
+   note:`⚠️ allude TO(暗指、提及)vs elude(躲避)、evade(逃避)——形近義異。`,
+   vocab:[[`allude to`,``,`暗指、提及`],[`transcendental (adj.)`,``,`超凡的、超驗的`],[`motivation (n.)`,`ˌmotəˈveʃən`,`動機`]]},
+  {kind:`q`,no:47,type:`字彙`,topic:`📖 閱讀・學術`,star:3,
+   stem:`Today, health tourism is seen as one of the __BLANK__ service areas for elderly consumers.`,
+   zh:`如今,健康旅遊被視為對銀髮消費者<b>不可或缺</b>的服務領域之一。`,
+   opts:[`indispensable 不可或缺的`,`indestructible 堅不可摧的`,`baffled 困惑的`,`bewildered 迷惑的`],
+   ans:0,
+   ana:`「one of the ___ service areas(…的服務領域)」→ 不可或缺的 indispensable。indestructible/baffled/bewildered 不合。`,
+   vocab:[[`indispensable (adj.)`,``,`不可或缺的`],[`health tourism`,``,`健康旅遊`],[`elderly (adj.)`,``,`年長的`]]},
+  {kind:`q`,no:48,type:`字彙`,topic:`📖 閱讀・學術`,star:3,
+   stem:`The evolution of modern tourism owes much to the __BLANK__ in transportation as a mode of mobility.`,
+   zh:`現代觀光的演進,很大程度歸功於作為移動方式的交通<b>進步</b>。`,
+   opts:[`degrations(無此正式字)`,`demotions 降級`,`advancements 進步、進展`,`abasements 貶低`],
+   ans:2,
+   ana:`「evolution owes much to the ___ in transportation(觀光演進歸功於交通…)」→ 進步 advancements。demotions/abasements 相反;degrations 非正式字。`,
+   vocab:[[`advancement (n.)`,``,`進步、進展`],[`evolution (n.)`,``,`演進`],[`mobility (n.)`,`moˈbɪlətɪ`,`移動性`]]},
+  {kind:`q`,no:49,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Make sure that your luggage has successfully passed through X-ray __BLANK__ before you leave the check-in area.`,
+   zh:`離開報到區前,請確認你的行李已順利通過 X 光<b>檢查</b>。`,
+   opts:[`inspection 檢查`,`reflection 反射`,`rendition 演繹`,`injection 注射`],
+   ans:0,
+   ana:`「X-ray ___ + luggage(X 光…行李)」→ 檢查 inspection。形近 reflection/rendition/injection 刷掉。`,
+   vocab:[[`inspection (n.)`,`ɪnˈspɛkʃən`,`檢查`],[`luggage (n.)`,`ˈlʌɡɪdʒ`,`行李`],[`check-in (n.)`,``,`報到`]]},
+  {kind:`q`,no:50,type:`字彙`,topic:`📖 閱讀・學術`,star:3,
+   stem:`__BLANK__ refers to the ability to successfully adapt to stressors, maintaining psychological well-being in the face of adversity.`,
+   zh:`<b>韌性(心理復原力)</b>指的是成功適應壓力源、在逆境中維持心理健康的能力。`,
+   opts:[`Despair 絕望`,`Indifference 冷漠`,`Resilience 韌性、復原力`,`Complacency 自滿`],
+   ans:2,
+   ana:`「adapt to stressors + maintain well-being in adversity(適應壓力、逆境中維持健康)」→ 韌性 Resilience。Despair/Indifference/Complacency 不合。`,
+   vocab:[[`resilience (n.)`,``,`韌性、復原力`],[`stressor (n.)`,``,`壓力源`],[`adversity (n.)`,``,`逆境`]]},
+  {kind:`q`,no:51,type:`字彙`,topic:`⚠ 安全・緊急`,star:2,
+   stem:`Earthquakes happen often and may __BLANK__ train services. Get advice on being in an earthquake-prone region.`,
+   zh:`地震經常發生,可能<b>擾亂</b>火車班次。請取得在地震頻繁地區的相關建議。`,
+   opts:[`erupt 噴發`,`abrupt 突然的`,`sculpt 雕刻`,`disrupt 擾亂、中斷`],
+   ans:3,
+   ana:`「earthquakes may ___ train services(地震…火車班次)」→ 擾亂 disrupt。形近 erupt/abrupt/sculpt 刷掉。`,
+   note:`-rupt/-ulpt 形近字群:disrupt 擾亂 / erupt 噴發 / abrupt 突然 / sculpt 雕刻。`,
+   vocab:[[`disrupt (v.)`,`dɪsˈrʌpt`,`擾亂、中斷`],[`earthquake-prone`,``,`地震頻繁的`]]},
+  {kind:`q`,no:52,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`If you do not have appropriate __BLANK__ before you travel, you could be liable for emergency expenses.`,
+   zh:`如果你在旅行前沒有適當的<b>保險</b>,可能需要自行負擔緊急費用。`,
+   opts:[`subsidy 補助`,`incentive 誘因`,`insurance 保險`,`assurance 保證`],
+   ans:2,
+   ana:`「liable for emergency expenses(需負擔緊急費用)」→ 保險 insurance。subsidy/incentive 不合;assurance(保證)不如 insurance 精準。`,
+   note:`⚠️ insurance(保險)vs assurance(保證);旅遊保險用 insurance。`,
+   vocab:[[`insurance (n.)`,`ɪnˈʃʊrəns`,`保險`],[`liable (adj.)`,``,`需負責的、有義務的`],[`expense (n.)`,`ɪkˈspɛns`,`費用`]]},
+  {kind:`q`,no:53,type:`字彙`,topic:`🍽 餐飲`,star:3,
+   stem:`Pig's blood cake is a popular Taiwanese street food snack made with pork blood __BLANK__ with sticky rice.`,
+   zh:`豬血糕是受歡迎的台灣街頭小吃,由豬血<b>凝結</b>糯米製成。`,
+   opts:[`congealed 凝結的`,`parched 烤乾的`,`coated 裹上的`,`decorated 裝飾的`],
+   ans:0,
+   ana:`豬血糕做法:豬血與糯米『凝固』成塊 → congealed。parched/coated/decorated 不合。`,
+   vocab:[[`congeal (v.)`,``,`凝結、凝固`],[`sticky rice`,``,`糯米`],[`snack (n.)`,`snæk`,`小吃`]]},
+  {kind:`q`,no:54,type:`字彙`,topic:`🛍 購物・消費`,star:3,
+   stem:`Shilin Night Market has a fun, carnival-like atmosphere with arguably the best mix of food, games, and shopping stalls, but just be prepared to __BLANK__ your way through the crowds.`,
+   zh:`士林夜市有歡樂、嘉年華般的氛圍,可說是美食、遊戲與購物攤販的最佳組合,但要有心理準備<b>用手肘擠</b>過人群。`,
+   opts:[`elbow 用手肘擠`,`stretch 伸展`,`pave 鋪路`,`glow 發光`],
+   ans:0,
+   ana:`「___ your way through the crowds(…穿過人群)」→ elbow one's way(用手肘擠過)。stretch/pave/glow 不合。`,
+   note:`elbow one's way through = 用手肘擠過(人群)。`,
+   vocab:[[`elbow (v.)`,`ˈɛlˌbo`,`用手肘擠`],[`carnival (n.)`,`ˈkɑrnəvl̩`,`嘉年華`],[`stall (n.)`,``,`攤販`]]},
+  {kind:`q`,no:55,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`A no-show fee will be __BLANK__ on passengers who do not cancel their reservations 3 hours before the flight's takeoff, or do not board their flights after completion of the check-in process.`,
+   zh:`對於未在航班起飛前 3 小時取消訂位、或完成報到後未登機的旅客,將<b>課徵</b>失約費。`,
+   opts:[`exerted 施加(力/影響)`,`assigned 指派`,`imposed 課徵、強加`,`granted 授予`],
+   ans:2,
+   ana:`「a no-show fee will be ___ on passengers(對旅客…失約費)」→ 課徵 imposed on。exerted(多用於力/影響)/assigned/granted(相反)不合。`,
+   note:`impose a fee/tax ON sb = 對某人課徵費用/稅。`,
+   vocab:[[`impose (v.)`,``,`課徵、強加`],[`no-show (n.)`,``,`預約未到`],[`reservation (n.)`,`ˌrɛzɚˈveʃən`,`訂位`]]},
+  {kind:`q`,no:56,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`Ladies and Gentlemen, we will soon make a brief stop at Tainan Station. Please make sure you have all your personal belongings with you, and mind the platform gap when __BLANK__.`,
+   zh:`各位女士先生,我們即將在台南站短暫停靠。請確認隨身攜帶所有個人物品,<b>下車</b>時請留意月台間隙。`,
+   opts:[`alighting 下車`,`descending 下降`,`halting 停止`,`bumping 碰撞`],
+   ans:0,
+   ana:`「platform gap(月台間隙)+ station(車站)」→ 下車 alighting。descending/halting/bumping 不合『下車』情境。`,
+   note:`alight (from a train/bus) = (從火車/公車)下車(正式用語)。`,
+   vocab:[[`alight (v.)`,``,`下車`],[`platform gap`,``,`月台間隙`],[`belongings (n.)`,`bəˈlɔŋɪŋz`,`隨身物品`]]},
+  {kind:`q`,no:57,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Climbing over 2KM, the famous Alishan forest railway passes through several climate zones, including tropical, subtropical, __BLANK__, and high-mountain forest ranges.`,
+   zh:`阿里山森林鐵路爬升超過 2 公里,穿越數個氣候帶,包括熱帶、亞熱帶、<b>溫帶</b>與高山森林帶。`,
+   opts:[`temperate 溫帶的`,`medium 中等的`,`arid 乾旱的`,`plain 平原的`],
+   ans:0,
+   ana:`「tropical, subtropical, ___(熱帶、亞熱帶、…)」氣候帶序列 → 溫帶 temperate。medium/arid/plain 不合氣候帶序列。`,
+   vocab:[[`temperate (adj.)`,``,`溫帶的、溫和的`],[`tropical (adj.)`,``,`熱帶的`],[`climate zone`,``,`氣候帶`]]},
+  {kind:`q`,no:58,type:`字彙`,topic:`📄 證件・保險`,star:3,
+   stem:`A biometric passport includes various security features such as embedded chips, biometric data, and digital signatures, making it harder to __BLANK__.`,
+   zh:`生物辨識護照包含多種安全特徵,如嵌入式晶片、生物特徵資料與數位簽章,使其更難<b>偽造</b>。`,
+   opts:[`reclaim 取回`,`cyberattack 網路攻擊`,`misinform 誤導`,`counterfeit 偽造`],
+   ans:3,
+   ana:`「security features(安全特徵)→ making it harder to ___」→ 偽造 counterfeit。reclaim/cyberattack/misinform 不合。`,
+   vocab:[[`counterfeit (v.)`,``,`偽造`],[`biometric (adj.)`,``,`生物辨識的`],[`embedded chip`,``,`嵌入式晶片`]]},
+  {kind:`q`,no:59,type:`字彙`,topic:`🍽 餐飲`,star:2,
+   stem:`Featuring the most local and complex flavors, the coffee served in most of the coffee shops at Alishan is grown and __BLANK__ by the owner.`,
+   zh:`阿里山多數咖啡館供應的咖啡,具有最在地、最複雜的風味,由店主親自栽種與<b>烘焙</b>。`,
+   opts:[`soaked 浸泡`,`roasted 烘焙`,`toasted 烤(麵包)`,`smoked 煙燻`],
+   ans:1,
+   ana:`「coffee ... grown and ___ by the owner(咖啡由店主栽種與…)」→ 烘焙 roasted(咖啡豆烘焙)。soaked/toasted/smoked 不合咖啡。`,
+   vocab:[[`roast (v.)`,``,`烘焙、烘烤`],[`flavor (n.)`,``,`風味`],[`grow (v.)`,`grәu`,`栽種`]]},
+  {kind:`q`,no:60,type:`字彙`,topic:`🌱 永續觀光`,star:3,
+   stem:`The growing customer and employee expectations are driving the hotel industry to prioritize decarbonization __BLANK__ and sound environmental stewardship.`,
+   zh:`顧客與員工日益提高的期待,正驅使飯店業優先推動減碳<b>倡議(舉措)</b>與健全的環境管理。`,
+   opts:[`contrivances 發明物`,`privileges 特權`,`authentications 驗證`,`initiatives 倡議、舉措`],
+   ans:3,
+   ana:`「prioritize decarbonization ___(優先推動減碳…)」→ 倡議/舉措 initiatives。contrivances/privileges/authentications 不合。`,
+   vocab:[[`initiative (n.)`,``,`倡議、舉措`],[`decarbonization (n.)`,``,`減碳、去碳化`],[`stewardship (n.)`,``,`管理、經營`]]},
+  {kind:`q`,no:61,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`Taiwan is known for its __BLANK__ festivals and holidays, and participating in them may prove to be some of your most memorable Taiwan experiences.`,
+   zh:`台灣以其<b>眾多(無數)</b>的節慶和假日聞名,參與其中可能成為你最難忘的台灣體驗之一。`,
+   opts:[`numeric 數字的`,`myriad 無數的、眾多的`,`infinitive 不定詞的`,`communicable 可傳染的`],
+   ans:1,
+   ana:`「festivals and holidays(節慶假日)+ known for(以…聞名)」→ 眾多/無數的 myriad。numeric/infinitive/communicable 不合。`,
+   vocab:[[`myriad (adj.)`,``,`無數的、眾多的`],[`memorable (adj.)`,``,`難忘的`],[`participate (v.)`,`pɑrˈtɪsəˌpet`,`參與`]]},
+  {kind:`q`,no:62,type:`字彙`,topic:`🚌 交通・票券`,star:2,
+   stem:`Ladies and Gentlemen, welcome to Taiwan High Speed Rail. This train is bound for Nangang. The train will also __BLANK__ Hsinchu, Taoyuan, and Banqiao.`,
+   zh:`各位女士先生,歡迎搭乘台灣高鐵。本班列車開往南港。本班列車還會<b>停靠</b>新竹、桃園與板橋。`,
+   opts:[`stay in 待在`,`drop by 順道拜訪`,`call at 停靠(站)`,`take off 起飛、脫掉`],
+   ans:2,
+   ana:`「train + Hsinchu, Taoyuan, Banqiao(車站)」→ 停靠 call at(列車停靠站)。stay in/drop by/take off 不合列車停站。`,
+   note:`(火車/船)call at + 站/港 = 停靠。`,
+   vocab:[[`call at`,``,`停靠(站)`],[`bound for`,``,`開往…`],[`High Speed Rail`,``,`高鐵`]]},
+  {kind:`q`,no:63,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`To ensure flight safety, passengers are to safely __BLANK__ their carry-on baggage under the seat or in the overhead baggage compartment to prevent them from sliding or falling off.`,
+   zh:`為確保飛航安全,旅客應將隨身行李妥善<b>收放</b>在座位下方或頭頂上方的行李櫃,以防滑動或掉落。`,
+   opts:[`spread 散開`,`preserve 保存`,`stow 收放、堆放`,`posit 假定`],
+   ans:2,
+   ana:`「___ carry-on baggage under the seat/overhead compartment(把隨身行李…座位下/行李櫃)」→ 收放 stow。spread/preserve/posit 不合。`,
+   vocab:[[`stow (v.)`,`sto`,`收放、堆放`],[`carry-on baggage`,``,`隨身行李`],[`overhead compartment`,``,`頭頂行李櫃`]]},
+  {kind:`q`,no:64,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`To improve the service quality, some airlines offer passengers __BLANK__ seat selection service, allowing them to pre-select their seats online.`,
+   zh:`為提升服務品質,有些航空公司提供旅客<b>預先</b>選位服務,讓他們可在線上事先選好座位。`,
+   opts:[`complementary 互補的`,`precocious 早熟的`,`advance 預先的`,`qualifying 取得資格的`],
+   ans:2,
+   ana:`「pre-select their seats online(線上事先選位)」→ 預先的 advance seat selection。complementary(互補;易與 complimentary 免費混)/precocious/qualifying 不合。`,
+   note:`⚠️ advance(預先的,如 advance booking 預訂)≠ complimentary(免費)≠ complementary(互補)。`,
+   vocab:[[`advance (adj.)`,`әd'vɑ:ns`,`預先的`],[`pre-select (v.)`,``,`事先選擇`],[`seat selection`,``,`選位`]]},
+  {kind:`q`,no:65,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Uplifting, followed by __BLANK__ by rivers, caused the formation of most of the geological features of Taroko Gorge.`,
+   zh:`地殼抬升,加上河流的<b>侵蝕</b>,造就了太魯閣峽谷大部分的地質特徵。`,
+   opts:[`erosion 侵蝕`,`rotation 旋轉`,`conversion 轉換`,`saturation 飽和`],
+   ans:0,
+   ana:`「followed by ___ by rivers(接著由河流…)+ 峽谷地質」→ 侵蝕 erosion。rotation/conversion/saturation 不合。`,
+   vocab:[[`erosion (n.)`,`ɪˈroʒən`,`侵蝕`],[`uplift (n.)`,``,`抬升、隆起`],[`gorge (n.)`,``,`峽谷`]]},
+  {kind:`q`,no:66,type:`字彙`,topic:`🏛 景點・文化`,star:2,
+   stem:`Yenshui Fireworks Festival __BLANK__ in the past when people would ask the gods for help to get rid of the epidemic in Yenshui, and they would set off firecrackers to welcome the arrival of the gods.`,
+   zh:`鹽水蜂炮節<b>起源</b>於過去,當時鹽水人祈求神明協助驅除瘟疫,並施放鞭炮迎接神明降臨。`,
+   opts:[`descended 下降`,`escaped 逃離`,`incurred 招致`,`originated 起源`],
+   ans:3,
+   ana:`「___ in the past when...(在過去…時…)」→ 起源 originated。descended/escaped/incurred 不合『起源』。`,
+   vocab:[[`originate (v.)`,`ә'ridʒineit`,`起源`],[`epidemic (n.)`,`.epi'demik`,`瘟疫、流行病`],[`firecracker (n.)`,``,`鞭炮`]]},
+  {kind:`q`,no:67,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`Every year, there will be a major display of Taiwan Lantern Festival, usually by the representative animals of the Chinese __BLANK__ of the year to display.`,
+   zh:`每年台灣燈會都會有大型主燈展示,通常以當年生肖(中國<b>十二生肖</b>)的代表動物來呈現。`,
+   opts:[`ellipse 橢圓`,`calendar 曆法`,`compass 羅盤`,`zodiac 生肖、黃道十二宮`],
+   ans:3,
+   ana:`「representative animals of the Chinese ___ of the year(當年中國…的代表動物)」→ 十二生肖 zodiac。ellipse/calendar/compass 不合。`,
+   vocab:[[`zodiac (n.)`,``,`生肖、黃道十二宮`],[`lantern (n.)`,`ˈlæntɚn`,`燈籠`],[`representative (adj.)`,`ˌrɛprɪˈzɛntətɪv`,`代表性的`]]},
+  {kind:`q`,no:68,type:`字彙`,topic:`🏛 景點・文化`,star:3,
+   stem:`The lowlands of Taiwan, especially the coasts, are important __BLANK__ for seabirds and for wildlife associated with the few remaining undisturbed patches of tropical strand or mangrove trees.`,
+   zh:`台灣的低地,尤其是海岸,是海鳥及與少數僅存未受干擾的熱帶海濱林或紅樹林相關野生動物的重要<b>棲地</b>。`,
+   opts:[`harbingers 先兆`,`habitats 棲地`,`supplies 補給`,`origins 起源`],
+   ans:1,
+   ana:`「for seabirds and wildlife(供海鳥與野生動物)」→ 棲地 habitats。harbingers/supplies/origins 不合。`,
+   vocab:[[`habitat (n.)`,`ˈhæbəˌtæt`,`棲地`],[`mangrove (n.)`,``,`紅樹林`],[`seabird (n.)`,``,`海鳥`]]},
+  {kind:`q`,no:69,type:`字彙`,topic:`🚌 交通・票券`,star:3,
+   stem:`You can check in your baggage smoothly in the airport by using a self-service check-in __BLANK__, which issues a bag tag for you to attach to your baggage, and then go to the Self Baggage Drop.`,
+   zh:`你可以在機場使用自助報到<b>機台</b>順利託運行李,它會印出行李條讓你貼在行李上,接著再前往自助行李託運處。`,
+   opts:[`stall 攤位`,`pavilion 涼亭、展館`,`cube 立方體`,`kiosk 自助服務機、亭`],
+   ans:3,
+   ana:`「self-service check-in ___ + issues a bag tag(自助報到…印行李條)」→ 機台 kiosk。stall/pavilion/cube 不合。`,
+   vocab:[[`kiosk (n.)`,``,`自助服務機、亭`],[`bag tag`,``,`行李條`],[`self-service (adj.)`,``,`自助的`]]},
+  {kind:`q`,no:70,type:`字彙`,topic:`📄 證件・保險`,star:2,
+   stem:`In international practice, most countries and territories may refuse entry to a foreign visitor if their passport will __BLANK__ less than six months after the date of arrival.`,
+   zh:`依國際慣例,若外國旅客的護照在抵達日後不到六個月就<b>到期</b>,多數國家與地區可能拒絕其入境。`,
+   opts:[`hold 持有`,`expire 到期、失效`,`perspire 流汗`,`validate 使生效`],
+   ans:1,
+   ana:`「passport will ___ less than six months after arrival(護照…抵達後不到六個月)」→ 到期 expire。形近 perspire(流汗)/hold/validate(相反)不合。`,
+   note:`護照『六個月效期』規則:passport must not expire within six months。`,
+   vocab:[[`expire (v.)`,`ɪkˈspaɪr`,`到期、失效`],[`refuse entry`,``,`拒絕入境`],[`territory (n.)`,`ˈtɛrəˌtɔrɪ`,`領土、地區`]]},
+  {kind:`passage`,
+   label:`閱讀第 1 篇(第 71–75 題)· 主題:永續觀光的治理與策略`,
+   text:[`Governments took exceptional measures to support tourism as recent crises raised awareness of the sector's importance as an economic and social force. The strong recovery is providing a new wakeup call for governments and the sector as a whole, as destinations struggle to manage demand and the impacts on the environment and local communities. This is putting pressure on the social license for tourism and has highlighted the need to rebalance the impacts, understand the trade-offs and manage tourism sustainably, so the benefits outweigh the costs. At the same time, tourism offers untapped potential for many people, businesses, and places.`,`Governments, at all levels, have a role to play in shaping tourism development to respond to these challenges, capitalize on opportunities, and deliver better outcomes. Many countries have updated or developed tourism strategies to reflect the post-pandemic context and priorities. These strategies look to build on recent momentum to shift to more sustainable models of tourism, to adapt to an increasingly dynamic environment and engage stakeholders around a common vision for the future of the sector. Diversifying the tourism offer and attracting new source markets and segments to emerging destinations and outside of peak periods underpins many tourism strategies, to better spread the benefits and tourist flows. Significant investments are needed to reduce the environmental impact of tourism activities, while adapting to the impacts from climate change. Tourism destinations and businesses need support to keep pace with rapid technological developments, while resources are also required to develop the transport and other infrastructure needed to better manage tourism development. Boosting the capacity of the sector to attract, retain and develop a strong and sustainable workforce is a further area of ongoing focus.`,`However, implementation remains an issue and there is a risk that tourism slips down national policy agendas as the sector returns to pre-pandemic levels and growth paths. Effective governance practices and co-ordinated policy action are needed to deliver on these ambitions, supported by sufficient resources at national, regional, and local level. Action at destination level has an increasingly important role to play in driving momentum for change, guided by an overarching national vision for the future of tourism that in turn considers local needs and priorities, and supported by effective co-ordination mechanisms across levels of government. More granular, timely and robust evidence is also needed to manage and track progress on potential trade-offs, determine “what works” and identify emerging policy impacts and risks, as well as the costs of inaction.`],
+   real:`🎧 <b>永續觀光治理</b>是政策型議題。口試可提:sustainable tourism(永續觀光)、stakeholders(利害關係人)、overtourism(過度觀光)、trade-offs(取捨)。本篇偏政策文,抓『政府需有效治理、把觀光管得永續』主旨即可。`,
+   vocab:[[`sustainable (adj.)`,`səˈstenəbl̩`,`永續的`],[`stakeholder (n.)`,`ˈstekˌholdɚ`,`利害關係人`],[`trade-off (n.)`,``,`取捨、權衡`],[`governance (n.)`,`ˈɡʌvɚnəns`,`治理`],[`momentum (n.)`,`moˈmɛntəm`,`動能、氣勢`],[`infrastructure (n.)`,`ˈɪnfrəˌstrʌktʃɚ`,`基礎建設`],[`granular (adj.)`,`ˈɡrænjəlɚ`,`細緻的、細粒度的`]]},
+  {kind:`q`,no:71,type:`閱讀`,topic:`主旨`,star:2,
+   stem:`Which of the following best summarizes the overall theme of the passage?`,
+   zh:`下列何者最能總結本文的整體主旨?`,
+   opts:[`Tourism's importance in boosting the economy 觀光對提振經濟的重要性`,`Risks associated with the tourism industry 觀光業的相關風險`,`Strategies for attracting more tourists 吸引更多遊客的策略`,`The need for effective, sustainable tourism management 有效且永續的觀光管理之必要`],
+   ans:3,
+   ana:`<b>主旨題「涵蓋全文」</b>:三段都圍繞『政府要有效治理、把觀光管得永續』。<table class='opta'><tr><td>(A) 提振經濟</td><td><span class='no2'>✗</span> 只是引言一小點(以偏概全)</td></tr><tr><td>(B) 觀光風險</td><td><span class='no2'>✗</span> 只是其中一段(以偏概全)</td></tr><tr><td>(C) 吸引遊客策略</td><td><span class='no2'>✗</span> 是手段之一,非全文主旨</td></tr><tr><td>(D) 有效永續管理</td><td><span class='ok2'>✓ 正解</span> 罩住全文(治理+永續+管理)</td></tr></table>`,
+   skill:`<b>主旨挑『涵蓋最廣』</b>:A/B/C 都只對一部分;政策文反覆出現 sustainable、manage、governance → 選 D。`,
+   vocab:[[`summarize (v.)`,``,`總結、概述`],[`overall (adj.)`,`'әuvәrɒ:l`,`整體的`]]},
+  {kind:`q`,no:72,type:`閱讀`,topic:`細節 · NOT`,star:2,
+   stem:`Which of the following is NOT mentioned as a focus area for sustainable tourism development?`,
+   zh:`下列何者「不是」文中提到的永續觀光發展焦點領域?`,
+   opts:[`Workforce capacity building 勞動力量能建設`,`Enhancing social media marketing 強化社群媒體行銷`,`Environmental impact reduction 降低環境衝擊`,`Infrastructure development 基礎建設發展`],
+   ans:1,
+   ana:`<b>① 圈 NOT!</b> 找『文章沒提』的。<table class='opta'><tr><td>(A) 勞動力量能</td><td><span class='ok2'>有提</span> boosting the capacity … workforce</td></tr><tr><td>(B) 社群媒體行銷</td><td><span class='no2'>✗ 選這</span> 全文<b>沒提</b>社群媒體</td></tr><tr><td>(C) 環境衝擊降低</td><td><span class='ok2'>有提</span> reduce the environmental impact</td></tr><tr><td>(D) 基礎建設</td><td><span class='ok2'>有提</span> develop the transport and other infrastructure</td></tr></table>`,
+   skill:`<b>NOT 題 = 三個回文找得到、一個找不到</b>。A/C/D 都能在第 2 段定位;B 社群媒體整篇沒出現 → 選 B。`,
+   note:`⚠️ NOT/EXCEPT 題先圈題目關鍵字,再逐一回文;找不到出處的就是答案。`,
+   vocab:[[`workforce (n.)`,``,`勞動力`],[`capacity (n.)`,`kəˈpæsətɪ`,`量能、容量`]]},
+  {kind:`q`,no:73,type:`閱讀`,topic:`細節`,star:3,
+   stem:`What risk does the tourism sector face as it returns to pre-pandemic levels?`,
+   zh:`當觀光業回到疫情前的水準時,面臨什麼風險?`,
+   opts:[`Reduced funding from international agencies 國際機構資金減少`,`Overemphasis on environmental issues 過度強調環境議題`,`Decline in tourism activities 觀光活動衰退`,`Losing priority on national policy agendas 在國家政策議程上失去優先性`],
+   ans:3,
+   ana:`<div class='cite'>there is a risk that tourism <b>slips down national policy agendas</b> as the sector returns to pre-pandemic levels</div>回文第 3 段開頭直接點出:觀光在政策議程上『滑落』→ (D)。A(國際資金減少)/B(過度強調環境)/C(觀光衰退,原文是『強勢復甦』相反)皆不合。`,
+   skill:`<b>細節題回文找關鍵字</b>:題目 pre-pandemic levels + risk → 第 3 段第一句就是答案(slips down agendas)。`,
+   vocab:[[`agenda (n.)`,`ә'dʒendә`,`議程`],[`pre-pandemic`,``,`疫情前的`]]},
+  {kind:`q`,no:74,type:`閱讀`,topic:`推論 · 因果`,star:2,
+   stem:`What is a likely reason why effective governance practices are emphasized in the passage?`,
+   zh:`本文為何強調有效的治理作為,最可能的原因為何?`,
+   opts:[`To ensure all tourism revenue is used for public benefit 確保所有觀光收益用於公共利益`,`To control tourism without any public input 在無任何公眾參與下管控觀光`,`To co-ordinate efforts across government levels 協調各級政府的努力`,`To create more restrictions on tourism development 對觀光發展設更多限制`],
+   ans:2,
+   ana:`<div class='cite'>Effective governance practices and <b>co-ordinated policy action</b> … resources at national, regional, and local level … co-ordination mechanisms across levels of government</div>強調治理是為了『跨層級協調』→ (C)。A(所有收益公共用)/B(無公眾參與)/D(更多限制)都與原文相反或沒提。`,
+   skill:`<b>『為什麼強調 X』回 X 附近</b>:governance 出現處反覆講 co-ordinated / across levels of government → 協調 = C。`,
+   vocab:[[`co-ordinate (v.)`,``,`協調`],[`emphasize (v.)`,`ˈɛmfəˌsaɪz`,`強調`]]},
+  {kind:`q`,no:75,type:`閱讀`,topic:`細節 · 因果`,star:2,
+   stem:`Why is “more granular, timely and robust evidence” important for tourism management?`,
+   zh:`為何「更細緻、即時且可靠的數據證據」對觀光管理很重要?`,
+   opts:[`To attract more tourists 吸引更多遊客`,`To manage and track progress on tourism impacts 管理並追蹤觀光衝擊的進展`,`To keep pace with rapid technological developments 跟上快速的科技發展`,`To develop a strong and sustainable workforce 培養強大且永續的勞動力`],
+   ans:1,
+   ana:`<div class='cite'>More granular, timely and robust evidence is also needed to <b>manage and track progress on potential trade-offs</b>, determine 'what works' and identify emerging policy impacts and risks</div>證據是用來『管理與追蹤衝擊/取捨的進展』→ (B)。A/C/D 雖是文中其他重點,但非『這句證據』的目的(張冠李戴)。`,
+   skill:`<b>『為什麼需要 X』回 X 那句</b>:evidence … needed to <b>manage and track progress</b> → 照語意 = B;別選文章別處講過但與此句無關的 C/D。`,
+   vocab:[[`robust (adj.)`,``,`穩健的、可靠的`],[`track (v.)`,`træk`,`追蹤`]]},
+  {kind:`passage`,
+   label:`閱讀第 2 篇(第 76–80 題)· 主題:AI 在飯店服務業的應用(較難)`,
+   text:[`In the fast-paced and highly competitive world of hospitality, where customer expectations are sky-high, the industry faces a multitude of challenges. These obstacles can appear overwhelming, from the need to tailor experiences to effectively managing operations in the face of constantly shifting demand. However, the advent of Artificial Intelligence (AI) marks the dawn of a new era, offering promising solutions with the potential to tackle these challenges head-on. AI is poised to automate processes, boost efficiency, and elevate decision-making in the industry by emulating human intelligence.`,`The hospitality industry, which encompasses hotels, resorts, restaurants, and travel services, faces unique challenges in meeting the ever-increasing expectations of modern guests. With the rise of online booking platforms, social media, and review sites, guests have become more discerning and demanding. They expect personalized experiences, seamless interactions, and efficient services. This is where AI can play a vital role in transforming the hospitality industry.`,`AI's remarkable capacity to analyze vast datasets, forecast trends, and make intelligent decisions is fundamentally reshaping how hospitality businesses operate. AI solutions have the potential to enhance guest services, optimize operations, and improve security and safety within the hospitality sector. By leveraging AI technologies, hotels and other hospitality establishments can provide personalized recommendations to guests based on their preferences, automate routine tasks through virtual assistants and chatbots, and implement voice recognition systems for seamless control of room amenities. By harnessing the power of AI, organizations can now streamline operations for maximum efficiency, and fortify security measures to an unprecedented degree. Additionally, AI can contribute to revenue management through dynamic pricing strategies, facilitate predictive maintenance to minimize downtime and provide valuable insights through data analytics for better decision-making. As per IndustryARC, the travel and hospitality AI Market is projected to exceed the $1.2 billion milestone by 2026, with an expected Compound Annual Growth Rate (CAGR) of over 9.7% throughout the forecast period from 2021 to 2026.`,`Yet, this is merely the tip of the iceberg. A wealth of insights and discoveries await us as we delve deeper into the role of artificial intelligence in the hospitality industry. This article discusses AI use cases in hospitality, the benefits of AI in the industry, future trends and some real-world examples.`],
+   real:`🎧 <b>AI 與觀光服務業</b>是新興熱門題。口試可提:artificial intelligence(人工智慧)、personalized service(個人化服務)、chatbot(聊天機器人)、efficiency(效率)。`,
+   vocab:[[`hospitality (n.)`,`ˌhɑspɪˈtæləti`,`服務業、款待`],[`multitude (n.)`,`ˈmʌltəˌtud`,`眾多`],[`tailor (v.)`,`ˈtelɚ`,`量身打造`],[`leverage (v.)`,`ˈlɛvərɪdʒ`,`善用、運用`],[`discerning (adj.)`,`dɪˈsɝnɪŋ`,`有眼光的、挑剔的`],[`seamless (adj.)`,`ˈsimlɪs`,`無縫的、順暢的`],[`streamline (v.)`,`ˈstrimˌlaɪn`,`精簡、使流暢`]]},
+  {kind:`q`,no:76,type:`閱讀`,topic:`細節 · TRUE`,star:3,
+   stem:`According to the passage, which of the following statements is TRUE?`,
+   zh:`根據本文,下列敘述何者「正確」?`,
+   opts:[`With its role being further examined, more potentials of AI in the hospitality industry are yet to be uncovered. 隨其角色被進一步檢視,AI 在飯店業更多潛力仍有待發掘`,`AI is anticipated to indirectly take on the challenges facing the hospitality industry. 預期 AI 會『間接』因應飯店業面臨的挑戰`,`The challenges confronting the hospitality sector seem negligible. 飯店業面臨的挑戰似乎微不足道`,`The hospitality sector is facing universal challenges across industries. 飯店業面臨的是各行各業共通的挑戰`],
+   ans:0,
+   ana:`<b>逐項回文</b><table class='opta'><tr><td>(A) 更多 AI 潛力有待發掘</td><td><span class='ok2'>✓ 正解</span> = tip of the iceberg … delve deeper … await us</td></tr><tr><td>(B) AI <b>間接</b>因應</td><td><span class='no2'>✗</span> 原文 <b>head-on</b>(正面直接)</td></tr><tr><td>(C) 挑戰微不足道</td><td><span class='no2'>✗</span> 原文 multitude / overwhelming(眾多、龐大),相反</td></tr><tr><td>(D) 各行業共通挑戰</td><td><span class='no2'>✗</span> 原文說飯店業面臨 <b>unique</b>(獨特)挑戰</td></tr></table>`,
+   skill:`<b>TRUE 題逐項回文</b>:B『間接』↔ head-on(直接);C『微不足道』↔ overwhelming;D『共通』↔ unique。抓反義偷換。`,
+   note:`⚠️ head-on = 正面迎擊;tip of the iceberg = 冰山一角(還有很多)。`,
+   vocab:[[`uncover (v.)`,``,`發掘、揭露`],[`negligible (adj.)`,``,`微不足道的`]]},
+  {kind:`q`,no:77,type:`閱讀`,topic:`細節 · NOT`,star:2,
+   stem:`According to the passage, which of the following is NOT a potential capability of AI?`,
+   zh:`根據本文,下列何者「不是」AI 的潛在能力?`,
+   opts:[`Boosting interpersonal networking skills 提升人際網絡技巧`,`Shoring up security measures 強化安全措施`,`Helping to make intelligent decision 協助做出明智決策`,`Automating routine tasks 自動化例行任務`],
+   ans:0,
+   ana:`<b>① 圈 NOT!</b><table class='opta'><tr><td>(A) 提升人際網絡技巧</td><td><span class='no2'>✗ 選這</span> 全文<b>沒提</b>『人際網絡』能力</td></tr><tr><td>(B) 強化安全</td><td><span class='ok2'>有提</span> fortify security measures</td></tr><tr><td>(C) 明智決策</td><td><span class='ok2'>有提</span> make intelligent decisions</td></tr><tr><td>(D) 自動化例行任務</td><td><span class='ok2'>有提</span> automate routine tasks</td></tr></table>`,
+   skill:`<b>NOT 題三個找得到</b>:B/C/D 都能在第 1、3 段定位;A『人際網絡技巧』整篇沒提 → 選 A。`,
+   vocab:[[`shore up`,``,`強化、支撐`],[`interpersonal (adj.)`,``,`人際的`]]},
+  {kind:`q`,no:78,type:`閱讀`,topic:`字義`,star:3,
+   stem:`Which of the following is closest in meaning to the word “leveraging” in the third paragraph?`,
+   zh:`下列何者與第三段的 leveraging 意思最接近?`,
+   opts:[`Simulating 模擬`,`Exploiting 善用、運用`,`Weighing 權衡`,`Overlapping 重疊`],
+   ans:1,
+   ana:`<div class='cite'>By <b>leveraging</b> AI technologies, hotels … can provide personalized recommendations …</div>『善用 AI 技術來提供服務』→ leverage = 善用、運用 → Exploiting(此處中性『善用資源』)。Simulating/Weighing/Overlapping 不合。`,
+   skill:`<b>字義題看上下文</b>:leverage + technologies to provide services → 運用/善用;exploit 在此為中性『善加利用』。`,
+   note:`⚠️ exploit 有『剝削』與『善用』兩義;搭 technologies/resources 時是『善用』。`,
+   vocab:[[`leverage (v.)`,``,`善用、運用`],[`exploit (v.)`,``,`善用;利用`]]},
+  {kind:`q`,no:79,type:`閱讀`,topic:`推論`,star:3,
+   stem:`Which of the following can be inferred from the passage?`,
+   zh:`根據本文,下列何者可以被推論出來?`,
+   opts:[`Social media and review sites help hotel guests to become desirous for material feedback. 社群與評論網站使飯店客人渴望實質回饋`,`Active pricing strategies help to improve the human resource management in the hospitality sector. 主動定價策略有助改善飯店業的人力資源管理`,`The hospitality AI market is optimistic about its growth of value by 2026. 飯店業 AI 市場對其 2026 年前的價值成長樂觀`,`The AI potential capabilities in the hospitality industry can seamlessly apply to other industries. 飯店業的 AI 潛能可無縫套用到其他產業`],
+   ans:2,
+   ana:`<div class='cite'>the travel and hospitality AI Market is projected to <b>exceed the $1.2 billion milestone by 2026</b> … CAGR of over 9.7%</div>市場預估成長 → 可推論『對 2026 前的價值成長樂觀』→ (C)。<table class='opta'><tr><td>(A) 渴望實質回饋</td><td><span class='no2'>✗</span> <b>過度推論</b>,原文只說客人更挑剔</td></tr><tr><td>(B) 定價改善<b>人資</b></td><td><span class='no2'>✗</span> 定價是 revenue management(營收),非人資(偷換概念)</td></tr><tr><td>(D) 可無縫套用他業</td><td><span class='no2'>✗</span> <b>文章沒提</b>套用其他產業</td></tr></table>`,
+   skill:`<b>推論題先刪錯</b>:A 過度推論、B 偷換概念(營收≠人資)、D 文章沒提 → 剩有數據依據的 C。`,
+   vocab:[[`optimistic (adj.)`,``,`樂觀的`],[`infer (v.)`,`ɪnˈfɝ`,`推論`]]},
+  {kind:`q`,no:80,type:`閱讀`,topic:`推論 · EXCEPT`,star:2,
+   stem:`This passage will most likely continue to discuss the following issues EXCEPT_____.`,
+   zh:`本文接下來最可能繼續討論下列議題,「除了」______。`,
+   opts:[`benefits of AI in hospitality AI 在飯店業的好處`,`future trends of AI AI 的未來趨勢`,`examples of AI development AI 發展的案例`,`downsides of AI AI 的缺點`],
+   ans:3,
+   ana:`<div class='cite'>This article discusses AI use cases in hospitality, the <b>benefits</b> of AI …, <b>future trends</b> and some <b>real-world examples</b>.</div>末段預告後續會談:好處(A)、未來趨勢(B)、真實案例(C)——唯獨<b>沒提</b>缺點(downsides)→ EXCEPT 選 (D)。`,
+   skill:`<b>『接下來會談什麼 EXCEPT』回末段預告句</b>:文章結尾那句列了 A/B/C 三項,沒列的 D(缺點)就是答案。`,
+   note:`⚠️ EXCEPT/NOT 題:題目列的『有提到』的要排除,選那個『沒被列到』的。`,
+   vocab:[[`downside (n.)`,``,`缺點、負面`],[`real-world`,``,`真實世界的`]]},
+{kind:`strategy`,title:`⚡ 字彙 · 對話題 快速解題法`,html:`<h4>⚡ 快速解題口訣(先背這個)</h4><ul><li><b>字彙四招</b>:「<b>情境鎖 → 套回唸 → 記搭配 → 刷詞性</b>」</li><li><b>對話題</b>:「<b>先看回應,反推問題</b>」</li><li><b>完全不會</b>:「<b>刪兩個、猜一個、絕不空</b>」</li></ul><h4>一、四大快速招式(8 成題用得上)</h4><ol><li><b>情境關鍵字定位</b>:題幹一定有情境線索(機場/海關/飯店/殺價…)→ 鎖定情境找關鍵字。例:看到 Green Channel → declare(申報)</li><li><b>套回原句法</b>:4 個選項一個個填回去唸,只有一個通順(不確定字義時最有效)</li><li><b>搭配詞</b>:背固定搭配比背單字快——tax <b>refund</b>、<b>bargain</b> for、keep a safe <b>distance</b>、in case of <b>emergency</b></li><li><b>詞性先刷</b>:看空格要名詞/動詞/形容詞,詞性不對先刪(dishes 前要形容詞 → 名詞 instinct 先刪)</li></ol><h4>二、對話題專用(比字彙題更簡單)</h4><ol><li><b>看「回應」反推「問題」</b>:回答提到 camera flash → 問題必跟拍照有關</li><li><b>靠常識刷</b>:對話多是日常情境,不合常理的先刪</li></ol><h4>三、字彙題三大陷阱</h4><table><tr><th>陷阱</th><th>例</th></tr><tr><td><b>形近字</b>(長得像意思不同)</td><td>refund 退稅 / evasion 逃稅;custom 習俗 / customs 海關;quite 相當 / quiet 安靜</td></tr><tr><td><b>一詞多義</b>(看情境選對意思)</td><td>fair 公道/展覽;tip 訣竅/小費;decline 婉拒/下降;take off 起飛/脫下</td></tr><tr><td><b>同字根不同字首</b></td><td>attract/distract/retract;appropriate/approximate;deport/depart</td></tr></table><h4>四、高頻主題速記(考點集中,背這些)</h4><ul><li><b>機場/航班</b>:boarding、take off、aisle seat、immigration、arrival、turbulence</li><li><b>海關/出入境</b>:customs、declare、Green/Red Channel、tax refund、validity</li><li><b>飯店</b>:reception、amenities、check in</li><li><b>購物</b>:bargain、vendor、souvenir、boutique、groceries</li><li><b>片語動詞(每年 5–10 題必考!)</b>:take off、put out、put off、add up to、fed up with、get rid of</li></ul><h4>五、遇到完全不會的字</h4><ol><li>用<b>字根字首</b>猜(de-=去/離 → deport 遣返;-tion=名詞)</li><li><b>刪去法</b>:先刪明顯不合情境的 2 個,剩 2 個猜(命中率 50%)</li><li><b>絕不空著</b>:選擇題沒倒扣,一定要選!</li></ol>`},
+{kind:`strategy`,title:`📖 閱讀解題技巧總攻略`,html:`<h4>📖 閱讀口訣(先背這個)</h4><ul><li><b>選對答案</b>:「<b>回文定位,換句話說</b>」</li><li><b>八大陷阱</b>:「<b>反、沒、過、偏、換、張、絕、湊</b>」(相反/沒提/過度推論/以偏概全/偷換概念/張冠李戴/絕對化/硬湊因果)</li><li><b>推論題</b>:「<b>不找對的,先刪錯的</b>」</li></ul><h4>一、開考戰術(時間 &amp; 順序)</h4><ol><li><b>閱讀擺最後寫</b>:前 70 題字彙/對話先秒殺,留 15–20 分給 2 篇(每篇約 8 分)。</li><li><b>先讀題目、再讀文章</b>:帶問題找答案,別先逐字精讀。</li><li><b>細節題按文章順序出</b>:第 1 題答案多在前段、最後題在後段。</li><li><b>略讀骨架</b>:首段 + 每段第一句 + 結論 = 全文主旨。</li></ol>
+<h4>二、六大題型速查</h4><table><tr><th>題型</th><th>題目長相</th><th>破解法</th></tr><tr><td><b>主旨/標題</b></td><td>title / mainly about</td><td>選涵蓋全文;太窄太寬都刪</td></tr><tr><td><b>細節</b></td><td>According to / Why / What</td><td>關鍵字回文;答案是原文換句話說</td></tr><tr><td><b>NOT 題</b></td><td>NOT true / EXCEPT</td><td>先圈 NOT!選與原文矛盾/沒出現的</td></tr><tr><td><b>推論</b></td><td>inferred / imply</td><td>刪 4 種雷;選溫和有依據的</td></tr><tr><td><b>字義</b></td><td>the word "X" means</td><td>代入原句 + 字根 + 上下文褒貶</td></tr><tr><td><b>目的/態度</b></td><td>purpose / tone</td><td>看作者立場;語氣太偏必錯</td></tr></table>
+<h4>三、干擾選項 8 大陷阱</h4><ol><li><b>與原文相反</b>(回文一比就露餡)</li><li><b>文章沒提</b>(無中生有:政府、政策…)</li><li><b>過度推論</b>(outweigh/best/most 講太滿)</li><li><b>以偏概全</b>(只涵蓋一部分,主旨題最愛)</li><li><b>偷換概念</b>(local↔foreign)</li><li><b>張冠李戴</b>(對的資訊安到錯的題)</li><li><b>絕對化</b>(only/all/never/must/completely)</li><li><b>硬湊因果</b>(兩件無關的事說成因果)</li></ol>
+<h4>四、這科(旅遊觀光閱讀)命題特點</h4><ul><li><b>常考主題</b>:觀光經濟影響、永續/淨零、過度觀光、文化遺產、旅遊安全、旅宿趨勢。</li><li><b>超愛正反並陳</b>:先好處再壞處 → <b>「說死一邊」的選項幾乎必錯</b>,答案通常兩面兼顧。</li><li><b>學術詞不用怕</b>:考的是主旨/細節/態度,抓大意就能答。</li></ul>
+<h4>五、卡關搶救</h4><ol><li>字義題不會 → 看<b>字根</b> + 上下文褒貶。</li><li>細節找不到 → 用<b>關鍵字/專有名詞/數字</b>回文掃。</li><li>兩選項難選 → 找有原文依據的,避開「絕對化」「文章沒提」。</li><li>時間不夠 → 主旨、字義題最快先搶;推論題擺最後。</li></ol>`}
+
+];
+
+const LAB=['A','B','C','D'];
+function splitOpt(o){const m=o.match(/^(.*?)([\u4e00-\u9fff].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+const app=document.getElementById('app');
+const TOTAL=DATA.filter(d=>d.kind==='q').length;
+const stars=n=>[0,1,2].map(i=>i<n?'★':'<span class="dim">☆</span>').join('');
+const sayBtn=t=>`<span class="say" data-say="${t.replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
+function vRows(v){return v.map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
+
+let answered=new Set(),correct=0;
+function updateScore(){document.getElementById('score').textContent=`作答 ${answered.size}/${TOTAL} · 答對 ${correct} · ${answered.size?Math.round(correct/answered.size*100):0}%`;}
+
+
+/* ===== 錯題本記錄(跨年共用 localStorage;安裝成 App/同一網址才跨檔共用)===== */
+var WB_KEY='wrongbook_en_leader';
+var WB_YEAR=(document.title.match(/(\d{3})\s*年/)||[])[1]||'';
+function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return {};}}
+function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
+function wbAdd(item,picked){var o=wbLoad(),id=WB_YEAR+'-'+item.no,e=o[id]||{};o[id]={y:WB_YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
+function wbRemove(no){var o=wbLoad();delete o[WB_YEAR+'-'+no];wbSave(o);}
+
+DATA.forEach(item=>{
+  if(item.kind==='guide'){
+    const el=document.createElement('div');el.className='guide';
+    el.innerHTML=`<div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div>`;
+    app.appendChild(el);return;
+  }
+  if(item.kind==='strategy'){
+    const el=document.createElement('div');el.className='strategy';
+    el.innerHTML=`<button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div>`;
+    el.querySelector('.stgh').addEventListener('click',()=>{const o=el.classList.toggle('open');el.querySelector('.stgar').textContent=o?'▲ 收合':'▼ 點開';});
+    app.appendChild(el);return;
+  }
+  if(item.kind==='passage'){
+    const el=document.createElement('div');el.className='passage';
+    el.innerHTML=`<div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+item.text.map(t=>`<p>${t}</p>`).join('')+(item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:'')+`<div class="reveal fold"><div class="lbl">難字</div><table class="vocab">${vRows(item.vocab)}</table></div>`;
+    app.appendChild(el);return;
+  }
+  const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
+  const stem=item.stem.replace('__BLANK__','<span class="blank"></span>');
+  const rawStem=item.stem.replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
+  const el=document.createElement('div');el.className='card';
+  el.innerHTML=`
+    <div class="qhead"><span class="qno">第 ${item.no} 題</span>
+      <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
+      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span></div>
+    <div class="stem">${stem} ${sayBtn(rawStem)}</div>
+    <div class="opts">${item.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`).join('')}</div>
+    <div class="reveal fold">
+      <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
+      <div class="lbl">解析</div><div class="ana">${item.ana}</div>
+      ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
+      ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
+      ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
+      ${item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:''}
+      <div class="lbl">難字 / 片語(附 KK 音標,點 🔊 聽發音)</div>
+      <table class="vocab">${vRows(item.vocab)}</table>
+    </div>`;
+  const opts=el.querySelectorAll('.opt');
+  opts.forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.i;
+    if(!answered.has(item.no)){answered.add(item.no);if(i===item.ans){correct++;wbRemove(item.no);}else{wbAdd(item,i);}updateScore();}
+    opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
+    opts[item.ans].classList.add('ok');opts[item.ans].querySelector('.mk').textContent='✓';
+    if(i!==item.ans){b.classList.add('no');b.querySelector('.mk').textContent='✗';}
+    el.classList.add('show');
+  }));
+  app.appendChild(el);
+});
+
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;
+  const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);});
+document.getElementById('printBtn').addEventListener('click',()=>{
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('show'));setTimeout(()=>window.print(),100);});
+const modeBtn=document.getElementById('mode');let review=false;
+modeBtn.addEventListener('click',()=>{review=!review;
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('show',review));
+  if(review){modeBtn.textContent='📖 複習模式';modeBtn.classList.add('on');setHideZh(false);
+    document.querySelectorAll('.card').forEach(c=>{const no=c.querySelector('.qno').textContent.replace(/\D/g,'');
+      const item=DATA.find(d=>d.kind==='q'&&String(d.no)===no);
+      if(item){const o=c.querySelectorAll('.opt');o.forEach(x=>x.classList.remove('ok','no'));
+        o[item.ans].classList.add('ok');o[item.ans].querySelector('.mk').textContent='✓';}});
+  }else{modeBtn.textContent='✍️ 自測模式';modeBtn.classList.remove('on');setHideZh(true);
+    document.querySelectorAll('.opt').forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});}});
+const zhToggle=document.getElementById('zhToggle');
+function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';}
+zhToggle.addEventListener('click',function(){setHideZh(!document.body.classList.contains('hide-zh'));});
+setHideZh(true);
+updateScore();
+</script>
+</body>
+</html>
