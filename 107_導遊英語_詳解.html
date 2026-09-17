@@ -771,12 +771,13 @@ function updateScore(){document.getElementById('score').textContent=`作答 ${an
 
 
 /* ===== 錯題本記錄(跨年共用 localStorage;安裝成 App/同一網址才跨檔共用)===== */
-var WB_KEY='wrongbook_en_leader';
+var WB_KEY='wrongbook_en';
+var WB_CERT=/導遊/.test(document.title)?'guide':'leader';
 var WB_YEAR=(document.title.match(/(\d{3})\s*年/)||[])[1]||'';
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return {};}}
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
-function wbAdd(item,picked){var o=wbLoad(),id=WB_YEAR+'-'+item.no,e=o[id]||{};o[id]={y:WB_YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
-function wbRemove(no){var o=wbLoad();delete o[WB_YEAR+'-'+no];wbSave(o);}
+function wbAdd(item,picked){var o=wbLoad(),id=WB_CERT+'-'+WB_YEAR+'-'+item.no,e=o[id]||{};o[id]={cert:WB_CERT,y:WB_YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
+function wbRemove(no){var o=wbLoad();delete o[WB_CERT+'-'+WB_YEAR+'-'+no];wbSave(o);}
 
 DATA.forEach(item=>{
   if(item.kind==='guide'){

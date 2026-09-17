@@ -54,6 +54,8 @@
   .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
   .qno{background:var(--ink);color:var(--card);font-weight:700;border-radius:8px;padding:2px 10px;font-size:.85rem}
   .ybadge{background:var(--blank);color:var(--blankk);border-radius:8px;padding:2px 9px;font-size:.8rem;font-weight:700}
+  .cbadge{border-radius:8px;padding:2px 9px;font-size:.8rem;font-weight:700}
+  .cbadge.leader{background:var(--chipv);color:var(--chipvk)} .cbadge.guide{background:var(--chipd);color:var(--chipdk)}
   .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
   .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)}
   .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
@@ -107,7 +109,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>📌 錯題本</h1>
-  <p id="subline">測驗答錯的題目自動收錄 · 跨 10 屆一起複習</p>
+  <p id="subline">測驗答錯的題目自動收錄 · 領隊 + 導遊 · 跨 10 屆一起複習</p>
 </div></header>
 
 <div class="toolbar">
@@ -120,6 +122,7 @@
     <button class="btn danger" id="clearBtn">🗑️ 清空</button>
     <span class="cnt" id="cnt"></span>
   </div>
+  <div class="wrap"><div class="filters" id="fCert"></div></div>
   <div class="wrap"><div class="filters" id="fYear"></div></div>
   <div class="wrap"><div class="filters" id="fType"></div></div>
   <div class="wrap"><span class="hint" id="hint"></span></div>
@@ -128,10 +131,22 @@
 <main class="wrap" id="app"></main>
 
 <script>
-const WB_KEY='wrongbook_en_leader';
+const WB_KEY='wrongbook_en';
+/* 一次性遷移舊版(僅領隊、id 為 年-題)資料到新 key(cert-年-題) */
+(function migrate(){try{
+  var old=localStorage.getItem('wrongbook_en_leader');
+  if(old && localStorage.getItem(WB_KEY+'_migrated')!=='1'){
+    var oo=JSON.parse(old||'{}'), cur=JSON.parse(localStorage.getItem(WB_KEY)||'{}');
+    Object.keys(oo).forEach(function(k){var it=oo[k]; it.cert=it.cert||'leader';
+      cur[it.cert+'-'+it.y+'-'+it.no]=it;});
+    localStorage.setItem(WB_KEY,JSON.stringify(cur));
+    localStorage.setItem(WB_KEY+'_migrated','1');
+  }
+}catch(e){}})();
+const CNAME={leader:'領隊',guide:'導遊'};
 const LAB=['A','B','C','D'];
 const app=document.getElementById('app');
-let mode='review', fy='all', ft='all', clearArm=false;
+let mode='review', fc='all', fy='all', ft='all', clearArm=false;
 
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
@@ -143,21 +158,26 @@ function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${x[0]}</span>
 
 function allEntries(){const o=wbLoad();return Object.keys(o).map(k=>Object.assign({id:k},o[k]));}
 function entries(){
-  let arr=allEntries().filter(e=>(fy==='all'||String(e.y)===fy)&&(ft==='all'||e.type===ft));
-  arr.sort((a,b)=>(a.y-b.y)||(a.no-b.no));
+  let arr=allEntries().filter(e=>(fc==='all'||(e.cert||'leader')===fc)&&(fy==='all'||String(e.y)===fy)&&(ft==='all'||e.type===ft));
+  arr.sort((a,b)=>((a.cert||'leader')<(b.cert||'leader')?-1:(a.cert||'leader')>(b.cert||'leader')?1:0)||(a.y-b.y)||(a.no-b.no));
   return arr;
 }
 
 function buildFilters(){
   const all=allEntries();
-  const years=[...new Set(all.map(e=>String(e.y)))].sort();
-  const types=[...new Set(all.map(e=>e.type))];
+  const certs=[...new Set(all.map(e=>e.cert||'leader'))].sort();
+  document.getElementById('fCert').innerHTML = certs.length>1 ?
+    `<span class="fchip ${fc==='all'?'on':''}" data-fc="all">全部證照 (${all.length})</span>`+
+    certs.map(c=>`<span class="fchip ${fc===c?'on':''}" data-fc="${c}">${CNAME[c]||c} (${all.filter(e=>(e.cert||'leader')===c).length})</span>`).join('') : '';
+  const scoped=all.filter(e=>fc==='all'||(e.cert||'leader')===fc);
+  const years=[...new Set(scoped.map(e=>String(e.y)))].sort();
+  const types=[...new Set(scoped.map(e=>e.type))];
   document.getElementById('fYear').innerHTML =
-    `<span class="fchip ${fy==='all'?'on':''}" data-fy="all">全部年份 (${all.length})</span>`+
-    years.map(y=>`<span class="fchip ${fy===y?'on':''}" data-fy="${y}">${y} 年 (${all.filter(e=>String(e.y)===y).length})</span>`).join('');
+    `<span class="fchip ${fy==='all'?'on':''}" data-fy="all">全部年份 (${scoped.length})</span>`+
+    years.map(y=>`<span class="fchip ${fy===y?'on':''}" data-fy="${y}">${y} 年 (${scoped.filter(e=>String(e.y)===y).length})</span>`).join('');
   document.getElementById('fType').innerHTML = types.length>1 ?
     `<span class="fchip ${ft==='all'?'on':''}" data-ft="all">全部題型</span>`+
-    types.map(t=>`<span class="fchip ${ft===t?'on':''}" data-ft="${t}">${t} (${all.filter(e=>e.type===t).length})</span>`).join('') : '';
+    types.map(t=>`<span class="fchip ${ft===t?'on':''}" data-ft="${t}">${t} (${scoped.filter(e=>e.type===t).length})</span>`).join('') : '';
 }
 
 function cardEl(e){
@@ -166,7 +186,7 @@ function cardEl(e){
   const rawStem=String(e.stem).replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
   const el=document.createElement('div');el.className='card'+(mode==='review'?' show':'');
   el.innerHTML=`
-    <div class="qhead"><span class="qno">第 ${e.no} 題</span><span class="ybadge">${e.y} 年</span>
+    <div class="qhead"><span class="qno">第 ${e.no} 題</span><span class="cbadge ${e.cert||'leader'}">${CNAME[e.cert||'leader']||''}</span><span class="ybadge">${e.y} 年</span>
       <span class="chip ${cls}">${e.type}</span><span class="chip c-t">${e.topic}</span>
       ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}
       <span class="stars">${stars(e.star)}</span>
@@ -238,6 +258,7 @@ function render(){
 
 /* 事件 */
 app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;speak(s.dataset.say);});
+document.getElementById('fCert').addEventListener('click',e=>{const c=e.target.closest('[data-fc]');if(!c)return;fc=c.dataset.fc;fy='all';ft='all';buildFilters();render();});
 document.getElementById('fYear').addEventListener('click',e=>{const c=e.target.closest('[data-fy]');if(!c)return;fy=c.dataset.fy;buildFilters();render();});
 document.getElementById('fType').addEventListener('click',e=>{const c=e.target.closest('[data-ft]');if(!c)return;ft=c.dataset.ft;buildFilters();render();});
 const mReview=document.getElementById('mReview'),mQuiz=document.getElementById('mQuiz');
