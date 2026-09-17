@@ -103,6 +103,7 @@
     header{background:#1e3a8a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .fold{display:block!important} .card,.passage,.guide{break-inside:avoid;box-shadow:none} body{background:#fff}
   }
+.card.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 6px rgba(0,0,0,.04)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -795,7 +796,7 @@ DATA.forEach(item=>{
   const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
   const stem=item.stem.replace('__BLANK__','<span class="blank"></span>');
   const rawStem=item.stem.replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
-  const el=document.createElement('div');el.className='card';
+  const el=document.createElement('div');el.className='card';el.id='q'+item.no;
   el.innerHTML=`
     <div class="qhead"><span class="qno">第 ${item.no} 題</span>
       <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
@@ -843,6 +844,7 @@ function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.class
 zhToggle.addEventListener('click',function(){setHideZh(!document.body.classList.contains('hide-zh'));});
 setHideZh(true);
 updateScore();
+(function(){function go(){var h=location.hash;if(!/^#q\d+$/.test(h))return;var c=document.getElementById(h.slice(1));if(!c)return;c.classList.add('show','hl');c.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){c.classList.remove('hl');},2400);}window.addEventListener('hashchange',go);setTimeout(go,300);})();
 </script>
 </body>
 </html>
