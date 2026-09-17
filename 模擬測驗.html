@@ -236,10 +236,16 @@ function submit(forced){
   if(timerId){clearInterval(timerId);timerId=null;}
   document.getElementById('quiz').dataset.done='1';
   let correct=0,wrong=[];
-  paper.forEach((q,qi)=>{const p=picks[qi];
-    if(p===q.ans)correct++;
-    else{wrong.push(qi); if(p!=null)wbAdd(q,p);}  // 有作答且答錯 → 進錯題本
+  const byTopic={},byType={};
+  paper.forEach((q,qi)=>{const p=picks[qi];const ok=p===q.ans;
+    (byTopic[q.topic]=byTopic[q.topic]||{ok:0,n:0}).n++;if(ok)byTopic[q.topic].ok++;
+    (byType[q.type]=byType[q.type]||{ok:0,n:0}).n++;if(ok)byType[q.type].ok++;
+    if(ok)correct++;else{wrong.push(qi);if(p!=null)wbAdd(q,p);}  // 有作答且答錯 → 進錯題本
   });
+  try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
+    hist.push({ts:Date.now(),cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
+    if(hist.length>300)hist=hist.slice(-300);
+    localStorage.setItem('quiz_history',JSON.stringify(hist));}catch(e){}
   showResult(correct,wrong);
 }
 function showResult(correct,wrong){

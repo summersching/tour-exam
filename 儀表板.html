@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d9488">
+<title>學習儀表板</title>
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;
+    --ok:#15904a;--okbg:#e5f6ec;--warn:#c98a12;--warnbg:#fdf3e0;--no:#c62a2a;--nobg:#fbe9e9;
+    --teal:#0d9488;--tealbg:#e7f6f4;--grid:#e2e8f2;--hd1:#0f766e;--hd2:#0d9488;
+    --chipv:#eef2ff;--chipvk:#3b4fd6;--chipd:#e8f7ee;--chipdk:#1f8a4c;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
+    --ok:#5ad48a;--okbg:#173023;--warn:#f0b840;--warnbg:#3a2f13;--no:#ff8080;--nobg:#331a1a;
+    --teal:#5eead4;--tealbg:#123230;--grid:#2b333f;--hd1:#0f766e;--hd2:#115e57;
+    --chipv:#22284a;--chipvk:#9db0ff;--chipd:#16301f;--chipdk:#6fe0a0;
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 18px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 5px;font-size:1.3rem} header p{margin:2px 0;opacity:.92;font-size:.83rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+  @media(min-width:560px){.grid4{grid-template-columns:repeat(4,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .stat .n{font-size:1.9rem;font-weight:800;color:var(--teal);line-height:1.1}
+  .stat .l{font-size:.78rem;color:var(--sub);margin-top:4px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .panel h2{margin:0 0 4px;font-size:1.04rem;display:flex;align-items:center;gap:7px}
+  .panel .hint{font-size:.78rem;color:var(--sub);margin:0 0 12px}
+  .pass{text-align:center;padding:6px 0}
+  .pass .big{font-size:2.4rem;font-weight:800;line-height:1.1}
+  .pass .msg{font-size:.9rem;color:var(--sub);margin-top:6px}
+  .barrow{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .barrow .name{width:120px;font-size:.84rem;flex-shrink:0;text-align:right}
+  .bartrack{flex:1;background:var(--grid);border-radius:8px;height:20px;overflow:hidden;position:relative}
+  .barfill{height:100%;border-radius:8px;transition:width .4s}
+  .barrow .pct{width:74px;font-size:.82rem;flex-shrink:0;font-weight:700}
+  .barrow .cnt{font-size:.72rem;color:var(--sub)}
+  .lv-no{background:var(--no)} .lv-warn{background:var(--warn)} .lv-ok{background:var(--ok)}
+  .empty{text-align:center;color:var(--sub);padding:50px 20px}
+  .empty .ic{font-size:3rem} .empty h2{margin:8px 0;color:var(--ink);font-size:1.1rem}
+  .empty a{display:inline-block;margin-top:12px;background:var(--teal);color:#fff;padding:10px 22px;border-radius:12px;text-decoration:none;font-weight:700}
+  .curve{width:100%;height:auto;display:block}
+  .lg{font-size:.75rem;color:var(--sub);display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+  .lg i{display:inline-block;width:11px;height:3px;vertical-align:middle;margin-right:4px}
+  .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:10px;cursor:pointer;font-size:.88rem;text-decoration:none;font-family:inherit}
+  .btn.pri{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700}
+  .clr{color:var(--no);cursor:pointer;font-size:.78rem;background:none;border:1px solid var(--line);padding:5px 12px;border-radius:8px;font-family:inherit;margin-top:6px}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📊 學習儀表板</h1>
+  <p>模擬測驗成績追蹤 · 弱點分析 · 預估及格率</p>
+</div></header>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const CNAME={leader:'領隊',guide:'導遊',all:'全部'};
+function hLoad(){try{return JSON.parse(localStorage.getItem('quiz_history')||'[]');}catch(e){return[];}}
+function wbLoad(){try{return JSON.parse(localStorage.getItem('wrongbook_en')||'{}');}catch(e){return{};}}
+const app=document.getElementById('app');
+const PASS=75; // 80題及格60分 = 75%
+function lv(p){return p<50?'no':p<70?'warn':'ok';}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function render(){
+  const hist=hLoad(), wb=Object.values(wbLoad());
+  if(!hist.length){
+    app.innerHTML=`<div class="empty"><div class="ic">📈</div>
+      <h2>還沒有測驗記錄</h2>
+      <p>到<b>模擬測驗</b>做幾組,這裡就會出現你的成績趨勢、弱點分析和預估及格率。</p>
+      <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`;
+    return;
+  }
+  // 統計
+  const totalQ=hist.reduce((s,h)=>s+h.total,0);
+  const totalC=hist.reduce((s,h)=>s+h.correct,0);
+  const avg=Math.round(totalC/totalQ*100);
+  const last5=hist.slice(-5);
+  const avg5=Math.round(last5.reduce((s,h)=>s+h.correct/h.total,0)/last5.length*100);
+  // 主題/題型累加
+  const T={},Y={};
+  hist.forEach(h=>{
+    for(const k in (h.byTopic||{})){T[k]=T[k]||{ok:0,n:0};T[k].ok+=h.byTopic[k].ok;T[k].n+=h.byTopic[k].n;}
+    for(const k in (h.byType||{})){Y[k]=Y[k]||{ok:0,n:0};Y[k].ok+=h.byType[k].ok;Y[k].n+=h.byType[k].n;}
+  });
+  const topics=Object.keys(T).map(k=>({name:k,ok:T[k].ok,n:T[k].n,p:Math.round(T[k].ok/T[k].n*100)})).sort((a,b)=>a.p-b.p);
+  const types=Object.keys(Y).map(k=>({name:k,ok:Y[k].ok,n:Y[k].n,p:Math.round(Y[k].ok/Y[k].n*100)})).sort((a,b)=>a.p-b.p);
+  // 錯題本主題分布
+  const wbT={};wb.forEach(e=>{wbT[e.topic]=(wbT[e.topic]||0)+1;});
+  const wbTopics=Object.keys(wbT).map(k=>({name:k,n:wbT[k]})).sort((a,b)=>b.n-a.n);
+
+  const passMsg = avg5>=PASS ? '🎉 近期已達及格水準,穩住手感!' : avg5>=PASS-12 ? '👍 接近及格,再攻弱點主題就穩了' : '💪 還需加強,先從下方紅色弱點主題練起';
+  const passColor = avg5>=PASS?'var(--ok)':avg5>=PASS-12?'var(--warn)':'var(--no)';
+
+  app.innerHTML=`
+    <div class="grid4">
+      <div class="stat"><div class="n">${hist.length}</div><div class="l">測驗次數</div></div>
+      <div class="stat"><div class="n">${totalQ}</div><div class="l">總作答題數</div></div>
+      <div class="stat"><div class="n">${avg}%</div><div class="l">總平均答對率</div></div>
+      <div class="stat"><div class="n">${wb.length}</div><div class="l">錯題本待攻克</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>🎯 預估及格率</h2>
+      <p class="hint">及格標準:80 題答對 60 題(75%)。以下為你<b>近 5 次</b>模擬平均</p>
+      <div class="pass"><div class="big" style="color:${passColor}">${avg5}%</div>
+        <div class="msg">${passMsg}</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>📈 成績趨勢</h2>
+      <p class="hint">近 ${Math.min(hist.length,20)} 次模擬測驗答對率(虛線 = 及格線 75%)</p>
+      ${curveSVG(hist)}
+      <div class="lg"><span><i style="background:var(--teal)"></i>你的成績</span><span><i style="background:var(--no)"></i>及格線 75%</span></div>
+    </div>
+
+    <div class="panel">
+      <h2>🔍 弱點主題</h2>
+      <p class="hint">各主題累計答對率(由弱到強排序,<b style="color:var(--no)">紅色最該加強</b>)</p>
+      ${topics.map(t=>bar(t.name,t.p,t.ok,t.n)).join('')}
+    </div>
+
+    <div class="panel">
+      <h2>📚 題型正確率</h2>
+      ${types.map(t=>bar(t.name,t.p,t.ok,t.n)).join('')}
+    </div>
+
+    ${wbTopics.length?`<div class="panel">
+      <h2>📌 錯題本主題分布</h2>
+      <p class="hint">目前錯題本共 ${wb.length} 題,集中在這些主題</p>
+      ${wbTopics.map(t=>`<div class="barrow"><span class="name">${esc(t.name)}</span>
+        <div class="bartrack"><div class="barfill lv-no" style="width:${Math.round(t.n/wbTopics[0].n*100)}%"></div></div>
+        <span class="pct">${t.n} 題</span></div>`).join('')}
+      <div class="acts" style="margin-top:12px"><a class="btn" href="錯題本.html">📌 去複習錯題本</a></div>
+    </div>`:''}
+
+    <div class="acts"><a class="btn pri" href="模擬測驗.html">📝 再測一組</a>
+      <button class="clr" id="clrBtn">🗑️ 清除測驗記錄</button></div>`;
+
+  let arm=false;
+  document.getElementById('clrBtn').onclick=function(){
+    if(!arm){arm=true;this.textContent='⚠️ 確定清除?(錯題本不受影響)';setTimeout(()=>{arm=false;this.textContent='🗑️ 清除測驗記錄';},3000);return;}
+    localStorage.removeItem('quiz_history');render();
+  };
+}
+function bar(name,p,ok,n){
+  return `<div class="barrow"><span class="name">${esc(name)}</span>
+    <div class="bartrack"><div class="barfill lv-${lv(p)}" style="width:${p}%"></div></div>
+    <span class="pct">${p}% <span class="cnt">(${ok}/${n})</span></span></div>`;
+}
+function curveSVG(hist){
+  const pts=hist.slice(-20).map(h=>Math.round(h.correct/h.total*100));
+  const W=600,H=170,padL=30,padR=12,padT=14,padB=22;
+  const n=pts.length;
+  const x=i=>padL+(n<=1?0:i*(W-padL-padR)/(n-1));
+  const y=v=>padT+(100-v)/100*(H-padT-padB);
+  const path=pts.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ');
+  const gy=[0,25,50,75,100].map(v=>`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${padL-5}" y="${y(v)+3}" font-size="10" fill="var(--sub)" text-anchor="end">${v}</text>`).join('');
+  const passLine=`<line x1="${padL}" y1="${y(PASS)}" x2="${W-padR}" y2="${y(PASS)}" stroke="var(--no)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  const dots=pts.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="var(--teal)"/>`).join('');
+  return `<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    ${gy}${passLine}
+    <path d="${path}" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}</svg>`;
+}
+render();
+</script>
+</body>
+</html>
