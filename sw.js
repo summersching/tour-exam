@@ -1,6 +1,6 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v15';
+const CACHE = 'ylenpass-v16';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js',
   '學習中心.html', '錯題本.html',
@@ -12,7 +12,7 @@ const ASSETS = [
   '115_領隊英語_詳解.html',
   '115_導遊英語_詳解.html', '114_導遊英語_詳解.html', '113_導遊英語_詳解.html',
   '112_導遊英語_詳解.html', '111_導遊英語_詳解.html', '110_導遊英語_詳解.html',
-  '109_導遊英語_詳解.html', '108_導遊英語_詳解.html'
+  '109_導遊英語_詳解.html', '108_導遊英語_詳解.html', '107_導遊英語_詳解.html'
 ];
 
 self.addEventListener('install', e => {
