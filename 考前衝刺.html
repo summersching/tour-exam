@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ea580c">
+<title>考前衝刺</title>
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;--kk:#0e7c86;
+    --hd1:#c2410c;--hd2:#ea580c;--tab:#fff2e8;--tabk:#c2410c;
+    --chipv:#eef2ff;--chipvk:#3b4fd6;--okbg:#e5f6ec;--ok:#15904a;--fq:#ea580c;--fqbg:#fff2e8;
+    --notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;
+    --hd1:#9a3412;--hd2:#c2410c;--tab:#3a2213;--tabk:#f4a361;
+    --chipv:#22284a;--chipvk:#9db0ff;--okbg:#173023;--ok:#5ad48a;--fq:#f4a361;--fqbg:#3a2213;
+    --notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
+  .wrap{max-width:840px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 5px;font-size:1.3rem} header p{margin:2px 0;opacity:.92;font-size:.83rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .tabs{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .tabs .wrap{display:flex;gap:8px;padding:10px 16px 0}
+  .tab{flex:1;border:none;background:none;color:var(--sub);padding:9px 6px;cursor:pointer;font-size:.9rem;font-weight:700;font-family:inherit;border-bottom:3px solid transparent}
+  .tab.on{color:var(--tabk);border-bottom-color:var(--tabk)}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);padding:8px 0}
+  .bar .wrap{display:flex;align-items:center;gap:10px}
+  .bar input{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.9rem;font-family:inherit}
+  .cnt{font-size:.8rem;color:var(--sub);white-space:nowrap}
+  .intro{font-size:.8rem;color:var(--sub);background:var(--fqbg);border-radius:10px;padding:9px 13px;margin:14px 0}
+  .word{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin:6px 0}
+  .wtop{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+  .en{font-weight:700;color:var(--accent);font-size:1rem} .kk{color:var(--kk);font-style:italic;font-size:.85rem}
+  .zh{color:var(--ink);margin-left:auto;text-align:right}
+  .fq{font-size:.72rem;color:var(--fq);background:var(--fqbg);border-radius:10px;padding:1px 8px;font-weight:700}
+  .say{cursor:pointer;font-size:.82rem;border:1px solid var(--line);border-radius:6px;padding:0 6px;background:var(--card);user-select:none}
+  .wsrc{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+  .hit{font-size:.72rem;padding:1px 7px;border-radius:6px;text-decoration:none;font-weight:700;white-space:nowrap;line-height:1.7}
+  .hit.leader{background:var(--chipv);color:var(--chipvk)} .hit.guide{background:var(--okbg);color:var(--ok)}
+  .hit:hover{outline:1px solid currentColor}
+  .ncard{background:var(--notebg);border:1px solid var(--notebd);border-left:4px solid var(--notebd);border-radius:10px;padding:11px 14px;margin:8px 0}
+  .nhtml{font-size:.95rem} .nhtml b{color:var(--notek)}
+  .empty{text-align:center;color:var(--sub);padding:36px 0}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+<script src="sprint.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🔥 考前衝刺</h1>
+  <p>從 20 份考卷萃取的高頻精華 · 考前一週快速掃</p>
+</div></header>
+
+<div class="tabs"><div class="wrap">
+  <button class="tab on" data-k="hot">🔥 高頻必背</button>
+  <button class="tab" data-k="phrase">🧩 必考片語</button>
+  <button class="tab" data-k="confuse">🔀 易混字</button>
+</div></div>
+<div class="bar"><div class="wrap">
+  <input id="q" placeholder="搜尋…">
+  <span class="cnt" id="cnt"></span>
+</div></div>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const CNAME={leader:'領隊',guide:'導遊'};
+let cur='hot';
+const app=document.getElementById('app');
+function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
+function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
+function srcChips(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
+function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
+function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
+const INTRO={
+  hot:'🔥 <b>出現 4 次以上</b>的高頻單字('+SPRINT.hot.length+' 個),考前務必背熟——這些最可能再考。',
+  phrase:'🧩 歷年<b>重複出現的片語</b>('+SPRINT.phrase.length+' 個),片語題每年必考,搭配詞要整組記。',
+  confuse:'🔀 最容易<b>選錯的形近字、近義字</b>('+SPRINT.confuse.length+' 組),考前掃一遍避開地雷。'
+};
+function render(){
+  const kw=document.getElementById('q').value.trim().toLowerCase();
+  let arr=SPRINT[cur], html;
+  if(cur==='confuse'){
+    arr=kw?arr.filter(x=>x.html.toLowerCase().includes(kw)):arr;
+    html=arr.map(noteHtml).join('');
+  }else{
+    arr=kw?arr.filter(x=>x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)):arr;
+    html=arr.map(wordHtml).join('');
+  }
+  document.getElementById('cnt').textContent='共 '+arr.length+' 則';
+  app.innerHTML='<div class="intro">'+INTRO[cur]+'</div>'+(html||'<div class="empty">找不到符合的內容</div>');
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{cur=t.dataset.k;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.getElementById('q').value='';render();});
+document.getElementById('q').addEventListener('input',render);
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
+render();
+</script>
+</body>
+</html>
