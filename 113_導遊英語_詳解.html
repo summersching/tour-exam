@@ -831,7 +831,7 @@ function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.class
 zhToggle.addEventListener('click',function(){setHideZh(!document.body.classList.contains('hide-zh'));});
 setHideZh(true);
 updateScore();
-(function(){function go(){var h=location.hash;if(!/^#q\d+$/.test(h))return;var c=document.getElementById(h.slice(1));if(!c)return;c.classList.add('show','hl');c.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){c.classList.remove('hl');},2400);}window.addEventListener('hashchange',go);setTimeout(go,300);})();
+(function(){function backBtn(){var ref=document.referrer||'';var label;if(/學習中心/.test(ref))label='← 回學習中心';else if(/錯題本/.test(ref))label='← 回錯題本';else return;var b=document.createElement('a');b.textContent=label;b.href='#';b.style.cssText='position:fixed;left:12px;bottom:16px;z-index:99;background:var(--accent);color:#fff;padding:9px 16px;border-radius:22px;font-size:.86rem;font-weight:700;text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,.28)';b.addEventListener('click',function(e){e.preventDefault();history.back();});document.body.appendChild(b);}function go(){var h=location.hash;if(!/^#q\d+$/.test(h))return;var c=document.getElementById(h.slice(1));if(!c)return;c.classList.add('show','hl');c.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){c.classList.remove('hl');},2400);}window.addEventListener('hashchange',go);if(/^#q\d+$/.test(location.hash))backBtn();setTimeout(go,300);})();
 </script>
 </body>
 </html>
