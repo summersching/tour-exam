@@ -46,6 +46,11 @@
   .en .sp{margin-left:auto;font-size:.72rem;color:var(--sub);white-space:nowrap}
   .empty{text-align:center;color:var(--sub);padding:36px 0}
   .tip{font-size:.75rem;color:var(--sub);text-align:center;margin:14px 0 0}
+  .certbar{background:var(--card);border-bottom:1px solid var(--line)}
+  .certbar .wrap{display:flex;align-items:center;gap:8px;padding:9px 16px}
+  .certbar .clb{font-size:.8rem;color:var(--sub);font-weight:700}
+  .cbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 16px;border-radius:18px;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:700}
+  .cbtn.on{background:var(--hd2);color:#fff;border-color:var(--hd2)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -63,6 +68,12 @@
   <button class="tab on" data-k="phrases">🗣️ 帶團實用句</button>
   <button class="tab" data-k="topics">📋 口試主題準備</button>
 </div></div>
+<div class="certbar"><div class="wrap">
+  <span class="clb">範圍</span>
+  <button class="cbtn" data-c="all">全部</button>
+  <button class="cbtn" data-c="leader">領隊</button>
+  <button class="cbtn" data-c="guide">導遊</button>
+</div></div>
 <div class="bar"><div class="wrap">
   <input id="q" placeholder="搜尋情境 / 關鍵字…">
   <span class="cnt" id="cnt"></span>
@@ -74,33 +85,49 @@
 const CNAME={leader:'領隊',guide:'導遊'};
 let cur='phrases';
 const app=document.getElementById('app');
+let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
+function scopeArr(arr){return CERT==='all'?arr:arr.filter(function(x){return x.c===CERT;});}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.88;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function srcChip(x){var g=x.c==='guide';var file=x.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+(x.no||x.before);return '<a class="hit '+x.c+'" href="'+file+'" title="點我看原題">'+(g?'導':'領')+x.y+'-'+(x.no||x.before)+'</a>';}
 function enRows(en){return (en||[]).map(function(s){return '<div class="en" data-say="'+esc(s)+'"><span class="ic">🔊</span><span class="tx">'+esc(s)+'</span><span class="sp">點我跟讀</span></div>';}).join('');}
 function card(x,head){return '<div class="ocard"><div class="ohead">'+head+srcChip(x)+'</div><div class="oreal">'+x.real+'</div>'+(x.en&&x.en.length?'<div class="ens">'+enRows(x.en)+'</div>':'')+'</div>';}
-const INTRO={
-  phrases:'🗣️ <b>'+ORAL.phrases.length+' 句</b>帶團現場實用句(過海關、入住、點餐、殺價…),導遊/領隊口試與實戰都用得到。<b>點藍色英文句可跟讀</b>。',
-  topics:'📋 <b>'+ORAL.topics.length+' 個</b>閱讀文章主題的口試準備方向(常考議題 + 該準備的關鍵字),口試前掃一遍。'
-};
+function introText(k,n){
+  const scope=CERT==='all'?'':'（'+CNAME[CERT]+'）';
+  if(k==='phrases')return '🗣️ <b>'+n+' 句</b>帶團現場實用句'+scope+'(過海關、入住、點餐、殺價…),導遊/領隊口試與實戰都用得到。<b>點藍色英文句可跟讀</b>。';
+  return '📋 <b>'+n+' 個</b>閱讀文章主題'+scope+'的口試準備方向(常考議題 + 該準備的關鍵字),口試前掃一遍。';
+}
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
-  let arr, html;
+  let base, arr, html;
   if(cur==='phrases'){
-    arr=ORAL.phrases.filter(x=>!kw||x.real.toLowerCase().includes(kw)||(x.en||[]).join(' ').toLowerCase().includes(kw)||x.topic.toLowerCase().includes(kw));
+    base=scopeArr(ORAL.phrases);
+    arr=base.filter(x=>!kw||x.real.toLowerCase().includes(kw)||(x.en||[]).join(' ').toLowerCase().includes(kw)||x.topic.toLowerCase().includes(kw));
     html=arr.map(x=>card(x,'<span class="chip">'+esc(x.topic)+'</span>')).join('');
   }else{
-    arr=ORAL.topics.filter(x=>!kw||x.real.toLowerCase().includes(kw)||(x.label||'').toLowerCase().includes(kw));
+    base=scopeArr(ORAL.topics);
+    arr=base.filter(x=>!kw||x.real.toLowerCase().includes(kw)||(x.label||'').toLowerCase().includes(kw));
     html=arr.map(x=>card(x,'<span class="chip">'+esc(x.label||'閱讀主題')+'</span>')).join('');
   }
   document.getElementById('cnt').textContent='共 '+arr.length+' 則';
-  app.innerHTML='<div class="intro">'+INTRO[cur]+'</div>'+(html||'<div class="empty">找不到符合的內容</div>')+'<p class="tip">💡 跟讀技巧:先聽一次,暫停,自己唸一遍,再對照發音。口試重點是清楚 + 流暢,不用完美。</p>';
+  app.innerHTML='<div class="intro">'+introText(cur,base.length)+'</div>'+(html||'<div class="empty">找不到符合的內容</div>')+'<p class="tip">💡 跟讀技巧:先聽一次,暫停,自己唸一遍,再對照發音。口試重點是清楚 + 流暢,不用完美。</p>';
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{cur=t.dataset.k;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.getElementById('q').value='';render();});
 document.getElementById('q').addEventListener('input',render);
 app.addEventListener('click',e=>{const en=e.target.closest('.en');if(en)speak(en.dataset.say);});
+(function(){
+  const bar=document.querySelector('.certbar');if(!bar)return;
+  function paint(){bar.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));}
+  paint();
+  bar.addEventListener('click',function(e){
+    const b=e.target.closest('.cbtn');if(!b||b.dataset.c===CERT)return;
+    CERT=b.dataset.c;
+    try{localStorage.setItem('pref_cert',CERT);}catch(err){}
+    paint();render();
+  });
+})();
 render();
 </script>
 </body>

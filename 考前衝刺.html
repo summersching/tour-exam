@@ -43,6 +43,11 @@
   .hit{font-size:.72rem;padding:1px 7px;border-radius:6px;text-decoration:none;font-weight:700;white-space:nowrap;line-height:1.7}
   .hit.leader{background:var(--chipv);color:var(--chipvk)} .hit.guide{background:var(--okbg);color:var(--ok)}
   .hit:hover{outline:1px solid currentColor}
+  .certbar{background:var(--card);border-bottom:1px solid var(--line)}
+  .certbar .wrap{display:flex;align-items:center;gap:8px;padding:9px 16px}
+  .certbar .clb{font-size:.8rem;color:var(--sub);font-weight:700}
+  .cbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 16px;border-radius:18px;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:700}
+  .cbtn.on{background:var(--hd2);color:#fff;border-color:var(--hd2)}
   .ncard{background:var(--notebg);border:1px solid var(--notebd);border-left:4px solid var(--notebd);border-radius:10px;padding:11px 14px;margin:8px 0}
   .nhtml{font-size:.95rem} .nhtml b{color:var(--notek)}
   .empty{text-align:center;color:var(--sub);padding:36px 0}
@@ -64,6 +69,12 @@
   <button class="tab" data-k="phrase">🧩 必考片語</button>
   <button class="tab" data-k="confuse">🔀 易混字</button>
 </div></div>
+<div class="certbar"><div class="wrap">
+  <span class="clb">範圍</span>
+  <button class="cbtn" data-c="all">全部</button>
+  <button class="cbtn" data-c="leader">領隊</button>
+  <button class="cbtn" data-c="guide">導遊</button>
+</div></div>
 <div class="bar"><div class="wrap">
   <input id="q" placeholder="搜尋…">
   <span class="cnt" id="cnt"></span>
@@ -75,34 +86,48 @@
 const CNAME={leader:'領隊',guide:'導遊'};
 let cur='hot';
 const app=document.getElementById('app');
+let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
+function scopedKB(data){if(CERT==='all')return data;return data.map(function(x){var h=(x.hits||[]).filter(function(hh){return hh.c===CERT;});return h.length?Object.assign({},x,{hits:h,freq:h.length}):null;}).filter(Boolean);}
 function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function srcChips(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
-const INTRO={
-  hot:'🔥 <b>出現 4 次以上</b>的高頻單字('+SPRINT.hot.length+' 個),考前務必背熟——這些最可能再考。',
-  phrase:'🧩 歷年<b>重複出現的片語</b>('+SPRINT.phrase.length+' 個),片語題每年必考,搭配詞要整組記。',
-  confuse:'🔀 最容易<b>選錯的形近字、近義字</b>('+SPRINT.confuse.length+' 組),考前掃一遍避開地雷。'
-};
+function introText(k,n){
+  const scope=CERT==='all'?'':'（'+CNAME[CERT]+'）';
+  if(k==='hot')return '🔥 <b>高頻必背單字</b>'+scope+'('+n+' 個),考前務必背熟——這些最可能再考。';
+  if(k==='phrase')return '🧩 歷年<b>重複出現的片語</b>'+scope+'('+n+' 個),片語題每年必考,搭配詞要整組記。';
+  return '🔀 最容易<b>選錯的形近字、近義字</b>'+scope+'('+n+' 組),考前掃一遍避開地雷。';
+}
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
-  let arr=SPRINT[cur], html;
+  let base=scopedKB(SPRINT[cur]), arr=base, html;
   if(cur==='confuse'){
-    arr=kw?arr.filter(x=>x.html.toLowerCase().includes(kw)):arr;
+    arr=kw?base.filter(x=>x.html.toLowerCase().includes(kw)):base;
     html=arr.map(noteHtml).join('');
   }else{
-    arr=kw?arr.filter(x=>x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)):arr;
+    arr=kw?base.filter(x=>x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)):base;
     html=arr.map(wordHtml).join('');
   }
   document.getElementById('cnt').textContent='共 '+arr.length+' 則';
-  app.innerHTML='<div class="intro">'+INTRO[cur]+'</div>'+(html||'<div class="empty">找不到符合的內容</div>');
+  app.innerHTML='<div class="intro">'+introText(cur,base.length)+'</div>'+(html||'<div class="empty">找不到符合的內容</div>');
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{cur=t.dataset.k;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.getElementById('q').value='';render();});
 document.getElementById('q').addEventListener('input',render);
 app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
+(function(){
+  const bar=document.querySelector('.certbar');if(!bar)return;
+  function paint(){bar.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));}
+  paint();
+  bar.addEventListener('click',function(e){
+    const b=e.target.closest('.cbtn');if(!b||b.dataset.c===CERT)return;
+    CERT=b.dataset.c;
+    try{localStorage.setItem('pref_cert',CERT);}catch(err){}
+    paint();render();
+  });
+})();
 render();
 </script>
 </body>

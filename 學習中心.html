@@ -39,6 +39,11 @@
   .hit{font-size:.72rem;padding:1px 7px;border-radius:6px;text-decoration:none;font-weight:700;white-space:nowrap;border:1px solid transparent;line-height:1.7}
   .hit.leader{background:var(--chip);color:var(--chipk)} .hit.guide{background:var(--okbg);color:var(--ok)}
   .hit:hover{border-color:currentColor}
+  .certbar{background:var(--card);border-bottom:1px solid var(--line)}
+  .certbar .wrap{display:flex;align-items:center;gap:8px;padding:9px 16px}
+  .certbar .clb{font-size:.8rem;color:var(--sub);font-weight:700}
+  .cbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 16px;border-radius:18px;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:700}
+  .cbtn.on{background:var(--grp);color:#fff;border-color:var(--grp)}
   .en{font-weight:700;color:var(--accent);font-size:1rem}
   .kk{color:var(--kk);font-style:italic;font-size:.85rem}
   .zh{color:var(--ink);margin-left:auto;text-align:right}
@@ -109,6 +114,12 @@
   <p class="tip">單字 · 文法 · 技巧 · 陷阱皆含領隊 + 導遊 20 份;點出處可跳回原題複習</p>
 </div></header>
 
+<div class="certbar"><div class="wrap">
+  <span class="clb">範圍</span>
+  <button class="cbtn" data-c="all">全部</button>
+  <button class="cbtn" data-c="leader">領隊</button>
+  <button class="cbtn" data-c="guide">導遊</button>
+</div></div>
 <div class="tabs">
   <button class="tabbtn on" data-tab="vocab">📖 單字</button>
   <button class="tabbtn" data-tab="gram">📝 文法</button>
@@ -206,19 +217,24 @@ const STRAT = [{"title": "⚡ 字彙 · 對話題 快速解題法", "html": "<h4
 const listEl=document.getElementById('list'),qEl=document.getElementById('q'),cntEl=document.getElementById('cnt'),chipsEl=document.getElementById('chips');
 let curTopic='__ALL__', sortMode='topic';
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
+let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
+function scopeItem(x){const h=(x.hits||[]).filter(g=>g.c===CERT);return h.length?Object.assign({},x,{hits:h,freq:h.length,yrs:[...new Set(h.map(g=>g.y))]}):null;}
+function scopedWords(){if(CERT==='all')return WORDS;return WORDS.map(scopeItem).filter(Boolean);}
+function scopedKB(data){if(CERT==='all')return data;return data.map(scopeItem).filter(Boolean);}
 function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
 function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
 const TOPIC_ORDER=['🏛 景點・文化','🍽 餐飲','🚌 交通・票券','🏨 住宿','🛍 購物・消費','📄 證件・保險','⚠ 安全・緊急','🗣 生活對話','🚶 參觀・導覽','🔌 生活實用','💱 貨幣・兌換','📖 閱讀・學術'];
 const _tset=new Set(WORDS.map(x=>x.topic));
 const TOPICS=TOPIC_ORDER.filter(t=>_tset.has(t)).concat([..._tset].filter(t=>!TOPIC_ORDER.includes(t)));
 function buildChips(){
-  let h='<span class="tchip on" data-t="__ALL__">全部 ('+WORDS.length+')</span>';
-  TOPICS.forEach(t=>{h+='<span class="tchip" data-t="'+t+'">'+t+' ('+WORDS.filter(x=>x.topic===t).length+')</span>';});
+  const SW=scopedWords();
+  let h='<span class="tchip'+(curTopic==='__ALL__'?' on':'')+'" data-t="__ALL__">全部 ('+SW.length+')</span>';
+  TOPICS.forEach(t=>{const n=SW.filter(x=>x.topic===t).length;if(n)h+='<span class="tchip'+(curTopic===t?' on':'')+'" data-t="'+t+'">'+t+' ('+n+')</span>';});
   chipsEl.innerHTML=h;
 }
 function filtered(){
   const kw=qEl.value.trim().toLowerCase();
-  return WORDS.filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)&&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)));
+  return scopedWords().filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)&&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)));
 }
 function meta(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+meta(x)+'</div></div>';}
@@ -244,7 +260,7 @@ const sTopic=document.getElementById('sTopic'),sFreq=document.getElementById('sF
 sTopic.onclick=()=>setSort('topic',sTopic);sFreq.onclick=()=>setSort('freq',sFreq);sAz.onclick=()=>setSort('az',sAz);
 document.getElementById('printBtn').onclick=function(){mList.click();document.querySelector('.tchip[data-t="__ALL__"]').click();setTimeout(()=>window.print(),120);};
 
-let deck=WORDS.slice(),idx=0,flipped=false;
+let deck=scopedWords(),idx=0,flipped=false;
 const fcard=document.getElementById('fcard'),ftp=document.getElementById('ftp'),fen=document.getElementById('fen'),fback=document.getElementById('fback'),fkk=document.getElementById('fkk'),fzh=document.getElementById('fzh'),fprog=document.getElementById('fprog');
 function showCard(){if(!deck.length){fen.textContent='(此主題無字)';ftp.textContent='';fback.style.display='none';fprog.textContent='0 / 0';return;}const c=deck[idx];ftp.textContent=c.topic+'　'+c.yrs.join(',')+' ×'+c.freq;fen.textContent=c.w;fkk.textContent=c.kk?'/'+c.kk+'/':'';fzh.textContent=c.zh;fback.style.display='none';flipped=false;fprog.textContent=(idx+1)+' / '+deck.length;}
 function flip(){flipped=!flipped;fback.style.display=flipped?'block':'none';}
@@ -258,7 +274,7 @@ let qDir='e2c',qLevel='all',qAns=0,qDone=0,qStreak=0,qWord=null,qLock=false;
 const quizEl=document.getElementById('quiz'),qHead=document.getElementById('qhead'),qPrompt=document.getElementById('qprompt'),qPkk=document.getElementById('qpkk'),qOpts=document.getElementById('qopts'),qFb=document.getElementById('qfb'),qNextBtn=document.getElementById('qnext');
 function quizBase(){
   const kw=qEl.value.trim().toLowerCase();
-  return WORDS.filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)
+  return scopedWords().filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)
     &&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw))
     &&(qLevel==='all'||(qLevel==='core'&&x.freq>=3)||(qLevel==='common'&&x.freq===2)));
 }
@@ -311,17 +327,35 @@ function kRender(id,data,cls,pre){
   document.getElementById(id+'-cnt').textContent='共 '+arr.length+' 則';
   document.getElementById(id+'-list').innerHTML=(pre||'')+(arr.map(x=>kCard(x,cls)).join('')||(pre?'':'<p class="tip" style="padding:16px 0">找不到符合的內容</p>'));
 }
-function renderGram(){kRender('gram',GRAM,'g');}
-function renderNote(){kRender('note',NOTE,'n');}
+function renderGram(){kRender('gram',scopedKB(GRAM),'g');}
+function renderNote(){kRender('note',scopedKB(NOTE),'n');}
 function renderSkill(){
   const kw=document.getElementById('skill-q').value.trim().toLowerCase();
   const strat=kw?STRAT.filter(s=>kText(s.title+s.html).includes(kw)):STRAT;
-  kRender('skill',SKILL,'s',strat.map(stratCard).join(''));
+  kRender('skill',scopedKB(SKILL),'s',strat.map(stratCard).join(''));
 }
 document.getElementById('gram-q').addEventListener('input',renderGram);
 document.getElementById('note-q').addEventListener('input',renderNote);
 document.getElementById('skill-q').addEventListener('input',renderSkill);
 renderGram();renderSkill();renderNote();
+
+/* ============ 證照篩選(導遊 / 領隊 / 全部)============ */
+(function(){
+  const bar=document.querySelector('.certbar');if(!bar)return;
+  function paint(){bar.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));}
+  paint();
+  bar.addEventListener('click',function(e){
+    const b=e.target.closest('.cbtn');if(!b||b.dataset.c===CERT)return;
+    CERT=b.dataset.c;
+    try{localStorage.setItem('pref_cert',CERT);}catch(err){}
+    paint();
+    curTopic='__ALL__';
+    buildChips();renderList();
+    if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}
+    if(quizEl.classList.contains('on'))newQ();
+    renderGram();renderSkill();renderNote();
+  });
+})();
 
 /* ============ 分頁切換 ============ */
 function setTab(t){
