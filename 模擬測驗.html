@@ -90,6 +90,7 @@
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
 <script src="gh.js"></script>
+<script src="gh_ana.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -170,7 +171,12 @@ function qChips(q){
 }
 function starsHtml(q){return isGh()?'':`<span class="stars">${stars(q.star)}</span>`;}
 function revealHtml(q){
-  if(isGh())return q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+  if(isGh()){
+    const ana=(typeof GHANA!=='undefined'&&GHANA[q.c+'-'+q.y+'-'+q.no])||'';
+    let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+    if(ana)h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${ana}</div>`;
+    return h;
+  }
   return `<div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
         <div class="lbl">解析</div><div class="ana">${q.ana}</div>
         ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
