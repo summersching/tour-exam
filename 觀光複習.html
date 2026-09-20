@@ -59,6 +59,19 @@
   .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   .noana{font-size:.82rem;color:var(--sub);margin-top:8px;font-style:italic}
+  .tools2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 2px}
+  .mbtn{border:1.4px solid var(--line);background:var(--card);color:var(--ink);padding:6px 15px;border-radius:16px;cursor:pointer;font-size:.86rem;font-weight:700;font-family:inherit}
+  .mbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  .pbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:16px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .score{font-size:.82rem;color:var(--sub);font-weight:700;margin-left:auto}
+  .strat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:8px 0 4px}
+  .strat summary{cursor:pointer;font-weight:700;padding:10px 0;font-size:.92rem;color:var(--sel)}
+  .strat ul{margin:0 0 12px;padding-left:20px;font-size:.9rem} .strat li{margin:5px 0}
+  .opt.clk{cursor:pointer;width:100%;text-align:left;font-family:inherit}
+  .opt.clk:hover{border-color:var(--sel)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk.x{color:var(--no)}
+  @media print{header .home,.bar,.tools2,.strat{display:none!important}.card{box-shadow:none;break-inside:avoid}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -81,6 +94,24 @@
   <div class="cnt" id="cnt"></div>
 </div></div>
 
+<div class="wrap">
+  <div class="tools2">
+    <button class="mbtn on" data-m="review">📖 複習模式</button>
+    <button class="mbtn" data-m="test">✍️ 自測模式</button>
+    <button class="pbtn" id="printBtn">🖨 匯出 PDF</button>
+    <span class="score" id="score"></span>
+  </div>
+  <details class="strat"><summary>💡 觀光資源概要 · 通用解題法</summary>
+  <ul>
+    <li><b>組合題(①②③…)</b>:先鎖定一個你最確定「對」或「錯」的敘述,用它一次刪掉不符的選項,不必每項都會。</li>
+    <li><b>時序題</b>:先抓「最早」和「最晚」兩端,通常就能鎖定,中間不用全排。</li>
+    <li><b>地名/景點配對</b>:用地理位置反推(小野柳在臺東→東部海岸;野柳在北海岸)。</li>
+    <li><b>法規對應</b>:口訣—自然保留區/古蹟＝文資法、國家公園＝國家公園法、森林遊樂區＝森林法、風景區＝發展觀光條例。</li>
+    <li><b>「錯誤/不正確」題</b>:找一個張冠李戴(把甲的特徵套到乙)的敘述,那個通常就是答案。</li>
+    <li><b>送分題</b>:官方標示一律給分,遇到別糾結。</li>
+  </ul></details>
+</div>
+
 <main class="wrap" id="list"></main>
 
 <script>
@@ -97,6 +128,17 @@ const YEARS=[...new Set(GHBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b
 let YEAR=QP.get('year')||YEARS[0];
 if(!YEARS.includes(YEAR))YEAR=YEARS[0];
 let TOPIC='all';
+let MODE='review';           // review=全攤開 / test=自測(點選項即時批改)
+const picks={};              // 自測作答:鍵 cert-year-no → 選項index
+function qid(q){return q.c+'-'+q.y+'-'+q.no;}
+function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function optMark(q,i,p){
+  if(p==null)return['',''];
+  if(q.sungei)return p===i?['ok','✓']:['',''];
+  if(i===q.ans)return['ok','✓'];
+  if(p===i)return['no','✗'];
+  return['',''];
+}
 
 function chip(v,t,on){return `<button class="chip2 ${on?'on':''}" data-v="${v}">${t}</button>`;}
 function buildFilters(){
@@ -105,8 +147,11 @@ function buildFilters(){
   document.getElementById('fYear').innerHTML=ys.map(y=>chip(y,y+'年',y===YEAR)).join('');
   document.getElementById('fTopic').innerHTML=[['all','全部'],['史','🏛 歷史'],['地','🗺 地理'],['維護','🛡 資源維護']].map(([v,t])=>chip(v,t,v===TOPIC)).join('');
 }
-function optHtml(q,i,o){const ok=(q.ans===i);
-  return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${ok?'<span class="mk">✓</span>':''}</div>`;}
+function optHtml(q,i,o){
+  if(MODE==='review'){const ok=(q.ans===i);
+    return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${ok?'<span class="mk">✓</span>':''}</div>`;}
+  const p=picks[qid(q)], answered=(p!=null), [c,mk]=optMark(q,i,p);
+  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=ghData(q);
   let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
@@ -128,14 +173,21 @@ function render(){
   document.getElementById('list').innerHTML=arr.map(q=>{
     const d=ghData(q);
     const tags=d?`<span class="chip c-r">${GT[d.t]}</span><span class="chip c-t">${d.tt}</span>`:`<span class="chip c-r">觀光資源概要</span>`;
+    const show=(MODE==='review')||(picks[qid(q)]!=null);
     return `<div class="card">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       <div class="stem">${esc(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
-      <div class="reveal">${revealHtml(q)}</div></div>`;
+      <div class="reveal">${show?revealHtml(q):''}</div></div>`;
   }).join('')||'<div class="empty">找不到符合的題目</div>';
-  window.scrollTo(0,0);
+  updScore(arr);
+}
+function updScore(arr){
+  const el=document.getElementById('score');
+  if(MODE!=='test'){el.textContent='';return;}
+  let done=0,ok=0;arr.forEach(q=>{const p=picks[qid(q)];if(p!=null){done++;if(ansOk(q,p))ok++;}});
+  el.textContent='作答 '+done+'/'+arr.length+(done?' · 答對 '+ok+' · '+Math.round(ok/done*100)+'%':'');
 }
 document.querySelector('.bar').addEventListener('click',e=>{
   const b=e.target.closest('.chip2');if(!b)return;
@@ -145,9 +197,25 @@ document.querySelector('.bar').addEventListener('click',e=>{
     if(!ys.includes(YEAR))YEAR=ys[0];}
   else if(p==='fYear')YEAR=v;
   else if(p==='fTopic')TOPIC=v;
-  buildFilters();render();
+  buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
+document.querySelector('.tools2').addEventListener('click',e=>{
+  const b=e.target.closest('.mbtn');if(!b)return;
+  MODE=b.dataset.m;
+  document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x===b));
+  render();window.scrollTo(0,0);
+});
+document.getElementById('list').addEventListener('click',e=>{
+  if(MODE!=='test')return;
+  const b=e.target.closest('.opt.clk');if(!b)return;
+  const k=b.dataset.k;if(picks[k]!=null)return;
+  picks[k]=+b.dataset.i;render();
+});
+document.getElementById('printBtn').onclick=function(){
+  const prev=MODE;MODE='review';render();
+  setTimeout(function(){window.print();MODE=prev;render();},200);
+};
 buildFilters();render();
 </script>
 </body>

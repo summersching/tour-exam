@@ -1,8 +1,8 @@
 {
   "id": "ylen-pass",
-  "name": "外語英檢 考照中心",
-  "short_name": "外語英檢",
-  "description": "領隊・導遊 外語(英語)歷屆試題逐題完整詳解、學習中心與錯題本,100% 離線免費",
+  "name": "領隊·導遊 考照中心",
+  "short_name": "考照中心",
+  "description": "領隊・導遊 外語英語 + 觀光資源概要 歷屆試題逐題詳解、模擬測驗、學習中心與錯題本,100% 離線免費",
   "lang": "zh-Hant",
   "start_url": "./index.html",
   "scope": "./",
