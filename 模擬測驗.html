@@ -89,26 +89,28 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
+<script src="gh.js"></script>
 </head>
 <body>
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>📝 模擬測驗</h1>
-  <p>從 20 份考卷隨機組卷 · 交卷計分 · 答錯自動進錯題本</p>
+  <p>外語英語 + 觀光資源概要 · 隨機組卷 · 交卷計分 · 官方標準答案</p>
 </div></header>
 
 <!-- 設定 -->
 <main class="wrap" id="setup">
   <div class="panel">
+    <div class="row"><div class="lb">科目</div><div class="chips" id="sSubj"></div></div>
     <div class="row"><div class="lb">證照</div><div class="chips" id="sCert"></div></div>
-    <div class="row"><div class="lb">題型</div><div class="chips" id="sType"></div></div>
+    <div class="row" id="rowType"><div class="lb">題型</div><div class="chips" id="sType"></div></div>
     <div class="row"><div class="lb">年份</div><div class="chips" id="sYear"></div></div>
     <div class="row"><div class="lb">題數</div><div class="chips" id="sNum"></div></div>
     <div class="row"><div class="lb">限時</div><div class="chips" id="sTime"></div></div>
     <button class="start" id="startBtn">開始測驗</button>
     <div class="avail" id="avail"></div>
   </div>
-  <footer>字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)</footer>
+  <footer id="setupFoot">字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)</footer>
 </main>
 
 <!-- 作答 -->
@@ -156,25 +158,64 @@ const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').joi
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ===== 設定狀態 ===== */
-let cfg={cert:'all',type:'all',year:'all',num:20,time:0};
+let cfg={subj:'en',cert:'all',type:'all',year:'all',num:20,time:0};
+function curBank(){return cfg.subj==='gh'?GHBANK:BANK;}
+function isGh(){return cfg.subj==='gh';}
+function ansOk(q,p){return q.sungei?true:(p===q.ans);}   // 送分題一律算對
+function optInner(o){return isGh()?o:splitOpt(o);}       // 觀光:純中文不切英/中
+function qChips(q){
+  if(isGh())return '<span class="chip c-r">觀光資源概要</span>';
+  const cls=q.type==='字彙'?'c-v':q.type==='對話'?'c-d':'c-r';
+  return `<span class="chip ${cls}">${q.type}</span><span class="chip c-t">${q.topic}</span>`;
+}
+function starsHtml(q){return isGh()?'':`<span class="stars">${stars(q.star)}</span>`;}
+function revealHtml(q){
+  if(isGh())return q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+  return `<div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
+        <div class="lbl">解析</div><div class="ana">${q.ana}</div>
+        ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
+        ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
+        ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
+        <a class="revlink" href="${q.y}_${q.c==='guide'?'導遊':'領隊'}英語_詳解.html#q${q.no}">🔍 看原題詳解</a>`;
+}
+function optMark(q,i,p){
+  if(q.sungei)return p===i?['ok','✓']:['',''];   // 送分:選了的標對,其餘不標
+  if(i===q.ans)return['ok','✓'];
+  if(p===i)return['no','✗'];
+  return['',''];
+}
 function mkChips(id,items,key){
   document.getElementById(id).innerHTML=items.map(it=>
     `<span class="chip2 ${cfg[key]===it.v?'on':''}" data-v="${it.v}">${it.t}</span>`).join('');
   document.getElementById(id).onclick=e=>{const c=e.target.closest('[data-v]');if(!c)return;
     let v=c.dataset.v; if(key==='num'||key==='time')v=+v; cfg[key]=v;
     document.getElementById(id).querySelectorAll('.chip2').forEach(x=>x.classList.toggle('on',x===c));
+    if(key==='subj')syncSubjectUI();
     updAvail();};
 }
-const YEARS=[...new Set(BANK.map(q=>q.y))].sort();
+function syncSubjectUI(){
+  const gh=isGh();
+  document.getElementById('rowType').classList.toggle('hidden',gh);
+  document.getElementById('setupFoot').textContent=gh
+    ? '觀光資源概要 · 臺灣歷史/地理/觀光資源維護 · 官方標準答案(含送分題)'
+    : '字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)';
+  const YEARS=[...new Set(curBank().map(q=>q.y))].sort();
+  if(cfg.year!=='all'&&!YEARS.includes(cfg.year))cfg.year='all';
+  mkChips('sYear',[{v:'all',t:'全部'}].concat(YEARS.map(y=>({v:y,t:y+'年'}))),'year');
+}
 function buildSetup(){
+  mkChips('sSubj',[{v:'en',t:'外語英語'},{v:'gh',t:'觀光資源概要'}],'subj');
   mkChips('sCert',[{v:'all',t:'全部'},{v:'leader',t:'領隊'},{v:'guide',t:'導遊'}],'cert');
   mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'}],'type');
-  mkChips('sYear',[{v:'all',t:'全部'}].concat(YEARS.map(y=>({v:y,t:y+'年'}))),'year');
   mkChips('sNum',[{v:10,t:'10 題'},{v:20,t:'20 題'},{v:30,t:'30 題'},{v:50,t:'50 題'}],'num');
   mkChips('sTime',[{v:0,t:'不限時'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
+  syncSubjectUI();
   updAvail();
 }
-function pool(){return BANK.filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));}
+function pool(){
+  if(isGh())return GHBANK.filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.year==='all'||q.y===cfg.year));
+  return BANK.filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
+}
 function updAvail(){const n=pool().length;document.getElementById('avail').textContent='符合條件題數:'+n+' 題,將隨機抽 '+Math.min(cfg.num,n)+' 題';}
 
 /* ===== 作答 ===== */
@@ -192,23 +233,15 @@ function startQuiz(){
 }
 function renderPaper(){
   document.getElementById('qlist').innerHTML=paper.map((q,qi)=>{
-    const cls=q.type==='字彙'?'c-v':q.type==='對話'?'c-d':'c-r';
     const stem=q.stem.replace('__BLANK__','<span class="blank"></span>');
     return `<div class="card" id="qc${qi}" data-qi="${qi}">
       <div class="qhead"><span class="qno">第 ${qi+1} 題</span>
-        <span class="chip ${cls}">${q.type}</span><span class="chip c-t">${q.topic}</span>
+        ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
-        <span class="stars">${stars(q.star)}</span></div>
+        ${starsHtml(q)}</div>
       <div class="stem">${stem}</div>
-      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`).join('')}</div>
-      <div class="reveal">
-        <div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
-        <div class="lbl">解析</div><div class="ana">${q.ana}</div>
-        ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
-        ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
-        ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
-        <a class="revlink" href="${q.y}_${q.c==='guide'?'導遊':'領隊'}英語_詳解.html#q${q.no}">🔍 看原題詳解</a>
-      </div></div>`;
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${optInner(o)}</span><span class="mk"></span></button>`).join('')}</div>
+      <div class="reveal">${revealHtml(q)}</div></div>`;
   }).join('');
   document.getElementById('qlist').onclick=e=>{const b=e.target.closest('.opt');if(!b||document.getElementById('quiz').dataset.done)return;
     const qi=+b.dataset.qi,i=+b.dataset.i; picks[qi]=i;
@@ -237,10 +270,11 @@ function submit(forced){
   document.getElementById('quiz').dataset.done='1';
   let correct=0,wrong=[];
   const byTopic={},byType={};
-  paper.forEach((q,qi)=>{const p=picks[qi];const ok=p===q.ans;
-    (byTopic[q.topic]=byTopic[q.topic]||{ok:0,n:0}).n++;if(ok)byTopic[q.topic].ok++;
-    (byType[q.type]=byType[q.type]||{ok:0,n:0}).n++;if(ok)byType[q.type].ok++;
-    if(ok)correct++;else{wrong.push(qi);if(p!=null)wbAdd(q,p);}  // 有作答且答錯 → 進錯題本
+  paper.forEach((q,qi)=>{const p=picks[qi];const ok=ansOk(q,p);
+    const tp=q.topic||'觀光資源概要',ty=q.type||'觀光資源概要';
+    (byTopic[tp]=byTopic[tp]||{ok:0,n:0}).n++;if(ok)byTopic[tp].ok++;
+    (byType[ty]=byType[ty]||{ok:0,n:0}).n++;if(ok)byType[ty].ok++;
+    if(ok)correct++;else{wrong.push(qi);if(p!=null&&!isGh())wbAdd(q,p);}  // 英語:有作答且答錯 → 進錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
     hist.push({ts:Date.now(),cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
@@ -255,33 +289,26 @@ function showResult(correct,wrong){
   document.getElementById('scNum').textContent=correct+' / '+n;
   document.getElementById('scSub').textContent='答對率 '+pct+'%　'+(pct>=80?'🎉 很棒!':pct>=60?'👍 再加強':'💪 多練幾組');
   const wbn=wrong.filter(qi=>picks[qi]!=null).length;
-  document.getElementById('scWb').textContent=wbn?('答錯 '+wbn+' 題已收入錯題本,可到錯題本複習'):'';
+  document.getElementById('scWb').textContent=wbn?(isGh()?('答錯 '+wbn+' 題,可於下方檢討'):('答錯 '+wbn+' 題已收入錯題本,可到錯題本複習')):'';
   renderResult('all',wrong);
   window.scrollTo(0,0);
 }
 function renderResult(mode,wrong){
-  const list=paper.map((q,qi)=>({q,qi})).filter(({qi})=>mode==='wrong'?picks[qi]!==q.ans:true);
+  const list=paper.map((q,qi)=>({q,qi})).filter(({q,qi})=>mode==='wrong'?!ansOk(q,picks[qi]):true);
   document.getElementById('rlist').innerHTML=list.map(({q,qi})=>{
-    const cls=q.type==='字彙'?'c-v':q.type==='對話'?'c-d':'c-r';
     const stem=q.stem.replace('__BLANK__','<span class="blank"></span>');
     const p=picks[qi];
     return `<div class="card done">
       <div class="qhead"><span class="qno">第 ${qi+1} 題</span>
-        <span class="chip ${cls}">${q.type}</span>
+        ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
-        <span class="stars">${stars(q.star)}</span></div>
+        ${starsHtml(q)}</div>
       <div class="stem">${stem}</div>
-      <div class="opts">${q.opts.map((o,i)=>{let c='';let mk='';
-        if(i===q.ans){c='ok';mk='✓';} if(p===i&&i!==q.ans){c='no';mk='✗';}
-        return `<button class="opt ${c}" disabled><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk">${mk}</span></button>`;}).join('')}</div>
+      <div class="opts">${q.opts.map((o,i)=>{const[c,mk]=optMark(q,i,p);
+        return `<button class="opt ${c}" disabled><span class="lab">${LAB[i]}</span><span>${optInner(o)}</span><span class="mk">${mk}</span></button>`;}).join('')}</div>
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
-        <div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
-        <div class="lbl">解析</div><div class="ana">${q.ana}</div>
-        ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
-        ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
-        ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
-        <a class="revlink" href="${q.y}_${q.c==='guide'?'導遊':'領隊'}英語_詳解.html#q${q.no}">🔍 看原題詳解</a>
+        ${revealHtml(q)}
       </div></div>`;
   }).join('')||'<p style="text-align:center;color:var(--sub);padding:30px">🎉 這組全對,沒有答錯的題!</p>';
 }
