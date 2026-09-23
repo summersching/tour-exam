@@ -1,6 +1,6 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v56';
+const CACHE = 'ylenpass-v57';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js', '歷屆試題.html', '英語詳解.html',
   '學習中心.html', '考前衝刺.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html',
