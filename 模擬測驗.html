@@ -138,7 +138,7 @@
         <button class="btn" id="againBtn">🔁 再測一組</button>
         <button class="btn" id="reviewWrong">📌 只看答錯</button>
         <button class="btn" id="reviewAll">看全部</button>
-        <a class="btn" href="錯題本.html">前往錯題本</a>
+        <a class="btn" id="wbLink" href="錯題本.html">前往錯題本</a>
       </div>
     </div>
     <main class="wrap" id="rlist" style="padding:0"></main>
@@ -155,6 +155,13 @@ function wbAdd(q,picked){var o=wbLoad(),id=q.c+'-'+q.y+'-'+q.no,e=o[id]||{};
   o[id]={cert:q.c,y:q.y,no:q.no,type:q.type,topic:q.topic,star:q.star,stem:q.stem,opts:q.opts,ans:q.ans,zh:q.zh,ana:q.ana,skill:q.skill||'',note:q.note||'',gram:q.gram||'',real:q.real||'',vocab:q.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};
   wbSave(o);}
 function wbRemove(q){var o=wbLoad();delete o[q.c+'-'+q.y+'-'+q.no];wbSave(o);}
+/* 觀光錯題本(獨立命名空間,只存 id+作答,渲染時由 gh.js/gh_ana.js 補齊,避免與英文題庫衝突) */
+const WBGH_KEY='wrongbook_gh';
+function wbghLoad(){try{return JSON.parse(localStorage.getItem(WBGH_KEY)||'{}');}catch(e){return{};}}
+function wbghSave(o){try{localStorage.setItem(WBGH_KEY,JSON.stringify(o));}catch(e){}}
+function wbghAdd(q,picked){var o=wbghLoad(),id=q.c+'-'+q.y+'-'+q.no,e=o[id]||{};
+  o[id]={c:q.c,y:q.y,no:q.no,picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};
+  wbghSave(o);}
 
 function splitOpt(o){const m=o.match(/^(.*?)([一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
@@ -296,7 +303,7 @@ function submit(forced){
     else{tp=q.topic;ty=q.type;}
     (byTopic[tp]=byTopic[tp]||{ok:0,n:0}).n++;if(ok)byTopic[tp].ok++;
     (byType[ty]=byType[ty]||{ok:0,n:0}).n++;if(ok)byType[ty].ok++;
-    if(ok)correct++;else{wrong.push(qi);if(p!=null&&!isGh())wbAdd(q,p);}  // 英語:有作答且答錯 → 進錯題本
+    if(ok)correct++;else{wrong.push(qi);if(p!=null){isGh()?wbghAdd(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
     hist.push({ts:Date.now(),cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
@@ -311,7 +318,8 @@ function showResult(correct,wrong){
   document.getElementById('scNum').textContent=correct+' / '+n;
   document.getElementById('scSub').textContent='答對率 '+pct+'%　'+(pct>=80?'🎉 很棒!':pct>=60?'👍 再加強':'💪 多練幾組');
   const wbn=wrong.filter(qi=>picks[qi]!=null).length;
-  document.getElementById('scWb').textContent=wbn?(isGh()?('答錯 '+wbn+' 題,可於下方檢討'):('答錯 '+wbn+' 題已收入錯題本,可到錯題本複習')):'';
+  document.getElementById('scWb').textContent=wbn?('答錯 '+wbn+' 題已收入'+(isGh()?'觀光':'')+'錯題本,可前往複習'):'';
+  var wl=document.getElementById('wbLink');if(wl){wl.setAttribute('href',isGh()?'觀光錯題本.html':'錯題本.html');wl.textContent=isGh()?'前往觀光錯題本':'前往錯題本';}
   renderResult('all',wrong);
   window.scrollTo(0,0);
 }

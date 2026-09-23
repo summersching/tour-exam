@@ -71,6 +71,13 @@
   .opt.clk:hover{border-color:var(--sel)}
   .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
   .opt .mk.x{color:var(--no)}
+  .cmp{overflow-x:auto;margin:6px 0 14px}
+  .cmp h4{margin:12px 0 4px;font-size:.86rem;color:var(--hd1)}
+  .cmp table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:340px}
+  .cmp th,.cmp td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .cmp th{background:var(--selbg);color:var(--hd1);font-weight:700;white-space:nowrap}
+  .cmp td:first-child{font-weight:700;white-space:nowrap;color:var(--sub)}
+  .cmp b.ac{color:var(--ok)} .cmp b.wr{color:var(--no)}
   @media print{header .home,.bar,.tools2,.strat{display:none!important}.card{box-shadow:none;break-inside:avoid}}
 </style>
 <link rel="manifest" href="manifest.json">
@@ -110,6 +117,57 @@
     <li><b>「錯誤/不正確」題</b>:找一個張冠李戴(把甲的特徵套到乙)的敘述,那個通常就是答案。</li>
     <li><b>送分題</b>:官方標示一律給分,遇到別糾結。</li>
   </ul></details>
+
+  <details class="strat"><summary>🔀 易混對照表 · 高頻陷阱一次分清</summary>
+  <div class="cmp">
+
+    <h4>① 美洲三大古文明(最常考「分布地」)</h4>
+    <table><tr><th>文明</th><th>分布地</th><th>今屬</th></tr>
+      <tr><td>馬雅</td><td>猶加敦半島 / 中美洲叢林</td><td>墨西哥南部、瓜地馬拉</td></tr>
+      <tr><td>阿茲提克</td><td><b class="ac">墨西哥高原</b></td><td>墨西哥</td></tr>
+      <tr><td>印加</td><td><b class="ac">安地斯山(南美)</b></td><td>秘魯</td></tr></table>
+
+    <h4>② 臺灣「保護區/古蹟」法源(口訣易錯)</h4>
+    <table><tr><th>對象</th><th>法源</th></tr>
+      <tr><td>自然保留區、古蹟</td><td>文化資產保存法</td></tr>
+      <tr><td>自然保護區</td><td><b class="wr">森林法</b></td></tr>
+      <tr><td>國家公園</td><td>國家公園法</td></tr>
+      <tr><td>森林遊樂區</td><td>森林法</td></tr>
+      <tr><td>國家風景區</td><td>發展觀光條例</td></tr></table>
+
+    <h4>③ 世界遺產:中南半島 vs 島嶼(組合題常混)</h4>
+    <table><tr><th>區域</th><th>代表世遺</th></tr>
+      <tr><td>中南半島(陸)</td><td><b class="ac">下龍灣、吳哥窟、順化</b></td></tr>
+      <tr><td>島嶼(印尼/馬)</td><td><b class="wr">婆羅浮屠(爪哇)、神山(婆羅洲)</b></td></tr></table>
+
+    <h4>④ 季風方向(帶雨 vs 帶乾)</h4>
+    <table><tr><th>季風</th><th>季節</th><th>特徵</th></tr>
+      <tr><td>西南季風</td><td>夏</td><td>由印度洋來、帶大量雨(阿薩姆、颱風後中南部豪雨)</td></tr>
+      <tr><td>東北季風</td><td>冬</td><td>乾冷;臺灣迎風面為東北部</td></tr></table>
+
+    <h4>⑤ 臺灣中部河川「由北到南」</h4>
+    <table><tr><th>順序</th><th>河川</th></tr>
+      <tr><td>北 → 南</td><td>中港溪 → 後龍溪 → 大安溪 → 大甲溪 → 北港溪</td></tr>
+      <tr><td>常考界河</td><td>八掌溪(<b class="ac">嘉義縣∕臺南市</b>)</td></tr></table>
+
+    <h4>⑥ 分級口訣(顏色/等級別背錯)</h4>
+    <table><tr><th>項目</th><th>由低到高 / 級別</th><th>主管</th></tr>
+      <tr><td>國外旅遊警示</td><td><b class="ac">灰 → 黃 → 橘 → 紅</b></td><td>外交部領事事務局</td></tr>
+      <tr><td>國家重要濕地</td><td>國際級 / 國家級 / 地方級<span style="color:var(--no)">(無「區域級」)</span></td><td>內政部</td></tr></table>
+
+    <h4>⑦ 歐洲宗教變革人物</h4>
+    <table><tr><th>人物</th><th>事蹟</th></tr>
+      <tr><td>馬丁路德</td><td>1517 九十五條 → 宗教改革</td></tr>
+      <tr><td>羅耀拉</td><td>創耶穌會 → 反宗教改革</td></tr>
+      <tr><td>亨利八世</td><td>離婚案 → 成立英國國教</td></tr></table>
+
+    <h4>⑧ 臺灣世界遺產「潛力點」易混</h4>
+    <table><tr><th>是潛力點</th><th>不是</th></tr>
+      <tr><td><b class="ac">阿里山森林鐵路、棲蘭檜木林、太魯閣</b></td><td><b class="wr">墾丁國家公園</b></td></tr></table>
+
+  </div>
+  <p style="font-size:.76rem;color:var(--sub);margin:0 0 12px">※ 對照表為跨年高頻陷阱整理,實際以官方答案為準。</p>
+  </details>
 </div>
 
 <main class="wrap" id="list"></main>
