@@ -90,7 +90,7 @@ let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(
 function scopedKB(data){if(CERT==='all')return data;return data.map(function(x){var h=(x.hits||[]).filter(function(hh){return hh.c===CERT;});return h.length?Object.assign({},x,{hits:h,freq:h.length}):null;}).filter(Boolean);}
 function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
-function srcChips(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
+function srcChips(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file='英語詳解.html?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function introText(k,n){

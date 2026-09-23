@@ -236,7 +236,7 @@ function filtered(){
   const kw=qEl.value.trim().toLowerCase();
   return scopedWords().filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)&&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)));
 }
-function meta(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
+function meta(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file='英語詳解.html?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+meta(x)+'</div></div>';}
 function renderList(){
   let arr=filtered();
@@ -318,7 +318,7 @@ updScore();
 
 /* ============ 知識分頁(文法 / 技巧 / 陷阱)============ */
 function kText(h){return h.replace(/<[^>]+>/g,'').toLowerCase();}
-function kMeta(x){return '<div class="wsrc">'+(x.hits||[]).map(function(h){var g=h.c==='guide';var file=h.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('')+'</div>';}
+function kMeta(x){return '<div class="wsrc">'+(x.hits||[]).map(function(h){var g=h.c==='guide';var file='英語詳解.html?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('')+'</div>';}
 function kCard(x,cls){return '<div class="kcard '+cls+'"><div class="khtml">'+x.html+'</div>'+kMeta(x)+'</div>';}
 function stratCard(s){return '<div class="kcard kstrat"><div class="ktt">'+s.title+'<span class="kall">適用全部年度</span></div><div class="khtml">'+s.html+'</div></div>';}
 function kRender(id,data,cls,pre){

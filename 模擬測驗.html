@@ -199,7 +199,7 @@ function revealHtml(q){
         ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
         ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
         ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
-        <a class="revlink" href="${q.y}_${q.c==='guide'?'導遊':'領隊'}英語_詳解.html#q${q.no}">🔍 看原題詳解</a>`;
+        <a class="revlink" href="英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}">🔍 看原題詳解</a>`;
 }
 function optMark(q,i,p){
   if(q.sungei)return p===i?['ok','✓']:['',''];   // 送分:選了的標對,其餘不標

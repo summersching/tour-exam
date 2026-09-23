@@ -103,6 +103,8 @@
   .guide{background:var(--realbg);border:1px solid var(--realbd);border-radius:12px;padding:14px 16px;margin:14px 0 8px;font-size:.92rem}
   .guide .lbl{color:var(--realk)} .guide ol{margin:6px 0 0;padding-left:20px}
   .fold{display:none} .show .fold{display:block}
+  .card.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 6px rgba(0,0,0,.04)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
+  .backbtn{position:fixed;left:12px;bottom:16px;z-index:99;background:var(--accent);color:#fff;padding:9px 16px;border-radius:22px;font-size:.86rem;font-weight:700;text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,.28)}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   footer{max-width:840px;margin:26px auto 0;padding:0 16px;color:var(--sub);font-size:.78rem;text-align:center}
   @media print{
@@ -287,6 +289,29 @@ document.getElementById('app').addEventListener('click',e=>{
 });
 
 buildFilters();render();
+
+/* 深連結 #qN:跳到指定題並高亮;若來自工具頁顯示返回鈕 */
+function goHash(){
+  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
+  let c=document.getElementById('q'+m[1]);
+  if(!c){TYPE='all';document.getElementById('q').value='';buildFilters();render();c=document.getElementById('q'+m[1]);}
+  if(!c)return;
+  c.classList.add('show','hl');c.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>c.classList.remove('hl'),2400);
+}
+window.addEventListener('hashchange',goHash);
+setTimeout(goHash,120);
+(function(){var ref=document.referrer||'',label;
+  if(/學習中心/.test(ref))label='← 回學習中心';
+  else if(/錯題本/.test(ref))label='← 回錯題本';
+  else if(/考前衝刺/.test(ref))label='← 回考前衝刺';
+  else if(/口試練習/.test(ref))label='← 回口試練習';
+  else if(/模擬測驗/.test(ref))label='← 回模擬測驗';
+  else return;
+  var b=document.createElement('a');b.className='backbtn';b.textContent=label;b.href='#';
+  b.addEventListener('click',function(e){e.preventDefault();history.back();});
+  document.body.appendChild(b);
+})();
 </script>
 </body>
 </html>

@@ -89,7 +89,7 @@ let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(
 function scopeArr(arr){return CERT==='all'?arr:arr.filter(function(x){return x.c===CERT;});}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.88;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function srcChip(x){var g=x.c==='guide';var file=x.y+'_'+(g?'導遊':'領隊')+'英語_詳解.html#q'+(x.no||x.before);return '<a class="hit '+x.c+'" href="'+file+'" title="點我看原題">'+(g?'導':'領')+x.y+'-'+(x.no||x.before)+'</a>';}
+function srcChip(x){var g=x.c==='guide';var file='英語詳解.html?cert='+x.c+'&year='+x.y+'#q'+(x.no||x.before);return '<a class="hit '+x.c+'" href="'+file+'" title="點我看原題">'+(g?'導':'領')+x.y+'-'+(x.no||x.before)+'</a>';}
 function enRows(en){return (en||[]).map(function(s){return '<div class="en" data-say="'+esc(s)+'"><span class="ic">🔊</span><span class="tx">'+esc(s)+'</span><span class="sp">點我跟讀</span></div>';}).join('');}
 function card(x,head){return '<div class="ocard"><div class="ohead">'+head+srcChip(x)+'</div><div class="oreal">'+x.real+'</div>'+(x.en&&x.en.length?'<div class="ens">'+enRows(x.en)+'</div>':'')+'</div>';}
 function introText(k,n){
