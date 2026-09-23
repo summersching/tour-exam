@@ -100,11 +100,6 @@
   </div>
 </header>
 
-<div class="nav"><div class="wrap">
-  <div class="seg" id="segCat"></div>
-  <div class="subs" id="segSub"></div>
-</div></div>
-
 <div class="wrap" id="main"></div>
 
 <footer>
@@ -113,121 +108,29 @@
 </footer>
 
 <script>
-/* ==== 資料結構(未來擴充 導遊 / 其他科目 只要改這裡)==== */
-const APP = {
-  cats: [
-    { id:'leader', name:'領隊', icon:'🧭', on:true,
-      subs: [
-        { id:'en', name:'外語英語', on:true,
-          years:[115,114,113,112,111,110,109,108,107,106],
-          file: y => `${y}_領隊英語_詳解.html`,
-          meta: {
-            115:['new','4201'],114:['new','4201'],113:['new','4501'],
-            112:['old','4501'],111:['old','4501'],110:['old','4501'],
-            109:['old','4501'],108:['old','4501'],107:['old','4501'],106:['old','4601']
-          }
-        },
-        { id:'gh', name:'觀光資源概要', on:true,
-          years:[115,114,113,112,111,110,109,108,107,106],
-          file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
-          count:y=>(y==106?80:50),
-          meta:{115:['new','3201'],114:['new','3201'],113:['new','3501'],112:['old','3501'],111:['old','3501'],110:['old','3501'],109:['old','3501'],108:['old','3501'],107:['old','3501'],106:['old','3601']}
-        }
-      ]
-    },
-    { id:'guide', name:'導遊', icon:'🚩', on:true,
-      subs: [
-        { id:'en', name:'外語英語', on:true,
-          years:[115,114,113,112,111,110,109,108,107,106],
-          file: y => `${y}_導遊英語_詳解.html`,
-          meta: { 115:['new','4401'], 114:['new','4401'], 113:['new','4201'], 112:['old','4201'], 111:['old','4201'], 110:['old','4201'], 109:['old','4201'], 108:['old','4201'], 107:['old','4201'], 106:['old','4401'] }
-        },
-        { id:'gh', name:'觀光資源概要', on:true,
-          years:[115,114,113,112,111,110,109,108,107,106],
-          file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
-          count:y=>(y==106?80:50),
-          meta:{115:['new','3301'],114:['new','3301'],113:['new','3201'],112:['old','3201'],111:['old','3201'],110:['old','3201'],109:['old','3201'],108:['old','3201'],107:['old','3201'],106:['old','3401']}
-        }
-      ]
-    }
-  ],
-  tools: [
-    { id:'wb',    name:'學習中心', icon:'📖', desc:'單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html' },
-    { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'高頻必背 · 片語 · 易混字', file:'考前衝刺.html' },
-    { id:'oral',  name:'口試練習', icon:'🎤', desc:'帶團實用句 · 主題準備 · 跟讀', file:'口試練習.html' },
-    { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'英語 + 觀光資源概要 · 隨機組卷 · 計分 · 限時', file:'模擬測驗.html' },
-    { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 預估及格率', file:'儀表板.html' },
-    { id:'wrong', name:'英語錯題本', icon:'📌', desc:'外語英語測驗答錯自動收錄 · 跨年複習', file:'錯題本.html' },
-    { id:'wronggh', name:'觀光錯題本', icon:'🛡', desc:'觀光資源概要答錯自動收錄 · 附考點與解析', file:'觀光錯題本.html' }
-  ]
-};
-
-let curCat = 0, curSub = 0;
+/* ==== 首頁 = 學習工具啟動頁(歷屆試題獨立為一個工具,點進 歷屆試題.html)==== */
+const TOOLS = [
+  { id:'past',  name:'歷屆試題', icon:'📚', desc:'外語英語 + 觀光資源概要 · 10 屆逐題詳解', file:'歷屆試題.html' },
+  { id:'wb',    name:'學習中心', icon:'📖', desc:'單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html' },
+  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'高頻必背 · 片語 · 易混字', file:'考前衝刺.html' },
+  { id:'oral',  name:'口試練習', icon:'🎤', desc:'帶團實用句 · 主題準備 · 跟讀', file:'口試練習.html' },
+  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'英語 + 觀光資源概要 · 隨機組卷 · 計分 · 限時', file:'模擬測驗.html' },
+  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 預估及格率', file:'儀表板.html' },
+  { id:'wrong', name:'英語錯題本', icon:'📌', desc:'外語英語測驗答錯自動收錄 · 跨年複習', file:'錯題本.html' },
+  { id:'wronggh', name:'觀光錯題本', icon:'🛡', desc:'觀光資源概要答錯自動收錄 · 附考點與解析', file:'觀光錯題本.html' }
+];
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-function renderNav(){
-  document.getElementById('segCat').innerHTML = APP.cats.map((c,i)=>
-    `<button ${c.on?'':'disabled'} data-ci="${i}" class="${i===curCat?'on':''}">
-       <span>${c.icon}</span><span>${esc(c.name)}</span>
-       ${c.soon?'<span class="soon">即將推出</span>':''}
-     </button>`).join('');
-  const cat = APP.cats[curCat];
-  document.getElementById('segSub').innerHTML = cat.subs.map((s,i)=>
-    `<button ${s.on?'':'disabled'} data-si="${i}" class="${i===curSub?'on':''}">
-       ${esc(s.name)}${s.on?'':' · 即將推出'}
-     </button>`).join('');
-}
-
-function renderMain(){
-  const cat = APP.cats[curCat], sub = cat.subs[curSub];
-  const main = document.getElementById('main');
-  if(!sub || !sub.on || !sub.years){
-    main.innerHTML = `<div style="text-align:center;color:var(--sub);padding:50px 10px">
-      <div style="font-size:2.4rem">🚧</div>
-      <p>「${esc(cat.name)} · ${esc(sub?sub.name:'')}」題庫整理中,敬請期待</p></div>`;
-    return;
-  }
-  const qcount = y => typeof sub.count==='function' ? sub.count(y) : (sub.count||80);
-  const cards = sub.years.map(y=>{
-    const [sys,code] = sub.meta[y];
-    const isNew = sys==='new';
-    return `<a class="yc" href="${esc(sub.file(y, cat.id))}">
-      <span class="done">✅ ${qcount(y)}題</span>
-      <div class="yr">${y}<small>年</small></div>
-      <div class="sy">${isNew?'交通部觀光署':'考選部'}</div>
-      <div class="row">
-        <span class="badge ${isNew?'b-new':'b-old'}">${isNew?'新制':'舊制'}</span>
-        <span class="code">卷${code}</span>
-      </div></a>`;
-  }).join('');
-  const tools = APP.tools.map(t=>{
-    if(t.soon) return `<div class="tc dis"><div class="ic">${t.icon}</div>
-      <div><div class="tt">${esc(t.name)}<span class="soon">即將推出</span></div>
-      <div class="dd">${esc(t.desc)}</div></div></div>`;
-    return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
-      <div><div class="tt">${esc(t.name)}</div><div class="dd">${esc(t.desc)}</div></div></a>`;
-  }).join('');
-  const cnts = sub.years.map(qcount), cmin = Math.min(...cnts), cmax = Math.max(...cnts);
-  const cntTxt = cmin===cmax ? `每屆 ${cmin} 題` : `每屆 ${cmin}–${cmax} 題`;
-  const headLbl = sub.id==='gh' ? '歷屆試題 · 官方答案 + 解析' : '歷屆試題詳解';
-  main.innerHTML = `
-    <div class="sect"><h2>📚 ${headLbl}</h2><span class="n">共 ${sub.years.length} 屆 · ${cntTxt}</span></div>
-    <div class="years">${cards}</div>
+function render(){
+  const tools = TOOLS.map(t=>
+    `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+      <div><div class="tt">${esc(t.name)}</div><div class="dd">${esc(t.desc)}</div></div></a>`).join('');
+  document.getElementById('main').innerHTML = `
     <div class="sect"><h2>🎯 學習工具</h2></div>
     <div class="tools">${tools}</div>`;
 }
-
-document.getElementById('segCat').addEventListener('click', e=>{
-  const b = e.target.closest('button[data-ci]'); if(!b||b.disabled) return;
-  curCat = +b.dataset.ci; curSub = 0; renderNav(); renderMain();
-});
-document.getElementById('segSub').addEventListener('click', e=>{
-  const b = e.target.closest('button[data-si]'); if(!b||b.disabled) return;
-  curSub = +b.dataset.si; renderNav(); renderMain();
-});
-
-renderNav(); renderMain();
+render();
 </script>
 </body>
 </html>

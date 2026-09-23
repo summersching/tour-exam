@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>歷屆試題 · 領隊·導遊 考照中心</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --accent2:#1e3a8a; --teal:#0d9488; --tealbg:#e7f6f4;
+    --gold:#8a6d1a; --goldbg:#fff4cc; --grey:#94a3b8;
+    --newbg:#e5f6ec; --newk:#15904a; --oldbg:#eef1f5; --oldk:#55647a;
+    --shadow:0 2px 10px rgba(0,0,0,.06); --shadow2:0 4px 18px rgba(0,0,0,.10);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --accent2:#31488f; --teal:#5eead4; --tealbg:#123230;
+      --gold:#f2d778; --goldbg:#3d3413; --grey:#5a6577;
+      --newbg:#173023; --newk:#5ad48a; --oldbg:#242b36; --oldk:#9fb0c6;
+      --shadow:0 2px 10px rgba(0,0,0,.3); --shadow2:0 4px 18px rgba(0,0,0,.45);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    line-height:1.6;padding:0 0 40px;min-height:100vh}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;position:relative;
+    padding:calc(22px + env(safe-area-inset-top)) 20px 20px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.32rem;letter-spacing:.02em}
+  header p{margin:0;opacity:.9;font-size:.82rem}
+  .home{position:absolute;top:calc(20px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .nav{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .seg{display:flex;gap:8px;padding:10px 0 4px}
+  .seg button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    padding:9px 8px;border-radius:12px;cursor:pointer;font-size:.92rem;font-weight:700;
+    font-family:inherit;display:flex;gap:6px;align-items:center;justify-content:center;transition:.15s}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .seg button:disabled{color:var(--grey);cursor:not-allowed;background:var(--bg)}
+  .subs{display:flex;gap:8px;padding:2px 0 10px;flex-wrap:wrap}
+  .subs button{border:1px solid var(--line);background:var(--card);color:var(--sub);
+    padding:5px 14px;border-radius:18px;cursor:pointer;font-size:.82rem;font-family:inherit;transition:.15s}
+  .subs button.on{background:var(--tealbg);color:var(--teal);border-color:var(--teal);font-weight:700}
+  .subs button:disabled{color:var(--grey);cursor:not-allowed}
+  .sect{margin:20px 0 8px;display:flex;align-items:baseline;gap:8px}
+  .sect h2{margin:0;font-size:1.02rem}
+  .sect .n{font-size:.76rem;color:var(--sub)}
+  .years{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+  .yc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;
+    cursor:pointer;text-decoration:none;color:inherit;box-shadow:var(--shadow);
+    transition:transform .12s,box-shadow .12s,border-color .12s;position:relative;overflow:hidden}
+  .yc:hover,.yc:active{transform:translateY(-2px);box-shadow:var(--shadow2);border-color:var(--accent)}
+  .yc .yr{font-size:1.7rem;font-weight:800;color:var(--accent);line-height:1.1}
+  .yc .yr small{font-size:.8rem;font-weight:700;color:var(--sub);margin-left:2px}
+  .yc .sy{font-size:.82rem;color:var(--sub);margin:3px 0 9px}
+  .yc .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:12px}
+  .b-new{background:var(--newbg);color:var(--newk)} .b-old{background:var(--oldbg);color:var(--oldk)}
+  .code{font-size:.68rem;color:var(--sub)}
+  .yc .done{position:absolute;top:10px;right:11px;font-size:.7rem;color:var(--teal);font-weight:700}
+  footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
+  footer b{color:var(--teal)}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="home" href="index.html">← 首頁</a>
+    <h1>📚 歷屆試題</h1>
+    <p>外語英語 + 觀光資源概要 · 逐題官方答案 + 詳解</p>
+  </div>
+</header>
+
+<div class="nav"><div class="wrap">
+  <div class="seg" id="segCat"></div>
+  <div class="subs" id="segSub"></div>
+</div></div>
+
+<div class="wrap" id="main"></div>
+
+<footer>
+  全部功能離線可用,免費、無廣告、不需註冊<br>
+  <b>10 屆完整詳解</b> · 外語英語 + 觀光資源概要
+</footer>
+
+<script>
+const APP = {
+  cats: [
+    { id:'leader', name:'領隊', icon:'🧭', on:true,
+      subs: [
+        { id:'en', name:'外語英語', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file: y => `${y}_領隊英語_詳解.html`,
+          count:y=>(y==106?80:80),
+          meta: {
+            115:['new','4201'],114:['new','4201'],113:['new','4501'],
+            112:['old','4501'],111:['old','4501'],110:['old','4501'],
+            109:['old','4501'],108:['old','4501'],107:['old','4501'],106:['old','4601']
+          }
+        },
+        { id:'gh', name:'觀光資源概要', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
+          count:y=>(y==106?80:50),
+          meta:{115:['new','3201'],114:['new','3201'],113:['new','3501'],112:['old','3501'],111:['old','3501'],110:['old','3501'],109:['old','3501'],108:['old','3501'],107:['old','3501'],106:['old','3601']}
+        }
+      ]
+    },
+    { id:'guide', name:'導遊', icon:'🚩', on:true,
+      subs: [
+        { id:'en', name:'外語英語', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file: y => `${y}_導遊英語_詳解.html`,
+          count:y=>(y==106?80:80),
+          meta: { 115:['new','4401'], 114:['new','4401'], 113:['new','4201'], 112:['old','4201'], 111:['old','4201'], 110:['old','4201'], 109:['old','4201'], 108:['old','4201'], 107:['old','4201'], 106:['old','4401'] }
+        },
+        { id:'gh', name:'觀光資源概要', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
+          count:y=>(y==106?80:50),
+          meta:{115:['new','3301'],114:['new','3301'],113:['new','3201'],112:['old','3201'],111:['old','3201'],110:['old','3201'],109:['old','3201'],108:['old','3201'],107:['old','3201'],106:['old','3401']}
+        }
+      ]
+    }
+  ]
+};
+
+/* 預設證照:沿用全站記憶 pref_cert */
+let curCat = 0, curSub = 0;
+try{const pc=localStorage.getItem('pref_cert');if(pc==='guide')curCat=1;}catch(e){}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderNav(){
+  document.getElementById('segCat').innerHTML = APP.cats.map((c,i)=>
+    `<button ${c.on?'':'disabled'} data-ci="${i}" class="${i===curCat?'on':''}">
+       <span>${c.icon}</span><span>${esc(c.name)}</span></button>`).join('');
+  const cat = APP.cats[curCat];
+  document.getElementById('segSub').innerHTML = cat.subs.map((s,i)=>
+    `<button ${s.on?'':'disabled'} data-si="${i}" class="${i===curSub?'on':''}">${esc(s.name)}</button>`).join('');
+}
+
+function renderMain(){
+  const cat = APP.cats[curCat], sub = cat.subs[curSub];
+  const main = document.getElementById('main');
+  if(!sub || !sub.on || !sub.years){
+    main.innerHTML = `<div style="text-align:center;color:var(--sub);padding:50px 10px">
+      <div style="font-size:2.4rem">🚧</div>
+      <p>「${esc(cat.name)} · ${esc(sub?sub.name:'')}」題庫整理中,敬請期待</p></div>`;
+    return;
+  }
+  const qcount = y => typeof sub.count==='function' ? sub.count(y) : (sub.count||80);
+  const cards = sub.years.map(y=>{
+    const [sys,code] = sub.meta[y];
+    const isNew = sys==='new';
+    return `<a class="yc" href="${esc(sub.file(y, cat.id))}">
+      <span class="done">✅ ${qcount(y)}題</span>
+      <div class="yr">${y}<small>年</small></div>
+      <div class="sy">${isNew?'交通部觀光署':'考選部'}</div>
+      <div class="row">
+        <span class="badge ${isNew?'b-new':'b-old'}">${isNew?'新制':'舊制'}</span>
+        <span class="code">卷${code}</span>
+      </div></a>`;
+  }).join('');
+  const cnts = sub.years.map(qcount), cmin = Math.min(...cnts), cmax = Math.max(...cnts);
+  const cntTxt = cmin===cmax ? `每屆 ${cmin} 題` : `每屆 ${cmin}–${cmax} 題`;
+  const headLbl = sub.id==='gh' ? '歷屆試題 · 官方答案 + 解析' : '歷屆試題 · 逐題完整詳解';
+  main.innerHTML = `
+    <div class="sect"><h2>📚 ${headLbl}</h2><span class="n">共 ${sub.years.length} 屆 · ${cntTxt}</span></div>
+    <div class="years">${cards}</div>`;
+}
+
+document.getElementById('segCat').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-ci]'); if(!b||b.disabled) return;
+  curCat = +b.dataset.ci; curSub = 0;
+  try{localStorage.setItem('pref_cert', APP.cats[curCat].id);}catch(e){}
+  renderNav(); renderMain();
+});
+document.getElementById('segSub').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-si]'); if(!b||b.disabled) return;
+  curSub = +b.dataset.si; renderNav(); renderMain();
+});
+
+renderNav(); renderMain();
+</script>
+</body>
+</html>
