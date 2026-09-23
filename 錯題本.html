@@ -151,7 +151,7 @@ let mode='review', fc='all', fy='all', ft='all', clearArm=false;
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
-function splitOpt(o){const m=o.match(/^(.*?)([一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
 const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
 function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}

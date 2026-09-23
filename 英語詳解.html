@@ -152,7 +152,7 @@ const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
 const TYPES=[['all','全部'],['字彙','字彙'],['對話','對話'],['文法','文法'],['閱讀','閱讀']];
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function splitOpt(o){const m=o.match(/^(.*?)([一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+esc(m[2])+'</span>':esc(o);}
+function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+esc(m[2])+'</span>':esc(o);}
 const stars=n=>[0,1,2].map(i=>i<n?'★':'<span class="dim">☆</span>').join('');
 const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
 function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${esc(x[0])}</span>${x[1]?`<span class="kk">/${esc(x[1])}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}

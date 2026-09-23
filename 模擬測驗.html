@@ -163,7 +163,7 @@ function wbghAdd(q,picked){var o=wbghLoad(),id=q.c+'-'+q.y+'-'+q.no,e=o[id]||{};
   o[id]={c:q.c,y:q.y,no:q.no,picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};
   wbghSave(o);}
 
-function splitOpt(o){const m=o.match(/^(.*?)([一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
