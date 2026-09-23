@@ -110,6 +110,12 @@ const APP = {
           file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
           count:y=>(y==106?80:50),
           meta:{115:['new','3201'],114:['new','3201'],113:['new','3501'],112:['old','3501'],111:['old','3501'],110:['old','3501'],109:['old','3501'],108:['old','3501'],107:['old','3501'],106:['old','3601']}
+        },
+        { id:'pr', name:'執業實務', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file:(y,cid)=>`執業實務複習.html?cert=${cid}&year=${y}`,
+          count:y=>(y==106?80:50),
+          meta:{115:['new','1101'],114:['new','1101'],113:['new','1101'],112:['old','1501'],111:['old','1501'],110:['old','1501'],109:['old','1501'],108:['old','1501'],107:['old','1501'],106:['old','1501']}
         }
       ]
     },
@@ -126,6 +132,12 @@ const APP = {
           file:(y,cid)=>`觀光複習.html?cert=${cid}&year=${y}`,
           count:y=>(y==106?80:50),
           meta:{115:['new','3301'],114:['new','3301'],113:['new','3201'],112:['old','3201'],111:['old','3201'],110:['old','3201'],109:['old','3201'],108:['old','3201'],107:['old','3201'],106:['old','3401']}
+        },
+        { id:'pr', name:'執業實務', on:true,
+          years:[115,114,113,112,111,110,109,108,107,106],
+          file:(y,cid)=>`執業實務複習.html?cert=${cid}&year=${y}`,
+          count:y=>(y==106?80:50),
+          meta:{115:['new','1301'],114:['new','1301'],113:['new','1301'],112:['old','1301'],111:['old','1301'],110:['old','1301'],109:['old','1301'],108:['old','1301'],107:['old','1301'],106:['old','1301']}
         }
       ]
     }
@@ -171,7 +183,7 @@ function renderMain(){
   }).join('');
   const cnts = sub.years.map(qcount), cmin = Math.min(...cnts), cmax = Math.max(...cnts);
   const cntTxt = cmin===cmax ? `每屆 ${cmin} 題` : `每屆 ${cmin}–${cmax} 題`;
-  const headLbl = sub.id==='gh' ? '歷屆試題 · 官方答案 + 解析' : '歷屆試題 · 逐題完整詳解';
+  const headLbl = sub.id==='en' ? '歷屆試題 · 逐題完整詳解' : '歷屆試題 · 官方答案 + 解析';
   main.innerHTML = `
     <div class="sect"><h2>📚 ${headLbl}</h2><span class="n">共 ${sub.years.length} 屆 · ${cntTxt}</span></div>
     <div class="years">${cards}</div>`;
