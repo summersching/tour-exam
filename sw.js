@@ -1,10 +1,10 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v75';
+const CACHE = 'ylenpass-v76';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js', '歷屆試題.html', '英語詳解.html',
-  '學習中心.html', '考前衝刺.html', '法規速查.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html',
-  'glossary.js', 'dict.json', 'bank.js', 'sprint.js', 'oral.js', 'gh.js', 'gh_ana.js', 'en_review.js', 'pr.js', 'pr_ana.js', 'pr2.js', 'pr2_ana.js',
+  '學習中心.html', '考前衝刺.html', '法規速查.html', '考點速記.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html',
+  'glossary.js', 'dict.json', 'bank.js', 'sprint.js', 'sprint_cn.js', 'oral.js', 'gh.js', 'gh_ana.js', 'en_review.js', 'pr.js', 'pr_ana.js', 'pr2.js', 'pr2_ana.js',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'
 ];
 

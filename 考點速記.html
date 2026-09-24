@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#c2410c">
+<title>考點速記</title>
+<style>
+  :root{
+    --bg:#fbf7f4;--card:#fff;--ink:#231a14;--sub:#7a6a5e;--line:#ece2da;
+    --sel:#c2410c;--hd1:#9a3412;--hd2:#c2410c;--chipbg:#fdeee5;--chipk:#c2410c;
+    --freq:#ea580c;--ok:#15904a;--no:#c62a2a;--shadow:0 1px 6px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#17120e;--card:#211a15;--ink:#f0e8e2;--sub:#b0a196;--line:#33291f;
+    --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
+    --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .subbar{display:flex;gap:8px;padding:10px 0 4px}
+  .sbtn{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:9px 8px;
+    border-radius:12px;cursor:pointer;font-size:.92rem;font-weight:700;font-family:inherit}
+  .sbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  .srow{padding:4px 0 10px}
+  #q{width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    padding:9px 13px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .cnt{font-size:.75rem;color:var(--sub);padding:6px 2px 0}
+  .grp{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+  .grp>summary{cursor:pointer;font-weight:800;font-size:1.04rem;padding:14px 16px;list-style:none;display:flex;align-items:center;gap:9px}
+  .grp>summary::-webkit-details-marker{display:none}
+  .grp>summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  .grp[open]>summary::after{transform:rotate(90deg)}
+  .gi{font-size:1.2rem}
+  .gn{font-size:.76rem;color:var(--sub);font-weight:600}
+  .gbody{padding:0 16px 14px}
+  .tt{display:flex;align-items:center;gap:8px;margin:14px 0 5px}
+  .ttn{font-weight:800;font-size:.94rem;color:var(--sel)}
+  .freq{font-size:.72rem;font-weight:700;color:#fff;background:var(--freq);border-radius:10px;padding:1px 8px}
+  ul.pts{margin:2px 0 0;padding-left:20px}
+  ul.pts li{margin:5px 0;font-size:.92rem}
+  ul.pts li b{color:var(--ink)} ul.pts li b.ac{color:var(--ok)} ul.pts li b.wr{color:var(--no)}
+  .empty{text-align:center;color:var(--sub);padding:50px 10px}
+  .tip{font-size:.76rem;color:var(--sub);background:var(--chipbg);border-radius:10px;padding:9px 12px;margin:14px 0 2px}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+<script src="sprint_cn.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🔥 考點速記</h1>
+  <p>觀光資源概要 · 執業實務 高頻考點(考過 3 次以上)· 一句話重點</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="subbar">
+    <button class="sbtn on" data-s="gh">🗺️ 觀光資源概要</button>
+    <button class="sbtn" data-s="pr">🚩 執業實務</button>
+  </div>
+  <div class="srow"><input id="q" placeholder="搜尋考點關鍵字…(如 慢城、CPR、契約)"></div>
+  <div class="cnt" id="cnt"></div>
+</div></div>
+
+<div class="wrap">
+  <div class="tip">💡 依「大類 → 細類」按<b>考試頻率</b>排序,數字=考過次數。點大類展開,右側越紅的越常考,優先背。</div>
+  <div id="app"></div>
+</div>
+
+<script>
+let SUBJ='gh', KW='';
+const app=document.getElementById('app');
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function plain(s){return String(s).replace(/<[^>]+>/g,'');}
+
+function render(){
+  const data=(typeof SPRINTCN!=='undefined')&&SPRINTCN[SUBJ];
+  if(!data){app.innerHTML='<div class="empty">資料載入失敗</div>';return;}
+  const kw=KW.trim().toLowerCase();
+  let html='', totalPts=0, shownPts=0;
+  data.groups.forEach(g=>{
+    let items=g.items.map(it=>{totalPts+=it.pts.length;return it;});
+    if(kw){
+      items=items.map(it=>{
+        if(it.tt.toLowerCase().includes(kw))return it;
+        const pts=it.pts.filter(p=>plain(p).toLowerCase().includes(kw));
+        return pts.length?{tt:it.tt,n:it.n,pts:pts}:null;
+      }).filter(Boolean);
+      if(!items.length)return;
+    }
+    const open=kw?' open':(g===data.groups[0]?' open':'');
+    let body='';
+    items.forEach(it=>{
+      shownPts+=it.pts.length;
+      body+=`<div class="tt"><span class="ttn">${esc(it.tt)}</span><span class="freq">${it.n}×</span></div>`;
+      body+=`<ul class="pts">${it.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+    });
+    html+=`<details class="grp"${open}><summary><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
+  });
+  if(!html)html=`<div class="empty">找不到「${esc(KW)}」相關考點<br><span style="font-size:.85rem">換個關鍵字或切換科目試試</span></div>`;
+  app.innerHTML=html;
+  document.getElementById('cnt').textContent=kw?`符合「${KW}」的重點 ${shownPts} 條`:`${data.name} · 共 ${totalPts} 條高頻重點`;
+}
+
+document.querySelector('.subbar').addEventListener('click',e=>{
+  const b=e.target.closest('.sbtn'); if(!b||b.dataset.s===SUBJ)return;
+  SUBJ=b.dataset.s;
+  document.querySelectorAll('.sbtn').forEach(x=>x.classList.toggle('on',x===b));
+  render(); window.scrollTo(0,0);
+});
+let t; document.getElementById('q').addEventListener('input',e=>{
+  clearTimeout(t); KW=e.target.value; t=setTimeout(render,180);
+});
+render();
+</script>
+</body>
+</html>
