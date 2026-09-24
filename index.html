@@ -116,7 +116,7 @@
 
 <script>
 /* ==== 首頁 = 學習工具啟動頁(科目篩選 + 分區塊)==== */
-const SUBJFILTERS=[['all','全部'],['en','英語'],['gh','觀光'],['pr','執業實務'],['pr2','執業法規']];
+const SUBJFILTERS=[['all','全部'],['en','英語'],['jp','日語'],['gh','觀光'],['pr','執業實務'],['pr2','執業法規']];
 const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','📌 錯題本'],['tool','⚙️ 紀錄 · 工具']];
 const TOOLS = [
   { id:'past',  name:'歷屆試題', icon:'📚', desc:'四科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
@@ -129,6 +129,7 @@ const TOOLS = [
   { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格率', file:'儀表板.html', cat:'tool', subj:'all' },
   { id:'backup',name:'資料備份', icon:'💾', desc:'錯題/成績 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' },
   { id:'wrong', name:'英語', icon:'📌', file:'錯題本.html', cat:'wrong', subj:['en'], wb:'wrongbook_en' },
+  { id:'wrongjp', name:'日語', icon:'🎌', file:'日文錯題本.html', cat:'wrong', subj:['jp'], wb:'wrongbook_jp' },
   { id:'wronggh', name:'觀光', icon:'🛡', file:'觀光錯題本.html', cat:'wrong', subj:['gh'], wb:'wrongbook_gh' },
   { id:'wrongpr', name:'執業實務', icon:'📋', file:'執業實務錯題本.html', cat:'wrong', subj:['pr'], wb:'wrongbook_pr' },
   { id:'wrongpr2', name:'執業法規', icon:'⚖️', file:'執業法規錯題本.html', cat:'wrong', subj:['pr2'], wb:'wrongbook_pr2' }

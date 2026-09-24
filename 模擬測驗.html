@@ -74,6 +74,11 @@
   .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
   .box.gram{background:var(--grambg);border-color:var(--grambd)} .box.gram .h{color:var(--gramk)}
   .revlink{display:inline-block;margin:6px 0;font-size:.82rem;color:var(--accent);text-decoration:none;font-weight:700}
+  .say{cursor:pointer;color:var(--ok);font-size:.92em;margin-left:5px;user-select:none}
+  table.vocab{border-collapse:collapse;width:100%;font-size:.9rem;margin:2px 0}
+  table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top}
+  table.vocab td:first-child{font-weight:700;white-space:nowrap} table.vocab td:nth-child(2){color:var(--sub);white-space:nowrap}
+  .acc{display:inline-block;min-width:15px;text-align:center;font-size:.7rem;font-weight:700;color:#fff;background:var(--no);border-radius:9px;padding:0 5px;vertical-align:middle}
   /* 結果 */
   .score{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:18px 0;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
   .score .big{font-size:2.6rem;font-weight:800;color:var(--sel);line-height:1.1}
@@ -96,6 +101,8 @@
 <script src="pr_ana.js" onerror="window.PRANA=window.PRANA||{}"></script>
 <script src="pr2.js"></script>
 <script src="pr2_ana.js" onerror="window.PR2ANA=window.PR2ANA||{}"></script>
+<script src="jp.js"></script>
+<script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -178,8 +185,16 @@ function wbpr2Add(q,picked){var o;try{o=JSON.parse(localStorage.getItem(WBPR2_KE
   var id=q.c+'-'+q.y+'-'+q.no,e=o[id]||{};
   o[id]={c:q.c,y:q.y,no:q.no,picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};
   try{localStorage.setItem(WBPR2_KEY,JSON.stringify(o));}catch(e){}}
+/* 外語日語錯題本(獨立命名空間 wrongbook_jp,只存 id+作答,渲染由 jp.js/jp_ana.js 補齊) */
+const WBJP_KEY='wrongbook_jp';
+function wbjpAdd(q,picked){var o;try{o=JSON.parse(localStorage.getItem(WBJP_KEY)||'{}');}catch(e){o={};}
+  var id=q.c+'-'+q.y+'-'+q.no,e=o[id]||{};
+  o[id]={c:q.c,y:q.y,no:q.no,picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};
+  try{localStorage.setItem(WBJP_KEY,JSON.stringify(o));}catch(e){}}
 
 function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function sayBtn(t){return `<span class="say" data-say="${String(t).replace(/"/g,'&quot;').replace(/</g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
 function hlAna(ana,opts,ans){
   if(!ana||!opts)return ana||'';
@@ -196,26 +211,42 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 /* ===== 設定狀態 ===== */
 let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0};
-function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:BANK;}
+function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:cfg.subj==='jp'?JPBANK:BANK;}
 function isGh(){return cfg.subj==='gh';}
 function isCn(){return cfg.subj==='gh'||cfg.subj==='pr'||cfg.subj==='pr2';}   // 中文科(觀光/執業實務/執業法規):純中文選項、解析結構相同
-const SUBJNAME={en:'外語英語',gh:'觀光資源概要',pr:'執業實務',pr2:'執業法規'};
+function isJp(){return cfg.subj==='jp';}   // 外語日語:自有題庫+ana(zh/a/v),TTS 日語
+const SUBJNAME={en:'外語英語',jp:'外語日語',gh:'觀光資源概要',pr:'執業實務',pr2:'執業法規'};
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}   // 送分題一律算對
-function optInner(o){return isCn()?o:splitOpt(o);}       // 中文科:純中文不切英/中
+function optInner(o){return (isCn()||isJp())?o:splitOpt(o);}       // 中文科/日語:純選項不切英/中
 const GT={'史':'🏛 臺灣歷史','地':'🗺 臺灣地理','維護':'🛡 資源維護'};
 function ghData(q){const k=q.c+'-'+q.y+'-'+q.no;
+  if(cfg.subj==='jp')return (typeof JPANA!=='undefined'&&JPANA[k])||null;
   if(cfg.subj==='pr')return (typeof PRANA!=='undefined'&&PRANA[k])||null;
   if(cfg.subj==='pr2')return (typeof PR2ANA!=='undefined'&&PR2ANA[k])||null;
   return (typeof GHANA!=='undefined'&&GHANA[k])||null;}
 function qChips(q){
+  if(isJp()){const d=ghData(q);return d&&d.tt?`<span class="chip c-r">${d.t||'日語'}</span><span class="chip c-t">${d.tt}</span>`:'<span class="chip c-r">外語日語</span>';}
   if(isCn()){const d=ghData(q);
     if(cfg.subj==='gh')return d?`<span class="chip c-r">${GT[d.t]||'觀光'}</span><span class="chip c-t">${d.tt}</span>`:'<span class="chip c-r">觀光資源概要</span>';
     return d?`<span class="chip c-r">${d.t}</span>${d.tt?`<span class="chip c-t">${d.tt}</span>`:''}`:`<span class="chip c-r">${cfg.subj==='pr2'?'執業法規':'執業實務'}</span>`;}
   const cls=q.type==='字彙'?'c-v':q.type==='對話'?'c-d':'c-r';
   return `<span class="chip ${cls}">${q.type}</span><span class="chip c-t">${q.topic}</span>`;
 }
-function starsHtml(q){return isCn()?'':`<span class="stars">${stars(q.star)}</span>`;}
+function starsHtml(q){return (isCn()||isJp())?'':`<span class="stars">${stars(q.star)}</span>`;}
 function revealHtml(q){
+  if(isJp()){
+    const d=ghData(q);
+    let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div>`:`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${"ABCD"[q.ans]}. ${q.opts[q.ans]}</b> ${sayBtn(q.opts[q.ans])}</div>`;
+    if(d){
+      if(d.zh)h+=`<div class="lbl">整句中譯</div><div class="zh">${d.zh}</div>`;
+      if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
+      if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙</div><table class="vocab">${d.v.map(v=>`<tr><td>${v[0]} ${sayBtn(v[0])}</td><td>${v[1]||''}${(v[3]!=null&&v[3]!=='')?' <span class="acc">'+v[3]+'</span>':''}</td><td>${v[2]||''}</td></tr>`).join('')}</table>`;
+      if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
+      if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
+    }
+    h+=`<a class="revlink" href="日文詳解.html?cert=${q.c}&year=${q.y}">🔍 看原卷詳解</a>`;
+    return h;
+  }
   if(isCn()){
     const d=ghData(q);
     let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
@@ -253,7 +284,7 @@ function mkChips(id,items,key){
 }
 function syncSubjectUI(){
   const cn=isCn();
-  document.getElementById('rowType').classList.toggle('hidden',cn);
+  document.getElementById('rowType').classList.toggle('hidden',cn||isJp());
   document.getElementById('rowTopic').classList.toggle('hidden',cfg.subj!=='gh');  // 考點僅觀光有
   document.getElementById('setupFoot').textContent = cfg.subj==='gh'
     ? '觀光資源概要 · 臺灣歷史/地理/觀光資源維護 · 官方標準答案(含送分題)'
@@ -261,13 +292,15 @@ function syncSubjectUI(){
     ? '執業實務 · 領隊技巧/航空票務/急救/旅遊安全/國際禮儀 · 官方標準答案'
     : cfg.subj==='pr2'
     ? '執業法規 · 觀光法規/入出境/外匯/民法債編旅遊/兩岸關係 · 官方標準答案(含更正)'
+    : cfg.subj==='jp'
+    ? '外語日語 · 讀音/文法/敬語/觀光接待/讀解 · 官方標準答案 · 🔊 發音'
     : '字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)';
   const YEARS=[...new Set(curBank().map(q=>q.y))].sort();
   if(cfg.year!=='all'&&!YEARS.includes(cfg.year))cfg.year='all';
   mkChips('sYear',[{v:'all',t:'全部'}].concat(YEARS.map(y=>({v:y,t:y+'年'}))),'year');
 }
 function buildSetup(){
-  mkChips('sSubj',[{v:'en',t:'外語英語'},{v:'gh',t:'觀光資源概要'},{v:'pr',t:'執業實務'},{v:'pr2',t:'執業法規'}],'subj');
+  mkChips('sSubj',[{v:'en',t:'外語英語'},{v:'jp',t:'外語日語'},{v:'gh',t:'觀光資源概要'},{v:'pr',t:'執業實務'},{v:'pr2',t:'執業法規'}],'subj');
   mkChips('sCert',[{v:'all',t:'全部'},{v:'leader',t:'領隊'},{v:'guide',t:'導遊'}],'cert');
   mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'}],'type');
   mkChips('sTopic',[{v:'all',t:'全部'},{v:'史',t:'🏛 歷史'},{v:'地',t:'🗺 地理'},{v:'維護',t:'🛡 資源維護'}],'gtopic');
@@ -277,7 +310,7 @@ function buildSetup(){
   updAvail();
 }
 function pool(){
-  if(isCn())return curBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.year==='all'||q.y===cfg.year)
+  if(isCn()||isJp())return curBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.year==='all'||q.y===cfg.year)
     &&(cfg.gtopic==='all'||(ghData(q)&&ghData(q).t===cfg.gtopic)));
   return BANK.filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
 }
@@ -308,7 +341,8 @@ function renderPaper(){
       <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${optInner(o)}</span><span class="mk"></span></button>`).join('')}</div>
       <div class="reveal">${revealHtml(q)}</div></div>`;
   }).join('');
-  document.getElementById('qlist').onclick=e=>{const b=e.target.closest('.opt');if(!b||document.getElementById('quiz').dataset.done)return;
+  document.getElementById('qlist').onclick=e=>{const s=e.target.closest('.say');if(s){speak(s.dataset.say);return;}
+    const b=e.target.closest('.opt');if(!b||document.getElementById('quiz').dataset.done)return;
     const qi=+b.dataset.qi,i=+b.dataset.i; picks[qi]=i;
     document.querySelectorAll(`.opt[data-qi="${qi}"]`).forEach(x=>x.classList.toggle('sel',x===b));
     updProg();};
@@ -341,10 +375,11 @@ function submit(forced){
     if(cfg.subj==='gh'){const gd=ghData(q);tp=gd?GTN[gd.t]:'觀光資源概要';ty='觀光資源概要';}
     else if(cfg.subj==='pr'){const gd=ghData(q);tp=gd&&gd.t?('執業實務·'+gd.t):'執業實務';ty='執業實務';}
     else if(cfg.subj==='pr2'){const gd=ghData(q);tp=gd&&gd.t?('執業法規·'+gd.t):'執業法規';ty='執業法規';}
+    else if(cfg.subj==='jp'){const gd=ghData(q);tp=gd&&gd.t?('外語日語·'+gd.t):'外語日語';ty='外語日語';}
     else{tp=q.topic;ty=q.type;}
     (byTopic[tp]=byTopic[tp]||{ok:0,n:0}).n++;if(ok)byTopic[tp].ok++;
     (byType[ty]=byType[ty]||{ok:0,n:0}).n++;if(ok)byType[ty].ok++;
-    if(ok)correct++;else{wrong.push(qi);if(p!=null){cfg.subj==='gh'?wbghAdd(q,p):cfg.subj==='pr'?wbprAdd(q,p):cfg.subj==='pr2'?wbpr2Add(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
+    if(ok)correct++;else{wrong.push(qi);if(p!=null){cfg.subj==='gh'?wbghAdd(q,p):cfg.subj==='pr'?wbprAdd(q,p):cfg.subj==='pr2'?wbpr2Add(q,p):cfg.subj==='jp'?wbjpAdd(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
     hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
@@ -359,8 +394,8 @@ function showResult(correct,wrong){
   document.getElementById('scNum').textContent=correct+' / '+n;
   document.getElementById('scSub').textContent='答對率 '+pct+'%　'+(pct>=80?'🎉 很棒!':pct>=60?'👍 再加強':'💪 多練幾組');
   const wbn=wrong.filter(qi=>picks[qi]!=null).length;
-  var wbName=cfg.subj==='gh'?'觀光':cfg.subj==='pr'?'執業實務':cfg.subj==='pr2'?'執業法規':'';
-  var wbFile=cfg.subj==='gh'?'觀光錯題本.html':cfg.subj==='pr'?'執業實務錯題本.html':cfg.subj==='pr2'?'執業法規錯題本.html':'錯題本.html';
+  var wbName=cfg.subj==='gh'?'觀光':cfg.subj==='pr'?'執業實務':cfg.subj==='pr2'?'執業法規':cfg.subj==='jp'?'日語':'';
+  var wbFile=cfg.subj==='gh'?'觀光錯題本.html':cfg.subj==='pr'?'執業實務錯題本.html':cfg.subj==='pr2'?'執業法規錯題本.html':cfg.subj==='jp'?'日文錯題本.html':'錯題本.html';
   document.getElementById('scWb').textContent=wbn?('答錯 '+wbn+' 題已收入'+wbName+'錯題本,可前往複習'):'';
   var wl=document.getElementById('wbLink');if(wl){wl.setAttribute('href',wbFile);wl.textContent='前往'+wbName+'錯題本';}
   renderResult('all',wrong);
