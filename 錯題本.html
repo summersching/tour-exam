@@ -78,6 +78,7 @@
   .reveal{margin:12px 0 8px;border-top:1px dashed var(--line);padding-top:10px}
   .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:10px 0 4px;letter-spacing:.03em} .lbl:first-child{margin-top:0}
   .zh{color:var(--sub);font-size:.95rem} .ana{font-size:.95rem}
+  .ana b.ac{color:var(--ok);font-weight:700} .ana b.wr{color:var(--no);font-weight:700}
   .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.92rem}
   .box .h{display:block;margin-bottom:2px;font-size:.82rem}
   .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
@@ -152,6 +153,17 @@ function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}cat
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
 function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
+function hlAna(ana,opts,ans){
+  if(!ana||!opts)return ana||'';
+  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
+  if(!marks.length)return ana;
+  marks.sort(function(a,b){return b.ph.length-a.ph.length;});
+  var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
+  var alt=marks.map(function(m){return m.ph.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|');
+  var re;try{re=new RegExp('('+alt+')','g');}catch(e){return ana;}
+  return ana.replace(re,function(mt){return '<b class="'+(map[mt]||'ac')+'">'+mt+'</b>';});
+}
 const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
 function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
@@ -197,7 +209,7 @@ function cardEl(e){
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${e.zh}</div>
       <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${e.ans>=0?"ABCD"[e.ans]+". "+e.opts[e.ans]:"（送分題,一律給分）"}</b></div>
-      <div class="lbl">解析</div><div class="ana">${e.ana}</div>
+      <div class="lbl">解析</div><div class="ana">${hlAna(e.ana,e.opts,e.ans)}</div>
       ${e.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${e.skill}</div>`:''}
       ${e.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${e.note}</div>`:''}
       ${e.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${e.gram}</div>`:''}

@@ -180,6 +180,17 @@ function wbpr2Add(q,picked){var o;try{o=JSON.parse(localStorage.getItem(WBPR2_KE
   try{localStorage.setItem(WBPR2_KEY,JSON.stringify(o));}catch(e){}}
 
 function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
+function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
+function hlAna(ana,opts,ans){
+  if(!ana||!opts)return ana||'';
+  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
+  if(!marks.length)return ana;
+  marks.sort(function(a,b){return b.ph.length-a.ph.length;});
+  var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
+  var alt=marks.map(function(m){return m.ph.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|');
+  var re;try{re=new RegExp('('+alt+')','g');}catch(e){return ana;}
+  return ana.replace(re,function(mt){return '<b class="'+(map[mt]||'ac')+'">'+mt+'</b>';});
+}
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -219,7 +230,7 @@ function revealHtml(q){
   }
   return `<div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
         <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${q.ans>=0?"ABCD"[q.ans]+". "+q.opts[q.ans]:"（送分題,一律給分）"}</b></div>
-        <div class="lbl">解析</div><div class="ana">${q.ana}</div>
+        <div class="lbl">解析</div><div class="ana">${hlAna(q.ana,q.opts,q.ans)}</div>
         ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
         ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
         ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
