@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d9488">
+<title>資料備份</title>
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;
+    --teal:#0d9488;--tealbg:#e7f6f4;--hd1:#0f766e;--hd2:#0d9488;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--warn:#b5790f;--warnbg:#fdf3e0;
+    --shadow:0 1px 6px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;
+    --teal:#5eead4;--tealbg:#123230;--hd1:#0f766e;--hd2:#115e57;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--warn:#f0b840;--warnbg:#3a2f13;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 18px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0;box-shadow:var(--shadow)}
+  .panel h2{margin:0 0 4px;font-size:1.05rem;display:flex;align-items:center;gap:7px}
+  .panel .hint{font-size:.8rem;color:var(--sub);margin:0 0 12px}
+  .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0}
+  @media(min-width:500px){.sum{grid-template-columns:repeat(5,1fr)}}
+  .cell{background:var(--tealbg);border-radius:10px;padding:10px;text-align:center}
+  .cell .n{font-size:1.4rem;font-weight:800;color:var(--teal);line-height:1.1}
+  .cell .l{font-size:.72rem;color:var(--sub);margin-top:3px}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--card);
+    color:var(--ink);padding:11px 18px;border-radius:12px;cursor:pointer;font-size:.94rem;font-weight:700;
+    font-family:inherit;text-decoration:none}
+  .btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .btn.block{width:100%;justify-content:center;margin-top:8px}
+  .warnbox{background:var(--warnbg);border-left:4px solid var(--warn);border-radius:8px;padding:9px 12px;margin:10px 0;font-size:.84rem}
+  .okbox{background:var(--okbg);border-left:4px solid var(--ok);border-radius:8px;padding:9px 12px;margin:10px 0;font-size:.88rem;color:var(--ok);font-weight:700}
+  .nobox{background:var(--nobg);border-left:4px solid var(--no);border-radius:8px;padding:9px 12px;margin:10px 0;font-size:.86rem;color:var(--no)}
+  input[type=file]{display:none}
+  #preview{margin-top:10px}
+  .steps{font-size:.82rem;color:var(--sub);line-height:1.9;margin:6px 0 0;padding-left:18px}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>💾 資料備份</h1>
+  <p>錯題本 · 測驗成績 匯出 / 匯入還原(離線、存在你自己手機)</p>
+</div></header>
+
+<div class="wrap">
+  <div class="warnbox">⚠️ 你的錯題本和成績只存在<b>這台裝置的瀏覽器</b>裡。清除瀏覽器資料、換手機、換瀏覽器都會<b>不見</b>。建議<b>定期匯出備份</b>存到雲端硬碟/相簿。</div>
+
+  <div class="panel">
+    <h2>📊 目前的資料</h2>
+    <p class="hint">這是現在會被備份的內容</p>
+    <div class="sum" id="sum"></div>
+  </div>
+
+  <div class="panel">
+    <h2>📤 匯出備份</h2>
+    <p class="hint">把全部進度打包成一個 <code>.json</code> 檔下載,存到你自己的雲端/相簿。</p>
+    <button class="btn pri block" id="exportBtn">📤 下載備份檔</button>
+    <div id="exportMsg"></div>
+  </div>
+
+  <div class="panel">
+    <h2>📥 匯入還原</h2>
+    <p class="hint">在新裝置或清資料後,選之前匯出的備份檔還原進度。</p>
+    <button class="btn block" id="pickBtn">📂 選擇備份檔…</button>
+    <input type="file" id="fileInput" accept=".json,application/json">
+    <div id="preview"></div>
+  </div>
+
+  <div class="panel">
+    <h2>❓ 怎麼用</h2>
+    <ol class="steps">
+      <li><b>平常</b>:偶爾按「下載備份檔」,存到 Google 雲端 / LINE Keep / 相簿。</li>
+      <li><b>換手機 / 清了資料</b>:打開這頁 →「選擇備份檔」→ 確認還原。</li>
+      <li>備份檔是純文字 JSON,不含任何個資,只有你的作答紀錄。</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const BACKUP_APP='tour-exam';
+const WB=[['wrongbook_en','英語'],['wrongbook_gh','觀光'],['wrongbook_pr','執業實務'],['wrongbook_pr2','執業法規']];
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function snapshot(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}return d;}
+function objLen(v){try{return Object.keys(JSON.parse(v||'{}')).length;}catch(e){return 0;}}
+function countsOf(get){
+  const c={history:0,wb:{}};
+  try{c.history=JSON.parse(get('quiz_history')||'[]').length;}catch(e){}
+  WB.forEach(([k])=>{c.wb[k]=objLen(get(k));});
+  return c;
+}
+function sumCells(c){
+  const total=Object.values(c.wb).reduce((a,b)=>a+b,0);
+  let h=`<div class="cell"><div class="n">${c.history}</div><div class="l">測驗次數</div></div>`;
+  WB.forEach(([k,name])=>{h+=`<div class="cell"><div class="n">${c.wb[k]}</div><div class="l">${name}錯題</div></div>`;});
+  return h;
+}
+function renderSummary(){
+  const c=countsOf(k=>localStorage.getItem(k));
+  document.getElementById('sum').innerHTML=sumCells(c);
+}
+renderSummary();
+
+// 匯出
+document.getElementById('exportBtn').onclick=function(){
+  try{
+    const payload={_app:BACKUP_APP,_version:1,_exported:new Date().toISOString(),data:snapshot()};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    a.href=url;a.download=`考照備份_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.json`;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    document.getElementById('exportMsg').innerHTML=`<div class="okbox">✅ 已產生備份檔,請存到雲端或相簿保管。</div>`;
+  }catch(e){
+    document.getElementById('exportMsg').innerHTML=`<div class="nobox">匯出失敗:${esc(e.message)}</div>`;
+  }
+};
+
+// 匯入
+document.getElementById('pickBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=function(ev){
+  const file=ev.target.files&&ev.target.files[0];
+  const pv=document.getElementById('preview');
+  if(!file){return;}
+  const reader=new FileReader();
+  reader.onload=function(){
+    let obj;
+    try{obj=JSON.parse(reader.result);}catch(e){pv.innerHTML=`<div class="nobox">這不是有效的備份檔(JSON 解析失敗)。</div>`;return;}
+    if(!obj||obj._app!==BACKUP_APP||!obj.data){pv.innerHTML=`<div class="nobox">這不是本站的備份檔。</div>`;return;}
+    const c=countsOf(k=>obj.data[k]);
+    const when=obj._exported?new Date(obj._exported).toLocaleString('zh-TW'):'(未知時間)';
+    pv.innerHTML=`
+      <div class="warnbox">📄 備份檔內容(匯出於 ${esc(when)}):</div>
+      <div class="sum">${sumCells(c)}</div>
+      <div class="warnbox">⚠️ 還原會用這個備份<b>覆蓋</b>目前這台裝置的錯題本與成績。確定要還原嗎?</div>
+      <button class="btn pri block" id="doRestore">✅ 確定還原(覆蓋目前資料)</button>`;
+    document.getElementById('doRestore').onclick=function(){
+      try{
+        Object.keys(obj.data).forEach(k=>{localStorage.setItem(k,obj.data[k]);});
+        pv.innerHTML=`<div class="okbox">✅ 還原完成!已載入備份資料。</div>`;
+        renderSummary();
+        setTimeout(()=>{location.href='儀表板.html';},1200);
+      }catch(e){
+        pv.innerHTML=`<div class="nobox">還原失敗:${esc(e.message)}</div>`;
+      }
+    };
+  };
+  reader.onerror=function(){pv.innerHTML=`<div class="nobox">讀取檔案失敗。</div>`;};
+  reader.readAsText(file);
+  ev.target.value='';
+};
+</script>
+</body>
+</html>
