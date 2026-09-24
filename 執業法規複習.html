@@ -130,7 +130,8 @@ const YEARS=[...new Set(BANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a
 let YEAR=QP.get('year')||YEARS[0];
 if(!YEARS.includes(YEAR))YEAR=YEARS[0];
 let TOPIC='all';
-let MODE='review';
+let MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆試題直接進自測
+document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const picks={};
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}

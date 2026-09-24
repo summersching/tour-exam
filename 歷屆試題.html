@@ -64,6 +64,12 @@
   .yc .done{position:absolute;top:10px;right:11px;font-size:.7rem;color:var(--teal);font-weight:700}
   footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
   footer b{color:var(--teal)}
+  .modebar{display:flex;gap:8px;align-items:center;margin:18px 0 2px;flex-wrap:wrap}
+  .modebar .lbl{font-size:.8rem;color:var(--sub);font-weight:700}
+  .mtog{border:1.4px solid var(--line);background:var(--card);color:var(--sub);padding:6px 14px;border-radius:18px;cursor:pointer;font-size:.85rem;font-weight:700;font-family:inherit;transition:.15s}
+  .mtog.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .modebar .hint{font-size:.74rem;color:var(--sub);flex-basis:100%;margin-top:2px}
+  .yc .done.t{color:var(--accent)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -74,7 +80,7 @@
   <div class="wrap">
     <a class="home" href="index.html">← 首頁</a>
     <h1>📚 歷屆試題</h1>
-    <p>外語英語 + 觀光資源概要 · 逐題官方答案 + 詳解</p>
+    <p>英語 · 觀光 · 執業實務 · 執業法規 — 看詳解 / 測驗計分</p>
   </div>
 </header>
 
@@ -158,6 +164,7 @@ const APP = {
 
 /* 預設證照:沿用全站記憶 pref_cert */
 let curCat = 0, curSub = 0;
+let viewMode = 'view';   // view=看詳解 / test=測驗計分(帶 &mode=test 進複習頁自測)
 try{const pc=localStorage.getItem('pref_cert');if(pc==='guide')curCat=1;}catch(e){}
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -181,11 +188,12 @@ function renderMain(){
     return;
   }
   const qcount = y => typeof sub.count==='function' ? sub.count(y) : (sub.count||80);
+  const test = viewMode==='test';
   const cards = sub.years.map(y=>{
     const [sys,code] = sub.meta[y];
     const isNew = sys==='new';
-    return `<a class="yc" href="${esc(sub.file(y, cat.id))}">
-      <span class="done">✅ ${qcount(y)}題</span>
+    return `<a class="yc" href="${esc(sub.file(y, cat.id))}${test?'&mode=test':''}">
+      <span class="done${test?' t':''}">${test?'✍️ 測 '+qcount(y)+'題':'✅ '+qcount(y)+'題'}</span>
       <div class="yr">${y}<small>年</small></div>
       <div class="sy">${isNew?'交通部觀光署':'考選部'}</div>
       <div class="row">
@@ -197,7 +205,13 @@ function renderMain(){
   const cntTxt = cmin===cmax ? `每屆 ${cmin} 題` : `每屆 ${cmin}–${cmax} 題`;
   const headLbl = sub.id==='en' ? '歷屆試題 · 逐題完整詳解' : '歷屆試題 · 官方答案 + 解析';
   main.innerHTML = `
-    <div class="sect"><h2>📚 ${headLbl}</h2><span class="n">共 ${sub.years.length} 屆 · ${cntTxt}</span></div>
+    <div class="modebar">
+      <span class="lbl">模式</span>
+      <button class="mtog ${!test?'on':''}" data-vm="view">📖 看題目詳解</button>
+      <button class="mtog ${test?'on':''}" data-vm="test">✍️ 測驗計分</button>
+      <span class="hint">${test?'點年份 → 直接進「自測」:作答即批改,上方顯示分數':'點年份 → 看整卷題目 + 官方答案 + 解析'}</span>
+    </div>
+    <div class="sect"><h2>📚 ${test?'測驗計分 · 選一屆開始作答':headLbl}</h2><span class="n">共 ${sub.years.length} 屆 · ${cntTxt}</span></div>
     <div class="years">${cards}</div>`;
 }
 
@@ -210,6 +224,10 @@ document.getElementById('segCat').addEventListener('click', e=>{
 document.getElementById('segSub').addEventListener('click', e=>{
   const b = e.target.closest('button[data-si]'); if(!b||b.disabled) return;
   curSub = +b.dataset.si; renderNav(); renderMain();
+});
+document.getElementById('main').addEventListener('click', e=>{
+  const b = e.target.closest('.mtog'); if(!b) return;
+  viewMode = b.dataset.vm; renderMain(); window.scrollTo(0,0);
 });
 
 renderNav(); renderMain();

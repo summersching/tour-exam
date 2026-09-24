@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<title>法規速查</title>
+<style>
+  :root{
+    --bg:#f5f6fb;--card:#fff;--ink:#1c2130;--sub:#5a6480;--line:#e4e7f2;
+    --sel:#4f46e5;--hd1:#3730a3;--hd2:#4f46e5;--okbg:#e6f6ec;--ok:#15904a;
+    --wrbg:#fbe9e9;--wr:#c62a2a;--warnbg:#fdf3e0;--warn:#b5790f;
+    --chipbg:#eef0fe;--chipk:#4338ca;--shadow:0 1px 6px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12141b;--card:#1b1f2a;--ink:#e8ecf6;--sub:#9aa4bd;--line:#2b3040;
+    --sel:#818cf8;--hd1:#312e81;--hd2:#3730a3;--okbg:#173023;--ok:#5ad48a;
+    --wrbg:#331a1a;--wr:#ff8080;--warnbg:#3a2f13;--warn:#f0b840;
+    --chipbg:#262a52;--chipk:#a5b4fc;--shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 18px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem}
+  header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .note{font-size:.76rem;color:var(--sub);background:var(--warnbg);border:1px solid var(--line);
+    border-radius:10px;padding:9px 12px;margin:16px 0}
+  details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:13px 0;
+    box-shadow:var(--shadow);overflow:hidden}
+  summary{cursor:pointer;font-weight:800;font-size:1.02rem;padding:14px 16px;list-style:none;
+    display:flex;align-items:center;gap:8px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  details[open] summary::after{transform:rotate(90deg)}
+  .body{padding:0 16px 16px}
+  h3{font-size:.96rem;margin:14px 0 6px;color:var(--sel)}
+  .f{background:var(--chipbg);border-radius:10px;padding:10px 13px;margin:8px 0;font-size:.92rem}
+  .f .formula{font-weight:800;color:var(--chipk);font-size:.98rem}
+  .eg{font-size:.86rem;color:var(--sub);margin-top:5px}
+  .eg b{color:var(--ok)}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.9rem}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+  th{background:var(--chipbg);color:var(--chipk);font-weight:700;font-size:.84rem}
+  td .hi{color:var(--sel);font-weight:800}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:10px;margin-left:6px}
+  .tag.old{background:var(--warnbg);color:var(--warn)} .tag.new{background:var(--okbg);color:var(--ok)}
+  .src{font-size:.72rem;color:var(--sub);margin-top:3px}
+  .warnbox{background:var(--warnbg);border-left:4px solid var(--warn);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.86rem}
+  .warnbox b{color:var(--warn)}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>⚡ 法規速查</h1>
+  <p>違約金公式 · 級距 · 期限 · 罰鍰 — 執業法規高頻考點</p>
+</div></header>
+
+<div class="wrap">
+  <div class="note">📌 內容整理自歷屆試題與官方答案,<b>以現行官方條文為準</b>;數字若遇契約/法規修正,以最新版為準。附出處題號方便你回查原題。</div>
+
+  <details open>
+    <summary>💰 違約金五大計算</summary>
+    <div class="body">
+      <h3>1. 未派「領有執業證」的領隊</h3>
+      <div class="f">
+        <span class="formula">每人違約金 = 1,500 × 全部旅遊日數 × 3 ÷ 實際出團人數</span>
+        <div class="eg">拆解:1,500 元=每日領隊擬制價值 → ×日數=整趟成本 → ×3=懲罰性 → ÷人數=每人分攤。<b>新舊約相同</b>。</div>
+        <div class="eg">例:5 天團、20 人 → 1,500×5×3÷20 = <b>1,125 元/人</b>。</div>
+        <div class="src">見 領隊 109-24 / 113-25 / 115-41</div>
+      </div>
+
+      <h3>2. 留滯旅客(可歸責於旅行社)<span class="tag old">舊約3倍</span><span class="tag new">新約5倍</span></h3>
+      <div class="f">
+        <span class="formula">違約金 = (旅遊費用 ÷ 全部旅遊日數) × 留滯日數 × 倍數</span>
+        <div class="warnbox">⚠️ <b>倍數會改版</b>:<b>106–112 年(舊約)= 3 倍</b>;<b>113 年起(新約)= 5 倍</b>。作答先看年份!</div>
+        <div class="eg">新約例:團費 3 萬、6 天、留滯 1 日 → 30000÷6×1×5 = <b>25,000</b>(領隊 113-14)。</div>
+        <div class="eg">舊約例:團費 3 萬、5 天、留滯 2 日 → 30000÷5×2×3 = <b>36,000</b>(領隊 106-31)。</div>
+        <div class="src">留滯期間食宿、返國交通等必要費用另由旅行社全額負擔</div>
+      </div>
+
+      <h3>3. 故意棄置 / 留滯旅客 <span class="tag new">5倍</span></h3>
+      <div class="f">
+        <span class="formula">違約金 = (全部旅遊費用 ÷ 全部旅遊日數) × 棄置或留滯日數 × 5</span>
+        <div class="eg">故意情節較重,新約明定 <b>5 倍</b>(領隊 115-34)。</div>
+      </div>
+
+      <h3>4. 出發前旅客任意解約</h3>
+      <div class="f">
+        <span class="formula">違約金 = 旅遊費用 × 級距%(見下方級距表)</span>
+        <div class="eg">「旅遊費用」通常<b>不含</b>已代繳且無法退還的規費(如簽證費)——先扣掉再乘級距。</div>
+        <div class="src">見 級距表 · 領隊 115-31 / 115-35 / 115-40</div>
+      </div>
+
+      <h3>5. 旅行社出發前解約(可歸責於旅行社)</h3>
+      <div class="f">
+        <div class="eg">除退還已繳全部費用外,另賠償<b>同額或依級距</b>之違約金(與旅客解約級距對稱,方向相反)。</div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📊 出發前「任意解約」級距表</summary>
+    <div class="body">
+      <p class="eg" style="margin-top:12px">旅客通知解約,按通知到達日距出發日的天數,賠旅遊費用的百分比:</p>
+      <table>
+        <tr><th>出發前(通知日)</th><th>賠償比率</th></tr>
+        <tr><td>第 41 日以前</td><td><span class="hi">5%</span></td></tr>
+        <tr><td>第 31–40 日</td><td><span class="hi">10%</span></td></tr>
+        <tr><td>第 21–30 日</td><td><span class="hi">20%</span></td></tr>
+        <tr><td>第 2–20 日</td><td><span class="hi">30%</span></td></tr>
+        <tr><td>前 1 日</td><td><span class="hi">50%</span></td></tr>
+        <tr><td>出發當日 / 未通知 / 未參加</td><td><span class="hi">100%</span></td></tr>
+      </table>
+      <div class="warnbox">記法:<b>5 → 10 → 20 → 30 → 50 → 100</b>;越接近出發賠越多。出發前「10 日」落在 2–20 日 → <b>30%</b>(領隊 115-31)。</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 重要期限 · 效期</summary>
+    <div class="body">
+      <table>
+        <tr><th>項目</th><th>規定</th></tr>
+        <tr><td>領隊 / 導遊 執業證有效期</td><td><span class="hi">3 年</span>(期滿換發)</td></tr>
+        <tr><td>連續幾年未執業 → 須重行講習</td><td><span class="hi">3 年</span></td></tr>
+        <tr><td>發生緊急事故 → 向交通部觀光署報備</td><td><span class="hi">24 小時</span>內</td></tr>
+      </table>
+      <div class="src">領隊 110-14 / 107-11(3 年);領隊 108-4(24 小時;「36 小時」是常見錯誤選項,別選)</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>⚖️ 罰鍰速查(發展觀光條例 / 管理規則)</summary>
+    <div class="body">
+      <table>
+        <tr><th>情形</th><th>罰鍰</th></tr>
+        <tr><td>未指派 / 僱用合格導遊、領隊接待</td><td><span class="hi">1 萬~5 萬</span></td></tr>
+        <tr><td>未取得執業證卻執行業務</td><td><span class="hi">1 萬~5 萬</span></td></tr>
+        <tr><td>僅具華語證卻執行外語團</td><td><span class="hi">3 千~1 萬 5</span></td></tr>
+        <tr><td>旅客未申請專業導覽即進入自然人文生態景觀區</td><td><span class="hi">3 萬元以下</span></td></tr>
+        <tr><td>未領登記證即經營民宿</td><td><span class="hi">10 萬~100 萬</span></td></tr>
+      </table>
+      <div class="warnbox">易混:<b>無證執業</b>(1萬~5萬)vs <b>華語證越級帶外語團</b>(3千~1萬5)——罰則不同,常一起考!</div>
+      <div class="src">導遊 115-14 / 115-23 / 115-40;領隊 114-6 / 114-7</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🧭 其他高頻要點</summary>
+    <div class="body">
+      <table>
+        <tr><th>主題</th><th>重點</th></tr>
+        <tr><td>領隊執業證分類</td><td><span class="hi">外語</span>領隊證 / <span class="hi">華語</span>領隊證(華語不得帶外語團)</td></tr>
+        <tr><td>觀光產業參與國際宣傳 · 費用抵減</td><td>支出按 <span class="hi">20%</span>,得於 <span class="hi">4 年</span>內抵減營所稅(導遊 114-11)</td></tr>
+        <tr><td>不可抗力(火山/天災)致滯留</td><td>增加的必要費用<b>不得</b>再向團員收取;旅行社協助處理(領隊 109-20)</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <p class="note" style="text-align:center">想練題?到「<a href="執業法規複習.html" style="color:var(--sel);font-weight:700">執業法規複習</a>」或「<a href="模擬測驗.html" style="color:var(--sel);font-weight:700">模擬測驗</a>」實戰。</p>
+</div>
+</body>
+</html>

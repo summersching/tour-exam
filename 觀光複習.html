@@ -187,7 +187,8 @@ const YEARS=[...new Set(GHBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b
 let YEAR=QP.get('year')||YEARS[0];
 if(!YEARS.includes(YEAR))YEAR=YEARS[0];
 let TOPIC='all';
-let MODE='review';           // review=全攤開 / test=自測(點選項即時批改)
+let MODE=(QP.get('mode')==='test')?'test':'review';           // review=全攤開 / test=自測(?mode=test 可直接開)
+document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const picks={};              // 自測作答:鍵 cert-year-no → 選項index
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}

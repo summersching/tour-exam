@@ -163,7 +163,8 @@ let CERT=QP.get('cert')||(function(){try{return localStorage.getItem('pref_cert'
 if(CERT!=='guide'&&CERT!=='leader')CERT='leader';
 let YEAR=QP.get('year')||String(YEARS[0]);
 if(!YEARS.includes(+YEAR))YEAR=String(YEARS[0]);
-let TYPE='all', MODE='review';
+let TYPE='all', MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆試題直接進自測
+document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const answered={};   // 自測作答:no → 選項index(依 cert-year 分開)
 function curKey(){return CERT+'-'+YEAR;}
 function curData(){return (typeof EN_REVIEW!=='undefined'&&EN_REVIEW[curKey()])||[];}
