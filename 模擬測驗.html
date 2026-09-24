@@ -218,6 +218,7 @@ function revealHtml(q){
     return h;
   }
   return `<div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
+        <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${q.ans>=0?"ABCD"[q.ans]+". "+q.opts[q.ans]:"（送分題,一律給分）"}</b></div>
         <div class="lbl">解析</div><div class="ana">${q.ana}</div>
         ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
         ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
@@ -335,7 +336,7 @@ function submit(forced){
     if(ok)correct++;else{wrong.push(qi);if(p!=null){cfg.subj==='gh'?wbghAdd(q,p):cfg.subj==='pr'?wbprAdd(q,p):cfg.subj==='pr2'?wbpr2Add(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
-    hist.push({ts:Date.now(),cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
+    hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
     if(hist.length>300)hist=hist.slice(-300);
     localStorage.setItem('quiz_history',JSON.stringify(hist));}catch(e){}
   showResult(correct,wrong);

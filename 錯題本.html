@@ -196,6 +196,7 @@ function cardEl(e){
     <div class="fb"></div>
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${e.zh}</div>
+      <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${e.ans>=0?"ABCD"[e.ans]+". "+e.opts[e.ans]:"（送分題,一律給分）"}</b></div>
       <div class="lbl">解析</div><div class="ana">${e.ana}</div>
       ${e.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${e.skill}</div>`:''}
       ${e.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${e.note}</div>`:''}

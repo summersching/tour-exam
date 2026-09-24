@@ -203,6 +203,7 @@ function qCard(item){
     <div class="opts">${item.opts.map((o,i)=>optBtn(item,i,o)).join('')}</div>
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
+      <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${item.ans>=0?"ABCD"[item.ans]+". "+item.opts[item.ans]:"（送分題,一律給分）"}</b></div>
       <div class="lbl">解析</div><div class="ana">${item.ana}</div>
       ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
       ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}

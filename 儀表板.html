@@ -52,6 +52,11 @@
   .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:10px;cursor:pointer;font-size:.88rem;text-decoration:none;font-family:inherit}
   .btn.pri{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700}
   .clr{color:var(--no);cursor:pointer;font-size:.78rem;background:none;border:1px solid var(--line);padding:5px 12px;border-radius:8px;font-family:inherit;margin-top:6px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+  .tab{border:1.4px solid var(--line);background:var(--card);color:var(--sub);padding:6px 14px;border-radius:16px;cursor:pointer;font-size:.85rem;font-weight:700;font-family:inherit}
+  .tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .note{font-size:.78rem;color:var(--sub);background:var(--tealbg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:12px 0}
+  .mini{margin-left:8px;font-size:.76rem;color:var(--teal);text-decoration:none;font-weight:700;white-space:nowrap}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -68,29 +73,56 @@
 
 <script>
 const CNAME={leader:'領隊',guide:'導遊',all:'全部'};
-function hLoad(){try{return JSON.parse(localStorage.getItem('quiz_history')||'[]');}catch(e){return[];}}
-function wbLoad(){try{return JSON.parse(localStorage.getItem('wrongbook_en')||'{}');}catch(e){return{};}}
+const SUBJECTS=[
+  {k:'en',name:'英語',wb:'wrongbook_en',page:'錯題本.html'},
+  {k:'gh',name:'觀光',wb:'wrongbook_gh',page:'觀光錯題本.html'},
+  {k:'pr',name:'執業實務',wb:'wrongbook_pr',page:'執業實務錯題本.html'},
+  {k:'pr2',name:'執業法規',wb:'wrongbook_pr2',page:'執業法規錯題本.html'}
+];
 const app=document.getElementById('app');
-const PASS=75; // 80題及格60分 = 75%
+const PASS=75; // 答對率參考線 75%(各科題數不同,取通用比率)
+let subjFilter='all'; // all | en | gh | pr | pr2
+function hLoad(){try{return JSON.parse(localStorage.getItem('quiz_history')||'[]');}catch(e){return[];}}
+function wbCount(key){try{return Object.keys(JSON.parse(localStorage.getItem(key)||'{}')).length;}catch(e){return 0;}}
+function subjName(k){const s=SUBJECTS.find(x=>x.k===k);return s?s.name:'';}
 function lv(p){return p<50?'no':p<70?'warn':'ok';}
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 
+function tabsHtml(){
+  return `<div class="tabs">`+[{k:'all',name:'全部'}].concat(SUBJECTS).map(s=>
+    `<button class="tab${subjFilter===s.k?' on':''}" data-k="${s.k}">${s.name}</button>`).join('')+`</div>`;
+}
+function bindTabs(){app.querySelectorAll('.tab').forEach(b=>{b.onclick=()=>{subjFilter=b.dataset.k;render();window.scrollTo({top:0,behavior:'smooth'});};});}
+function wbPanel(counts,total){
+  if(!total)return '';
+  const max=Math.max(1,...SUBJECTS.map(s=>counts[s.k]));
+  return `<div class="panel"><h2>📌 錯題本分布</h2>
+    <p class="hint">四科錯題本共 <b>${total}</b> 題,點各科去複習</p>
+    ${SUBJECTS.map(s=>`<div class="barrow"><span class="name">${s.name}</span>
+      <div class="bartrack"><div class="barfill ${counts[s.k]?'lv-no':'lv-ok'}" style="width:${Math.round(counts[s.k]/max*100)}%"></div></div>
+      <span class="pct">${counts[s.k]} 題</span>${counts[s.k]?`<a class="mini" href="${s.page}">複習›</a>`:''}</div>`).join('')}
+  </div>`;
+}
+
 function render(){
-  const hist=hLoad(), wb=Object.values(wbLoad());
+  const allHist=hLoad();
+  const hist = subjFilter==='all' ? allHist : allHist.filter(h=>h.subj===subjFilter);
+  const wbCounts={};let wbTotal=0;SUBJECTS.forEach(s=>{const c=wbCount(s.wb);wbCounts[s.k]=c;wbTotal+=c;});
+  const legacyN=allHist.filter(h=>!h.subj).length;
+  const tabs=tabsHtml();
+
   if(!hist.length){
-    app.innerHTML=`<div class="empty"><div class="ic">📈</div>
-      <h2>還沒有測驗記錄</h2>
-      <p>到<b>模擬測驗</b>做幾組,這裡就會出現你的成績趨勢、弱點分析和預估及格率。</p>
-      <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`;
-    return;
+    app.innerHTML=tabs+`<div class="empty"><div class="ic">📈</div>
+      <h2>${subjFilter==='all'?'還沒有測驗記錄':'這一科還沒有測驗記錄'}</h2>
+      <p>到<b>模擬測驗</b>${subjFilter==='all'?'':'選「'+subjName(subjFilter)+'」'}做幾組,這裡就會出現成績趨勢、弱點分析和預估及格率。</p>
+      <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`+wbPanel(wbCounts,wbTotal);
+    bindTabs();return;
   }
-  // 統計
   const totalQ=hist.reduce((s,h)=>s+h.total,0);
   const totalC=hist.reduce((s,h)=>s+h.correct,0);
   const avg=Math.round(totalC/totalQ*100);
   const last5=hist.slice(-5);
   const avg5=Math.round(last5.reduce((s,h)=>s+h.correct/h.total,0)/last5.length*100);
-  // 主題/題型累加
   const T={},Y={};
   hist.forEach(h=>{
     for(const k in (h.byTopic||{})){T[k]=T[k]||{ok:0,n:0};T[k].ok+=h.byTopic[k].ok;T[k].n+=h.byTopic[k].n;}
@@ -98,62 +130,57 @@ function render(){
   });
   const topics=Object.keys(T).map(k=>({name:k,ok:T[k].ok,n:T[k].n,p:Math.round(T[k].ok/T[k].n*100)})).sort((a,b)=>a.p-b.p);
   const types=Object.keys(Y).map(k=>({name:k,ok:Y[k].ok,n:Y[k].n,p:Math.round(Y[k].ok/Y[k].n*100)})).sort((a,b)=>a.p-b.p);
-  // 錯題本主題分布
-  const wbT={};wb.forEach(e=>{wbT[e.topic]=(wbT[e.topic]||0)+1;});
-  const wbTopics=Object.keys(wbT).map(k=>({name:k,n:wbT[k]})).sort((a,b)=>b.n-a.n);
 
   const passMsg = avg5>=PASS ? '🎉 近期已達及格水準,穩住手感!' : avg5>=PASS-12 ? '👍 接近及格,再攻弱點主題就穩了' : '💪 還需加強,先從下方紅色弱點主題練起';
   const passColor = avg5>=PASS?'var(--ok)':avg5>=PASS-12?'var(--warn)':'var(--no)';
+  const topStat = subjFilter==='all'?wbTotal:wbCounts[subjFilter];
+  const scope = subjFilter==='all'?'':' · '+subjName(subjFilter);
 
-  app.innerHTML=`
+  app.innerHTML=tabs+`
+    ${subjFilter==='all'&&legacyN?`<p class="note">ℹ️ 有 ${legacyN} 筆較早的紀錄未分科(只在「全部」顯示);之後的測驗會自動依科目分類。</p>`:''}
     <div class="grid4">
       <div class="stat"><div class="n">${hist.length}</div><div class="l">測驗次數</div></div>
       <div class="stat"><div class="n">${totalQ}</div><div class="l">總作答題數</div></div>
       <div class="stat"><div class="n">${avg}%</div><div class="l">總平均答對率</div></div>
-      <div class="stat"><div class="n">${wb.length}</div><div class="l">錯題本待攻克</div></div>
+      <div class="stat"><div class="n">${topStat}</div><div class="l">${subjFilter==='all'?'錯題總數':'本科錯題'}</div></div>
     </div>
 
     <div class="panel">
       <h2>🎯 預估及格率</h2>
-      <p class="hint">及格標準:80 題答對 60 題(75%)。以下為你<b>近 5 次</b>模擬平均</p>
+      <p class="hint">答對率參考線 75%,以下為<b>近 5 次</b>模擬平均${scope}</p>
       <div class="pass"><div class="big" style="color:${passColor}">${avg5}%</div>
         <div class="msg">${passMsg}</div></div>
     </div>
 
     <div class="panel">
       <h2>📈 成績趨勢</h2>
-      <p class="hint">近 ${Math.min(hist.length,20)} 次模擬測驗答對率(虛線 = 及格線 75%)</p>
+      <p class="hint">近 ${Math.min(hist.length,20)} 次答對率(虛線 = 參考線 75%)${scope}</p>
       ${curveSVG(hist)}
-      <div class="lg"><span><i style="background:var(--teal)"></i>你的成績</span><span><i style="background:var(--no)"></i>及格線 75%</span></div>
+      <div class="lg"><span><i style="background:var(--teal)"></i>你的成績</span><span><i style="background:var(--no)"></i>參考線 75%</span></div>
     </div>
 
     <div class="panel">
       <h2>🔍 弱點主題</h2>
-      <p class="hint">各主題累計答對率(由弱到強排序,<b style="color:var(--no)">紅色最該加強</b>)</p>
-      ${topics.map(t=>bar(t.name,t.p,t.ok,t.n)).join('')}
+      <p class="hint">各主題累計答對率(由弱到強,<b style="color:var(--no)">紅色最該加強</b>)${subjFilter==='all'?' · 四科混合,點上方分頁看單科':''}</p>
+      ${topics.length?topics.map(t=>bar(t.name,t.p,t.ok,t.n)).join(''):'<p class="hint">此範圍尚無資料</p>'}
     </div>
 
     <div class="panel">
       <h2>📚 題型正確率</h2>
-      ${types.map(t=>bar(t.name,t.p,t.ok,t.n)).join('')}
+      ${types.length?types.map(t=>bar(t.name,t.p,t.ok,t.n)).join(''):'<p class="hint">此範圍尚無資料</p>'}
     </div>
 
-    ${wbTopics.length?`<div class="panel">
-      <h2>📌 錯題本主題分布</h2>
-      <p class="hint">目前錯題本共 ${wb.length} 題,集中在這些主題</p>
-      ${wbTopics.map(t=>`<div class="barrow"><span class="name">${esc(t.name)}</span>
-        <div class="bartrack"><div class="barfill lv-no" style="width:${Math.round(t.n/wbTopics[0].n*100)}%"></div></div>
-        <span class="pct">${t.n} 題</span></div>`).join('')}
-      <div class="acts" style="margin-top:12px"><a class="btn" href="錯題本.html">📌 去複習錯題本</a></div>
-    </div>`:''}
+    ${wbPanel(wbCounts,wbTotal)}
 
     <div class="acts"><a class="btn pri" href="模擬測驗.html">📝 再測一組</a>
       <button class="clr" id="clrBtn">🗑️ 清除測驗記錄</button></div>`;
 
+  bindTabs();
   let arm=false;
-  document.getElementById('clrBtn').onclick=function(){
-    if(!arm){arm=true;this.textContent='⚠️ 確定清除?(錯題本不受影響)';setTimeout(()=>{arm=false;this.textContent='🗑️ 清除測驗記錄';},3000);return;}
-    localStorage.removeItem('quiz_history');render();
+  const cb=document.getElementById('clrBtn');
+  if(cb)cb.onclick=function(){
+    if(!arm){arm=true;this.textContent='⚠️ 確定清除全部測驗記錄?(錯題本不受影響)';setTimeout(()=>{arm=false;this.textContent='🗑️ 清除測驗記錄';},3000);return;}
+    localStorage.removeItem('quiz_history');subjFilter='all';render();
   };
 }
 function bar(name,p,ok,n){
