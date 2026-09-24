@@ -68,6 +68,11 @@
   .tools2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 2px}
   .mbtn{border:1.4px solid var(--line);background:var(--card);color:var(--ink);padding:6px 15px;border-radius:16px;cursor:pointer;font-size:.86rem;font-weight:700;font-family:inherit}
   .mbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  .setbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0 2px}
+  .setbar .sl{font-size:.76rem;color:var(--sub);font-weight:700;margin-left:6px}
+  .sbtn{border:1.3px solid var(--line);background:var(--card);color:var(--ink);padding:4px 11px;border-radius:14px;cursor:pointer;font-size:.8rem;font-weight:600;font-family:inherit}
+  .sbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  .rom{color:var(--sub);font-size:.85em;font-style:italic;margin-left:3px}
   .pbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:16px;cursor:pointer;font-size:.84rem;font-family:inherit}
   .score{font-size:.82rem;color:var(--sub);font-weight:700;margin-left:auto}
   .strat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:8px 0 4px}
@@ -103,6 +108,15 @@
     <button class="pbtn" id="printBtn">🖨 匯出 PDF</button>
     <span class="score" id="score"></span>
   </div>
+  <div class="setbar">
+    <span class="sl">🔊 語速</span>
+    <button class="sbtn" data-rate="0.6">🐢 慢</button>
+    <button class="sbtn on" data-rate="0.9">標準</button>
+    <button class="sbtn" data-rate="1.2">🐇 快</button>
+    <span class="sl">語彙</span>
+    <button class="sbtn" data-tog="romaji">Aa 羅馬拼音</button>
+    <button class="sbtn" data-tog="hidek">🙈 隱藏讀音</button>
+  </div>
   <details class="strat"><summary>💡 日語考試 · 通用解題法</summary>
   <ul>
     <li><b>読み方(讀音)題</b>:選項是同一漢字的不同假名 → 先唸出來,靠語感刪掉不自然的;注意促音(っ)、長音、濁音。</li>
@@ -121,7 +135,24 @@ const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
 function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.no])||null;}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+let RATE=0.9, ROMAJI=false, HIDEK=false;
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=RATE;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function toRomaji(kana){
+  if(!kana)return '';
+  const m={あ:'a',い:'i',う:'u',え:'e',お:'o',か:'ka',き:'ki',く:'ku',け:'ke',こ:'ko',が:'ga',ぎ:'gi',ぐ:'gu',げ:'ge',ご:'go',さ:'sa',し:'shi',す:'su',せ:'se',そ:'so',ざ:'za',じ:'ji',ず:'zu',ぜ:'ze',ぞ:'zo',た:'ta',ち:'chi',つ:'tsu',て:'te',と:'to',だ:'da',ぢ:'ji',づ:'zu',で:'de',ど:'do',な:'na',に:'ni',ぬ:'nu',ね:'ne',の:'no',は:'ha',ひ:'hi',ふ:'fu',へ:'he',ほ:'ho',ば:'ba',び:'bi',ぶ:'bu',べ:'be',ぼ:'bo',ぱ:'pa',ぴ:'pi',ぷ:'pu',ぺ:'pe',ぽ:'po',ま:'ma',み:'mi',む:'mu',め:'me',も:'mo',や:'ya',ゆ:'yu',よ:'yo',ら:'ra',り:'ri',る:'ru',れ:'re',ろ:'ro',わ:'wa',ゐ:'i',ゑ:'e',を:'o',ん:'n',ぁ:'a',ぃ:'i',ぅ:'u',ぇ:'e',ぉ:'o'};
+  const d={きゃ:'kya',きゅ:'kyu',きょ:'kyo',ぎゃ:'gya',ぎゅ:'gyu',ぎょ:'gyo',しゃ:'sha',しゅ:'shu',しょ:'sho',じゃ:'ja',じゅ:'ju',じょ:'jo',ちゃ:'cha',ちゅ:'chu',ちょ:'cho',にゃ:'nya',にゅ:'nyu',にょ:'nyo',ひゃ:'hya',ひゅ:'hyu',ひょ:'hyo',びゃ:'bya',びゅ:'byu',びょ:'byo',ぴゃ:'pya',ぴゅ:'pyu',ぴょ:'pyo',みゃ:'mya',みゅ:'myu',みょ:'myo',りゃ:'rya',りゅ:'ryu',りょ:'ryo'};
+  kana=String(kana).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+  let out='',i=0;
+  while(i<kana.length){
+    const two=kana.substr(i,2);
+    if(d[two]){out+=d[two];i+=2;continue;}
+    const c=kana[i];
+    if(c==='っ'||c==='ッ'){const r=d[kana.substr(i+1,2)]||m[kana[i+1]]||'';out+=(r[0]||'');i++;continue;}
+    if(c==='ー'){out+=(out.slice(-1)||'');i++;continue;}
+    out+=(m[c]!=null?m[c]:c);i++;
+  }
+  return out;
+}
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
 const QP=new URLSearchParams(location.search);
@@ -161,7 +192,7 @@ function revealHtml(q){
   if(d){
     if(d.zh)h+=`<div class="lbl">中譯</div><div class="zh">${d.zh}</div>`;
     if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
-    if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙(假名・重音・中譯,🔊 聽發音)</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${esc(v[1]||'')}${(v[3]!=null&&v[3]!=='')?` <span class="acc" title="東京式重音核位置(0=平板)">${esc(String(v[3]))}</span>`:''}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
+    if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙(假名・重音・中譯,🔊 聽發音)</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${HIDEK?'<span style="color:var(--sub)">🔊 /「顯示讀音」查看</span>':esc(v[1]||'')+(ROMAJI&&v[1]?' <span class="rom">'+toRomaji(v[1])+'</span>':'')}${(!HIDEK&&v[3]!=null&&v[3]!=='')?` <span class="acc" title="東京式重音核位置(0=平板)">${esc(String(v[3]))}</span>`:''}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
   }else if(!q.sungei){
@@ -203,6 +234,13 @@ document.querySelector('.bar').addEventListener('click',e=>{
   buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
+document.querySelector('.setbar').addEventListener('click',e=>{
+  const b=e.target.closest('.sbtn');if(!b)return;
+  if(b.dataset.rate){RATE=+b.dataset.rate;b.parentElement.querySelectorAll('[data-rate]').forEach(x=>x.classList.toggle('on',x===b));speak('テスト、練習');return;}
+  if(b.dataset.tog==='romaji'){ROMAJI=!ROMAJI;b.classList.toggle('on',ROMAJI);}
+  if(b.dataset.tog==='hidek'){HIDEK=!HIDEK;b.classList.toggle('on',HIDEK);b.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
+  render();
+});
 document.querySelector('.tools2').addEventListener('click',e=>{
   const b=e.target.closest('.mbtn');if(!b)return;
   MODE=b.dataset.m;
