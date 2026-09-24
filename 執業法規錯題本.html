@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#b45309">
-<title>執業實務 · 錯題本</title>
+<meta name="theme-color" content="#3730a3">
+<title>執業法規 · 錯題本</title>
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;
-    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--sel:#d97706;--selbg:#fdf2e3;
-    --hd1:#b45309;--hd2:#d97706;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--sel:#4f46e5;--selbg:#eef0fe;
+    --hd1:#3730a3;--hd2:#4f46e5;
     --c-r:#f4ecfb;--c-rk:#7a3fc0;--c-t:#eef1f5;--c-tk:#55647a;
     --skillbg:#eaf1ff;--skillk:#1d4ed8;--skillbd:#93b4f7;--notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
     --chipv:#eef2ff;--chipvk:#3b4fd6;--dang:#c0392b;
   }
   @media (prefers-color-scheme:dark){:root{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
-    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#f59e0b;--selbg:#3a2c11;
-    --hd1:#7c4a12;--hd2:#b45309;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#818cf8;--selbg:#1e1b4b;
+    --hd1:#312e81;--hd2:#3730a3;
     --c-r:#2a1f3a;--c-rk:#c79bff;--c-t:#242b36;--c-tk:#9fb0c6;
     --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
     --chipv:#22284a;--chipvk:#9db0ff;--dang:#e5736a;
@@ -80,13 +80,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="pwa.js" defer></script>
-<script src="pr.js"></script>
-<script src="pr_ana.js" onerror="window.PRANA=window.PRANA||{}"></script>
+<script src="pr2.js"></script>
+<script src="pr2_ana.js" onerror="window.PR2ANA=window.PR2ANA||{}"></script>
 </head>
 <body>
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
-  <h1>📋 執業實務 · 錯題本</h1>
+  <h1>⚖️ 執業法規 · 錯題本</h1>
   <p>模擬測驗答錯的題目自動收錄,自測答對即自動移除</p>
 </div></header>
 
@@ -113,13 +113,13 @@
 <script>
 const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
-const GT={'史':'🏛 臺灣歷史','地':'🗺 臺灣地理','維護':'🛡 資源維護'};
-const WBGH_KEY='wrongbook_pr';
+const GT={};
+const WBGH_KEY='wrongbook_pr2';
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WBGH_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WBGH_KEY,JSON.stringify(o));}catch(e){}}
-function ghData(q){return (typeof PRANA!=='undefined'&&PRANA[q.c+'-'+q.y+'-'+q.no])||null;}
+function ghData(q){return (typeof PR2ANA!=='undefined'&&PR2ANA[q.c+'-'+q.y+'-'+q.no])||null;}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function findQ(id){return PRBANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
+function findQ(id){return PR2BANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}
 
@@ -156,7 +156,7 @@ function buildFilters(){
     chip('all','全部',fy==='all','fy')+years.map(y=>chip(y,y+'年 ('+scoped.filter(e=>String(e.q.y)===y).length+')',fy===y,'fy')).join('');
   const tps=[...new Set(scoped.map(e=>{const d=ghData(e.q);return d&&d.t;}).filter(Boolean))];
   document.getElementById('fTopic').innerHTML =
-    chip('all','全部',ft==='all','ft')+tps.map(t=>chip(t,(GT[t]||t)+' ('+scoped.filter(e=>{const d=ghData(e.q);return d&&d.t===t;}).length+')',ft===t,'ft')).join('');
+    chip('all','全部',ft==='all','ft')+tps.map(t=>chip(t,GT[t]+' ('+scoped.filter(e=>{const d=ghData(e.q);return d&&d.t===t;}).length+')',ft===t,'ft')).join('');
 }
 
 function optMarkReview(q,i,picked){
@@ -193,12 +193,12 @@ function render(){
   const total=allEntries().length;
   document.getElementById('cnt').textContent = total? ('錯題 '+total+' 題'+(arr.length!==total?'(篩選後 '+arr.length+')':'')) : '';
   if(!total){
-    document.getElementById('list').innerHTML='<div class="empty"><b>🎉 目前沒有錯題!</b>到「模擬測驗」選執業實務練習,答錯的題目會自動收錄到這裡。</div>';
+    document.getElementById('list').innerHTML='<div class="empty"><b>🎉 目前沒有錯題!</b>到「模擬測驗」選執業法規練習,答錯的題目會自動收錄到這裡。</div>';
     updScore(arr);return;
   }
   document.getElementById('list').innerHTML=arr.map(e=>{
     const q=e.q,d=ghData(q);
-    const tags=d?`<span class="chip c-r">${d.t}</span><span class="chip c-t">${d.tt}</span>`:`<span class="chip c-r">執業實務</span>`;
+    const tags=d?`<span class="chip c-r">${d.t}</span><span class="chip c-t">${d.tt}</span>`:`<span class="chip c-r">執業法規</span>`;
     const show=(MODE==='review')||(picks[e.id]!=null);
     return `<div class="card" data-id="${e.id}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}

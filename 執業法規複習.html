@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3730a3">
+<title>執業法規 · 複習</title>
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--sel:#4f46e5;--selbg:#eef0fe;
+    --hd1:#3730a3;--hd2:#4f46e5;
+    --c-r:#f4ecfb;--c-rk:#7a3fc0;--c-t:#eef1f5;--c-tk:#55647a;
+    --skillbg:#eaf1ff;--skillk:#1d4ed8;--skillbd:#93b4f7;--notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
+    --chipv:#eef2ff;--chipvk:#3b4fd6;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#818cf8;--selbg:#1e1b4b;
+    --hd1:#312e81;--hd2:#3730a3;
+    --c-r:#2a1f3a;--c-rk:#c79bff;--c-t:#242b36;--c-tk:#9fb0c6;
+    --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+    --chipv:#22284a;--chipvk:#9db0ff;
+  }}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 5px;font-size:1.28rem} header p{margin:2px 0;opacity:.92;font-size:.82rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .bar .wrap{padding:9px 16px}
+  .rowf{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:3px 0}
+  .rowf .lb{font-size:.76rem;color:var(--sub);font-weight:700;margin-right:2px;min-width:30px}
+  .chip2{border:1.4px solid var(--line);background:var(--card);color:var(--ink);padding:4px 12px;border-radius:16px;cursor:pointer;font-size:.82rem;font-family:inherit;font-weight:600}
+  .chip2.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  #q{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.9rem;font-family:inherit;margin-top:4px}
+  .cnt{font-size:.78rem;color:var(--sub);padding:10px 0 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .qhead{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+  .qno{background:var(--sel);color:#fff;font-weight:700;border-radius:8px;padding:2px 10px;font-size:.82rem}
+  .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
+  .c-r{background:var(--c-r);color:var(--c-rk)} .c-t{background:var(--c-t);color:var(--c-tk)}
+  .src{font-size:.72rem;border-radius:6px;padding:1px 7px;font-weight:700;margin-left:auto}
+  .src.leader{background:var(--chipv);color:var(--chipvk)} .src.guide{background:var(--okbg);color:var(--ok)}
+  .stem{font-size:1.03rem;margin:4px 0 11px}
+  .opts{display:grid;gap:7px}
+  .opt{display:flex;gap:9px;align-items:flex-start;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;font-size:.96rem}
+  .opt .lab{font-weight:700;color:var(--sub);min-width:17px}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.ok .lab{color:var(--ok)}
+  .opt .mk{margin-left:auto;font-weight:700;color:var(--ok)}
+  .reveal{margin-top:11px;border-top:1px dashed var(--line);padding-top:9px}
+  .lbl{font-weight:700;font-size:.8rem;color:var(--accent);margin:9px 0 3px} .lbl:first-child{margin-top:0}
+  .ana{font-size:.94rem} .ana b.ac,.box b.ac{color:var(--ok)} .ana b.wr,.box b.wr{color:var(--no)}
+  .zh{color:var(--sub);font-size:.92rem}
+  .box{border-left:4px solid;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.9rem}
+  .box .h{display:block;margin-bottom:2px;font-size:.82rem}
+  .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
+  .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .empty{text-align:center;color:var(--sub);padding:40px 10px}
+  .noana{font-size:.82rem;color:var(--sub);margin-top:8px;font-style:italic}
+  .tools2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 2px}
+  .mbtn{border:1.4px solid var(--line);background:var(--card);color:var(--ink);padding:6px 15px;border-radius:16px;cursor:pointer;font-size:.86rem;font-weight:700;font-family:inherit}
+  .mbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
+  .pbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:16px;cursor:pointer;font-size:.84rem;font-family:inherit}
+  .score{font-size:.82rem;color:var(--sub);font-weight:700;margin-left:auto}
+  .strat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:8px 0 4px}
+  .strat summary{cursor:pointer;font-weight:700;padding:10px 0;font-size:.92rem;color:var(--sel)}
+  .strat ul{margin:0 0 12px;padding-left:20px;font-size:.9rem} .strat li{margin:5px 0}
+  .opt.clk{cursor:pointer;width:100%;text-align:left;font-family:inherit}
+  .opt.clk:hover{border-color:var(--sel)}
+  .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
+  .opt .mk.x{color:var(--no)}
+  @media print{header .home,.bar,.tools2,.strat{display:none!important}.card{box-shadow:none;break-inside:avoid}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="pwa.js" defer></script>
+<script src="pr2.js"></script>
+<script src="pr2_ana.js" onerror="window.PR2ANA=window.PR2ANA||{}"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="歷屆試題.html">← 歷屆試題</a>
+  <h1>⚖️ 執業法規 · 複習</h1>
+  <p>觀光法規 · 入出境 · 外匯常識 · 民法債編旅遊 · 兩岸關係條例 — 歷屆試題 + 官方答案</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="rowf"><span class="lb">證照</span><span id="fCert"></span></div>
+  <div class="rowf"><span class="lb">年份</span><span id="fYear"></span></div>
+  <div class="rowf" id="rowTopic" style="display:none"><span class="lb">考點</span><span id="fTopic"></span></div>
+  <input id="q" placeholder="搜尋題幹 / 選項 / 解析關鍵字…">
+  <div class="cnt" id="cnt"></div>
+</div></div>
+
+<div class="wrap">
+  <div class="tools2">
+    <button class="mbtn on" data-m="review">📖 複習模式</button>
+    <button class="mbtn" data-m="test">✍️ 自測模式</button>
+    <button class="pbtn" id="printBtn">🖨 匯出 PDF</button>
+    <span class="score" id="score"></span>
+  </div>
+  <details class="strat"><summary>💡 執業法規 · 通用解題法</summary>
+  <ul>
+    <li><b>數字題(金額/天數/期限)</b>:法規最愛考數字。抓關鍵:責任險意外死亡 <b>200 萬</b>、體傷醫療 <b>10 萬</b>、家屬海外善後 <b>10 萬</b>;新臺幣入境免申報 <b>10 萬</b>、外幣現金出境限美金 <b>1 萬</b>;旅遊請求權時效 <b>1 年</b>。</li>
+    <li><b>「錯誤/不正確」題</b>:四個敘述挑一個被竄改數字或張冠李戴的,那個就是答案。</li>
+    <li><b>罰則題</b>:記區間端點(如民航法航站吐痰 <b>2.5 萬</b>、機上廁所吸菸 <b>3~15 萬</b>);未派領證領隊違約金每人 <b>1,500 元</b>。</li>
+    <li><b>兩岸/入出境</b>:主管機關要對清楚(觀光=交通部觀光署、兩岸=陸委會、大陸事務委由海基會)。</li>
+    <li><b>民法債編旅遊</b>:變更由第三人參加→增額付、減額不退;不可抗力變更→超支不向旅客收、節省須退還。</li>
+    <li><b>組合題(①②③)/送分題</b>:先鎖定一個最確定對或錯的敘述刪選項;官方標示一律給分的別糾結。</li>
+  </ul></details>
+</div>
+
+<main class="wrap" id="list"></main>
+
+<script>
+const LAB=['A','B','C','D'];
+const CNAME={leader:'領隊',guide:'導遊'};
+const BANK=(typeof PR2BANK!=='undefined')?PR2BANK:[];
+const ANA=(typeof PR2ANA!=='undefined')?PR2ANA:{};
+function anaData(q){return ANA[q.c+'-'+q.y+'-'+q.no]||null;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+const QP=new URLSearchParams(location.search);
+let CERT=QP.get('cert')||(function(){try{return localStorage.getItem('pref_cert');}catch(e){return null;}})();
+if(CERT!=='guide'&&CERT!=='leader')CERT='guide';
+const YEARS=[...new Set(BANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
+let YEAR=QP.get('year')||YEARS[0];
+if(!YEARS.includes(YEAR))YEAR=YEARS[0];
+let TOPIC='all';
+let MODE='review';
+const picks={};
+function qid(q){return q.c+'-'+q.y+'-'+q.no;}
+function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function optMark(q,i,p){
+  if(p==null)return['',''];
+  if(q.sungei)return p===i?['ok','✓']:['',''];
+  if(i===q.ans)return['ok','✓'];
+  if(p===i)return['no','✗'];
+  return['',''];
+}
+/* 考點分類:由解析 t 欄動態產生(解析未寫前不顯示) */
+function topicsPresent(){return [...new Set(BANK.filter(x=>x.c===CERT).map(x=>{const d=anaData(x);return d&&d.t;}).filter(Boolean))];}
+
+function chip(v,t,on){return `<button class="chip2 ${on?'on':''}" data-v="${v}">${t}</button>`;}
+function buildFilters(){
+  document.getElementById('fCert').innerHTML=[['leader','領隊'],['guide','導遊']].map(([v,t])=>chip(v,t,v===CERT)).join('');
+  const ys=[...new Set(BANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
+  document.getElementById('fYear').innerHTML=ys.map(y=>chip(y,y+'年',y===YEAR)).join('');
+  const tps=topicsPresent();
+  if(tps.length){
+    document.getElementById('rowTopic').style.display='';
+    document.getElementById('fTopic').innerHTML=[['all','全部'],...tps.map(t=>[t,t])].map(([v,t])=>chip(v,t,v===TOPIC)).join('');
+  }else{document.getElementById('rowTopic').style.display='none';}
+}
+function optHtml(q,i,o){
+  if(MODE==='review'){const ok=(q.ans===i);
+    return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${ok?'<span class="mk">✓</span>':''}</div>`;}
+  const p=picks[qid(q)], answered=(p!=null), [c,mk]=optMark(q,i,p);
+  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
+function revealHtml(q){
+  const d=anaData(q);
+  let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+  if(d){
+    h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
+    if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
+    if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
+  }else if(!q.sungei){
+    h+=`<div class="noana">解析整理中…(官方答案已標示,正解選項以綠色標示)</div>`;
+  }
+  return h;
+}
+function render(){
+  const kw=document.getElementById('q').value.trim().toLowerCase();
+  let arr=BANK.filter(x=>x.c===CERT&&x.y===YEAR).sort((a,b)=>a.no-b.no);
+  if(TOPIC!=='all')arr=arr.filter(x=>{const d=anaData(x);return d&&d.t===TOPIC;});
+  if(kw)arr=arr.filter(x=>{const d=anaData(x);const hay=(x.stem+' '+x.opts.join(' ')+' '+(d?d.a+' '+d.s+' '+(d.n||''):'')).toLowerCase();return hay.includes(kw);});
+  document.getElementById('cnt').textContent='共 '+arr.length+' 題'+(TOPIC!=='all'?'(已篩考點)':'');
+  document.getElementById('list').innerHTML=arr.map(q=>{
+    const d=anaData(q);
+    const tags=d?`<span class="chip c-r">${d.t}</span>${d.tt?`<span class="chip c-t">${d.tt}</span>`:''}`:'';
+    const show=(MODE==='review')||(picks[qid(q)]!=null);
+    return `<div class="card">
+      <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
+        <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
+      <div class="stem">${esc(q.stem)}</div>
+      <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
+      <div class="reveal">${show?revealHtml(q):''}</div></div>`;
+  }).join('')||'<div class="empty">找不到符合的題目</div>';
+  updScore(arr);
+}
+function updScore(arr){
+  const el=document.getElementById('score');
+  if(MODE!=='test'){el.textContent='';return;}
+  let done=0,ok=0;arr.forEach(q=>{const p=picks[qid(q)];if(p!=null){done++;if(ansOk(q,p))ok++;}});
+  el.textContent='作答 '+done+'/'+arr.length+(done?' · 答對 '+ok+' · '+Math.round(ok/done*100)+'%':'');
+}
+document.querySelector('.bar').addEventListener('click',e=>{
+  const b=e.target.closest('.chip2');if(!b)return;
+  const p=b.parentElement.id,v=b.dataset.v;
+  if(p==='fCert'){CERT=v;try{localStorage.setItem('pref_cert',CERT);}catch(e){}
+    const ys=[...new Set(BANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
+    if(!ys.includes(YEAR))YEAR=ys[0];TOPIC='all';}
+  else if(p==='fYear')YEAR=v;
+  else if(p==='fTopic')TOPIC=v;
+  buildFilters();render();window.scrollTo(0,0);
+});
+document.getElementById('q').addEventListener('input',render);
+document.querySelector('.tools2').addEventListener('click',e=>{
+  const b=e.target.closest('.mbtn');if(!b)return;
+  MODE=b.dataset.m;
+  document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x===b));
+  render();window.scrollTo(0,0);
+});
+document.getElementById('list').addEventListener('click',e=>{
+  if(MODE!=='test')return;
+  const b=e.target.closest('.opt.clk');if(!b)return;
+  const k=b.dataset.k;if(picks[k]!=null)return;
+  picks[k]=+b.dataset.i;render();
+});
+document.getElementById('printBtn').onclick=function(){
+  const prev=MODE;MODE='review';render();
+  setTimeout(function(){window.print();MODE=prev;render();},200);
+};
+buildFilters();render();
+</script>
+</body>
+</html>
