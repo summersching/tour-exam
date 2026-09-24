@@ -86,6 +86,13 @@
 
   footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
   footer b{color:var(--teal)}
+  .subjbar{margin:14px 0 4px}
+  .wchips{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px}
+  .wchip{display:inline-flex;gap:6px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:20px;padding:8px 14px;text-decoration:none;color:inherit;font-size:.88rem;font-weight:700;
+    box-shadow:var(--shadow);transition:transform .12s,border-color .12s}
+  .wchip:hover,.wchip:active{border-color:var(--teal);transform:translateY(-1px)}
+  .wchip .wn{background:var(--accent);color:#fff;border-radius:10px;padding:0 7px;font-size:.72rem}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -95,7 +102,7 @@
 <header>
   <div class="wrap">
     <h1>🧭 領隊·導遊 考照中心</h1>
-    <p>外語英語 + 觀光資源概要 · 歷屆試題逐題詳解</p>
+    <p>英語 · 觀光 · 執業實務 · 執業法規 — 四科題庫 + 詳解 + 模擬測驗</p>
     <span class="free">🔒 100% 離線免費 · 無需連網</span>
   </div>
 </header>
@@ -104,37 +111,58 @@
 
 <footer>
   全部功能離線可用,免費、無廣告、不需註冊<br>
-  資料持續累積 · <b>10 屆完整詳解 + 學習中心</b>
+  四科 · <b>10 屆完整詳解 + 模擬測驗 + 錯題本</b>
 </footer>
 
 <script>
-/* ==== 首頁 = 學習工具啟動頁(歷屆試題獨立為一個工具,點進 歷屆試題.html)==== */
+/* ==== 首頁 = 學習工具啟動頁(科目篩選 + 分區塊)==== */
+const SUBJFILTERS=[['all','全部'],['en','英語'],['gh','觀光'],['pr','執業實務'],['pr2','執業法規']];
+const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','📌 錯題本'],['tool','⚙️ 紀錄 · 工具']];
 const TOOLS = [
-  { id:'past',  name:'歷屆試題', icon:'📚', desc:'外語英語 + 觀光資源概要 · 10 屆逐題詳解', file:'歷屆試題.html' },
-  { id:'wb',    name:'學習中心', icon:'📖', desc:'單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html' },
-  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'高頻必背 · 片語 · 易混字', file:'考前衝刺.html' },
-  { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰 · 執業法規高頻', file:'法規速查.html' },
-  { id:'sprintcn',name:'考點速記', icon:'🔥', desc:'觀光 · 執業實務 高頻考點 · 一句話必背', file:'考點速記.html' },
-  { id:'oral',  name:'口試練習', icon:'🎤', desc:'帶團實用句 · 主題準備 · 跟讀', file:'口試練習.html' },
-  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'英語 + 觀光 + 執業實務 + 執業法規 · 隨機組卷 · 計分 · 限時', file:'模擬測驗.html' },
-  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 預估及格率', file:'儀表板.html' },
-  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題本 / 成績 匯出還原 · 換手機不怕不見', file:'資料備份.html' },
-  { id:'wrong', name:'英語錯題本', icon:'📌', desc:'外語英語測驗答錯自動收錄 · 跨年複習', file:'錯題本.html' },
-  { id:'wronggh', name:'觀光錯題本', icon:'🛡', desc:'觀光資源概要答錯自動收錄 · 附考點與解析', file:'觀光錯題本.html' },
-  { id:'wrongpr', name:'執業實務錯題本', icon:'📋', desc:'執業實務答錯自動收錄 · 跨年複習', file:'執業實務錯題本.html' },
-  { id:'wrongpr2', name:'執業法規錯題本', icon:'⚖️', desc:'執業法規答錯自動收錄 · 跨年複習', file:'執業法規錯題本.html' }
+  { id:'past',  name:'歷屆試題', icon:'📚', desc:'四科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
+  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'四科隨機組卷 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
+  { id:'wb',    name:'學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
+  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語高頻必背 · 片語 · 易混字', file:'考前衝刺.html', cat:'review', subj:['en'] },
+  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語帶團實用句 · 跟讀', file:'口試練習.html', cat:'review', subj:['en'] },
+  { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
+  { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr'] },
+  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格率', file:'儀表板.html', cat:'tool', subj:'all' },
+  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題/成績 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' },
+  { id:'wrong', name:'英語', icon:'📌', file:'錯題本.html', cat:'wrong', subj:['en'], wb:'wrongbook_en' },
+  { id:'wronggh', name:'觀光', icon:'🛡', file:'觀光錯題本.html', cat:'wrong', subj:['gh'], wb:'wrongbook_gh' },
+  { id:'wrongpr', name:'執業實務', icon:'📋', file:'執業實務錯題本.html', cat:'wrong', subj:['pr'], wb:'wrongbook_pr' },
+  { id:'wrongpr2', name:'執業法規', icon:'⚖️', file:'執業法規錯題本.html', cat:'wrong', subj:['pr2'], wb:'wrongbook_pr2' }
 ];
 
+let FILTER='all';
+try{const s=localStorage.getItem('pref_subj'); if(s&&SUBJFILTERS.some(x=>x[0]===s))FILTER=s;}catch(e){}
+
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function wbCount(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||'{}')).length;}catch(e){return 0;}}
+function match(t){return FILTER==='all'||t.subj==='all'||(Array.isArray(t.subj)&&t.subj.indexOf(FILTER)>=0);}
+function toolCard(t){return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+    <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
+function wchip(t){const n=t.wb?wbCount(t.wb):0;return `<a class="wchip" href="${esc(t.file)}">${t.icon} ${esc(t.name)}${n?`<span class="wn">${n}</span>`:''}</a>`;}
 
 function render(){
-  const tools = TOOLS.map(t=>
-    `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
-      <div><div class="tt">${esc(t.name)}</div><div class="dd">${esc(t.desc)}</div></div></a>`).join('');
-  document.getElementById('main').innerHTML = `
-    <div class="sect"><h2>🎯 學習工具</h2></div>
-    <div class="tools">${tools}</div>`;
+  let html=`<div class="subs subjbar">`+SUBJFILTERS.map(([k,n])=>
+    `<button class="${k===FILTER?'on':''}" data-f="${k}">${n}</button>`).join('')+`</div>`;
+  CATS.forEach(([cat,label])=>{
+    const items=TOOLS.filter(t=>t.cat===cat&&match(t));
+    if(!items.length)return;
+    html+=`<div class="sect"><h2>${label}</h2></div>`;
+    html+= cat==='wrong'
+      ? `<div class="wchips">${items.map(wchip).join('')}</div>`
+      : `<div class="tools">${items.map(toolCard).join('')}</div>`;
+  });
+  document.getElementById('main').innerHTML=html;
 }
+
+document.getElementById('main').addEventListener('click',e=>{
+  const b=e.target.closest('.subjbar button'); if(!b)return;
+  FILTER=b.dataset.f; try{localStorage.setItem('pref_subj',FILTER);}catch(e){}
+  render(); window.scrollTo(0,0);
+});
 render();
 </script>
 </body>
