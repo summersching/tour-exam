@@ -58,6 +58,7 @@
   .box .h{display:block;margin-bottom:2px;font-size:.82rem}
   .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
   .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--skillbg);border-color:var(--skillbd)} .box.gram .h{color:var(--skillk)}
   table.vocab{border-collapse:collapse;width:100%;font-size:.9rem;margin:2px 0}
   table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top}
   table.vocab td:first-child{font-weight:700;white-space:nowrap} table.vocab td:nth-child(2){color:var(--sub);white-space:nowrap}
@@ -73,6 +74,10 @@
   .sbtn{border:1.3px solid var(--line);background:var(--card);color:var(--ink);padding:4px 11px;border-radius:14px;cursor:pointer;font-size:.8rem;font-weight:600;font-family:inherit}
   .sbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
   .rom{color:var(--sub);font-size:.85em;font-style:italic;margin-left:3px}
+  .pitch{white-space:nowrap;display:inline-block}
+  .pitch .mo{display:inline-block;line-height:1.15;border-top:2px solid transparent;border-right:2px solid transparent;padding:0 .5px}
+  .pitch .mo.hi{border-top-color:var(--sel)}
+  .pitch .mo.dp{border-right-color:var(--sel)}
   .pbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:16px;cursor:pointer;font-size:.84rem;font-family:inherit}
   .score{font-size:.82rem;color:var(--sub);font-weight:700;margin-left:auto}
   .strat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:8px 0 4px}
@@ -153,6 +158,18 @@ function toRomaji(kana){
   }
   return out;
 }
+function morae(kana){const sm='ゃゅょぁぃぅぇぉゎャュョァィゥェォヮ';const out=[];for(let i=0;i<kana.length;i++){const c=kana[i],n=kana[i+1];if(n&&sm.indexOf(n)>=0){out.push(c+n);i++;}else out.push(c);}return out;}
+function pitchHtml(reading,acc){
+  const ms=morae(String(reading||''));const n=ms.length;if(!n)return esc(String(reading||''));
+  acc=(acc==null||acc==='')?-1:+acc;
+  let h='<span class="pitch" title="東京式重音('+(acc===0?'平板':acc+'型')+')">';
+  for(let i=1;i<=n;i++){
+    let hi; if(acc<0)hi=false; else if(acc===0)hi=i>=2; else if(acc===1)hi=i===1; else hi=(i>=2&&i<=acc);
+    const dp=(acc>=1&&i===acc);
+    h+='<span class="mo'+(hi?' hi':'')+(dp?' dp':'')+'">'+esc(ms[i-1])+'</span>';
+  }
+  return h+'</span>';
+}
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
 const QP=new URLSearchParams(location.search);
@@ -192,7 +209,8 @@ function revealHtml(q){
   if(d){
     if(d.zh)h+=`<div class="lbl">中譯</div><div class="zh">${d.zh}</div>`;
     if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
-    if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙(假名・重音・中譯,🔊 聽發音)</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${HIDEK?'<span style="color:var(--sub)">🔊 /「顯示讀音」查看</span>':esc(v[1]||'')+(ROMAJI&&v[1]?' <span class="rom">'+toRomaji(v[1])+'</span>':'')}${(!HIDEK&&v[3]!=null&&v[3]!=='')?` <span class="acc" title="東京式重音核位置(0=平板)">${esc(String(v[3]))}</span>`:''}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
+    if(d.g)h+=`<div class="box gram"><b class="h">📝 文法 / 句型</b>${d.g}</div>`;
+    if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙(假名・重音・中譯,🔊 聽發音)</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${HIDEK?'<span style="color:var(--sub)">🔊 /「顯示讀音」查看</span>':((v[3]!=null&&v[3]!=='')?pitchHtml(v[1]||'',v[3]):esc(v[1]||''))+(ROMAJI&&v[1]?' <span class="rom">'+toRomaji(v[1])+'</span>':'')+((v[3]!=null&&v[3]!=='')?' <span class="acc" title="重音核位置(0=平板)">'+esc(String(v[3]))+'</span>':'')}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
   }else if(!q.sungei){

@@ -240,6 +240,7 @@ function revealHtml(q){
     if(d){
       if(d.zh)h+=`<div class="lbl">整句中譯</div><div class="zh">${d.zh}</div>`;
       if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
+      if(d.g)h+=`<div class="box gram"><b class="h">📝 文法 / 句型</b>${d.g}</div>`;
       if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙</div><table class="vocab">${d.v.map(v=>`<tr><td>${v[0]} ${sayBtn(v[0])}</td><td>${v[1]||''}${(v[3]!=null&&v[3]!=='')?' <span class="acc">'+v[3]+'</span>':''}</td><td>${v[2]||''}</td></tr>`).join('')}</table>`;
       if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
       if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;

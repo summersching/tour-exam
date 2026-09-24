@@ -65,6 +65,7 @@
   .box .h{display:block;margin-bottom:2px;font-size:.82rem}
   .box.skill{background:var(--skillbg);border-color:var(--skillbd)} .box.skill .h{color:var(--skillk)}
   .box.note{background:var(--notebg);border-color:var(--notebd)} .box.note .h{color:var(--notek)}
+  .box.gram{background:var(--skillbg);border-color:var(--skillbd)} .box.gram .h{color:var(--skillk)}
   table.vocab{border-collapse:collapse;width:100%;font-size:.9rem;margin:2px 0}
   table.vocab td{border:1px solid var(--line);padding:5px 9px;vertical-align:top}
   table.vocab td:first-child{font-weight:700;white-space:nowrap} table.vocab td:nth-child(2){color:var(--sub);white-space:nowrap}
@@ -182,6 +183,7 @@ function revealHtml(q){
   if(d){
     if(d.zh)h+=`<div class="lbl">中譯</div><div class="zh">${d.zh}</div>`;
     if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
+    if(d.g)h+=`<div class="box gram"><b class="h">📝 文法 / 句型</b>${d.g}</div>`;
     if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${esc(v[1]||'')}${(v[3]!=null&&v[3]!=='')?' <span class="acc">'+esc(String(v[3]))+'</span>':''}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
