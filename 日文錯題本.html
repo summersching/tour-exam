@@ -71,6 +71,7 @@
   table.vocab td:first-child{font-weight:700;white-space:nowrap} table.vocab td:nth-child(2){color:var(--sub);white-space:nowrap}
   .acc{display:inline-block;min-width:15px;text-align:center;font-size:.7rem;font-weight:700;color:#fff;background:var(--accent);border-radius:9px;padding:0 5px;vertical-align:middle}
   .say{cursor:pointer;color:var(--sel);font-size:.9em;margin-left:5px;user-select:none}
+  .ozh{color:var(--sub);margin-left:6px;font-size:.92em}
   .noana{font-size:.82rem;color:var(--sub);margin-top:8px;font-style:italic}
   .empty{text-align:center;color:var(--sub);padding:48px 10px;font-size:.95rem}
   .empty b{color:var(--ok);font-size:1.1rem;display:block;margin-bottom:6px}
@@ -169,11 +170,11 @@ function optMarkTest(q,i,p){
   return['',''];
 }
 function optHtml(e,i,o){
-  const q=e.q;
+  const q=e.q, d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
   if(MODE==='review'){const [c,mk]=optMarkReview(q,i,e.picked);
-    return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${sayBtn(o)}${mk?`<span class="mk ${mk==='✗'?'x':''}">${mk}</span>`:''}</div>`;}
+    return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${esc(o)}${oz}</span>${sayBtn(o)}${mk?`<span class="mk ${mk==='✗'?'x':''}">${mk}</span>`:''}</div>`;}
   const p=picks[e.id], answered=(p!=null), [c,mk]=optMarkTest(q,i,p);
-  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
+  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}${oz}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
 }
 function revealHtml(q){
   const d=jpData(q);

@@ -65,6 +65,8 @@
   .acc{display:inline-block;min-width:15px;text-align:center;font-size:.7rem;font-weight:700;color:#fff;background:var(--accent);border-radius:9px;padding:0 5px;vertical-align:middle}
   .say{cursor:pointer;color:var(--sel);font-size:.9em;margin-left:5px;user-select:none}
   rt{font-size:.58em;color:var(--sub);font-weight:400}
+  .ozh{color:var(--sub);margin-left:6px;font-size:.92em}
+  body.hide-zh .ozh{display:none}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   .noana{font-size:.82rem;color:var(--sub);margin-top:8px;font-style:italic}
   .tools2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 2px}
@@ -124,6 +126,7 @@
     <button class="sbtn" data-tog="romaji">Aa 羅馬拼音</button>
     <button class="sbtn" data-tog="furi">振 漢字標假名</button>
     <button class="sbtn" data-tog="hidek">🙈 隱藏讀音</button>
+    <button class="sbtn on" data-tog="ozh">🈯 隱藏選項中文</button>
   </div>
   <details class="strat"><summary>💡 日語考試 · 通用解題法</summary>
   <ul>
@@ -216,10 +219,11 @@ function buildFilters(){
   document.getElementById('fYear').innerHTML=ys.map(y=>chip(y,y+'年',y===YEAR)).join('');
 }
 function optHtml(q,i,o){
+  const d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
   if(MODE==='review'){const ok=(q.ans===i);
-    return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}</span>${sayBtn(o)}${ok?'<span class="mk">✓</span>':''}</div>`;}
+    return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}${oz}</span>${sayBtn(o)}${ok?'<span class="mk">✓</span>':''}</div>`;}
   const p=picks[qid(q)], answered=(p!=null), [c,mk]=optMark(q,i,p);
-  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
+  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}${oz}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=jpData(q);
   let h='';
@@ -279,6 +283,7 @@ document.querySelector('.setbar').addEventListener('click',e=>{
     render();return;}
   if(b.dataset.tog==='romaji'){ROMAJI=!ROMAJI;b.classList.toggle('on',ROMAJI);}
   if(b.dataset.tog==='hidek'){HIDEK=!HIDEK;b.classList.toggle('on',HIDEK);b.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
+  if(b.dataset.tog==='ozh'){document.body.classList.toggle('hide-zh');const hid=document.body.classList.contains('hide-zh');b.textContent=hid?'🈚 顯示選項中文':'🈯 隱藏選項中文';b.classList.toggle('on',!hid);return;}
   render();
 });
 document.querySelector('.tools2').addEventListener('click',e=>{

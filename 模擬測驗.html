@@ -218,6 +218,7 @@ function isJp(){return cfg.subj==='jp';}   // 外語日語:自有題庫+ana(zh/a
 const SUBJNAME={en:'外語英語',jp:'外語日語',gh:'觀光資源概要',pr:'執業實務',pr2:'執業法規'};
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}   // 送分題一律算對
 function optInner(o){return (isCn()||isJp())?o:splitOpt(o);}       // 中文科/日語:純選項不切英/中
+function ozHtml(q,i){if(!isJp())return'';const d=ghData(q);return (d&&d.oz&&d.oz[i])?`<span class="ozh">${d.oz[i]}</span>`:'';}  // 日語:每選項中文(檢討時顯示)
 const GT={'史':'🏛 臺灣歷史','地':'🗺 臺灣地理','維護':'🛡 資源維護'};
 function ghData(q){const k=q.c+'-'+q.y+'-'+q.no;
   if(cfg.subj==='jp')return (typeof JPANA!=='undefined'&&JPANA[k])||null;
@@ -414,7 +415,7 @@ function renderResult(mode,wrong){
         ${starsHtml(q)}</div>
       <div class="stem">${stem}</div>
       <div class="opts">${q.opts.map((o,i)=>{const[c,mk]=optMark(q,i,p);
-        return `<button class="opt ${c}" disabled><span class="lab">${LAB[i]}</span><span>${optInner(o)}</span><span class="mk">${mk}</span></button>`;}).join('')}</div>
+        return `<button class="opt ${c}" disabled><span class="lab">${LAB[i]}</span><span>${optInner(o)}${ozHtml(q,i)}</span><span class="mk">${mk}</span></button>`;}).join('')}</div>
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
         ${revealHtml(q)}
