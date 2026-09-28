@@ -1,0 +1,4 @@
+# kuromoji 字典為 gzip 二進位,禁止任何行尾轉換(否則解壓失敗)
+*.gz -text -diff
+dict/** -text -diff
+*.png -text -diff
