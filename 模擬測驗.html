@@ -51,6 +51,7 @@
   .qno{background:var(--sel);color:#fff;font-weight:700;border-radius:8px;padding:2px 11px;font-size:.85rem}
   .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
   .c-v{background:var(--chipv);color:var(--chipvk)} .c-d{background:var(--chipd);color:var(--chipdk)} .c-r{background:var(--chipr);color:var(--chiprk)} .c-t{background:var(--chipt);color:var(--chiptk)}
+  .c-jl{background:#4f46e5;color:#fff;letter-spacing:.5px}
   .src{font-size:.72rem;border-radius:6px;padding:1px 7px;font-weight:700;text-decoration:none}
   .src.leader{background:var(--chipv);color:var(--chipvk)} .src.guide{background:var(--okbg);color:var(--ok)}
   .stars{color:var(--star);font-size:.85rem;margin-left:auto} .stars .dim{opacity:.28}
@@ -226,7 +227,7 @@ function ghData(q){const k=q.c+'-'+q.y+'-'+q.no;
   if(cfg.subj==='pr2')return (typeof PR2ANA!=='undefined'&&PR2ANA[k])||null;
   return (typeof GHANA!=='undefined'&&GHANA[k])||null;}
 function qChips(q){
-  if(isJp()){const d=ghData(q);return d&&d.tt?`<span class="chip c-r">${d.t||'日語'}</span><span class="chip c-t">${d.tt}</span>`:'<span class="chip c-r">外語日語</span>';}
+  if(isJp()){const d=ghData(q);return (d&&d.tt?`<span class="chip c-r">${d.t||'日語'}</span><span class="chip c-t">${d.tt}</span>`:'<span class="chip c-r">外語日語</span>')+(d&&d.jl?`<span class="chip c-jl">${d.jl}</span>`:'');}
   if(isCn()){const d=ghData(q);
     if(cfg.subj==='gh')return d?`<span class="chip c-r">${GT[d.t]||'觀光'}</span><span class="chip c-t">${d.tt}</span>`:'<span class="chip c-r">觀光資源概要</span>';
     return d?`<span class="chip c-r">${d.t}</span>${d.tt?`<span class="chip c-t">${d.tt}</span>`:''}`:`<span class="chip c-r">${cfg.subj==='pr2'?'執業法規':'執業實務'}</span>`;}
