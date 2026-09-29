@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>全站搜尋</title>
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;
+    --hd1:#1e3a8a;--hd2:#2563eb;--hi:#fff2ab;--hik:#7a5c00;
+    --chipt:#eef1f5;--chiptk:#55647a;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
+    --hd1:#1b2a5c;--hd2:#31488f;--hi:#4a3d0e;--hik:#f2d778;
+    --chipt:#242b36;--chiptk:#9fb0c6;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
+    --hd1:#1b2a5c;--hd2:#31488f;--hi:#4a3d0e;--hik:#f2d778;
+    --chipt:#242b36;--chiptk:#9fb0c6;
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 5px;font-size:1.28rem} header p{margin:2px 0;opacity:.92;font-size:.82rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .bar .wrap{padding:10px 16px}
+  #q{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:11px 14px;font-size:1rem;font-family:inherit}
+  #q:focus{outline:none;border-color:var(--accent)}
+  .subs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .schip{border:1.3px solid var(--line);background:var(--card);color:var(--sub);padding:4px 12px;border-radius:16px;cursor:pointer;font-size:.82rem;font-family:inherit;font-weight:600}
+  .schip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .cnt{font-size:.8rem;color:var(--sub);padding:8px 0 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:11px 0;box-shadow:0 1px 6px rgba(0,0,0,.04);text-decoration:none;color:inherit;display:block;transition:border-color .12s}
+  .card:hover,.card:active{border-color:var(--accent)}
+  .chead{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px}
+  .tag{font-size:.72rem;font-weight:700;color:#fff;border-radius:12px;padding:2px 9px}
+  .src{font-size:.72rem;color:var(--sub);font-weight:700}
+  .go{margin-left:auto;font-size:.74rem;color:var(--accent);font-weight:700}
+  .stem{font-size:.95rem}
+  .opt{font-size:.85rem;color:var(--sub);margin-top:3px}
+  mark{background:var(--hi);color:var(--hik);border-radius:3px;padding:0 2px}
+  .empty{text-align:center;color:var(--sub);padding:44px 12px}
+  .empty .ic{font-size:2.6rem}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="bank.js"></script>
+<script src="gh.js"></script>
+<script src="pr.js"></script>
+<script src="pr2.js"></script>
+<script src="jp.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🔎 全站搜尋</h1>
+  <p>跨五科 · 搜題幹 / 選項關鍵字 · 直達該題詳解</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <input id="q" placeholder="輸入關鍵字(至少 2 字),例:違約金、導覽、まで、passport…" autocomplete="off">
+  <div class="subs" id="subs"></div>
+  <div class="cnt" id="cnt"></div>
+</div></div>
+
+<main class="wrap" id="list"></main>
+
+<script>
+const CNAME={leader:'領隊',guide:'導遊'};
+/* 各題庫皆為 classic script 的 top-level const,須用裸名取用(window.X 取不到);typeof 防未載入 */
+const SRC=[
+  {k:'en', name:'英語', color:'#2563eb', bank:()=>(typeof BANK!=='undefined'?BANK:null),     page:q=>`英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  {k:'jp', name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}`},
+  {k:'gh', name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}`},
+  {k:'pr', name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}`},
+  {k:'pr2',name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}`}
+];
+const CAP=120;
+let filter='all', timer=null;
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function hl(text,kw){const t=esc(text);if(!kw)return t;
+  try{const re=new RegExp('('+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');return t.replace(re,'<mark>$1</mark>');}catch(e){return t;}}
+
+function buildSubs(){
+  const cnt={}; SRC.forEach(s=>{const b=s.bank();cnt[s.k]=b?b.length:0;});
+  document.getElementById('subs').innerHTML=
+    `<button class="schip ${filter==='all'?'on':''}" data-k="all">全部</button>`+
+    SRC.map(s=>`<button class="schip ${filter===s.k?'on':''}" data-k="${s.k}"${cnt[s.k]?'':' disabled'}>${s.name}</button>`).join('');
+}
+function search(){
+  const kw=document.getElementById('q').value.trim().toLowerCase();
+  const list=document.getElementById('list'), cnt=document.getElementById('cnt');
+  if(kw.length<2){list.innerHTML=`<div class="empty"><div class="ic">🔎</div><p>輸入至少 2 個字開始搜尋<br><small>可搜中文考點、英文單字、日文假名/漢字</small></p></div>`;cnt.textContent='';return;}
+  let hits=[],truncated=false;
+  for(const s of SRC){
+    if(filter!=='all'&&filter!==s.k)continue;
+    const bank=s.bank(); if(!bank)continue;
+    for(const q of bank){
+      const hay=(q.stem+' '+(q.opts||[]).join(' ')).toLowerCase();
+      if(hay.indexOf(kw)>=0){ hits.push({s,q}); if(hits.length>=CAP){truncated=true;break;} }
+    }
+    if(truncated)break;
+  }
+  cnt.textContent = hits.length? ('找到 '+hits.length+(truncated?'+ (僅顯示前'+CAP+'筆,請再縮小關鍵字)':'')+' 筆') : '';
+  if(!hits.length){list.innerHTML=`<div class="empty"><div class="ic">🕳️</div><p>找不到「${esc(kw)}」<br><small>換個關鍵字,或到各科詳解逐題看</small></p></div>`;return;}
+  const rawKw=document.getElementById('q').value.trim();
+  list.innerHTML=hits.map(({s,q})=>{
+    const opt=(q.opts||[]).find(o=>String(o).toLowerCase().indexOf(kw)>=0);
+    const stem=String(q.stem).replace('__BLANK__','（　）');
+    return `<a class="card" href="${s.page(q)}">
+      <div class="chead"><span class="tag" style="background:${s.color}">${s.name}</span>
+        <span class="src">${CNAME[q.c]||q.c} ${q.y} 年 第 ${q.no} 題</span>
+        <span class="go">看詳解 ›</span></div>
+      <div class="stem">${hl(stem,rawKw)}</div>
+      ${opt?`<div class="opt">${hl(String(opt),rawKw)}</div>`:''}
+    </a>`;
+  }).join('');
+}
+document.getElementById('q').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(search,180);});
+document.getElementById('subs').addEventListener('click',e=>{const b=e.target.closest('.schip');if(!b||b.disabled)return;
+  filter=b.dataset.k;buildSubs();search();});
+buildSubs();search();
+document.getElementById('q').focus();
+</script>
+</body>
+</html>

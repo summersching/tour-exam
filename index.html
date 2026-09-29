@@ -158,7 +158,8 @@ const SUBJFILTERS = [['all','全部']].concat(SUBJ.map(s=>[s.k, s.name]));
 const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','📌 錯題本'],['tool','⚙️ 紀錄 · 工具']];
 const TOOLS = [
   { id:'past',  name:'歷屆試題', icon:'📚', desc:'五科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
-  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
+  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
+  { id:'search',name:'全站搜尋', icon:'🔎', desc:'跨五科搜題幹 / 關鍵字 · 直達詳解', file:'搜尋.html', cat:'do', subj:'all' },
   { id:'wb',    name:'學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
   { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語高頻必背 · 片語 · 易混字', file:'考前衝刺.html', cat:'review', subj:['en'] },
   { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語帶團實用句 · 跟讀', file:'口試練習.html', cat:'review', subj:['en'] },
