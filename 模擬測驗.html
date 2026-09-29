@@ -231,6 +231,12 @@ function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<s
 function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function sayBtn(t){return `<span class="say" data-say="${String(t).replace(/"/g,'&quot;').replace(/</g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
+/* 檢討畫面逐選項朗讀:日文唸整個選項(ja)、英文唸英文部分(en);中文科不加 */
+function saySpan(text,lang){return `<span class="say" data-lang="${lang}" data-say="${String(text).replace(/"/g,'&quot;').replace(/</g,'')}" title="點我朗讀">🔊</span>`;}
+function optSay(q,o){ if(isJp())return saySpan(o,'ja');
+  if(cfg.subj==='en'){const en=enPhrase(o);return en?saySpan(en,'en'):'';} return ''; }
+function stemSay(q){ if(isJp())return saySpan(String(q.stem).replace('__BLANK__',' '),'ja');
+  if(cfg.subj==='en')return saySpan(String(q.stem).replace('__BLANK__',' '),'en'); return ''; }
 function hlAna(ana,opts,ans){
   if(!ana||!opts)return ana||'';
   var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
@@ -522,9 +528,9 @@ function renderResult(mode,wrong){
         ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
         ${starsHtml(q)}</div>
-      <div class="stem">${stem}</div>
+      <div class="stem">${stem} ${stemSay(q)}</div>
       <div class="opts">${q.opts.map((o,i)=>{const[c,mk]=optMark(q,i,p);
-        return `<button class="opt ${c}" disabled><span class="lab">${LAB[i]}</span><span>${optInner(o)}${ozHtml(q,i)}</span><span class="mk">${mk}</span></button>`;}).join('')}</div>
+        return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${optInner(o)}${ozHtml(q,i)}</span>${optSay(q,o)}<span class="mk">${mk}</span></div>`;}).join('')}</div>
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
         ${revealHtml(q)}
@@ -533,6 +539,14 @@ function renderResult(mode,wrong){
 }
 
 /* ===== 事件 ===== */
+/* 檢討畫面朗讀(逐選項 / 題幹 / 正解 / 難字):依 data-lang 選語言 */
+document.getElementById('rlist').addEventListener('click',e=>{
+  const s=e.target.closest('.say'); if(!s)return;
+  const lang=s.dataset.lang==='en'?'en-US':'ja-JP';
+  try{const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang=lang;
+    u.rate=lang==='ja-JP'?(+(localStorage.getItem('pref_jp_rate'))||0.9):0.9;
+    speechSynthesis.cancel();speechSynthesis.speak(u);}catch(err){}
+});
 document.getElementById('startBtn').onclick=startQuiz;
 document.getElementById('submitBtn').onclick=()=>submit();
 document.getElementById('submitBtn2').onclick=()=>submit();
