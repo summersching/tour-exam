@@ -183,8 +183,9 @@ function optHtml(e,i,o){
   const q=e.q, d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
   if(MODE==='review'){const [c,mk]=optMarkReview(q,i,e.picked);
     return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${esc(o)}${oz}</span>${sayBtn(o)}${mk?`<span class="mk ${mk==='✗'?'x':''}">${mk}</span>`:''}</div>`;}
-  const p=picks[e.id], answered=(p!=null), [c,mk]=optMarkTest(q,i,p);
-  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}${oz}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
+  const p=picks[e.id], [c,mk]=optMarkTest(q,i,p);
+  /* 不用 disabled(停用按鈕內🔊點不到);已作答由點擊處理的 picks 守門,不會重選 */
+  return `<button class="opt clk ${c}" data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}${oz}</span>${sayBtn(o)}<span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
 }
 function revealHtml(q){
   const d=jpData(q);
