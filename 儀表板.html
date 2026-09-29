@@ -165,8 +165,9 @@ function render(){
 
     <div class="panel">
       <h2>🔍 弱點主題</h2>
-      <p class="hint">各主題累計答對率(由弱到強,<b style="color:var(--no)">紅色最該加強</b>)${subjFilter==='all'?' · 四科混合,點上方分頁看單科':''}</p>
+      <p class="hint">各主題累計答對率(由弱到強,<b style="color:var(--no)">紅色最該加強</b>)${subjFilter==='all'?' · 各科混合,點上方分頁看單科':''}</p>
       ${topics.length?topics.map(t=>bar(t.name,t.p,t.ok,t.n)).join(''):'<p class="hint">此範圍尚無資料</p>'}
+      ${topics.length?`<a class="btn pri" style="display:inline-block;margin-top:10px" href="模擬測驗.html?${subjFilter!=='all'?'subj='+subjFilter+'&':''}num=20${(function(){if(subjFilter==='gh'){var rev={'觀光·臺灣歷史':'史','觀光·臺灣地理':'地','觀光·資源維護':'維護'};var w=rev[topics[0].name];if(w)return '&topic='+encodeURIComponent(w);}return '';})()}">🎯 針對弱點出題</a>`:''}
     </div>
 
     <div class="panel">

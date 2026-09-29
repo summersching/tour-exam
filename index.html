@@ -98,6 +98,33 @@
     box-shadow:var(--shadow);transition:transform .12s,border-color .12s}
   .wchip:hover,.wchip:active{border-color:var(--teal);transform:translateY(-1px)}
   .wchip .wn{background:var(--accent);color:#fff;border-radius:10px;padding:0 7px;font-size:.72rem}
+  /* C1 考試倒數 + C6 每日打卡 */
+  #studyCard{margin-top:16px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .scard .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .scard .dd{font-size:1.9rem;font-weight:800;color:var(--accent);line-height:1}
+  .scard .dd small{font-size:.8rem;font-weight:700;color:var(--sub);margin-left:3px}
+  .scard .exdate{font-size:.76rem;color:var(--sub)}
+  .scard .streak{margin-left:auto;font-size:.9rem;font-weight:800;color:var(--gold);background:var(--goldbg);
+    border-radius:20px;padding:4px 12px;white-space:nowrap}
+  .scard .goalrow{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .scard .glabel{font-size:.82rem;color:var(--sub);font-weight:700;white-space:nowrap}
+  .scard .gtrack{flex:1;background:var(--oldbg);border-radius:8px;height:16px;overflow:hidden;min-width:80px}
+  .scard .gfill{height:100%;background:var(--teal);border-radius:8px;transition:width .4s}
+  .scard .gfill.done{background:var(--newk)}
+  .scard .gpct{font-size:.82rem;font-weight:700;white-space:nowrap}
+  .scard .setbtn{border:1px solid var(--line);background:var(--card);color:var(--accent);border-radius:10px;
+    padding:6px 12px;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit}
+  .scard .setwrap{display:none;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;
+    border-top:1px dashed var(--line);padding-top:12px}
+  .scard .setwrap.on{display:flex}
+  .scard input{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;
+    padding:7px 10px;font-size:.88rem;font-family:inherit}
+  .scard input[type=number]{width:74px}
+  .scard .save{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:7px 15px;
+    cursor:pointer;font-weight:700;font-family:inherit;font-size:.86rem}
+  .scard .tip{font-size:.78rem;color:var(--sub);margin-top:8px}
+  .scard .empty{font-size:.95rem;font-weight:700}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -113,6 +140,8 @@
     <span class="free">🔒 100% 離線免費 · 無需連網</span>
   </div>
 </header>
+
+<div class="wrap" id="studyCard"></div>
 
 <div class="wrap" id="main"></div>
 
@@ -170,7 +199,62 @@ document.getElementById('main').addEventListener('click',e=>{
   FILTER=b.dataset.f; try{localStorage.setItem('pref_subj',FILTER);}catch(e){}
   render(); window.scrollTo(0,0);
 });
+
+/* ==== C1 考試倒數 + C6 每日打卡(以模擬測驗紀錄推算)==== */
+function LSg(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function LSs(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysUntil(s){const t=new Date();t.setHours(0,0,0,0);const e=new Date(s+'T00:00:00');return Math.round((e-t)/86400000);}
+function histByDay(){let h=[];try{h=JSON.parse(LSg('quiz_history')||'[]');}catch(e){}
+  const m={};h.forEach(x=>{if(!x.ts)return;m[dkey(new Date(x.ts))]=(m[dkey(new Date(x.ts))]||0)+(x.total||0);});return m;}
+function streakOf(m){let s=0,d=new Date();d.setHours(0,0,0,0);
+  if(!m[dkey(d)])d.setDate(d.getDate()-1);           // 今天還沒練 → 從昨天起算(寬限一天)
+  while(m[dkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
+function renderStudyCard(){
+  const box=document.getElementById('studyCard'); if(!box)return;
+  const exam=LSg('exam_date')||'';
+  const goal=Math.max(1,+(LSg('daily_goal')||30));
+  const m=histByDay();
+  const today=m[dkey(new Date())]||0;
+  const streak=streakOf(m);
+  const pct=Math.min(100,Math.round(today/goal*100));
+  let head;
+  if(exam){
+    const dleft=daysUntil(exam);
+    head = dleft>=0
+      ? `<span class="dd">${dleft}<small>天後考試</small></span><span class="exdate">${exam}</span>`
+      : `<span class="empty">🎓 考試日(${exam})已過,祝金榜題名!可設定下次目標</span>`;
+  }else{
+    head = `<span class="empty">🎯 設定考試日期,顯示倒數與每日目標</span>`;
+  }
+  box.innerHTML=`<div class="scard">
+    <div class="top">${head}
+      ${streak?`<span class="streak">🔥 連續 ${streak} 天</span>`:''}
+      <button class="setbtn" id="scSet">${exam?'⚙️ 設定':'＋ 設定'}</button>
+    </div>
+    <div class="goalrow">
+      <span class="glabel">今日已練</span>
+      <div class="gtrack"><div class="gfill ${today>=goal?'done':''}" style="width:${pct}%"></div></div>
+      <span class="gpct">${today}/${goal} 題</span>
+    </div>
+    ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗題數計。</div>`}
+    <div class="setwrap" id="scForm">
+      <label class="glabel">考試日期 <input type="date" id="scDate" value="${exam}"></label>
+      <label class="glabel">每日目標 <input type="number" id="scGoal" min="1" max="500" value="${goal}"> 題</label>
+      <button class="save" id="scSave">儲存</button>
+    </div>
+  </div>`;
+  document.getElementById('scSet').onclick=()=>document.getElementById('scForm').classList.toggle('on');
+  document.getElementById('scSave').onclick=()=>{
+    const dv=document.getElementById('scDate').value;
+    const gv=Math.max(1,Math.min(500,+document.getElementById('scGoal').value||30));
+    if(dv)LSs('exam_date',dv); else {try{localStorage.removeItem('exam_date');}catch(e){}}
+    LSs('daily_goal',gv); renderStudyCard();
+  };
+}
+
 render();
+renderStudyCard();
 </script>
 </body>
 </html>

@@ -528,8 +528,21 @@ function initResume(){
   document.getElementById('rsDrop').onclick=()=>{clearDraft();bar.innerHTML='';};
 }
 
+/* C3 弱點一鍵組卷:可由儀表板帶參數預選(subj/cert/topic/num/time,auto=1 直接開始) */
+function applyQueryPreset(){
+  const qp=new URLSearchParams(location.search);
+  const subj=qp.get('subj'); if(subj&&SUBJNAME[subj])cfg.subj=subj;
+  const cert=qp.get('cert'); if(cert==='leader'||cert==='guide'||cert==='all')cfg.cert=cert;
+  const topic=qp.get('topic'); if(topic&&cfg.subj==='gh'&&['史','地','維護'].includes(topic))cfg.gtopic=topic;
+  const num=+qp.get('num'); if([10,20,30,50].indexOf(num)>=0)cfg.num=num;
+  const time=+qp.get('time'); if([0,15,25,40].indexOf(time)>=0)cfg.time=time;
+  return qp.get('auto')==='1';
+}
 buildSetup();
+const _auto=applyQueryPreset();
+buildSetup();   // 依帶入的 cfg 重建晶片選取狀態
 initResume();
+if(_auto)startQuiz();
 </script>
 </body>
 </html>
