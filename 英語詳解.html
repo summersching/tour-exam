@@ -127,6 +127,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="en_review.js"></script>
 <script src="glossary.js" defer></script>
@@ -222,7 +223,7 @@ function qCard(item){
   return `<div class="card${showCls}" id="q${item.no}">
     <div class="qhead"><span class="qno">第 ${item.no} 題</span>
       <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
-      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span></div>
+      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span>${FAV.btn('en',item)}</div>
     <div class="stem">${stem} ${sayBtn(rawStem)}</div>
     <div class="opts">${item.opts.map((o,i)=>optBtn(item,i,o)).join('')}</div>
     <div class="reveal fold">
@@ -313,7 +314,7 @@ document.getElementById('app').addEventListener('click',e=>{
   card.classList.add('show');updateScore();
 });
 
-buildFilters();render();
+buildFilters();render();FAV.onClick(document.getElementById('app'));
 
 /* 深連結 #qN:跳到指定題並高亮;若來自工具頁顯示返回鈕 */
 function goHash(){

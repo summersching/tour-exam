@@ -99,6 +99,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
@@ -268,7 +269,7 @@ function render(){
     const show=(MODE==='review')||(picks[qid(q)]!=null);
     return `<div class="card">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
-        <span class="src">${CNAME[q.c]}${q.y}-${q.no}</span></div>
+        ${FAV.btn('jp',q)}<span class="src">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       <div class="stem">${dsp(q.stem)} ${sayBtn(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
@@ -332,7 +333,7 @@ function applyJpPrefs(){
     if(FURI&&!TOK){fb.textContent='振 假名載入中…';ensureTokenizer(function(){fb.textContent='振 漢字標假名';fb.classList.toggle('on',FURI);render();});}
   }
 }
-buildFilters();render();applyJpPrefs();
+buildFilters();render();applyJpPrefs();FAV.onClick(document.getElementById('list'));
 </script>
 </body>
 </html>

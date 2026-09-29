@@ -91,6 +91,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="gh.js"></script>
 <script src="gh_ana.js"></script>
@@ -245,7 +246,7 @@ function render(){
     const show=(MODE==='review')||(picks[qid(q)]!=null);
     return `<div class="card">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
-        <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
+        ${FAV.btn('gh',q)}<span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       <div class="stem">${esc(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
@@ -285,7 +286,7 @@ document.getElementById('printBtn').onclick=function(){
   const prev=MODE;MODE='review';render();
   setTimeout(function(){window.print();MODE=prev;render();},200);
 };
-buildFilters();render();
+buildFilters();render();FAV.onClick(document.getElementById('list'));
 </script>
 </body>
 </html>

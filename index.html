@@ -125,6 +125,19 @@
     cursor:pointer;font-weight:700;font-family:inherit;font-size:.86rem}
   .scard .tip{font-size:.78rem;color:var(--sub);margin-top:8px}
   .scard .empty{font-size:.95rem;font-weight:700}
+  /* C2 智慧複習 */
+  #reviewCard{margin-top:12px}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .rcard .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .rcard h3{margin:0;font-size:1.02rem}
+  .rcard .due{margin-left:auto;font-size:.86rem;font-weight:800;color:var(--newk);background:var(--newbg);border-radius:20px;padding:3px 12px}
+  .rcard .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+  .rcard .rchip{display:inline-flex;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--line);
+    border-radius:18px;padding:7px 13px;text-decoration:none;color:inherit;font-size:.86rem;font-weight:700}
+  .rcard .rchip:hover{border-color:var(--accent)}
+  .rcard .rchip .b{background:var(--newk);color:#fff;border-radius:10px;padding:0 7px;font-size:.74rem}
+  .rcard .rchip.z{opacity:.55} .rcard .rchip.z .b{background:var(--grey)}
+  .rcard .tip{font-size:.78rem;color:var(--sub);margin-top:10px}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -142,6 +155,8 @@
 </header>
 
 <div class="wrap" id="studyCard"></div>
+
+<div class="wrap" id="reviewCard"></div>
 
 <div class="wrap" id="main"></div>
 
@@ -166,6 +181,7 @@ const TOOLS = [
   { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
   { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr'] },
   { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格率', file:'儀表板.html', cat:'tool', subj:'all' },
+  { id:'fav',   name:'我的收藏', icon:'⭐', desc:'手動收藏的重點題 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all' },
   { id:'backup',name:'資料備份', icon:'💾', desc:'錯題/成績 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' }
 ].concat(SUBJ.map(s=>(
   { id:'wb_'+s.k, name:s.name, icon:s.icon, file:s.page, cat:'wrong', subj:[s.k], wb:s.wb }
@@ -254,8 +270,36 @@ function renderStudyCard(){
   };
 }
 
+/* ==== C2 智慧複習:彙整各科錯題本,算出「今天該複習」的題數 ==== */
+/* 規則:錯題上次接觸(ts)在今天之前 → 今天該再看一次;今天已複習(ts=今天)或答對移除者不再列入 */
+function renderReviewCard(){
+  const box=document.getElementById('reviewCard'); if(!box)return;
+  const t0=new Date(); t0.setHours(0,0,0,0); const todayStart=t0.getTime();
+  let pool=0, due=0; const per={};
+  SUBJ.forEach(s=>{
+    let o={}; try{o=JSON.parse(LSg(s.wb)||'{}');}catch(e){}
+    const ids=Object.keys(o); let d=0;
+    ids.forEach(id=>{const ts=+(o[id]&&o[id].ts)||0; if(ts<todayStart)d++;});
+    per[s.k]={total:ids.length,due:d}; pool+=ids.length; due+=d;
+  });
+  if(!pool){box.innerHTML=''; return; }   // 沒有任何錯題就不顯示
+  const chips=SUBJ.filter(s=>per[s.k].total>0).map(s=>{
+    const p=per[s.k];
+    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}">${s.icon} ${s.name}<span class="b">${p.due?p.due:'✓'}</span></a>`;
+  }).join('');
+  const tip = due
+    ? `建議今天把這 <b>${due}</b> 題再做一次(答對即從錯題本移除),把記憶趁遺忘前補回來。`
+    : (pool? '🎉 今天的複習都完成了!錯題本還有 '+pool+' 題,明天會再排進來。' : '');
+  box.innerHTML=`<div class="rcard">
+    <div class="top"><h3>🧠 今日複習</h3>${due?`<span class="due">待複習 ${due} 題</span>`:`<span class="due" style="color:var(--teal);background:var(--tealbg)">今日已完成</span>`}</div>
+    <div class="chips">${chips}</div>
+    <div class="tip">${tip}</div>
+  </div>`;
+}
+
 render();
 renderStudyCard();
+renderReviewCard();
 </script>
 </body>
 </html>
