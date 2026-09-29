@@ -31,7 +31,7 @@
   .panel h2{margin:0 0 4px;font-size:1.05rem;display:flex;align-items:center;gap:7px}
   .panel .hint{font-size:.8rem;color:var(--sub);margin:0 0 12px}
   .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0}
-  @media(min-width:500px){.sum{grid-template-columns:repeat(5,1fr)}}
+  @media(min-width:500px){.sum{grid-template-columns:repeat(3,1fr)}}
   .cell{background:var(--tealbg);border-radius:10px;padding:10px;text-align:center}
   .cell .n{font-size:1.4rem;font-weight:800;color:var(--teal);line-height:1.1}
   .cell .l{font-size:.72rem;color:var(--sub);margin-top:3px}
@@ -49,6 +49,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="subjects.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>
@@ -94,7 +95,8 @@
 
 <script>
 const BACKUP_APP='tour-exam';
-const WB=[['wrongbook_en','英語'],['wrongbook_gh','觀光'],['wrongbook_pr','執業實務'],['wrongbook_pr2','執業法規']];
+/* 錯題本統計清單取自 subjects.js(SSoT);含全部科目(含日語),避免漏科顯示 */
+const WB=(window.SUBJECTS||[]).map(s=>[s.wb,s.name]);
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function snapshot(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}return d;}
 function objLen(v){try{return Object.keys(JSON.parse(v||'{}')).length;}catch(e){return 0;}}
