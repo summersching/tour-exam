@@ -98,6 +98,7 @@
   .vw{font-weight:700;color:var(--accent)} .kk{color:var(--kk);font-style:italic;font-size:.86rem;margin-left:5px}
   .say{cursor:pointer;color:var(--accent);font-size:.85rem;user-select:none;border:1px solid var(--line);border-radius:6px;padding:0 5px;background:var(--card)}
   .say:hover{background:var(--chipv)}
+  .opt .say{border:none;background:transparent;padding:0 2px;margin-left:6px;font-size:.98rem}
   .passage{background:var(--chipt);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;font-size:.93rem}
   .passage .lbl{color:var(--chiptk)} .passage p{margin:6px 0}
   .strategy{background:var(--grambg);border:1px solid var(--grambd);border-radius:12px;margin:14px 0 8px;overflow:hidden}
@@ -214,7 +215,7 @@ function qMatch(item,kw){
   const hay=(item.stem+' '+item.opts.join(' ')+' '+item.zh+' '+item.ana+' '+(item.skill||'')+' '+(item.note||'')+' '+(item.gram||'')).toLowerCase();
   return hay.includes(kw);
 }
-function optBtn(item,i,o){return `<button class="opt" data-no="${item.no}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span><span class="mk"></span></button>`;}
+function optBtn(item,i,o){const en=enPhrase(o);return `<button class="opt" data-no="${item.no}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span>${en?sayBtn(en):''}<span class="mk"></span></button>`;}
 function qCard(item){
   const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
   const stem=esc(item.stem).replace('__BLANK__','<span class="blank"></span>');
