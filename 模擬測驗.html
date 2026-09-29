@@ -14,7 +14,7 @@
     --skillbg:#eaf1ff;--skillk:#1d4ed8;--skillbd:#93b4f7;--notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
     --grambg:#f0ecfb;--gramk:#6b34c9;--grambd:#c2a8ef;--kk:#0e7c86;--hd1:#6d28d9;--hd2:#7c3aed;
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#a78bfa;--selbg:#2a1f3f;
     --chipv:#22284a;--chipvk:#9db0ff;--chipd:#16301f;--chipdk:#6fe0a0;--chipr:#2a1f3a;--chiprk:#c79bff;
@@ -22,6 +22,14 @@
     --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
     --grambg:#241a3a;--gramk:#c9adff;--grambd:#4a3670;--kk:#57cdd8;--hd1:#4c1d95;--hd2:#6d28d9;
   }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#a78bfa;--selbg:#2a1f3f;
+    --chipv:#22284a;--chipvk:#9db0ff;--chipd:#16301f;--chipdk:#6fe0a0;--chipr:#2a1f3a;--chiprk:#c79bff;
+    --chipt:#242b36;--chiptk:#9fb0c6;--blank:#3d3413;--blankk:#f2d778;--star:#f0b840;
+    --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+    --grambg:#241a3a;--gramk:#c9adff;--grambd:#4a3670;--kk:#57cdd8;--hd1:#4c1d95;--hd2:#6d28d9;
+  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 90px}
   header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 18px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
@@ -46,6 +54,26 @@
   .submit{margin-left:auto;background:var(--sel);color:#fff;border:none;padding:9px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem}
   .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 15px;border-radius:10px;cursor:pointer;font-size:.88rem;font-family:inherit}
   .btn:hover{border-color:var(--accent)}
+  /* B3 答題卡題號導覽 */
+  .navbtn{padding:7px 12px;font-size:.84rem}
+  .navgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;padding:10px 0 2px}
+  .navcell{border:1.4px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;
+    padding:6px 0;text-align:center;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit}
+  .navcell.done{background:var(--selbg);color:var(--sel);border-color:var(--sel)}
+  /* B2 續答列 */
+  .resume{background:var(--chipv);border:1.5px solid var(--sel);border-radius:14px;padding:14px 16px;margin:18px 0 0;
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .resume .rt{font-weight:700;font-size:.92rem;flex:1;min-width:180px}
+  .resume .rt small{display:block;color:var(--sub);font-weight:400;font-size:.8rem;margin-top:2px}
+  .resume button{border:none;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.88rem}
+  .resume .go{background:var(--sel);color:#fff} .resume .drop{background:var(--card);color:var(--sub);border:1px solid var(--line)}
+  /* B6 提示 toast */
+  .qtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom));z-index:20;
+    background:var(--sel);color:#fff;padding:10px 18px;border-radius:22px;font-weight:700;font-size:.9rem;
+    box-shadow:0 4px 16px rgba(0,0,0,.25);opacity:0;transition:opacity .25s}
+  .qtoast.on{opacity:1}
+  .card.flash{animation:cardflash 1.2s ease}
+  @keyframes cardflash{0%,100%{box-shadow:0 1px 6px rgba(0,0,0,.04)}30%{box-shadow:0 0 0 3px var(--sel)}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 10px;margin:16px 0;box-shadow:0 1px 6px rgba(0,0,0,.04);scroll-margin-top:70px}
   .qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
   .qno{background:var(--sel);color:#fff;font-weight:700;border-radius:8px;padding:2px 11px;font-size:.85rem}
@@ -94,6 +122,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
 <script src="gh.js"></script>
@@ -114,6 +143,7 @@
 
 <!-- 設定 -->
 <main class="wrap" id="setup">
+  <div id="resumeBar"></div>
   <div class="panel">
     <div class="row"><div class="lb">科目</div><div class="chips" id="sSubj"></div></div>
     <div class="row"><div class="lb">證照</div><div class="chips" id="sCert"></div></div>
@@ -132,9 +162,12 @@
 <div id="quiz" class="hidden">
   <div class="bar"><div class="wrap">
     <span class="prog" id="prog"></span>
+    <button class="btn navbtn" id="navBtn">📋 題號</button>
     <span class="timer hidden" id="timer"></span>
     <button class="submit" id="submitBtn">交卷</button>
-  </div></div>
+  </div>
+  <div class="wrap"><div class="navgrid hidden" id="navGrid"></div></div>
+  </div>
   <main class="wrap" id="qlist"></main>
   <div class="wrap"><button class="start" id="submitBtn2">交卷計分</button></div>
 </div>
@@ -320,17 +353,56 @@ function pool(){
 function updAvail(){const n=pool().length;document.getElementById('avail').textContent='符合條件題數:'+n+' 題,將隨機抽 '+Math.min(cfg.num,n)+' 題';}
 
 /* ===== 作答 ===== */
-let paper=[],picks={},timerId=null,remain=0;
+let paper=[],picks={},timerId=null,remain=0,warned5=false;
+/* B2 續答:作答中把進度存 localStorage;交卷/放棄時清除 */
+const DRAFT_KEY='quiz_draft';
+function saveDraft(){ if(!paper.length||document.getElementById('quiz').dataset.done)return;
+  try{localStorage.setItem(DRAFT_KEY,JSON.stringify({
+    cfg:cfg, refs:paper.map(q=>({c:q.c,y:q.y,no:q.no})), picks:picks,
+    remain:(cfg.time>0?remain:0), ts:Date.now()
+  }));}catch(e){}}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+function loadDraft(){try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');}catch(e){return null;}}
+/* B6 小提示 */
+function qtoast(msg){var t=document.createElement('div');t.className='qtoast';t.textContent=msg;
+  document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('on'));
+  setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),300);},2600);}
 function startQuiz(){
   const qz=document.getElementById('quiz');qz.removeAttribute('data-done');qz.removeAttribute('data-forced');
   const p=shuffle(pool().slice());
   if(!p.length){alert('這個條件下沒有題目,換個條件試試');return;}
-  paper=p.slice(0,Math.min(cfg.num,p.length)); picks={};
+  paper=p.slice(0,Math.min(cfg.num,p.length)); picks={}; warned5=false; clearDraft();
   document.getElementById('setup').classList.add('hidden');
   document.getElementById('result').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
-  renderPaper(); updProg(); window.scrollTo(0,0);
+  renderPaper(); updProg(); buildNav(); window.scrollTo(0,0);
   if(cfg.time>0){remain=cfg.time*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
+}
+/* B2 從草稿接續作答 */
+function resumeQuiz(d){
+  cfg=d.cfg||cfg; warned5=false;
+  const bank=curBank();
+  paper=(d.refs||[]).map(r=>bank.find(q=>q.c===r.c&&q.y===r.y&&q.no===r.no)).filter(Boolean);
+  if(!paper.length||paper.length!==(d.refs||[]).length){clearDraft();document.getElementById('resumeBar').innerHTML='';alert('題庫已更新,無法接續上次測驗,已清除草稿。');return;}
+  picks=d.picks||{};
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  const qz=document.getElementById('quiz');qz.classList.remove('hidden');qz.removeAttribute('data-done');
+  renderPaper(); updProg(); buildNav();
+  Object.keys(picks).forEach(qi=>{const b=document.querySelector('.opt[data-qi="'+qi+'"][data-i="'+picks[qi]+'"]');if(b)b.classList.add('sel');});
+  updNav();
+  if(cfg.time>0){remain=d.remain||cfg.time*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
+  window.scrollTo(0,0);
+}
+/* B3 題號答題卡 */
+function buildNav(){
+  document.getElementById('navGrid').innerHTML=paper.map((q,qi)=>
+    `<button class="navcell" data-navqi="${qi}">${qi+1}</button>`).join('');
+  updNav();
+}
+function updNav(){
+  document.querySelectorAll('.navcell').forEach(c=>{
+    c.classList.toggle('done',picks[+c.dataset.navqi]!=null);});
 }
 function renderPaper(){
   document.getElementById('qlist').innerHTML=paper.map((q,qi)=>{
@@ -348,11 +420,13 @@ function renderPaper(){
     const b=e.target.closest('.opt');if(!b||document.getElementById('quiz').dataset.done)return;
     const qi=+b.dataset.qi,i=+b.dataset.i; picks[qi]=i;
     document.querySelectorAll(`.opt[data-qi="${qi}"]`).forEach(x=>x.classList.toggle('sel',x===b));
-    updProg();};
+    updProg(); updNav(); saveDraft();};
 }
 function updProg(){const done=Object.keys(picks).length;document.getElementById('prog').innerHTML=`已答 <b>${done}</b> / ${paper.length}`;}
 function startTimer(){const t=document.getElementById('timer');t.classList.remove('hidden');
   function tick(){const m=Math.floor(remain/60),s=remain%60;t.textContent='⏱ '+m+':'+(s<10?'0':'')+s;t.classList.toggle('warn',remain<=60);
+    if(cfg.time>5 && !warned5 && remain<=300 && remain>0){warned5=true;qtoast('⏰ 剩 5 分鐘,把握時間');}   // B6 五分鐘提醒
+    if(remain%10===0)saveDraft();   // B2 定時保存進度
     if(remain<=0){clearInterval(timerId);submit(true);return;}remain--;}
   tick();timerId=setInterval(tick,1000);}
 
@@ -365,11 +439,16 @@ function submit(forced){
     var b=document.getElementById('submitBtn'),b2=document.getElementById('submitBtn2');
     if(b)b.textContent='還有 '+un+' 題未答,再按交卷';
     if(b2)b2.textContent='還有 '+un+' 題未作答,再按一次交卷計分';
+    // B6 跳到第一題未答並閃爍提示
+    var firstUn=-1;for(var k=0;k<paper.length;k++){if(picks[k]==null){firstUn=k;break;}}
+    if(firstUn>=0){var card=document.getElementById('qc'+firstUn);
+      if(card){card.scrollIntoView({behavior:'smooth',block:'start'});card.classList.add('flash');setTimeout(function(){card.classList.remove('flash');},1300);}
+      qtoast('還有 '+un+' 題未答,已跳到第 '+(firstUn+1)+' 題');}
     setTimeout(function(){submitArm=false;if(b)b.textContent='交卷';if(b2)b2.textContent='交卷計分';},4000);
     return;
   }
   if(timerId){clearInterval(timerId);timerId=null;}
-  document.getElementById('quiz').dataset.done='1';
+  document.getElementById('quiz').dataset.done='1'; clearDraft();
   let correct=0,wrong=[];
   const byTopic={},byType={};
   const GTN={'史':'觀光·臺灣歷史','地':'觀光·臺灣地理','維護':'觀光·資源維護'};
@@ -432,8 +511,25 @@ document.getElementById('againBtn').onclick=()=>{document.getElementById('quiz')
 let curWrong=[];
 document.getElementById('reviewWrong').onclick=()=>{renderResult('wrong');};
 document.getElementById('reviewAll').onclick=()=>{renderResult('all');};
+/* B3 題號答題卡:開關 + 跳題 */
+document.getElementById('navBtn').onclick=()=>{const g=document.getElementById('navGrid');g.classList.toggle('hidden');updNav();};
+document.getElementById('navGrid').onclick=e=>{const c=e.target.closest('[data-navqi]');if(!c)return;
+  const card=document.getElementById('qc'+c.dataset.navqi);if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('navGrid').classList.add('hidden');};
+/* B2 續答列:載入時若有未完成測驗草稿就提示 */
+function initResume(){
+  const d=loadDraft(),bar=document.getElementById('resumeBar');if(!bar)return;
+  if(!d||!d.refs||!d.refs.length){bar.innerHTML='';return;}
+  const done=Object.keys(d.picks||{}).length,tot=d.refs.length;
+  const sname=(SUBJNAME[d.cfg&&d.cfg.subj]||'測驗');
+  bar.innerHTML=`<div class="resume"><div class="rt">📝 有一份未完成的測驗<small>${sname} · 已答 ${done}/${tot} 題</small></div>
+    <button class="go" id="rsGo">▶️ 繼續作答</button><button class="drop" id="rsDrop">🗑️ 放棄</button></div>`;
+  document.getElementById('rsGo').onclick=()=>{const dd=loadDraft();bar.innerHTML='';if(dd)resumeQuiz(dd);};
+  document.getElementById('rsDrop').onclick=()=>{clearDraft();bar.innerHTML='';};
+}
 
 buildSetup();
+initResume();
 </script>
 </body>
 </html>

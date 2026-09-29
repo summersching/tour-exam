@@ -12,12 +12,18 @@
     --chipv:#eef2ff;--chipvk:#3b4fd6;--okbg:#e5f6ec;--ok:#15904a;--chipt:#eef1f5;--chiptk:#55647a;
     --enbg:#eef2ff;--enk:#3730a3;--enbd:#c7d0f7;--realbg:#e7f6f4;--realk:#0d7d72;--realbd:#84cdc2;
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;
     --hd1:#312e81;--hd2:#3730a3;--tabk:#a5b4fc;
     --chipv:#22284a;--chipvk:#9db0ff;--okbg:#173023;--ok:#5ad48a;--chipt:#242b36;--chiptk:#9fb0c6;
     --enbg:#1e2450;--enk:#a5b4fc;--enbd:#3a4487;--realbg:#123230;--realk:#6fd6c8;--realbd:#2b5a54;
   }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;
+    --hd1:#312e81;--hd2:#3730a3;--tabk:#a5b4fc;
+    --chipv:#22284a;--chipvk:#9db0ff;--okbg:#173023;--ok:#5ad48a;--chipt:#242b36;--chiptk:#9fb0c6;
+    --enbg:#1e2450;--enk:#a5b4fc;--enbd:#3a4487;--realbg:#123230;--realk:#6fd6c8;--realbd:#2b5a54;
+  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
   header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
@@ -54,6 +60,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="oral.js"></script>
 </head>

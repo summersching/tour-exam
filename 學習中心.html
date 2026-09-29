@@ -5,7 +5,8 @@
 <title>外語英語 學習中心</title>
 <style>
   :root{--bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;--kk:#0e7c86;--chip:#eef2ff;--chipk:#3b4fd6;--grp:#0d9488;--yrc:#7a5b12;--yrbg:#fff4cc;--ok:#128a3f;--okbg:#dff5e6;--no:#c0362c;--nobg:#fbe4e2;--gc:#6b34c9;--sc:#1d4ed8;--nc:#b5560c;--star:#e8a72b;}
-  @media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;--chip:#22284a;--chipk:#9db0ff;--grp:#5eead4;--yrc:#f2d778;--yrbg:#3d3413;--ok:#5ed693;--okbg:#173a26;--no:#ff8b82;--nobg:#3d1c1a;--gc:#c9adff;--sc:#9db8ff;--nc:#f4b877;--star:#f0b840;}}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;--chip:#22284a;--chipk:#9db0ff;--grp:#5eead4;--yrc:#f2d778;--yrbg:#3d3413;--ok:#5ed693;--okbg:#173a26;--no:#ff8b82;--nobg:#3d1c1a;--gc:#c9adff;--sc:#9db8ff;--nc:#f4b877;--star:#f0b840;}}
+  :root[data-theme="dark"]{--bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;--chip:#22284a;--chipk:#9db0ff;--grp:#5eead4;--yrc:#f2d778;--yrbg:#3d3413;--ok:#5ed693;--okbg:#173a26;--no:#ff8b82;--nobg:#3d1c1a;--gc:#c9adff;--sc:#9db8ff;--nc:#f4b877;--star:#f0b840;}
   *{box-sizing:border-box}
   html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
@@ -104,6 +105,7 @@
   }
 </style><link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="glossary.js" defer></script>
 </head><body>

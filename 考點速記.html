@@ -11,11 +11,16 @@
     --sel:#c2410c;--hd1:#9a3412;--hd2:#c2410c;--chipbg:#fdeee5;--chipk:#c2410c;
     --freq:#ea580c;--ok:#15904a;--no:#c62a2a;--shadow:0 1px 6px rgba(0,0,0,.05);
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#17120e;--card:#211a15;--ink:#f0e8e2;--sub:#b0a196;--line:#33291f;
     --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
     --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
   }}
+  :root[data-theme="dark"]{
+    --bg:#17120e;--card:#211a15;--ink:#f0e8e2;--sub:#b0a196;--line:#33291f;
+    --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
+    --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
+  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
     font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
@@ -53,6 +58,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="sprint_cn.js"></script>
 </head>

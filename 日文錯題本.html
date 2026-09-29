@@ -14,7 +14,7 @@
     --skillbg:#eaf1ff;--skillk:#1d4ed8;--skillbd:#93b4f7;--notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
     --chipv:#eef2ff;--chipvk:#3b4fd6;--dang:#c0392b;
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#181113;--card:#241a1d;--ink:#f2e8ec;--sub:#c19aa6;--line:#3a2a30;--accent:#fb7185;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#fb7185;--selbg:#2e1a20;
     --hd1:#7f1d3a;--hd2:#9f1239;
@@ -22,6 +22,14 @@
     --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
     --chipv:#22284a;--chipvk:#9db0ff;--dang:#e5736a;
   }}
+  :root[data-theme="dark"]{
+    --bg:#181113;--card:#241a1d;--ink:#f2e8ec;--sub:#c19aa6;--line:#3a2a30;--accent:#fb7185;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#fb7185;--selbg:#2e1a20;
+    --hd1:#7f1d3a;--hd2:#9f1239;
+    --c-r:#3a1f28;--c-rk:#fda4b8;--c-t:#2c2226;--c-tk:#c19aa6;
+    --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+    --chipv:#22284a;--chipvk:#9db0ff;--dang:#e5736a;
+  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC","Yu Gothic","Hiragino Kaku Gothic Pro",system-ui,sans-serif;line-height:1.75;padding:0 0 60px}
   header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
@@ -86,6 +94,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
@@ -126,7 +135,7 @@ function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.n
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function findQ(id){return JPBANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
 function ansOk(q,p){return q.sungei?true:(p===q.ans);}
-function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=(+(localStorage.getItem('pref_jp_rate'))||0.9);speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
 let MODE='review', fc='all', fy='all', clearArm=false;

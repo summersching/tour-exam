@@ -13,15 +13,20 @@
     --newbg:#e5f6ec; --newk:#15904a; --oldbg:#eef1f5; --oldk:#55647a;
     --shadow:0 2px 10px rgba(0,0,0,.06); --shadow2:0 4px 18px rgba(0,0,0,.10);
   }
-  @media (prefers-color-scheme:dark){
-    :root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --accent2:#31488f; --teal:#5eead4; --tealbg:#123230;
+      --gold:#f2d778; --goldbg:#3d3413; --grey:#5a6577;
+      --newbg:#173023; --newk:#5ad48a; --oldbg:#242b36; --oldk:#9fb0c6;
+      --shadow:0 2px 10px rgba(0,0,0,.3); --shadow2:0 4px 18px rgba(0,0,0,.45);
+    }}
+  :root[data-theme="dark"]{
       --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
       --accent:#5b8cff; --accent2:#31488f; --teal:#5eead4; --tealbg:#123230;
       --gold:#f2d778; --goldbg:#3d3413; --grey:#5a6577;
       --newbg:#173023; --newk:#5ad48a; --oldbg:#242b36; --oldk:#9fb0c6;
       --shadow:0 2px 10px rgba(0,0,0,.3); --shadow2:0 4px 18px rgba(0,0,0,.45);
     }
-  }
   *{box-sizing:border-box}
   html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -73,6 +78,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>

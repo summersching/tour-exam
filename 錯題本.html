@@ -18,7 +18,7 @@
     --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
     --kk:#0e7c86; --hd1:#b91c1c; --hd2:#dc2626;
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
     --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
     --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
@@ -30,6 +30,18 @@
     --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
     --kk:#57cdd8; --hd1:#7f1d1d; --hd2:#b91c1c;
   }}
+  :root[data-theme="dark"]{
+    --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+    --accent:#5b8cff; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+    --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+    --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+    --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+    --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+    --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+    --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+    --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+    --kk:#57cdd8; --hd1:#7f1d1d; --hd2:#b91c1c;
+  }
   *{box-sizing:border-box}
   html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
@@ -103,6 +115,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="glossary.js" defer></script>
 </head>
@@ -278,8 +291,10 @@ const mReview=document.getElementById('mReview'),mQuiz=document.getElementById('
 mReview.onclick=()=>{mode='review';mReview.classList.add('on');mQuiz.classList.remove('on');render();};
 mQuiz.onclick=()=>{mode='quiz';mQuiz.classList.add('on');mReview.classList.remove('on');render();};
 const zhToggle=document.getElementById('zhToggle');
-function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';}
+/* B1:選項中文顯示偏好跨頁記憶(與日文詳解共用 pref_hide_zh) */
+function setHideZh(h){document.body.classList.toggle('hide-zh',h);zhToggle.classList.toggle('on',!h);zhToggle.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';try{localStorage.setItem('pref_hide_zh',h?'1':'0');}catch(e){}}
 zhToggle.onclick=()=>setHideZh(!document.body.classList.contains('hide-zh'));
+try{setHideZh(localStorage.getItem('pref_hide_zh')==='1');}catch(e){}
 document.getElementById('printBtn').onclick=()=>{const om=mode;mode='review';render();setTimeout(()=>window.print(),120);mode=om;};
 document.getElementById('clearBtn').onclick=function(){
   if(!clearArm){clearArm=true;this.textContent='⚠️ 確定清空?';this.classList.add('on');

@@ -18,8 +18,19 @@
     --realbg:#e7f6f4; --realk:#0d7d72; --realbd:#84cdc2;
     --kk:#0e7c86;
   }
-  @media (prefers-color-scheme: dark){
-    :root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --sel:#5b8cff; --selbg:#22284a; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
+      --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
+      --chipr:#2a1f3a; --chiprk:#c79bff; --chipt:#242b36; --chiptk:#9fb0c6;
+      --blank:#3d3413; --blankk:#f2d778; --star:#f0b840;
+      --skillbg:#182741; --skillk:#9db8ff; --skillbd:#2f4a80;
+      --notebg:#3a2a17; --notek:#f4b877; --notebd:#6a4a24;
+      --grambg:#241a3a; --gramk:#c9adff; --grambd:#4a3670;
+      --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
+      --kk:#57cdd8;
+    }}
+  :root[data-theme="dark"]{
       --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
       --accent:#5b8cff; --sel:#5b8cff; --selbg:#22284a; --ok:#5ad48a; --okbg:#173023; --no:#ff8080; --nobg:#331a1a;
       --chipv:#22284a; --chipvk:#9db0ff; --chipd:#16301f; --chipdk:#6fe0a0;
@@ -31,7 +42,6 @@
       --realbg:#123230; --realk:#6fd6c8; --realbd:#2b5a54;
       --kk:#57cdd8;
     }
-  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.75;padding:0 0 80px}
@@ -116,6 +126,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="en_review.js"></script>
 <script src="glossary.js" defer></script>

@@ -13,13 +13,20 @@
     --c-r:#fde7ec;--c-rk:#be123c;--c-t:#f2eef0;--c-tk:#6b5560;
     --skillbg:#eaf1ff;--skillk:#1d4ed8;--skillbd:#93b4f7;--notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
   }
-  @media (prefers-color-scheme:dark){:root{
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#181113;--card:#241a1d;--ink:#f2e8ec;--sub:#c19aa6;--line:#3a2a30;--accent:#fb7185;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#fb7185;--selbg:#2e1a20;
     --hd1:#7f1d3a;--hd2:#9f1239;
     --c-r:#3a1f28;--c-rk:#fda4b8;--c-t:#2c2226;--c-tk:#c19aa6;
     --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
   }}
+  :root[data-theme="dark"]{
+    --bg:#181113;--card:#241a1d;--ink:#f2e8ec;--sub:#c19aa6;--line:#3a2a30;--accent:#fb7185;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--sel:#fb7185;--selbg:#2e1a20;
+    --hd1:#7f1d3a;--hd2:#9f1239;
+    --c-r:#3a1f28;--c-rk:#fda4b8;--c-t:#2c2226;--c-tk:#c19aa6;
+    --skillbg:#182741;--skillk:#9db8ff;--skillbd:#2f4a80;--notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+  }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC","Yu Gothic","Hiragino Kaku Gothic Pro",system-ui,sans-serif;line-height:1.75;padding:0 0 60px}
   header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15);position:relative}
@@ -91,6 +98,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
@@ -147,7 +155,14 @@ const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
 function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.no])||null;}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-let RATE=0.9, ROMAJI=false, HIDEK=false, FURI=false, TOK=null, TKBUILDING=false;
+/* B1 閱讀偏好跨頁記憶(localStorage);pref_hide_zh 與錯題本共用 */
+function LSget(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function LSset(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+let RATE=+(LSget('pref_jp_rate'))||0.9;
+let ROMAJI=LSget('pref_jp_romaji')==='1';
+let HIDEK=LSget('pref_jp_hidek')==='1';
+let FURI=LSget('pref_jp_furi')==='1';
+let TOK=null, TKBUILDING=false;
 function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=RATE;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function toRomaji(kana){
   if(!kana)return '';
@@ -278,13 +293,13 @@ document.querySelector('.bar').addEventListener('click',e=>{
 document.getElementById('q').addEventListener('input',render);
 document.querySelector('.setbar').addEventListener('click',e=>{
   const b=e.target.closest('.sbtn');if(!b)return;
-  if(b.dataset.rate){RATE=+b.dataset.rate;b.parentElement.querySelectorAll('[data-rate]').forEach(x=>x.classList.toggle('on',x===b));speak('テスト、練習');return;}
-  if(b.dataset.tog==='furi'){FURI=!FURI;b.classList.toggle('on',FURI);
+  if(b.dataset.rate){RATE=+b.dataset.rate;LSset('pref_jp_rate',RATE);b.parentElement.querySelectorAll('[data-rate]').forEach(x=>x.classList.toggle('on',x===b));speak('テスト、練習');return;}
+  if(b.dataset.tog==='furi'){FURI=!FURI;LSset('pref_jp_furi',FURI?'1':'0');b.classList.toggle('on',FURI);
     if(FURI&&!TOK){b.textContent='振 假名載入中…';ensureTokenizer(function(){b.textContent='振 漢字標假名';b.classList.toggle('on',FURI);render();});}
     render();return;}
-  if(b.dataset.tog==='romaji'){ROMAJI=!ROMAJI;b.classList.toggle('on',ROMAJI);}
-  if(b.dataset.tog==='hidek'){HIDEK=!HIDEK;b.classList.toggle('on',HIDEK);b.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
-  if(b.dataset.tog==='ozh'){document.body.classList.toggle('hide-zh');const hid=document.body.classList.contains('hide-zh');b.textContent=hid?'🈚 顯示選項中文':'🈯 隱藏選項中文';b.classList.toggle('on',!hid);return;}
+  if(b.dataset.tog==='romaji'){ROMAJI=!ROMAJI;LSset('pref_jp_romaji',ROMAJI?'1':'0');b.classList.toggle('on',ROMAJI);}
+  if(b.dataset.tog==='hidek'){HIDEK=!HIDEK;LSset('pref_jp_hidek',HIDEK?'1':'0');b.classList.toggle('on',HIDEK);b.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
+  if(b.dataset.tog==='ozh'){document.body.classList.toggle('hide-zh');const hid=document.body.classList.contains('hide-zh');LSset('pref_hide_zh',hid?'1':'0');b.textContent=hid?'🈚 顯示選項中文':'🈯 隱藏選項中文';b.classList.toggle('on',!hid);return;}
   render();
 });
 document.querySelector('.tools2').addEventListener('click',e=>{
@@ -305,7 +320,19 @@ document.getElementById('printBtn').onclick=function(){
   const prev=MODE;MODE='review';render();
   setTimeout(function(){window.print();MODE=prev;render();},200);
 };
-buildFilters();render();
+/* B1:把已儲存的閱讀偏好套回設定列與畫面 */
+function applyJpPrefs(){
+  document.querySelectorAll('.setbar [data-rate]').forEach(b=>b.classList.toggle('on',+b.dataset.rate===RATE));
+  const rb=document.querySelector('.setbar [data-tog="romaji"]'); if(rb)rb.classList.toggle('on',ROMAJI);
+  const hb=document.querySelector('.setbar [data-tog="hidek"]'); if(hb){hb.classList.toggle('on',HIDEK);hb.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
+  const hid=LSget('pref_hide_zh')==='1'; document.body.classList.toggle('hide-zh',hid);
+  const zb=document.querySelector('.setbar [data-tog="ozh"]'); if(zb){zb.textContent=hid?'🈚 顯示選項中文':'🈯 隱藏選項中文';zb.classList.toggle('on',!hid);}
+  const fb=document.querySelector('.setbar [data-tog="furi"]');
+  if(fb){fb.classList.toggle('on',FURI);
+    if(FURI&&!TOK){fb.textContent='振 假名載入中…';ensureTokenizer(function(){fb.textContent='振 漢字標假名';fb.classList.toggle('on',FURI);render();});}
+  }
+}
+buildFilters();render();applyJpPrefs();
 </script>
 </body>
 </html>
