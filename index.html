@@ -95,17 +95,9 @@
   footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
   footer b{color:var(--teal)}
   .subjbar{margin:14px 0 4px}
-  .wchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;margin-top:2px}
-  .wchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;
-    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 8px;
-    text-decoration:none;color:inherit;box-shadow:var(--shadow);
-    transition:transform .12s,border-color .12s,box-shadow .12s}
-  .wchip:hover,.wchip:active{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow2)}
-  .wchip .wic{width:44px;height:44px;border-radius:13px;background:var(--bg);display:flex;
-    align-items:center;justify-content:center;font-size:1.45rem}
-  .wchip .wtxt{font-size:.86rem;font-weight:700;text-align:center;line-height:1.25}
-  .wchip .wn{position:absolute;top:8px;right:8px;min-width:18px;text-align:center;background:var(--accent);color:#fff;
-    border-radius:999px;padding:1px 6px;font-size:.7rem;font-weight:700;font-variant-numeric:tabular-nums}
+  /* 錯題本大卡沿用工具卡 .tc,右側題數角標 */
+  .tc .wn{margin-left:auto;flex-shrink:0;background:var(--accent);color:#fff;border-radius:999px;
+    padding:2px 10px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums}
   /* 展示型數字用等寬,對齊更穩 */
   .scard .dd,.rcard .due,.rcard .rchip .b,.scard .gpct,.scard .streak{font-variant-numeric:tabular-nums}
   /* C1 考試倒數 + C6 每日打卡 */
@@ -205,7 +197,11 @@ function wbCount(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||'
 function match(t){return FILTER==='all'||t.subj==='all'||(Array.isArray(t.subj)&&t.subj.indexOf(FILTER)>=0);}
 function toolCard(t){return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
     <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
-function wchip(t){const n=t.wb?wbCount(t.wb):0;return `<a class="wchip" href="${esc(t.file)}"><span class="wic">${t.icon}</span><span class="wtxt">${esc(t.name)}</span>${n?`<span class="wn">${n}</span>`:''}</a>`;}
+/* 錯題本快捷:與工具卡同款大卡(icon 底框 + 科目 + 題數說明 + 右側題數角標)*/
+function wchip(t){const n=t.wb?wbCount(t.wb):0;
+  return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+    <div><div class="tt">${esc(t.name)}</div><div class="dd">${n?n+' 題待複習':'尚無錯題'}</div></div>
+    ${n?`<span class="wn">${n}</span>`:''}</a>`;}
 
 function render(){
   let html=`<div class="subs subjbar">`+SUBJFILTERS.map(([k,n])=>
@@ -214,9 +210,7 @@ function render(){
     const items=TOOLS.filter(t=>t.cat===cat&&match(t));
     if(!items.length)return;
     html+=`<div class="sect"><h2>${label}</h2></div>`;
-    html+= cat==='wrong'
-      ? `<div class="wchips">${items.map(wchip).join('')}</div>`
-      : `<div class="tools">${items.map(toolCard).join('')}</div>`;
+    html+= `<div class="tools">${items.map(cat==='wrong'?wchip:toolCard).join('')}</div>`;
   });
   document.getElementById('main').innerHTML=html;
 }
