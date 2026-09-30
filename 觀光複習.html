@@ -94,6 +94,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="stale.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="gh.js"></script>
@@ -224,7 +225,7 @@ function optHtml(q,i,o){
   return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=ghData(q);
-  let h=SCORE.banner(q);
+  let h=SCORE.banner(q)+STALE.box('gh',q);
   if(d){
     h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;

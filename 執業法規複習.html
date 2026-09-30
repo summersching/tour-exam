@@ -87,6 +87,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="stale.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr2.js"></script>
@@ -117,7 +118,7 @@
   </div>
   <details class="strat"><summary>💡 執業法規 · 通用解題法</summary>
   <ul>
-    <li><b>數字題(金額/天數/期限)</b>:法規最愛考數字。抓關鍵:責任險意外死亡 <b>200 萬</b>、體傷醫療 <b>10 萬</b>、家屬海外善後 <b>10 萬</b>;新臺幣入境免申報 <b>10 萬</b>、外幣現金出境限美金 <b>1 萬</b>;旅遊請求權時效 <b>1 年</b>。</li>
+    <li><b>數字題(金額/天數/期限)</b>:法規最愛考數字。抓關鍵:責任險意外死亡最低 <b>250 萬</b>(112/7 起,最高 500 萬)、體傷醫療最低 <b>10 萬</b>(最高 20 萬)、家屬海外善後 <b>10 萬</b>;新臺幣逾 <b>10 萬</b>、外幣逾等值美金 <b>1 萬</b>須向海關申報;旅遊請求權時效 <b>1 年</b>。法規常修正,舊年份題目請留意 ⏱ 時效提醒。</li>
     <li><b>「錯誤/不正確」題</b>:四個敘述挑一個被竄改數字或張冠李戴的,那個就是答案。</li>
     <li><b>罰則題</b>:記區間端點(如民航法航站吐痰 <b>2.5 萬</b>、機上廁所吸菸 <b>3~15 萬</b>);未派領證領隊違約金每人 <b>1,500 元</b>。</li>
     <li><b>兩岸/入出境</b>:主管機關要對清楚(觀光=交通部觀光署、兩岸=陸委會、大陸事務委由海基會)。</li>
@@ -173,7 +174,7 @@ function optHtml(q,i,o){
   return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=anaData(q);
-  let h=SCORE.banner(q);
+  let h=SCORE.banner(q)+STALE.box('pr2',q);
   if(d){
     h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
