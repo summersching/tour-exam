@@ -118,6 +118,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
+<script src="en_review.js" onerror="window.EN_REVIEW=window.EN_REVIEW||{}"></script>
 <script src="pwa.js" defer></script>
 <script src="glossary.js" defer></script>
 </head>
@@ -171,7 +173,8 @@ function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<s
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
 function hlAna(ana,opts,ans){
   if(!ana||!opts)return ana||'';
-  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
+  var A=Array.isArray(ans)?ans:[ans];if(!A.length||A[0]<0)return ana;
+  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(A.indexOf(i)>=0?'ac':'wr')});}
   if(!marks.length)return ana;
   marks.sort(function(a,b){return b.ph.length-a.ph.length;});
   var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
@@ -183,7 +186,11 @@ const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}
 const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').join('');
 function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${x[0]}</span>${x[1]?`<span class="kk">/${x[1]}/</span>`:''} ${/^[A-Za-z]/.test(x[0])?sayBtn(x[0].replace(/\s*\(.*/,'')):''}</td><td>${x[2]}</td></tr>`).join('');}
 
-function allEntries(){const o=wbLoad();return Object.keys(o).map(k=>Object.assign({id:k},o[k]));}
+/* 以現行題庫(en_review.js)覆蓋錯題快照:解析修正、官方多答案/送分規則同步生效;找不到才用快照 */
+function curItem(e){try{const a=(typeof EN_REVIEW!=='undefined'&&EN_REVIEW[(e.cert||'leader')+'-'+e.y])||[];for(let i=0;i<a.length;i++)if(a[i].kind==='q'&&a[i].no===+e.no)return a[i];}catch(x){}return null;}
+const CUR_FIELDS=['type','topic','star','stem','opts','ans','alt','sungei','zh','ana','skill','note','gram','real','vocab'];
+function withCur(e){const c=curItem(e);if(c)CUR_FIELDS.forEach(f=>{if(c[f]!==undefined)e[f]=c[f];else if(f==='alt'||f==='sungei')delete e[f];});return e;}
+function allEntries(){const o=wbLoad();return Object.keys(o).map(k=>withCur(Object.assign({id:k},o[k])));}
 function entries(){
   let arr=allEntries().filter(e=>(fc==='all'||(e.cert||'leader')===fc)&&(fy==='all'||String(e.y)===fy)&&(ft==='all'||e.type===ft));
   arr.sort((a,b)=>((a.cert||'leader')<(b.cert||'leader')?-1:(a.cert||'leader')>(b.cert||'leader')?1:0)||(a.y-b.y)||(a.no-b.no));
@@ -223,8 +230,8 @@ function cardEl(e){
     <div class="fb"></div>
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${e.zh}</div>
-      <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${e.ans>=0?"ABCD"[e.ans]+". "+e.opts[e.ans]:"（送分題,一律給分）"}</b></div>
-      <div class="lbl">解析</div><div class="ana">${hlAna(e.ana,e.opts,e.ans)}</div>
+      ${SCORE.banner(e)}${SCORE.free(e)?'':`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${SCORE.acc(e).map(k=>"ABCD"[k]+". "+e.opts[k]).join('<br>')}</b></div>`}
+      <div class="lbl">解析</div><div class="ana">${hlAna(e.ana,e.opts,SCORE.acc(e))}</div>
       ${e.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${e.skill}</div>`:''}
       ${e.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${e.note}</div>`:''}
       ${e.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${e.gram}</div>`:''}
@@ -235,8 +242,7 @@ function cardEl(e){
   const fb=el.querySelector('.fb');
   function reveal(picked){
     opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
-    opts[e.ans].classList.add('ok');opts[e.ans].querySelector('.mk').textContent='✓';
-    if(picked!=null&&picked!==e.ans){opts[picked].classList.add('no');opts[picked].querySelector('.mk').textContent='✗';}
+    opts.forEach((x,k)=>{const m=SCORE.mark(e,k,picked);if(m[0]){x.classList.add(m[0]);x.querySelector('.mk').textContent=m[1];}});
   }
   if(mode==='review'){ reveal(e.picked); }
   opts.forEach(b=>b.addEventListener('click',(ev)=>{
@@ -244,13 +250,13 @@ function cardEl(e){
     if(mode!=='quiz'||el.dataset.done)return;
     el.dataset.done='1';
     const i=+b.dataset.i; reveal(i); el.classList.add('show');
-    if(i===e.ans){
+    if(SCORE.ok(e,i)){
       const o=wbLoad(); delete o[e.id]; wbSave(o);
       el.classList.add('mastered'); fb.textContent='✅ 答對了!已從錯題本移除'; fb.className='fb ok';
       updCnt();
     }else{
       const o=wbLoad(); if(o[e.id]){o[e.id].wrong=(o[e.id].wrong||1)+1; o[e.id].picked=i; wbSave(o);}
-      fb.textContent='✗ 又錯了,正解是 '+LAB[e.ans]+' — 這題留在錯題本繼續練'; fb.className='fb no';
+      fb.textContent='✗ 又錯了,正解是 '+SCORE.ansLabel(e)+' — 這題留在錯題本繼續練'; fb.className='fb no';
     }
   }));
   el.querySelector('[data-del]').addEventListener('click',()=>{
@@ -305,6 +311,7 @@ document.getElementById('clearBtn').onclick=function(){
   wbSave({});clearArm=false;this.textContent='🗑️ 清空';this.classList.remove('on');buildFilters();render();
 };
 
+SCORE.notice(document.getElementById('app'),SCORE.pruneWB(WB_KEY,(id,e)=>withCur(Object.assign({id:id},e))));
 buildFilters();
 render();
 </script>

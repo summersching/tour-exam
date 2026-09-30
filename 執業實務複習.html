@@ -86,6 +86,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr.js"></script>
@@ -146,13 +147,10 @@ let MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const picks={};
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
-function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function ansOk(q,p){return SCORE.ok(q,p);}
 function optMark(q,i,p){
   if(p==null)return['',''];
-  if(q.sungei)return p===i?['ok','✓']:['',''];
-  if(i===q.ans)return['ok','✓'];
-  if(p===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,p);
 }
 /* 考點分類:由解析 t 欄動態產生(解析未寫前不顯示) */
 function topicsPresent(){return [...new Set(BANK.filter(x=>x.c===CERT).map(x=>{const d=anaData(x);return d&&d.t;}).filter(Boolean))];}
@@ -169,18 +167,18 @@ function buildFilters(){
   }else{document.getElementById('rowTopic').style.display='none';}
 }
 function optHtml(q,i,o){
-  if(MODE==='review'){const ok=(q.ans===i);
+  if(MODE==='review'){const ok=SCORE.isAcc(q,i);
     return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${ok?'<span class="mk">✓</span>':''}</div>`;}
   const p=picks[qid(q)], answered=(p!=null), [c,mk]=optMark(q,i,p);
   return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=anaData(q);
-  let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+  let h=SCORE.banner(q);
   if(d){
     h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
-  }else if(!q.sungei){
+  }else if(!SCORE.free(q)){
     h+=`<div class="noana">解析整理中…(官方答案已標示,正解選項以綠色標示)</div>`;
   }
   return h;

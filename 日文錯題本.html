@@ -97,6 +97,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
@@ -136,7 +137,7 @@ function wbSave(o){try{localStorage.setItem(WBJP_KEY,JSON.stringify(o));}catch(e
 function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.no])||null;}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function findQ(id){return JPBANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
-function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function ansOk(q,p){return SCORE.ok(q,p);}
 function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=(+(localStorage.getItem('pref_jp_rate'))||0.9);speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
@@ -170,16 +171,11 @@ function buildFilters(){
 }
 
 function optMarkReview(q,i,picked){
-  if(i===q.ans||(q.sungei&&picked===i))return['ok','✓'];
-  if(picked!=null&&picked===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,picked);
 }
 function optMarkTest(q,i,p){
   if(p==null)return['',''];
-  if(q.sungei)return p===i?['ok','✓']:['',''];
-  if(i===q.ans)return['ok','✓'];
-  if(p===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,p);
 }
 function optHtml(e,i,o){
   const q=e.q, d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
@@ -194,8 +190,8 @@ function optHtml(e,i,o){
 function revealHtml(q){
   const d=jpData(q);
   let h='';
-  if(q.sungei){h+=`<div class="lbl" style="color:var(--ok)">✓ 送分題</div>`;}
-  else{h+=`<div class="lbl">正解</div><div class="ana"><b class="ac">${LAB[q.ans]}. ${esc(q.opts[q.ans])}</b> ${sayBtn(q.opts[q.ans])}</div>`;}
+  h+=SCORE.banner(q);
+  if(!SCORE.free(q)){h+=`<div class="lbl">正解</div><div class="ana">${SCORE.acc(q).map(k=>`<b class="ac">${LAB[k]}. ${esc(q.opts[k])}</b> ${sayBtn(q.opts[k])}`).join('<br>')}</div>`;}
   if(d){
     if(d.zh)h+=`<div class="lbl">中譯</div><div class="zh">${d.zh}</div>`;
     if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
@@ -203,7 +199,7 @@ function revealHtml(q){
     if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${esc(v[1]||'')}${(v[3]!=null&&v[3]!=='')?' <span class="acc">'+esc(String(v[3]))+'</span>':''}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
-  }else if(!q.sungei){h+=`<div class="noana">中譯 / 解析整理中…(正解已標示)</div>`;}
+  }else if(!SCORE.free(q)){h+=`<div class="noana">中譯 / 解析整理中…(正解已標示)</div>`;}
   return h;
 }
 function render(){
@@ -269,7 +265,7 @@ document.getElementById('list').addEventListener('click',e=>{
       const o=wbLoad();delete o[id];wbSave(o);
       const card=document.querySelector(`.card[data-id="${id}"]`);if(card)card.classList.add('mastered');
       buildFilters();
-    }else{fb.classList.add('no');fb.textContent='✗ 又錯了,正解是 '+LAB[ent.q.ans]+' — 這題留著繼續練';
+    }else{fb.classList.add('no');fb.textContent='✗ 又錯了,正解是 '+SCORE.ansLabel(ent.q)+' — 這題留著繼續練';
       const o=wbLoad();if(o[id]){o[id].wrong=(o[id].wrong||1)+1;o[id].picked=i;wbSave(o);}}
   }
   updScore(entries());
@@ -284,6 +280,7 @@ document.getElementById('clearBtn').onclick=function(){
   localStorage.removeItem(WBJP_KEY);for(const k in picks)delete picks[k];clearArm=false;this.textContent='🗑 清空';
   fc='all';fy='all';buildFilters();render();
 };
+SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBJP_KEY,id=>findQ(id)));
 buildFilters();render();
 </script>
 </body>

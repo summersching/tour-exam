@@ -125,6 +125,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
 <script src="gh.js"></script>
@@ -241,7 +242,8 @@ function stemSay(q){ if(isJp())return saySpan(String(q.stem).replace('__BLANK__'
   if(cfg.subj==='en')return saySpan(String(q.stem).replace('__BLANK__',' '),'en'); return ''; }
 function hlAna(ana,opts,ans){
   if(!ana||!opts)return ana||'';
-  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
+  var A=Array.isArray(ans)?ans:[ans];if(!A.length||A[0]<0)return ana;
+  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(A.indexOf(i)>=0?'ac':'wr')});}
   if(!marks.length)return ana;
   marks.sort(function(a,b){return b.ph.length-a.ph.length;});
   var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
@@ -259,7 +261,7 @@ function isGh(){return cfg.subj==='gh';}
 function isCn(){return cfg.subj==='gh'||cfg.subj==='pr'||cfg.subj==='pr2';}   // 中文科(觀光/執業實務/執業法規):純中文選項、解析結構相同
 function isJp(){return cfg.subj==='jp';}   // 外語日語:自有題庫+ana(zh/a/v),TTS 日語
 const SUBJNAME={en:'外語英語',jp:'外語日語',gh:'觀光資源概要',pr:'執業實務',pr2:'執業法規'};
-function ansOk(q,p){return q.sungei?true:(p===q.ans);}   // 送分題一律算對
+function ansOk(q,p){return SCORE.ok(q,p);}   // 送分題一律算對
 function optInner(o){return (isCn()||isJp())?o:splitOpt(o);}       // 中文科/日語:純選項不切英/中
 function ozHtml(q,i){if(!isJp())return'';const d=ghData(q);return (d&&d.oz&&d.oz[i])?`<span class="ozh">${d.oz[i]}</span>`:'';}  // 日語:每選項中文(檢討時顯示)
 const GT={'史':'🏛 臺灣歷史','地':'🗺 臺灣地理','維護':'🛡 資源維護'};
@@ -280,7 +282,7 @@ function starsHtml(q){return (isCn()||isJp())?'':`<span class="stars">${stars(q.
 function revealHtml(q){
   if(isJp()){
     const d=ghData(q);
-    let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div>`:`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${"ABCD"[q.ans]}. ${q.opts[q.ans]}</b> ${sayBtn(q.opts[q.ans])}</div>`;
+    let h=SCORE.banner(q)+(SCORE.free(q)?'':`<div class="lbl">正解</div><div class="ana">${SCORE.acc(q).map(k=>`<b style="color:var(--ok);font-weight:700">${"ABCD"[k]}. ${q.opts[k]}</b> ${sayBtn(q.opts[k])}`).join('<br>')}</div>`);
     if(d){
       if(d.zh)h+=`<div class="lbl">整句中譯</div><div class="zh">${d.zh}</div>`;
       if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
@@ -294,7 +296,7 @@ function revealHtml(q){
   }
   if(isCn()){
     const d=ghData(q);
-    let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+    let h=SCORE.banner(q);
     if(d){
       h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
       if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
@@ -305,18 +307,15 @@ function revealHtml(q){
     return h;
   }
   return `<div class="lbl">整句中譯</div><div class="zh">${q.zh}</div>
-        <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${q.ans>=0?"ABCD"[q.ans]+". "+q.opts[q.ans]:"（送分題,一律給分）"}</b></div>
-        <div class="lbl">解析</div><div class="ana">${hlAna(q.ana,q.opts,q.ans)}</div>
+        ${SCORE.banner(q)}${SCORE.free(q)?'':`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${SCORE.acc(q).map(k=>"ABCD"[k]+". "+q.opts[k]).join('<br>')}</b></div>`}
+        <div class="lbl">解析</div><div class="ana">${hlAna(q.ana,q.opts,SCORE.acc(q))}</div>
         ${q.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${q.skill}</div>`:''}
         ${q.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${q.note}</div>`:''}
         ${q.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${q.gram}</div>`:''}
         <a class="revlink" href="英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}">🔍 看原題詳解</a>`;
 }
 function optMark(q,i,p){
-  if(q.sungei)return p===i?['ok','✓']:['',''];   // 送分:選了的標對,其餘不標
-  if(i===q.ans)return['ok','✓'];
-  if(p===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,p);
 }
 function mkChips(id,items,key){
   document.getElementById(id).innerHTML=items.map(it=>

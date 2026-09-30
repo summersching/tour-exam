@@ -130,6 +130,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="en_review.js"></script>
@@ -172,7 +173,8 @@ function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<s
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
 function hlAna(ana,opts,ans){
   if(!ana||!opts)return ana||'';
-  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(i===ans?'ac':'wr')});}
+  var A=Array.isArray(ans)?ans:[ans];if(!A.length||A[0]<0)return ana;
+  var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(A.indexOf(i)>=0?'ac':'wr')});}
   if(!marks.length)return ana;
   marks.sort(function(a,b){return b.ph.length-a.ph.length;});
   var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
@@ -231,8 +233,8 @@ function qCard(item){
     <div class="opts">${item.opts.map((o,i)=>optBtn(item,i,o)).join('')}</div>
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
-      <div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${item.ans>=0?"ABCD"[item.ans]+". "+item.opts[item.ans]:"（送分題,一律給分）"}</b></div>
-      <div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,item.ans)}</div>
+      ${SCORE.banner(item)}${SCORE.free(item)?'':`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${SCORE.acc(item).map(k=>"ABCD"[k]+". "+item.opts[k]).join('<br>')}</b></div>`}
+      <div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,SCORE.acc(item))}</div>
       ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
       ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
       ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
@@ -271,7 +273,7 @@ function updateScore(){
   const el=document.getElementById('score');
   if(MODE!=='test'){el.textContent='';return;}
   const D=curData().filter(d=>d.kind==='q');
-  let done=0,ok=0;D.forEach(q=>{const p=answered[ansKey(q.no)];if(p!=null){done++;if(p===q.ans)ok++;}});
+  let done=0,ok=0;D.forEach(q=>{const p=answered[ansKey(q.no)];if(p!=null){done++;if(SCORE.ok(q,p))ok++;}});
   el.textContent=done?`作答 ${done} · 答對 ${ok} · ${Math.round(ok/done*100)}%`:'';
 }
 
@@ -312,8 +314,8 @@ document.getElementById('app').addEventListener('click',e=>{
   answered[ansKey(no)]=i;
   const opts=[...card.querySelectorAll('.opt')];
   opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
-  opts[item.ans].classList.add('ok');opts[item.ans].querySelector('.mk').textContent='✓';
-  if(i!==item.ans){opts[i].classList.add('no');opts[i].querySelector('.mk').textContent='✗';wbAdd(item,i);}else{wbRemove(no);}
+  opts.forEach((x,k)=>{const m=SCORE.mark(item,k,i);if(m[0]){x.classList.add(m[0]);x.querySelector('.mk').textContent=m[1];}});
+  if(!SCORE.ok(item,i)){wbAdd(item,i);}else{wbRemove(no);}
   card.classList.add('show');updateScore();
 });
 

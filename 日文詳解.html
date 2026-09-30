@@ -102,6 +102,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
@@ -224,13 +225,10 @@ let MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const picks={};
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
-function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function ansOk(q,p){return SCORE.ok(q,p);}
 function optMark(q,i,p){
   if(p==null)return['',''];
-  if(q.sungei)return p===i?['ok','✓']:['',''];
-  if(i===q.ans)return['ok','✓'];
-  if(p===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,p);
 }
 function chip(v,t,on){return `<button class="chip2 ${on?'on':''}" data-v="${v}">${t}</button>`;}
 function buildFilters(){
@@ -240,15 +238,15 @@ function buildFilters(){
 }
 function optHtml(q,i,o){
   const d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
-  if(MODE==='review'){const ok=(q.ans===i);
+  if(MODE==='review'){const ok=SCORE.isAcc(q,i);
     return `<div class="opt ${ok?'ok':''}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}${oz}</span>${sayBtn(o)}${ok?'<span class="mk">✓</span>':''}</div>`;}
   const p=picks[qid(q)], answered=(p!=null), [c,mk]=optMark(q,i,p);
   return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${qid(q)}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${dsp(o)}${oz}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;}
 function revealHtml(q){
   const d=jpData(q);
   let h='';
-  if(q.sungei){h+=`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">此題經評量單位公告一律給分</div>`;}
-  else{h+=`<div class="lbl">正解</div><div class="ana"><b class="ac">${LAB[q.ans]}. ${esc(q.opts[q.ans])}</b> ${sayBtn(q.opts[q.ans])}</div>`;}
+  h+=SCORE.banner(q);
+  if(!SCORE.free(q)){h+=`<div class="lbl">正解</div><div class="ana">${SCORE.acc(q).map(k=>`<b class="ac">${LAB[k]}. ${esc(q.opts[k])}</b> ${sayBtn(q.opts[k])}`).join('<br>')}</div>`;}
   if(d){
     if(d.zh)h+=`<div class="lbl">中譯</div><div class="zh">${d.zh}</div>`;
     if(d.a)h+=`<div class="lbl">解析</div><div class="ana">${d.a}</div>`;
@@ -256,7 +254,7 @@ function revealHtml(q){
     if(d.v&&d.v.length)h+=`<div class="lbl">難字 / 語彙(假名・重音・中譯,🔊 聽發音)</div><table class="vocab">${d.v.map(v=>`<tr><td>${esc(v[0])} ${sayBtn(v[0])}</td><td>${HIDEK?'<span style="color:var(--sub)">🔊 /「顯示讀音」查看</span>':((v[3]!=null&&v[3]!=='')?pitchHtml(v[1]||'',v[3]):esc(v[1]||''))+(ROMAJI&&v[1]?' <span class="rom">'+toRomaji(v[1])+'</span>':'')+((v[3]!=null&&v[3]!=='')?' <span class="acc" title="重音核位置(0=平板)">'+esc(String(v[3]))+'</span>':'')}</td><td>${esc(v[2]||'')}</td></tr>`).join('')}</table>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
-  }else if(!q.sungei){
+  }else if(!SCORE.free(q)){
     h+=`<div class="noana">中譯 / 解析整理中…(官方答案已標示,正解選項以綠色標示)</div>`;
   }
   return h;

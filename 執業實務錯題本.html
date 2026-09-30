@@ -90,6 +90,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
+<script src="scoring.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr.js"></script>
 <script src="pr_ana.js" onerror="window.PRANA=window.PRANA||{}"></script>
@@ -132,7 +133,7 @@ function ghData(q){return (typeof PRANA!=='undefined'&&PRANA[q.c+'-'+q.y+'-'+q.n
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function findQ(id){return PRBANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
-function ansOk(q,p){return q.sungei?true:(p===q.ans);}
+function ansOk(q,p){return SCORE.ok(q,p);}
 
 let MODE='review', fc='all', fy='all', ft='all', clearArm=false;
 const picks={};   // 自測作答:id → 選項index(僅本次 session)
@@ -171,16 +172,11 @@ function buildFilters(){
 }
 
 function optMarkReview(q,i,picked){
-  if(i===q.ans||(q.sungei&&picked===i))return['ok','✓'];
-  if(picked!=null&&picked===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,picked);
 }
 function optMarkTest(q,i,p){
   if(p==null)return['',''];
-  if(q.sungei)return p===i?['ok','✓']:['',''];
-  if(i===q.ans)return['ok','✓'];
-  if(p===i)return['no','✗'];
-  return['',''];
+  return SCORE.mark(q,i,p);
 }
 function optHtml(e,i,o){
   const q=e.q;
@@ -191,12 +187,12 @@ function optHtml(e,i,o){
 }
 function revealHtml(q){
   const d=ghData(q);
-  let h=q.sungei?`<div class="lbl" style="color:var(--ok)">✓ 送分題</div><div class="zh">${q.note||'此題經評量單位公告一律給分'}</div>`:'';
+  let h=SCORE.banner(q);
   if(d){
     h+=`<div class="lbl">解析 <span style="font-weight:400;color:var(--sub)">(AI 輔助,以官方答案為準)</span></div><div class="ana">${d.a}</div>`;
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
-  }else if(!q.sungei){h+=`<div class="noana">此題解析整理中…(官方答案已標示)</div>`;}
+  }else if(!SCORE.free(q)){h+=`<div class="noana">此題解析整理中…(官方答案已標示)</div>`;}
   return h;
 }
 function render(){
@@ -263,7 +259,7 @@ document.getElementById('list').addEventListener('click',e=>{
       const o=wbLoad();delete o[id];wbSave(o);
       const card=document.querySelector(`.card[data-id="${id}"]`);if(card)card.classList.add('mastered');
       buildFilters();
-    }else{fb.classList.add('no');fb.textContent='✗ 又錯了,正解是 '+LAB[ent.q.ans]+' — 這題留著繼續練';
+    }else{fb.classList.add('no');fb.textContent='✗ 又錯了,正解是 '+SCORE.ansLabel(ent.q)+' — 這題留著繼續練';
       const o=wbLoad();if(o[id]){o[id].wrong=(o[id].wrong||1)+1;o[id].picked=i;wbSave(o);}}
   }
   updScore(entries());
@@ -278,6 +274,7 @@ document.getElementById('clearBtn').onclick=function(){
   localStorage.removeItem(WBGH_KEY);for(const k in picks)delete picks[k];clearArm=false;this.textContent='🗑 清空';
   fc='all';fy='all';ft='all';buildFilters();render();
 };
+SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBGH_KEY,id=>findQ(id)));
 buildFilters();render();
 </script>
 </body>
