@@ -95,16 +95,17 @@
   footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
   footer b{color:var(--teal)}
   .subjbar{margin:14px 0 4px}
-  .wchips{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
-  .wchip{display:inline-flex;gap:9px;align-items:center;background:var(--card);border:1px solid var(--line);
-    border-radius:14px;padding:7px 14px 7px 7px;text-decoration:none;color:inherit;
-    box-shadow:var(--shadow);transition:transform .12s,border-color .12s,box-shadow .12s}
-  .wchip:hover,.wchip:active{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow2)}
-  .wchip .wic{width:34px;height:34px;border-radius:10px;background:var(--bg);display:flex;
-    align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
-  .wchip .wtxt{font-size:.9rem;font-weight:700}
-  .wchip .wn{background:var(--accent);color:#fff;border-radius:999px;padding:1px 8px;font-size:.72rem;
-    font-weight:700;font-variant-numeric:tabular-nums;margin-left:1px}
+  .wchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;margin-top:2px}
+  .wchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 8px;
+    text-decoration:none;color:inherit;box-shadow:var(--shadow);
+    transition:transform .12s,border-color .12s,box-shadow .12s}
+  .wchip:hover,.wchip:active{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow2)}
+  .wchip .wic{width:44px;height:44px;border-radius:13px;background:var(--bg);display:flex;
+    align-items:center;justify-content:center;font-size:1.45rem}
+  .wchip .wtxt{font-size:.86rem;font-weight:700;text-align:center;line-height:1.25}
+  .wchip .wn{position:absolute;top:8px;right:8px;min-width:18px;text-align:center;background:var(--accent);color:#fff;
+    border-radius:999px;padding:1px 6px;font-size:.7rem;font-weight:700;font-variant-numeric:tabular-nums}
   /* 展示型數字用等寬,對齊更穩 */
   .scard .dd,.rcard .due,.rcard .rchip .b,.scard .gpct,.scard .streak{font-variant-numeric:tabular-nums}
   /* C1 考試倒數 + C6 每日打卡 */
