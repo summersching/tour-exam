@@ -127,8 +127,11 @@
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="stale.js"></script>
+<script src="optimg.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
+<script src="en_review.js" onerror="window.EN_REVIEW=window.EN_REVIEW||{}"></script>
+<script src="enread.js"></script>
 <script src="gh.js"></script>
 <script src="gh_ana.js"></script>
 <script src="pr.js"></script>
@@ -137,6 +140,7 @@
 <script src="pr2_ana.js" onerror="window.PR2ANA=window.PR2ANA||{}"></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
+<script src="jp_psg.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -160,7 +164,7 @@
     <button class="start" id="startBtn">開始測驗</button>
     <div class="avail" id="avail"></div>
   </div>
-  <footer id="setupFoot">字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)</footer>
+  <footer id="setupFoot">字彙 · 對話 · 文法 · 閱讀(第 71–80 題附文章;整卷模擬為完整 80 題)</footer>
 </main>
 
 <!-- 作答 -->
@@ -257,7 +261,8 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 /* ===== 設定狀態 ===== */
 let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0,mode:'random'};
-function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:cfg.subj==='jp'?JPBANK:BANK;}
+function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:cfg.subj==='jp'?JPBANK:enBank();}
+function enBank(){return BANK.concat(ENREAD.list());}   // 英語:第 1–70 題(bank.js)+ 閱讀第 71–80 題(enread.js,附文章)
 function isGh(){return cfg.subj==='gh';}
 function isCn(){return cfg.subj==='gh'||cfg.subj==='pr'||cfg.subj==='pr2';}   // 中文科(觀光/執業實務/執業法規):純中文選項、解析結構相同
 function isJp(){return cfg.subj==='jp';}   // 外語日語:自有題庫+ana(zh/a/v),TTS 日語
@@ -358,7 +363,7 @@ function syncSubjectUI(){
     ? '執業法規 · 觀光法規/入出境/外匯/民法債編旅遊/兩岸關係 · 官方標準答案(含更正)'
     : cfg.subj==='jp'
     ? '外語日語 · 讀音/文法/敬語/觀光接待/讀解 · 官方標準答案 · 🔊 發音'
-    : '字彙 · 對話 · 文法題(閱讀題需搭配文章,請至各年詳解練習)';
+    : '字彙 · 對話 · 文法 · 閱讀(第 71–80 題附文章;整卷模擬為完整 80 題)';
   const YEARS=[...new Set(curBank().map(q=>q.y))].sort();
   if(cfg.year!=='all'&&!YEARS.includes(cfg.year))cfg.year='all';
   mkChips('sYear',[{v:'all',t:'全部'}].concat(YEARS.map(y=>({v:y,t:y+'年'}))),'year');
@@ -367,7 +372,7 @@ function buildSetup(){
   mkChips('sMode',[{v:'random',t:'🎲 隨機組卷'},{v:'whole',t:'📄 整卷模擬'}],'mode');
   mkChips('sSubj',[{v:'en',t:'外語英語'},{v:'jp',t:'外語日語'},{v:'gh',t:'觀光資源概要'},{v:'pr',t:'執業實務'},{v:'pr2',t:'執業法規'}],'subj');
   mkChips('sCert',[{v:'all',t:'全部'},{v:'leader',t:'領隊'},{v:'guide',t:'導遊'}],'cert');
-  mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'}],'type');
+  mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'},{v:'閱讀',t:'閱讀'}],'type');
   mkChips('sTopic',[{v:'all',t:'全部'},{v:'史',t:'🏛 歷史'},{v:'地',t:'🗺 地理'},{v:'維護',t:'🛡 資源維護'}],'gtopic');
   mkChips('sNum',[{v:10,t:'10 題'},{v:20,t:'20 題'},{v:30,t:'30 題'},{v:50,t:'50 題'}],'num');
   mkChips('sTime',[{v:0,t:'不限時'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
@@ -378,7 +383,7 @@ function buildSetup(){
 function pool(){
   if(isCn()||isJp())return curBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.year==='all'||q.y===cfg.year)
     &&(cfg.gtopic==='all'||(ghData(q)&&ghData(q).t===cfg.gtopic)));
-  return BANK.filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
+  return enBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
 }
 function updAvail(){const n=pool().length;
   document.getElementById('avail').textContent = cfg.mode==='whole'
@@ -442,16 +447,18 @@ function updNav(){
 function renderPaper(){
   document.getElementById('qlist').innerHTML=paper.map((q,qi)=>{
     const stem=q.stem.replace('__BLANK__','<span class="blank"></span>');
+    const psg=q.psg?ENREAD.html(q,{same:qi>0&&paper[qi-1].psg===q.psg})
+      :isJp()?JPREAD.html(q,{same:qi>0&&JPREAD.get(q.c,q.y,q.no)&&JPREAD.get(q.c,q.y,q.no)===JPREAD.get(paper[qi-1].c,paper[qi-1].y,paper[qi-1].no)}):'';   // 英語/日語閱讀題附文章
     return `<div class="card" id="qc${qi}" data-qi="${qi}">
       <div class="qhead"><span class="qno">第 ${qi+1} 題</span>
         ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
         ${starsHtml(q)}</div>
-      <div class="stem">${stem}</div>
-      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${optInner(o)}</span><span class="mk"></span></button>`).join('')}</div>
+      ${psg}<div class="stem">${stem}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${optInner(o)}</span><span class="mk"></span></button>`).join('')}</div>
       <div class="reveal">${revealHtml(q)}</div></div>`;
   }).join('');
-  document.getElementById('qlist').onclick=e=>{const s=e.target.closest('.say');if(s){speak(s.dataset.say);return;}
+  document.getElementById('qlist').onclick=e=>{const s=e.target.closest('.say');if(s){e.preventDefault();speak(s.dataset.say);return;}
     const b=e.target.closest('.opt');if(!b||document.getElementById('quiz').dataset.done)return;
     const qi=+b.dataset.qi,i=+b.dataset.i; picks[qi]=i;
     document.querySelectorAll(`.opt[data-qi="${qi}"]`).forEach(x=>x.classList.toggle('sel',x===b));
@@ -525,14 +532,15 @@ function renderResult(mode,wrong){
   document.getElementById('rlist').innerHTML=list.map(({q,qi})=>{
     const stem=q.stem.replace('__BLANK__','<span class="blank"></span>');
     const p=picks[qi];
+    const psg=q.psg?ENREAD.html(q,{open:false,full:true,say:true}):isJp()?JPREAD.html(q,{open:false,full:true,say:true}):'';
     return `<div class="card done">
       <div class="qhead"><span class="qno">第 ${qi+1} 題</span>
         ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
         ${starsHtml(q)}</div>
-      <div class="stem">${stem} ${stemSay(q)}</div>
+      ${psg}<div class="stem">${stem} ${stemSay(q)}</div>
       <div class="opts">${q.opts.map((o,i)=>{const[c,mk]=optMark(q,i,p);
-        return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${optInner(o)}${ozHtml(q,i)}</span>${optSay(q,o)}<span class="mk">${mk}</span></div>`;}).join('')}</div>
+        return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${optInner(o)}${ozHtml(q,i)}</span>${optSay(q,o)}<span class="mk">${mk}</span></div>`;}).join('')}</div>
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
         ${revealHtml(q)}
@@ -544,6 +552,7 @@ function renderResult(mode,wrong){
 /* 檢討畫面朗讀(逐選項 / 題幹 / 正解 / 難字):依 data-lang 選語言 */
 document.getElementById('rlist').addEventListener('click',e=>{
   const s=e.target.closest('.say'); if(!s)return;
+  e.preventDefault();   // 文章標題列裡的🔊只朗讀,不要順便收合/展開文章
   const lang=s.dataset.lang==='en'?'en-US':'ja-JP';
   try{const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang=lang;
     u.rate=lang==='ja-JP'?(+(localStorage.getItem('pref_jp_rate'))||0.9):0.9;

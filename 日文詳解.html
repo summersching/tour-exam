@@ -107,6 +107,7 @@
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
+<script src="jp_psg.js"></script>
 <script src="kuromoji/kuromoji.js"></script>
 </head>
 <body>
@@ -264,14 +265,15 @@ function render(){
   let arr=JPBANK.filter(x=>x.c===CERT&&x.y===YEAR).sort((a,b)=>a.no-b.no);
   if(kw)arr=arr.filter(x=>{const d=jpData(x);const hay=(x.stem+' '+x.opts.join(' ')+' '+(d?(d.a||'')+' '+(d.zh||''):'')).toLowerCase();return hay.includes(kw);});
   document.getElementById('cnt').textContent='共 '+arr.length+' 題';
-  document.getElementById('list').innerHTML=arr.map(q=>{
+  document.getElementById('list').innerHTML=arr.map((q,qi)=>{
     const d=jpData(q);
+    const psg=JPREAD.html(q,{same:qi>0&&JPREAD.get(q.c,q.y,q.no)&&JPREAD.get(q.c,q.y,q.no)===JPREAD.get(arr[qi-1].c,arr[qi-1].y,arr[qi-1].no),full:true,say:true,fmt:dsp});   // 讀解:同篇第一題前顯示文章
     const tags=(d&&d.tt?`<span class="chip c-r">${esc(d.t||'日語')}</span><span class="chip c-t">${esc(d.tt)}</span>`:`<span class="chip c-r">外語日語</span>`)+(d&&d.jl?`<span class="chip c-jl">${esc(d.jl)}</span>`:'');
     const show=(MODE==='review')||(picks[qid(q)]!=null);
     return `<div class="card">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('jp',q)}<span class="src">${CNAME[q.c]}${q.y}-${q.no}</span></div>
-      <div class="stem">${dsp(q.stem)} ${sayBtn(q.stem)}</div>
+      ${psg}<div class="stem">${dsp(q.stem)} ${sayBtn(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
   }).join('')||'<div class="empty">找不到符合的題目</div>';
@@ -312,7 +314,7 @@ document.querySelector('.tools2').addEventListener('click',e=>{
 });
 document.getElementById('list').addEventListener('click',e=>{
   const s=e.target.closest('.say');
-  if(s){speak(s.dataset.say);return;}
+  if(s){e.preventDefault();speak(s.dataset.say);return;}   // 文章標題列的🔊只朗讀,不收合文章
   if(MODE!=='test')return;
   const b=e.target.closest('.opt.clk');if(!b)return;
   const k=b.dataset.k;if(picks[k]!=null)return;

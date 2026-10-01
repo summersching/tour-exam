@@ -101,6 +101,7 @@
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
+<script src="jp_psg.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -219,7 +220,7 @@ function render(){
         ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}
         <span class="src">${CNAME[q.c]}${q.y}</span>
         <button class="del" data-del="${e.id}">✕ 移除</button></div>
-      <div class="stem">${esc(q.stem)} ${sayBtn(q.stem)}</div>
+      ${JPREAD.html(q,{open:MODE!=='review',full:MODE==='review',say:true})}<div class="stem">${esc(q.stem)} ${sayBtn(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(e,i,o)).join('')}</div>
       <div class="fb" data-fb="${e.id}"></div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
@@ -248,7 +249,7 @@ document.querySelector('.tools2').addEventListener('click',e=>{
 });
 document.getElementById('list').addEventListener('click',e=>{
   const s=e.target.closest('.say');
-  if(s){speak(s.dataset.say);return;}
+  if(s){e.preventDefault();speak(s.dataset.say);return;}
   const del=e.target.closest('[data-del]');
   if(del){const o=wbLoad();delete o[del.dataset.del];wbSave(o);delete picks[del.dataset.del];
     const card=del.closest('.card');if(card){card.style.opacity='0';setTimeout(()=>{buildFilters();render();},180);}return;}

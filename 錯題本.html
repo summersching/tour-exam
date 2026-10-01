@@ -120,6 +120,7 @@
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="en_review.js" onerror="window.EN_REVIEW=window.EN_REVIEW||{}"></script>
+<script src="enread.js"></script>
 <script src="pwa.js" defer></script>
 <script src="glossary.js" defer></script>
 </head>
@@ -225,6 +226,7 @@ function cardEl(e){
       ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}
       <span class="stars">${stars(e.star)}</span>
       <button class="del" data-del="${e.id}" title="從錯題本移除">✕ 移除</button></div>
+    ${(function(){const r=ENREAD.get(e.cert||'leader',e.y,e.no);return r?ENREAD.html(r,{open:mode!=='review',full:mode==='review',say:true}):'';})()}
     <div class="stem">${stem} ${sayBtn(rawStem)}</div>
     <div class="opts">${e.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span>${enPhrase(o)?sayBtn(enPhrase(o)):''}<span class="mk"></span></button>`).join('')}</div>
     <div class="fb"></div>
@@ -292,7 +294,7 @@ function render(){
 }
 
 /* 事件 */
-app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;speak(s.dataset.say);});
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;e.preventDefault();speak(s.dataset.say);});
 document.getElementById('fCert').addEventListener('click',e=>{const c=e.target.closest('[data-fc]');if(!c)return;fc=c.dataset.fc;fy='all';ft='all';buildFilters();render();});
 document.getElementById('fYear').addEventListener('click',e=>{const c=e.target.closest('[data-fy]');if(!c)return;fy=c.dataset.fy;buildFilters();render();});
 document.getElementById('fType').addEventListener('click',e=>{const c=e.target.closest('[data-ft]');if(!c)return;ft=c.dataset.ft;buildFilters();render();});
