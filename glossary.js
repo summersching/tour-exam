@@ -4,9 +4,14 @@
   var DICT = null, on = false, loading = false, pop = null;
 
   // ---- 樣式 ----
+  /* 深色:跟系統(未指定主題時)或 App 內「深色」設定 */
+  function dark(p) {
+    return p + '#glossPop{background:#1b2029;color:#e8edf5;border-color:#333d4d}' + p + '#glossPop .gw{color:#5b8cff}' + p + '#glossPop .gz{color:#e8edf5}' +
+      p + '#glossPop .gp{color:#57cdd8}' + p + '#glossPop .gsay{border-color:#333d4d}' + p + '#glossBtn{background:#3a4658}' + p + '#glossBtn.on{background:#2563eb}';
+  }
   var css = document.createElement('style');
   css.textContent =
-    '#glossBtn{position:fixed;right:14px;bottom:16px;z-index:9999;border:0;border-radius:22px;' +
+    '#glossBtn{position:fixed;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;' +
     'padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;' +
     'background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}' +
     '#glossBtn.on{background:#2563eb}' +
@@ -20,10 +25,7 @@
     '#glossPop .gsay{cursor:pointer;border:1px solid #d5deea;border-radius:6px;padding:0 6px;margin-left:6px;user-select:none;font-size:.85rem}' +
     '#glossPop .gx{float:right;color:#93a0b4;cursor:pointer;margin:-2px -3px 0 8px;font-size:1rem}' +
     '#glossPop .gna{color:#93a0b4}' +
-    '@media (prefers-color-scheme:dark){' +
-    '#glossPop{background:#1b2029;color:#e8edf5;border-color:#333d4d}' +
-    '#glossPop .gw{color:#5b8cff}#glossPop .gz{color:#e8edf5}#glossPop .gp{color:#57cdd8}' +
-    '#glossPop .gsay{border-color:#333d4d}#glossBtn{background:#3a4658}#glossBtn.on{background:#2563eb}}' +
+    '@media (prefers-color-scheme:dark){' + dark(':root:not([data-theme="light"]) ') + '}' + dark(':root[data-theme="dark"] ') +
     '@media print{#glossBtn,#glossPop{display:none!important}}';
   document.head.appendChild(css);
 

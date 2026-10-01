@@ -49,6 +49,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
@@ -77,10 +78,10 @@ const CNAME={leader:'領隊',guide:'導遊'};
 /* 各題庫皆為 classic script 的 top-level const,須用裸名取用(window.X 取不到);typeof 防未載入 */
 const SRC=[
   {k:'en', name:'英語', color:'#2563eb', bank:()=>(typeof BANK!=='undefined'?BANK:null),     page:q=>`英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
-  {k:'jp', name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}`},
-  {k:'gh', name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}`},
-  {k:'pr', name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}`},
-  {k:'pr2',name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}`}
+  {k:'jp', name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  {k:'gh', name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  {k:'pr', name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  {k:'pr2',name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}#q${q.no}`}
 ];
 const CAP=120;
 let filter='all', timer=null;

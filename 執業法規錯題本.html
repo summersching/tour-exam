@@ -89,10 +89,12 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="notes.js"></script>
 <script src="stale.js"></script>
+<script src="optimg.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr2.js"></script>
 <script src="pr2_ana.js" onerror="window.PR2ANA=window.PR2ANA||{}"></script>
@@ -183,9 +185,9 @@ function optMarkTest(q,i,p){
 function optHtml(e,i,o){
   const q=e.q;
   if(MODE==='review'){const [c,mk]=optMarkReview(q,i,e.picked);
-    return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span>${mk?`<span class="mk ${mk==='✗'?'x':''}">${mk}</span>`:''}</div>`;}
+    return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${esc(o)}</span>${mk?`<span class="mk ${mk==='✗'?'x':''}">${mk}</span>`:''}</div>`;}
   const p=picks[e.id], answered=(p!=null), [c,mk]=optMarkTest(q,i,p);
-  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
+  return `<button class="opt clk ${c}" ${answered?'disabled':''} data-k="${e.id}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${esc(o)}</span><span class="mk ${mk==='✗'?'x':''}">${mk}</span></button>`;
 }
 function revealHtml(q){
   const d=ghData(q);

@@ -117,6 +117,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="notes.js"></script>
@@ -285,9 +286,8 @@ function render(){
   if(!total){
     app.innerHTML=`<div class="empty"><div class="ic">🗒️</div>
       <h2>目前沒有錯題</h2>
-      <p>到各年份的<b>自測模式</b>作答,答錯的題目會自動收進這裡,方便你反覆複習。</p>
-      <p><a href="index.html">← 回首頁選年份</a></p>
-      <div class="note">💡 錯題本要能<b>跨年度</b>一起收錄,需把整包放到同一網址(安裝成 App / GitHub Pages)。在本機直接開單一 HTML 檔時,各檔的紀錄不共用。</div></div>`;
+      <p>到<b>英語詳解</b>的自測模式或<b>模擬測驗</b>作答,答錯的題目會自動收進這裡,方便你反覆複習。</p>
+      <p><a href="英語詳解.html?mode=test">✍️ 去英語詳解自測</a>　<a href="模擬測驗.html">📝 模擬測驗</a></p></div>`;
     return;
   }
   if(!arr.length){app.innerHTML=`<div class="empty"><div class="ic">🔍</div><h2>這個篩選沒有錯題</h2><p>換個年份或題型看看。</p></div>`;return;}

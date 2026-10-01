@@ -67,6 +67,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="subjects.js"></script>
 <script src="pwa.js" defer></script>
@@ -75,7 +76,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>📊 學習儀表板</h1>
-  <p>模擬測驗成績追蹤 · 弱點分析 · 預估及格率</p>
+  <p>模擬測驗成績追蹤 · 弱點分析 · 及格評估</p>
 </div></header>
 
 <main class="wrap" id="app"></main>
@@ -85,7 +86,8 @@ const CNAME={leader:'領隊',guide:'導遊',all:'全部'};
 /* 科目清單取自 subjects.js(SSoT);page 欄位即各科錯題本頁 */
 const SUBJECTS=(window.SUBJECTS||[]).map(s=>({k:s.k,name:s.name,wb:s.wb,page:s.page}));
 const app=document.getElementById('app');
-const PASS=75; // 答對率參考線 75%(各科題數不同,取通用比率)
+const PASS=60;  // 官方及格:各科平均滿 60 分(外語類外語科另需 50;任一科 0 分不及格)— 114 年評量測驗簡章
+const SAFE=70;  // 建議目標:留考場失常的餘裕
 let subjFilter='all'; // all | en | gh | pr | pr2
 function hLoad(){try{return JSON.parse(localStorage.getItem('quiz_history')||'[]');}catch(e){return[];}}
 function wbCount(key){try{return Object.keys(JSON.parse(localStorage.getItem(key)||'{}')).length;}catch(e){return 0;}}
@@ -119,7 +121,7 @@ function render(){
   if(!hist.length){
     app.innerHTML=tabs+`<div class="empty"><div class="ic">📈</div>
       <h2>${subjFilter==='all'?'還沒有測驗記錄':'這一科還沒有測驗記錄'}</h2>
-      <p>到<b>模擬測驗</b>${subjFilter==='all'?'':'選「'+subjName(subjFilter)+'」'}做幾組,這裡就會出現成績趨勢、弱點分析和預估及格率。</p>
+      <p>到<b>模擬測驗</b>${subjFilter==='all'?'':'選「'+subjName(subjFilter)+'」'}做幾組,這裡就會出現成績趨勢、弱點分析和及格評估。</p>
       <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`+wbPanel(wbCounts,wbTotal);
     bindTabs();return;
   }
@@ -136,8 +138,12 @@ function render(){
   const topics=Object.keys(T).map(k=>({name:k,ok:T[k].ok,n:T[k].n,p:Math.round(T[k].ok/T[k].n*100)})).sort((a,b)=>a.p-b.p);
   const types=Object.keys(Y).map(k=>({name:k,ok:Y[k].ok,n:Y[k].n,p:Math.round(Y[k].ok/Y[k].n*100)})).sort((a,b)=>a.p-b.p);
 
-  const passMsg = avg5>=PASS ? '🎉 近期已達及格水準,穩住手感!' : avg5>=PASS-12 ? '👍 接近及格,再攻弱點主題就穩了' : '💪 還需加強,先從下方紅色弱點主題練起';
-  const passColor = avg5>=PASS?'var(--ok)':avg5>=PASS-12?'var(--warn)':'var(--no)';
+  const passMsg = avg5>=SAFE ? '🎉 穩定在及格線之上,維持手感!'
+    : avg5>=PASS ? '👍 已過及格線 60,拉到 70 以上考場更保險'
+    : avg5>=PASS-10 ? '💪 差 '+(PASS-avg5)+' 分就到及格線,先攻下方紅色弱點主題'
+    : '📚 還需加強,先從下方紅色弱點主題練起';
+  const passColor = avg5>=SAFE?'var(--ok)':avg5>=PASS?'var(--warn)':'var(--no)';
+  const fl = (subjFilter==='en'||subjFilter==='jp') ? '外語科單科另需滿 50 分;' : '外語類另需外語科滿 50 分;';
   const topStat = subjFilter==='all'?wbTotal:wbCounts[subjFilter];
   const scope = subjFilter==='all'?'':' · '+subjName(subjFilter);
 
@@ -151,17 +157,17 @@ function render(){
     </div>
 
     <div class="panel">
-      <h2>🎯 預估及格率</h2>
-      <p class="hint">答對率參考線 75%,以下為<b>近 5 次</b>模擬平均${scope}</p>
+      <h2>🎯 及格評估</h2>
+      <p class="hint">官方及格:各科平均滿 <b>60</b> 分(${fl}任一科 0 分不及格)。以下為<b>近 5 次</b>模擬平均${scope}</p>
       <div class="pass"><div class="big" style="color:${passColor}">${avg5}%</div>
         <div class="msg">${passMsg}</div></div>
     </div>
 
     <div class="panel">
       <h2>📈 成績趨勢</h2>
-      <p class="hint">近 ${Math.min(hist.length,20)} 次答對率(虛線 = 參考線 75%)${scope}</p>
+      <p class="hint">近 ${Math.min(hist.length,20)} 次答對率(紅虛線 = 及格線 60%,黃點線 = 建議目標 70%)${scope}</p>
       ${curveSVG(hist)}
-      <div class="lg"><span><i style="background:var(--teal)"></i>你的成績</span><span><i style="background:var(--no)"></i>參考線 75%</span></div>
+      <div class="lg"><span><i style="background:var(--teal)"></i>你的成績</span><span><i style="background:var(--no)"></i>及格線 60%</span><span><i style="background:var(--warn)"></i>建議目標 70%</span></div>
     </div>
 
     <div class="panel">
@@ -202,8 +208,9 @@ function curveSVG(hist){
   const x=i=>padL+(n<=1?0:i*(W-padL-padR)/(n-1));
   const y=v=>padT+(100-v)/100*(H-padT-padB);
   const path=pts.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ');
-  const gy=[0,25,50,75,100].map(v=>`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${padL-5}" y="${y(v)+3}" font-size="10" fill="var(--sub)" text-anchor="end">${v}</text>`).join('');
-  const passLine=`<line x1="${padL}" y1="${y(PASS)}" x2="${W-padR}" y2="${y(PASS)}" stroke="var(--no)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  const gy=[0,20,40,60,80,100].map(v=>`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${padL-5}" y="${y(v)+3}" font-size="10" fill="var(--sub)" text-anchor="end">${v}</text>`).join('');
+  const passLine=`<line x1="${padL}" y1="${y(PASS)}" x2="${W-padR}" y2="${y(PASS)}" stroke="var(--no)" stroke-width="1.5" stroke-dasharray="5 4"/>`+
+    `<line x1="${padL}" y1="${y(SAFE)}" x2="${W-padR}" y2="${y(SAFE)}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="2 4"/>`;
   const dots=pts.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="var(--teal)"/>`).join('');
   return `<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
     ${gy}${passLine}

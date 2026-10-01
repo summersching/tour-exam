@@ -143,6 +143,7 @@
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="subjects.js"></script>
 <script src="pwa.js" defer></script>
@@ -178,13 +179,13 @@ const TOOLS = [
   { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
   { id:'search',name:'全站搜尋', icon:'🔎', desc:'跨五科搜題幹 / 關鍵字 · 直達詳解', file:'搜尋.html', cat:'do', subj:'all' },
   { id:'wb',    name:'學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
-  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語高頻必背 · 片語 · 易混字', file:'考前衝刺.html', cat:'review', subj:['en'] },
-  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語帶團實用句 · 跟讀', file:'口試練習.html', cat:'review', subj:['en'] },
+  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語 · 日語 高頻必背 · 片語 · 易混字 · 敬語', file:'考前衝刺.html', cat:'review', subj:['en','jp'] },
+  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 跟讀', file:'口試練習.html', cat:'review', subj:['en','jp'] },
   { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
-  { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr'] },
-  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格率', file:'儀表板.html', cat:'tool', subj:'all' },
+  { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 · 執業法規 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all' },
   { id:'fav',   name:'收藏與筆記', icon:'⭐', desc:'收藏的重點題 + 自己寫的筆記 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all' },
-  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題/成績 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' }
+  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題 · 成績 · 收藏 · 筆記 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' }
 ].concat(SUBJ.map(s=>(
   { id:'wb_'+s.k, name:s.name, icon:s.icon, file:s.page, cat:'wrong', subj:[s.k], wb:s.wb }
 )));
