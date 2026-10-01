@@ -97,18 +97,21 @@
   .strat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:8px 0 4px}
   .strat summary{cursor:pointer;font-weight:700;padding:10px 0;font-size:.92rem;color:var(--sel)}
   .strat ul{margin:0 0 12px;padding-left:20px;font-size:.9rem} .strat li{margin:5px 0}
+  .card.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
   @media print{header .home,.bar,.tools2,.strat,.say{display:none!important}.card{box-shadow:none;break-inside:avoid}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
 <script src="jp_psg.js"></script>
 <script src="kuromoji/kuromoji.js"></script>
+<script src="jplook.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -140,6 +143,7 @@
     <span class="sl">語彙</span>
     <button class="sbtn" data-tog="romaji">Aa 羅馬拼音</button>
     <button class="sbtn" data-tog="furi">振 漢字標假名</button>
+    <button class="sbtn" data-tog="look" title="開啟後點題幹、文章、解析或選項(複習模式)裡的日文字詞,顯示讀音、原形、詞性與中文">🔍 點字查詞</button>
     <button class="sbtn" data-tog="hidek">🙈 隱藏讀音</button>
     <button class="sbtn on" data-tog="ozh">🈯 隱藏選項中文</button>
   </div>
@@ -168,6 +172,7 @@ let RATE=+(LSget('pref_jp_rate'))||0.9;
 let ROMAJI=LSget('pref_jp_romaji')==='1';
 let HIDEK=LSget('pref_jp_hidek')==='1';
 let FURI=LSget('pref_jp_furi')==='1';
+let LOOK=LSget('pref_jp_look')==='1';   // C7 點字查詞
 let TOK=null, TKBUILDING=false;
 function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=RATE;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function toRomaji(kana){
@@ -258,7 +263,7 @@ function revealHtml(q){
   }else if(!SCORE.free(q)){
     h+=`<div class="noana">中譯 / 解析整理中…(官方答案已標示,正解選項以綠色標示)</div>`;
   }
-  return h;
+  return h+NOTE.box('jp',q);   // C9 個人筆記
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
@@ -270,7 +275,7 @@ function render(){
     const psg=JPREAD.html(q,{same:qi>0&&JPREAD.get(q.c,q.y,q.no)&&JPREAD.get(q.c,q.y,q.no)===JPREAD.get(arr[qi-1].c,arr[qi-1].y,arr[qi-1].no),full:true,say:true,fmt:dsp});   // 讀解:同篇第一題前顯示文章
     const tags=(d&&d.tt?`<span class="chip c-r">${esc(d.t||'日語')}</span><span class="chip c-t">${esc(d.tt)}</span>`:`<span class="chip c-r">外語日語</span>`)+(d&&d.jl?`<span class="chip c-jl">${esc(d.jl)}</span>`:'');
     const show=(MODE==='review')||(picks[qid(q)]!=null);
-    return `<div class="card">
+    return `<div class="card" id="q${q.no}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('jp',q)}<span class="src">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       ${psg}<div class="stem">${dsp(q.stem)} ${sayBtn(q.stem)}</div>
@@ -301,6 +306,7 @@ document.querySelector('.setbar').addEventListener('click',e=>{
   if(b.dataset.tog==='furi'){FURI=!FURI;LSset('pref_jp_furi',FURI?'1':'0');b.classList.toggle('on',FURI);
     if(FURI&&!TOK){b.textContent='振 假名載入中…';ensureTokenizer(function(){b.textContent='振 漢字標假名';b.classList.toggle('on',FURI);render();});}
     render();return;}
+  if(b.dataset.tog==='look'){LOOK=!LOOK;LSset('pref_jp_look',LOOK?'1':'0');b.classList.toggle('on',LOOK);setLook();return;}
   if(b.dataset.tog==='romaji'){ROMAJI=!ROMAJI;LSset('pref_jp_romaji',ROMAJI?'1':'0');b.classList.toggle('on',ROMAJI);}
   if(b.dataset.tog==='hidek'){HIDEK=!HIDEK;LSset('pref_jp_hidek',HIDEK?'1':'0');b.classList.toggle('on',HIDEK);b.textContent=HIDEK?'👁 顯示讀音':'🙈 隱藏讀音';}
   if(b.dataset.tog==='ozh'){document.body.classList.toggle('hide-zh');const hid=document.body.classList.contains('hide-zh');LSset('pref_hide_zh',hid?'1':'0');b.textContent=hid?'🈚 顯示選項中文':'🈯 隱藏選項中文';b.classList.toggle('on',!hid);return;}
@@ -336,7 +342,26 @@ function applyJpPrefs(){
     if(FURI&&!TOK){fb.textContent='振 假名載入中…';ensureTokenizer(function(){fb.textContent='振 漢字標假名';fb.classList.toggle('on',FURI);render();});}
   }
 }
-buildFilters();render();applyJpPrefs();FAV.onClick(document.getElementById('list'));
+/* C7 點字查詞:需要斷詞器(與振假名共用),第一次開啟時載入字典 */
+function setLook(){
+  const lb=document.querySelector('.setbar [data-tog="look"]');
+  if(lb)lb.classList.toggle('on',LOOK);
+  if(LOOK&&!TOK){if(lb)lb.textContent='🔍 詞典載入中…';ensureTokenizer(function(){if(lb)lb.textContent='🔍 點字查詞';JPLOOK.setOn(LOOK&&!!TOK);});return;}
+  JPLOOK.setOn(LOOK);
+}
+JPLOOK.attach(document.getElementById('list'),{tokenizer:()=>TOK,speak:speak,romaji:()=>ROMAJI,toRomaji:toRomaji,allow:'.stem,.psgt,.ana,div.opt'});
+buildFilters();render();applyJpPrefs();setLook();FAV.onClick(document.getElementById('list'));NOTE.onClick(document.getElementById('list'));
+/* 深連結 #qN(例:從考前衝刺點題號)→ 捲到該題並高亮;搜尋框有字時先清空 */
+function goHash(){
+  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
+  let c=document.getElementById('q'+m[1]);
+  if(!c&&document.getElementById('q').value){document.getElementById('q').value='';render();c=document.getElementById('q'+m[1]);}
+  if(!c)return;
+  c.classList.add('hl');c.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>c.classList.remove('hl'),2400);
+}
+window.addEventListener('hashchange',goHash);
+setTimeout(goHash,150);
 </script>
 </body>
 </html>

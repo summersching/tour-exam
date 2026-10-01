@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#b45309">
-<title>我的收藏</title>
+<title>收藏與筆記</title>
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;
@@ -40,11 +40,17 @@
   .empty{text-align:center;color:var(--sub);padding:50px 16px}
   .empty .ic{font-size:2.8rem}
   .empty b{color:var(--star)}
+  .vsw{display:inline-flex;gap:6px;margin-right:8px}
+  .vbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 13px;font-weight:800;font-size:.84rem;cursor:pointer;font-family:inherit}
+  .vbtn.on{background:#e8a72b;border-color:#e8a72b;color:#fff}
+  .ntext{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border-left:4px solid #e8a72b;border-radius:8px;padding:8px 11px;margin:8px 0 2px;font-size:.93rem;line-height:1.65}
+  .nmeta{font-size:.74rem;color:var(--sub);margin-bottom:4px}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="fav.js"></script>
+<script src="notes.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
 <script src="gh.js"></script>
@@ -55,8 +61,8 @@
 <body>
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
-  <h1>⭐ 我的收藏</h1>
-  <p>各科詳解頁點 ☆ 收藏的題目 · 跨科集中複習</p>
+  <h1>⭐ 收藏與筆記</h1>
+  <p>點 ☆ 收藏的題目、📝 自己寫的筆記 · 跨科集中複習</p>
 </div></header>
 
 <div class="bar"><div class="wrap" id="subs"></div></div>
@@ -67,57 +73,80 @@
 const CNAME={leader:'領隊',guide:'導遊'};
 const META={
   en: {name:'英語', color:'#2563eb', bank:()=>(typeof BANK!=='undefined'?BANK:null),     page:q=>`英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
-  jp: {name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}`},
-  gh: {name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}`},
-  pr: {name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}`},
-  pr2:{name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}`}
+  jp: {name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  gh: {name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  pr: {name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  pr2:{name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}#q${q.no}`}
 };
 const ORDER=['en','jp','gh','pr','pr2'];
 let filter='all';
+let VIEW=(function(){try{return localStorage.getItem('pref_fav_view')==='note'?'note':'fav';}catch(e){return 'fav';}})();   // fav 收藏 / note 筆記
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function findQ(subj,c,y,no){const m=META[subj];if(!m)return null;const b=m.bank();if(!b)return null;
-  return b.find(q=>q.c===c&&String(q.y)===String(y)&&+q.no===+no)||null;}
-function items(){
-  const o=FAV.load();
-  return Object.keys(o).map(id=>{const e=o[id];const q=findQ(e.subj,e.c,e.y,e.no);return {id,e,q};})
-    .filter(x=>x.q)
-    .sort((a,b)=>(b.e.ts||0)-(a.e.ts||0));   // 新收藏在前
+function inBank(subj,c,y,no){const m=META[subj];const b=m&&m.bank();return b?b.find(q=>q.c===c&&String(q.y)===String(y)&&+q.no===+no)||null:null;}
+function findQ(subj,c,y,no){
+  return inBank(subj,c,y,no)||((subj==='en'&&typeof ENREAD!=='undefined')?ENREAD.get(c,y,no):null);   // 英語閱讀題(71–80)不在 bank.js
 }
-function buildSubs(){
-  const all=items(),cnt={};ORDER.forEach(k=>cnt[k]=0);all.forEach(x=>{cnt[x.e.subj]=(cnt[x.e.subj]||0)+1;});
-  let h=`<button class="schip ${filter==='all'?'on':''}" data-k="all">全部 (${all.length})</button>`;
-  ORDER.forEach(k=>{if(cnt[k])h+=`<button class="schip ${filter===k?'on':''}" data-k="${k}">${META[k].name} (${cnt[k]})</button>`;});
-  h+=`<span class="cnt" id="cnt"></span>`;
+function itemsOf(v){
+  const o=v==='note'?NOTE.load():FAV.load();
+  return Object.keys(o).map(id=>{const e=o[id];return {id,e,q:findQ(e.subj,e.c,e.y,e.no)};})
+    .filter(x=>META[x.e.subj]&&(x.q||v==='note'))   // 筆記一律列出(找不到原題時顯示存下的題幹摘要)
+    .sort((a,b)=>(b.e.ts||0)-(a.e.ts||0));   // 新的在前
+}
+function fmtTime(ts){if(!ts)return '';try{return new Date(ts).toLocaleString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+function buildSubs(all,nFav,nNote){
+  const cnt={};ORDER.forEach(k=>cnt[k]=0);all.forEach(x=>{cnt[x.e.subj]=(cnt[x.e.subj]||0)+1;});
+  let h=`<span class="vsw"><button class="vbtn ${VIEW==='fav'?'on':''}" data-v="fav">⭐ 收藏 ${nFav}</button><button class="vbtn ${VIEW==='note'?'on':''}" data-v="note">📝 筆記 ${nNote}</button></span>`;
+  if(all.length){
+    h+=`<button class="schip ${filter==='all'?'on':''}" data-k="all">全部 (${all.length})</button>`;
+    ORDER.forEach(k=>{if(cnt[k])h+=`<button class="schip ${filter===k?'on':''}" data-k="${k}">${META[k].name} (${cnt[k]})</button>`;});
+  }
   document.getElementById('subs').innerHTML=h;
 }
 function render(){
-  buildSubs();
-  let arr=items(); if(filter!=='all')arr=arr.filter(x=>x.e.subj===filter);
+  const favs=itemsOf('fav'),notes=itemsOf('note'),all=VIEW==='note'?notes:favs;
+  if(filter!=='all'&&!all.some(x=>x.e.subj===filter))filter='all';
+  buildSubs(all,favs.length,notes.length);
   const list=document.getElementById('list');
-  if(!items().length){
-    list.innerHTML=`<div class="empty"><div class="ic">⭐</div>
+  if(!all.length){
+    list.innerHTML=VIEW==='note'?`<div class="empty"><div class="ic">📝</div>
+      <h3>還沒有筆記</h3>
+      <p>到各科<b>詳解 / 複習 / 錯題本</b>或<b>模擬測驗檢討</b>,在解析下方按 <b>📝 寫筆記</b>,<br>記下自己的口訣與易錯點,會集中顯示在這裡。</p></div>`:`<div class="empty"><div class="ic">⭐</div>
       <h3>還沒有收藏的題目</h3>
       <p>到各科<b>詳解 / 複習</b>頁,點題目旁的 <b>☆</b> 就能收藏,<br>把想反覆看的重點題集中在這裡。</p></div>`;
     return;
   }
+  const arr=filter==='all'?all:all.filter(x=>x.e.subj===filter);
   list.innerHTML=arr.map(({id,e,q})=>{
-    const m=META[e.subj];
-    const stem=String(q.stem).replace('__BLANK__','（　）');
+    const m=META[e.subj],ref=q||{c:e.c,y:e.y,no:e.no};
+    const stem=q?String(q.stem).replace(/__BLANK__/g,'（　）'):(e.s||'(題庫中找不到這題,可能已更新)');
     return `<div class="card" data-id="${esc(id)}">
       <div class="chead"><span class="tag" style="background:${m.color}">${m.name}</span>
-        <span class="src">${CNAME[q.c]||q.c} ${q.y} 年 第 ${q.no} 題</span>
-        <button class="rm" data-rm="${esc(id)}">✕ 取消收藏</button></div>
+        <span class="src">${CNAME[ref.c]||ref.c} ${ref.y} 年 第 ${ref.no} 題</span>
+        <button class="rm" data-rm="${esc(id)}">${VIEW==='note'?'✕ 刪除筆記':'✕ 取消收藏'}</button></div>
       <div class="stem">${esc(stem)}</div>
-      <a class="go" href="${m.page(q)}">看完整詳解 ›</a>
+      ${VIEW==='note'?`<div class="ntext">${esc(e.t)}</div><div class="nmeta">📝 ${esc(fmtTime(e.ts))}</div>`:''}
+      <a class="go" href="${m.page(ref)}">${VIEW==='note'?'看詳解 / 編輯筆記 ›':'看完整詳解 ›'}</a>
     </div>`;
   }).join('');
 }
-document.getElementById('subs').addEventListener('click',e=>{const b=e.target.closest('.schip');if(!b)return;filter=b.dataset.k;render();});
+document.getElementById('subs').addEventListener('click',e=>{
+  const v=e.target.closest('.vbtn');
+  if(v){if(v.dataset.v===VIEW)return;VIEW=v.dataset.v;filter='all';try{localStorage.setItem('pref_fav_view',VIEW);}catch(err){}render();return;}
+  const b=e.target.closest('.schip');if(!b)return;filter=b.dataset.k;render();});
 document.getElementById('list').addEventListener('click',e=>{
   const r=e.target.closest('[data-rm]');if(!r)return;
+  if(VIEW==='note'){if(!confirm('確定刪除這則筆記?刪除後無法復原。'))return;const n=NOTE.load();delete n[r.dataset.rm];NOTE.save(n);render();return;}
   const o=FAV.load();delete o[r.dataset.rm];FAV.save(o);render();
 });
+/* 英語閱讀題(71–80)的收藏 / 筆記:需要時才載入 en_review.js + enread.js(約 1.5 MB)補齊題目 */
+function needEnRead(){
+  if(typeof ENREAD!=='undefined')return false;
+  const o=Object.assign({},FAV.load(),NOTE.load());
+  return Object.keys(o).some(id=>{const e=o[id];return e.subj==='en'&&!inBank('en',e.c,e.y,e.no);});
+}
+function loadJs(src){return new Promise((ok,no)=>{const t=document.createElement('script');t.src=src;t.onload=ok;t.onerror=no;document.head.appendChild(t);});}
 render();
+if(needEnRead())loadJs('en_review.js').then(()=>loadJs('enread.js')).then(render).catch(()=>{});
 </script>
 </body>
 </html>

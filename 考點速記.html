@@ -67,15 +67,16 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>🔥 考點速記</h1>
-  <p>觀光資源概要 · 執業實務 高頻考點(考過 3 次以上)· 一句話重點</p>
+  <p>觀光資源概要 · 執業實務 · 執業法規 高頻考點(考過 3 次以上)· 一句話重點</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
   <div class="subbar">
     <button class="sbtn on" data-s="gh">🗺️ 觀光資源概要</button>
     <button class="sbtn" data-s="pr">🚩 執業實務</button>
+    <button class="sbtn" data-s="pr2">⚖️ 執業法規</button>
   </div>
-  <div class="srow"><input id="q" placeholder="搜尋考點關鍵字…(如 慢城、CPR、契約)"></div>
+  <div class="srow"><input id="q" placeholder="搜尋考點關鍵字…(如 慢城、CPR、履約保證、護照)"></div>
   <div class="cnt" id="cnt"></div>
 </div></div>
 
@@ -85,7 +86,7 @@
 </div>
 
 <script>
-let SUBJ='gh', KW='';
+let SUBJ=(function(){try{const v=localStorage.getItem('pref_sprintcn_subj');return ['gh','pr','pr2'].includes(v)?v:'gh';}catch(e){return 'gh';}})(), KW='';
 const app=document.getElementById('app');
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function plain(s){return String(s).replace(/<[^>]+>/g,'');}
@@ -114,6 +115,7 @@ function render(){
     });
     html+=`<details class="grp"${open}><summary><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
   });
+  if(html&&SUBJ==='pr2')html='<div class="tip">⏱ 法規常修正:已排除依現行法規過時的舊題重點;想看舊題與現行規定的差異,到「執業法規複習」看各題的時效提醒。</div>'+html;
   if(!html)html=`<div class="empty">找不到「${esc(KW)}」相關考點<br><span style="font-size:.85rem">換個關鍵字或切換科目試試</span></div>`;
   app.innerHTML=html;
   document.getElementById('cnt').textContent=kw?`符合「${KW}」的重點 ${shownPts} 條`:`${data.name} · 共 ${totalPts} 條高頻重點`;
@@ -121,13 +123,14 @@ function render(){
 
 document.querySelector('.subbar').addEventListener('click',e=>{
   const b=e.target.closest('.sbtn'); if(!b||b.dataset.s===SUBJ)return;
-  SUBJ=b.dataset.s;
+  SUBJ=b.dataset.s;try{localStorage.setItem('pref_sprintcn_subj',SUBJ);}catch(e){}
   document.querySelectorAll('.sbtn').forEach(x=>x.classList.toggle('on',x===b));
   render(); window.scrollTo(0,0);
 });
 let t; document.getElementById('q').addEventListener('input',e=>{
   clearTimeout(t); KW=e.target.value; t=setTimeout(render,180);
 });
+document.querySelectorAll('.sbtn').forEach(x=>x.classList.toggle('on',x.dataset.s===SUBJ));
 render();
 </script>
 </body>

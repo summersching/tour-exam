@@ -63,7 +63,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>💾 資料備份</h1>
-  <p>錯題本 · 測驗成績 匯出 / 匯入還原(離線、存在你自己手機)</p>
+  <p>錯題本 · 測驗成績 · 收藏 · 筆記 匯出 / 匯入還原(離線、存在你自己手機)</p>
 </div></header>
 
 <div class="wrap">
@@ -108,7 +108,7 @@ function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>
 function snapshot(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}return d;}
 function objLen(v){try{return Object.keys(JSON.parse(v||'{}')).length;}catch(e){return 0;}}
 function countsOf(get){
-  const c={history:0,wb:{}};
+  const c={history:0,wb:{},fav:objLen(get('favorites')),note:objLen(get('qnotes'))};
   try{c.history=JSON.parse(get('quiz_history')||'[]').length;}catch(e){}
   WB.forEach(([k])=>{c.wb[k]=objLen(get(k));});
   return c;
@@ -117,6 +117,7 @@ function sumCells(c){
   const total=Object.values(c.wb).reduce((a,b)=>a+b,0);
   let h=`<div class="cell"><div class="n">${c.history}</div><div class="l">測驗次數</div></div>`;
   WB.forEach(([k,name])=>{h+=`<div class="cell"><div class="n">${c.wb[k]}</div><div class="l">${name}錯題</div></div>`;});
+  h+=`<div class="cell"><div class="n">${c.fav}</div><div class="l">收藏</div></div><div class="cell"><div class="n">${c.note}</div><div class="l">筆記</div></div>`;
   return h;
 }
 function renderSummary(){
@@ -158,7 +159,7 @@ document.getElementById('fileInput').onchange=function(ev){
     pv.innerHTML=`
       <div class="warnbox">📄 備份檔內容(匯出於 ${esc(when)}):</div>
       <div class="sum">${sumCells(c)}</div>
-      <div class="warnbox">⚠️ 還原會用這個備份<b>覆蓋</b>目前這台裝置的錯題本與成績。確定要還原嗎?</div>
+      <div class="warnbox">⚠️ 還原會用這個備份<b>覆蓋</b>目前這台裝置的錯題本、成績、收藏與筆記。確定要還原嗎?</div>
       <button class="btn pri block" id="doRestore">✅ 確定還原(覆蓋目前資料)</button>`;
     document.getElementById('doRestore').onclick=function(){
       try{

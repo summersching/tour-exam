@@ -98,6 +98,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="pwa.js" defer></script>
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
@@ -201,7 +202,7 @@ function revealHtml(q){
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
   }else if(!SCORE.free(q)){h+=`<div class="noana">中譯 / 解析整理中…(正解已標示)</div>`;}
-  return h;
+  return h+NOTE.box('jp',q);   // C9 個人筆記
 }
 function render(){
   const arr=entries();
@@ -283,6 +284,7 @@ document.getElementById('clearBtn').onclick=function(){
 };
 SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBJP_KEY,id=>findQ(id)));
 buildFilters();render();
+NOTE.onClick(document.getElementById('list'));   // C9 個人筆記
 </script>
 </body>
 </html>

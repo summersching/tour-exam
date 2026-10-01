@@ -5,13 +5,16 @@
    用法:
      詳解/複習頁卡片內放 FAV.btn(subj,q);容器呼叫一次 FAV.onClick(listEl)
      收藏頁(收藏.html)用 FAV.load() 取出、由各題庫補齊內容渲染
-   變更履歷:v1 (2026-09-29) 初版
+   變更履歷:v2 (2026-10-01) 英語詳解收藏改帶考別年份;load() 自動清除舊版寫入的無效鍵(en|undefined-…)
+            v1 (2026-09-29) 初版
 */
 (function(){
   'use strict';
   var KEY='favorites';
   var FAV={
-    load:function(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return{};}},
+    load:function(){try{var o=JSON.parse(localStorage.getItem(KEY)||'{}'),bad=false;
+      for(var k in o){if(k.indexOf('undefined')>=0){delete o[k];bad=true;}}   // 舊版英語詳解寫入的無效鍵,無法還原題目,直接清除
+      if(bad)this.save(o);return o;}catch(e){return{};}},
     save:function(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}},
     id:function(subj,q){return subj+'|'+q.c+'-'+q.y+'-'+q.no;},
     has:function(subj,q){return !!this.load()[this.id(subj,q)];},

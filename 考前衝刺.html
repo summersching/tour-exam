@@ -57,6 +57,13 @@
   .ncard{background:var(--notebg);border:1px solid var(--notebd);border-left:4px solid var(--notebd);border-radius:10px;padding:11px 14px;margin:8px 0}
   .nhtml{font-size:.95rem} .nhtml b{color:var(--notek)}
   .empty{text-align:center;color:var(--sub);padding:36px 0}
+  #tabs{overflow-x:auto;scrollbar-width:none} #tabs::-webkit-scrollbar{display:none} #tabs .tab{flex:1 0 auto;white-space:nowrap;padding-left:10px;padding-right:10px}
+  .certbar .wrap{flex-wrap:wrap;row-gap:8px;column-gap:18px}
+  .cgrp{display:inline-flex;align-items:center;gap:8px} .cbtn,.certbar .clb{white-space:nowrap}
+  .jtop{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+  .jw{font-weight:800;color:var(--accent);font-size:1.05rem} .jr{color:var(--kk);font-size:.85rem}
+  .jl{font-size:.7rem;font-weight:800;border-radius:8px;padding:1px 7px;background:var(--chipv);color:var(--chipvk)}
+  .jtx{font-size:.9rem;margin-top:5px;line-height:1.7} .jtx b{color:var(--fq)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -68,19 +75,22 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>🔥 考前衝刺</h1>
-  <p>從 20 份考卷萃取的高頻精華 · 考前一週快速掃</p>
+  <p id="sub">從 20 份考卷萃取的高頻精華 · 考前一週快速掃</p>
 </div></header>
 
-<div class="tabs"><div class="wrap">
+<div class="tabs"><div class="wrap" id="tabs">
   <button class="tab on" data-k="hot">🔥 高頻必背</button>
   <button class="tab" data-k="phrase">🧩 必考片語</button>
   <button class="tab" data-k="confuse">🔀 易混字</button>
 </div></div>
 <div class="certbar"><div class="wrap">
-  <span class="clb">範圍</span>
+  <span class="cgrp"><span class="clb">科目</span>
+  <button class="cbtn" data-l="en">英語</button>
+  <button class="cbtn" data-l="jp">日語</button></span>
+  <span class="cgrp"><span class="clb">範圍</span>
   <button class="cbtn" data-c="all">全部</button>
   <button class="cbtn" data-c="leader">領隊</button>
-  <button class="cbtn" data-c="guide">導遊</button>
+  <button class="cbtn" data-c="guide">導遊</button></span>
 </div></div>
 <div class="bar"><div class="wrap">
   <input id="q" placeholder="搜尋…">
@@ -91,23 +101,92 @@
 
 <script>
 const CNAME={leader:'領隊',guide:'導遊'};
-let cur='hot';
+/* 科目分頁:英語用 sprint.js(預先萃取);日語由 jp.js + jp_ana.js 即時彙整(首次切到日語才載入) */
+const TABS={
+  en:[['hot','🔥 高頻必背'],['phrase','🧩 必考片語'],['confuse','🔀 易混字']],
+  jp:[['gram','📝 文法句型'],['read','🔤 漢字讀音'],['keigo','🙇 敬語'],['idiom','🎌 慣用・諺語'],['vocab','📚 語彙・常識']]
+};
+const SUBT={en:'從 20 份考卷萃取的高頻精華 · 考前一週快速掃',jp:'外語日語 20 份考卷 · 文法 / 讀音 / 敬語 / 慣用語 · 依考過次數排序'};
+let LANG=(function(){try{return localStorage.getItem('pref_sprint_lang')==='jp'?'jp':'en';}catch(e){return 'en';}})();
+let cur=TABS[LANG][0][0];
 const app=document.getElementById('app');
 let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
 function scopedKB(data){if(CERT==='all')return data;return data.map(function(x){var h=(x.hits||[]).filter(function(hh){return hh.c===CERT;});return h.length?Object.assign({},x,{hits:h,freq:h.length}):null;}).filter(Boolean);}
 function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
-function speak(t){const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}
-function srcChips(x){return (x.hits||[]).map(function(h){var g=h.c==='guide';var file='英語詳解.html?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function speak(t,lang){try{const u=new SpeechSynthesisUtterance(t);u.lang=lang==='ja'?'ja-JP':'en-US';u.rate=lang==='ja'?(+(localStorage.getItem('pref_jp_rate'))||0.9):.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function srcChips(x){var page=LANG==='jp'?'日文詳解.html':'英語詳解.html';return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=page+'?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
+
+/* ===== 日語 ===== */
+let JPS=null,JPLOAD=null;
+function loadScript(src){return new Promise(function(res,rej){var el=document.createElement('script');el.src=src;el.onload=res;el.onerror=function(){rej(new Error(src));};document.head.appendChild(el);});}
+function ensureJP(){
+  if(JPS)return Promise.resolve();
+  if(!JPLOAD)JPLOAD=(typeof JPBANK!=='undefined'?Promise.resolve():loadScript('jp.js'))
+    .then(function(){return typeof JPANA!=='undefined'?null:loadScript('jp_ana.js');})
+    .then(function(){JPS=buildJP();})
+    .catch(function(e){JPLOAD=null;throw e;});
+  return JPLOAD;
+}
+const JPCAT={gram:['文法','文法/語彙'],read:['読音','漢字'],keigo:['敬語'],idiom:['慣用','諺語'],vocab:['語彙','知識','会話','読解/語彙']};
+const JLR={N1:1,N2:2,N3:3,N4:4,N5:5};
+function buildJP(){
+  var Q={};JPBANK.forEach(function(q){Q[q.c+'-'+q.y+'-'+q.no]=q;});
+  var out={};
+  Object.keys(JPCAT).forEach(function(cat){
+    var m={};
+    Object.keys(JPANA).forEach(function(id){
+      var d=JPANA[id],q=Q[id];if(!q||JPCAT[cat].indexOf(d.t)<0)return;
+      var key,title,sub='',say;
+      if(cat==='read'){
+        var v=(d.v&&d.v[0])||null,mt=d.tt.match(/\(([^)]+)\)/);
+        title=v?v[0]:(mt?mt[1]:d.tt);sub=v?(v[1]+(v[2]?' · '+v[2]:'')):'';key=title;say=v?v[1]:title;
+      }else{
+        title=d.tt;key=d.tt.replace(/\s+/g,'');
+        say=d.tt.replace(/[〜~]/g,'').replace(/[(（][^)）]*[)）]/g,'').replace(/[A-Za-z]/g,'').trim();
+      }
+      var it=m[key]||(m[key]={title:title,sub:sub,say:say,html:'',jl:{},hits:[]});
+      if(!it.html)it.html=d.g||d.s||'';
+      if(d.jl)it.jl[d.jl]=(it.jl[d.jl]||0)+1;
+      it.hits.push({c:q.c,y:q.y,n:q.no});
+    });
+    out[cat]=Object.keys(m).map(function(k){var it=m[k];
+      var jl=Object.keys(it.jl).sort(function(a,b){return it.jl[b]-it.jl[a];})[0]||'';
+      it.hits.sort(function(a,b){return (+b.y)-(+a.y)||(a.c<b.c?-1:a.c>b.c?1:0)||a.n-b.n;});
+      return {title:it.title,sub:it.sub,say:it.say,html:it.html,jl:jl,hits:it.hits,freq:it.hits.length};
+    }).sort(function(a,b){return b.freq-a.freq||(JLR[a.jl]||9)-(JLR[b.jl]||9)||a.title.localeCompare(b.title,'ja');});
+  });
+  return out;
+}
+function jpHtml(x){
+  return '<div class="word"><div class="jtop"><span class="jw">'+esc(x.title)+'</span>'+(x.sub?'<span class="jr">'+esc(x.sub)+'</span>':'')+
+    (x.say?'<span class="say" data-lang="ja" data-say="'+esc(x.say)+'">🔊</span>':'')+(x.jl?'<span class="jl">'+x.jl+'</span>':'')+
+    '<span class="fq">×'+x.freq+'</span></div>'+(x.html?'<div class="jtx">'+x.html+'</div>':'')+'<div class="wsrc">'+srcChips(x)+'</div></div>';
+}
 function introText(k,n){
   const scope=CERT==='all'?'':'（'+CNAME[CERT]+'）';
   if(k==='hot')return '🔥 <b>高頻必背單字</b>'+scope+'('+n+' 個),考前務必背熟——這些最可能再考。';
   if(k==='phrase')return '🧩 歷年<b>重複出現的片語</b>'+scope+'('+n+' 個),片語題每年必考,搭配詞要整組記。';
-  return '🔀 最容易<b>選錯的形近字、近義字</b>'+scope+'('+n+' 組),考前掃一遍避開地雷。';
+  if(k==='confuse')return '🔀 最容易<b>選錯的形近字、近義字</b>'+scope+'('+n+' 組),考前掃一遍避開地雷。';
+  if(k==='gram')return '📝 <b>文法句型</b>'+scope+'('+n+' 個),依考過次數排序——×2 以上的優先背;點題號看原題詳解。';
+  if(k==='read')return '🔤 <b>漢字讀音</b>'+scope+'('+n+' 個):特殊讀法、促音、連濁最常考,點 🔊 聽正確讀音。';
+  if(k==='keigo')return '🙇 <b>敬語</b>'+scope+'('+n+' 個):尊敬語 / 謙讓語對照,接待日本旅客必考。';
+  if(k==='idiom')return '🎌 <b>慣用句・諺語</b>'+scope+'('+n+' 個):整句記住意思,常考填空。';
+  return '📚 <b>語彙・日本常識</b>'+scope+'('+n+' 個):擬態語、外來語、副詞與日本文化常識。';
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
+  if(LANG==='jp'){
+    if(!JPS){app.innerHTML='<div class="empty">載入日語題庫中…</div>';document.getElementById('cnt').textContent='';
+      ensureJP().then(render).catch(function(){app.innerHTML='<div class="empty">日語題庫載入失敗,請重新整理再試</div>';});return;}
+    const base=scopedKB(JPS[cur]||[]);
+    const arr=kw?base.filter(function(x){return (x.title+' '+x.sub+' '+String(x.html).replace(/<[^>]+>/g,'')).toLowerCase().indexOf(kw)>=0;}):base;
+    document.getElementById('cnt').textContent='共 '+arr.length+' 則';
+    app.innerHTML='<div class="intro">'+introText(cur,base.length)+'</div>'+(arr.map(jpHtml).join('')||'<div class="empty">找不到符合的內容</div>');
+    return;
+  }
   let base=scopedKB(SPRINT[cur]), arr=base, html;
   if(cur==='confuse'){
     arr=kw?base.filter(x=>x.html.toLowerCase().includes(kw)):base;
@@ -119,22 +198,33 @@ function render(){
   document.getElementById('cnt').textContent='共 '+arr.length+' 則';
   app.innerHTML='<div class="intro">'+introText(cur,base.length)+'</div>'+(html||'<div class="empty">找不到符合的內容</div>');
 }
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{cur=t.dataset.k;
+function paintTabs(){
+  if(!TABS[LANG].some(function(t){return t[0]===cur;}))cur=TABS[LANG][0][0];
+  document.getElementById('tabs').innerHTML=TABS[LANG].map(function(t){return '<button class="tab'+(t[0]===cur?' on':'')+'" data-k="'+t[0]+'">'+t[1]+'</button>';}).join('');
+  document.getElementById('sub').textContent=SUBT[LANG];
+  document.getElementById('q').placeholder=LANG==='jp'?'搜尋…(如 〜にかぎらず、承る、いおう)':'搜尋…';
+}
+document.getElementById('tabs').addEventListener('click',function(e){const t=e.target.closest('.tab');if(!t)return;cur=t.dataset.k;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.getElementById('q').value='';render();});
 document.getElementById('q').addEventListener('input',render);
-app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say,s.dataset.lang);});
 (function(){
   const bar=document.querySelector('.certbar');if(!bar)return;
-  function paint(){bar.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));}
+  function paint(){bar.querySelectorAll('.cbtn[data-c]').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));
+    bar.querySelectorAll('.cbtn[data-l]').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));}
   paint();
   bar.addEventListener('click',function(e){
-    const b=e.target.closest('.cbtn');if(!b||b.dataset.c===CERT)return;
+    const l=e.target.closest('.cbtn[data-l]');
+    if(l){if(l.dataset.l===LANG)return;LANG=l.dataset.l;try{localStorage.setItem('pref_sprint_lang',LANG);}catch(err){}
+      paint();paintTabs();document.getElementById('q').value='';render();return;}
+    const b=e.target.closest('.cbtn[data-c]');if(!b||b.dataset.c===CERT)return;
     CERT=b.dataset.c;
     try{localStorage.setItem('pref_cert',CERT);}catch(err){}
     paint();render();
   });
 })();
+paintTabs();
 render();
 </script>
 </body>

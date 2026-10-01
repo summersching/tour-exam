@@ -119,6 +119,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="en_review.js" onerror="window.EN_REVIEW=window.EN_REVIEW||{}"></script>
 <script src="enread.js"></script>
 <script src="pwa.js" defer></script>
@@ -239,6 +240,7 @@ function cardEl(e){
       ${e.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${e.gram}</div>`:''}
       ${e.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${e.real}</div>`:''}
       ${(e.vocab&&e.vocab.length)?`<div class="lbl">難字 / 片語</div><table class="vocab">${vRows(e.vocab)}</table>`:''}
+      ${NOTE.box('en',{c:e.cert||'leader',y:e.y,no:e.no,stem:e.stem})}
     </div>`;
   const opts=[...el.querySelectorAll('.opt')];
   const fb=el.querySelector('.fb');
@@ -294,6 +296,7 @@ function render(){
 }
 
 /* 事件 */
+NOTE.onClick(app);   // C9 個人筆記
 app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;e.preventDefault();speak(s.dataset.say);});
 document.getElementById('fCert').addEventListener('click',e=>{const c=e.target.closest('[data-fc]');if(!c)return;fc=c.dataset.fc;fy='all';ft='all';buildFilters();render();});
 document.getElementById('fYear').addEventListener('click',e=>{const c=e.target.closest('[data-fy]');if(!c)return;fy=c.dataset.fy;buildFilters();render();});

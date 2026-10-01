@@ -91,6 +91,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="stale.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr.js"></script>
@@ -194,7 +195,7 @@ function revealHtml(q){
     if(d.s)h+=`<div class="box skill"><b class="h">💡 解題技巧</b>${d.s}</div>`;
     if(d.n)h+=`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${d.n}</div>`;
   }else if(!SCORE.free(q)){h+=`<div class="noana">此題解析整理中…(官方答案已標示)</div>`;}
-  return h;
+  return h+NOTE.box('pr',q);   // C9 個人筆記
 }
 function render(){
   const arr=entries();
@@ -277,6 +278,7 @@ document.getElementById('clearBtn').onclick=function(){
 };
 SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBGH_KEY,id=>findQ(id)));
 buildFilters();render();
+NOTE.onClick(document.getElementById('list'));   // C9 個人筆記
 </script>
 </body>
 </html>

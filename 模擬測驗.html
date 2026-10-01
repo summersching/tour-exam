@@ -126,6 +126,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="stale.js"></script>
 <script src="optimg.js"></script>
 <script src="pwa.js" defer></script>
@@ -543,13 +544,14 @@ function renderResult(mode,wrong){
         return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${optInner(o)}${ozHtml(q,i)}</span>${optSay(q,o)}<span class="mk">${mk}</span></div>`;}).join('')}</div>
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
-        ${revealHtml(q)}
+        ${revealHtml(q)}${NOTE.box(cfg.subj,q)}
       </div></div>`;
   }).join('')||'<p style="text-align:center;color:var(--sub);padding:30px">🎉 這組全對,沒有答錯的題!</p>';
 }
 
 /* ===== 事件 ===== */
 /* 檢討畫面朗讀(逐選項 / 題幹 / 正解 / 難字):依 data-lang 選語言 */
+NOTE.onClick(document.getElementById('rlist'));   // C9 檢討時可寫筆記
 document.getElementById('rlist').addEventListener('click',e=>{
   const s=e.target.closest('.say'); if(!s)return;
   e.preventDefault();   // 文章標題列裡的🔊只朗讀,不要順便收合/展開文章

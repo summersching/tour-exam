@@ -82,11 +82,13 @@
   .opt.no{border-color:var(--no);background:var(--nobg)} .opt.no .lab{color:var(--no)}
   .opt .mk.x{color:var(--no)}
   @media print{header .home,.bar,.tools2,.strat{display:none!important}.card{box-shadow:none;break-inside:avoid}}
+  .card.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
+<script src="notes.js"></script>
 <script src="stale.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
@@ -182,7 +184,7 @@ function revealHtml(q){
   }else if(!SCORE.free(q)){
     h+=`<div class="noana">解析整理中…(官方答案已標示,正解選項以綠色標示)</div>`;
   }
-  return h;
+  return h+NOTE.box('pr2',q);   // C9 個人筆記
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
@@ -194,7 +196,7 @@ function render(){
     const d=anaData(q);
     const tags=d?`<span class="chip c-r">${d.t}</span>${d.tt?`<span class="chip c-t">${d.tt}</span>`:''}`:'';
     const show=(MODE==='review')||(picks[qid(q)]!=null);
-    return `<div class="card">
+    return `<div class="card" id="q${q.no}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('pr2',q)}<span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       <div class="stem">${esc(q.stem)}</div>
@@ -236,7 +238,18 @@ document.getElementById('printBtn').onclick=function(){
   const prev=MODE;MODE='review';render();
   setTimeout(function(){window.print();MODE=prev;render();},200);
 };
-buildFilters();render();FAV.onClick(document.getElementById('list'));
+buildFilters();render();FAV.onClick(document.getElementById('list'));NOTE.onClick(document.getElementById('list'));
+/* 深連結 #qN(收藏 / 筆記頁「看完整詳解」):跳到該題並高亮;被搜尋字或考點篩掉時先清除篩選 */
+function goHash(){
+  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
+  let c=document.getElementById('q'+m[1]);
+  if(!c&&(document.getElementById('q').value||TOPIC!=='all')){document.getElementById('q').value='';TOPIC='all';buildFilters();render();c=document.getElementById('q'+m[1]);}
+  if(!c)return;
+  c.classList.add('hl');c.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>c.classList.remove('hl'),2400);
+}
+window.addEventListener('hashchange',goHash);
+setTimeout(goHash,150);
 </script>
 </body>
 </html>
