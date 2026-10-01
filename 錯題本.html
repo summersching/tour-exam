@@ -121,6 +121,7 @@
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="notes.js"></script>
+<script src="srs.js"></script>
 <script src="en_review.js" onerror="window.EN_REVIEW=window.EN_REVIEW||{}"></script>
 <script src="enread.js"></script>
 <script src="pwa.js" defer></script>
@@ -130,7 +131,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>📌 錯題本</h1>
-  <p id="subline">測驗答錯的題目自動收錄 · 領隊 + 導遊 · 跨 10 屆一起複習</p>
+  <p id="subline">測驗答錯自動收錄 · 領隊 + 導遊 · 依 1、3、7、14 天間隔複習,4 關都答對才移出</p>
 </div></header>
 
 <div class="toolbar">
@@ -143,6 +144,7 @@
     <button class="btn danger" id="clearBtn">🗑️ 清空</button>
     <span class="cnt" id="cnt"></span>
   </div>
+  <div class="wrap"><div class="filters" id="fDue"></div></div>
   <div class="wrap"><div class="filters" id="fCert"></div></div>
   <div class="wrap"><div class="filters" id="fYear"></div></div>
   <div class="wrap"><div class="filters" id="fType"></div></div>
@@ -167,7 +169,9 @@ const WB_KEY='wrongbook_en';
 const CNAME={leader:'領隊',guide:'導遊'};
 const LAB=['A','B','C','D'];
 const app=document.getElementById('app');
-let mode='review', fc='all', fy='all', ft='all', clearArm=false;
+const QPD=new URLSearchParams(location.search).get('due')==='1';   // 從首頁「今日複習」進來:只看今日到期 + 直接再測
+let fd=QPD?'due':'all';
+let mode=QPD?'quiz':'review', fc='all', fy='all', ft='all', clearArm=false;
 
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
@@ -196,12 +200,14 @@ function withCur(e){const c=curItem(e);if(c)CUR_FIELDS.forEach(f=>{if(c[f]!==und
 function allEntries(){const o=wbLoad();return Object.keys(o).map(k=>withCur(Object.assign({id:k},o[k])));}
 function entries(){
   let arr=allEntries().filter(e=>(fc==='all'||(e.cert||'leader')===fc)&&(fy==='all'||String(e.y)===fy)&&(ft==='all'||e.type===ft));
+  if(fd==='due')arr=arr.filter(e=>SRS.isDue(e));
   arr.sort((a,b)=>((a.cert||'leader')<(b.cert||'leader')?-1:(a.cert||'leader')>(b.cert||'leader')?1:0)||(a.y-b.y)||(a.no-b.no));
   return arr;
 }
 
 function buildFilters(){
   const all=allEntries();
+  document.getElementById('fDue').innerHTML=`<span class="fchip ${fd==='all'?'on':''}" data-fd="all">全部錯題 (${all.length})</span><span class="fchip ${fd==='due'?'on':''}" data-fd="due">📅 今日到期 (${all.filter(e=>SRS.isDue(e)).length})</span>`;
   const certs=[...new Set(all.map(e=>e.cert||'leader'))].sort();
   document.getElementById('fCert').innerHTML = certs.length>1 ?
     `<span class="fchip ${fc==='all'?'on':''}" data-fc="all">全部證照 (${all.length})</span>`+
@@ -225,7 +231,7 @@ function cardEl(e){
   el.innerHTML=`
     <div class="qhead"><span class="qno">第 ${e.no} 題</span><span class="cbadge ${e.cert||'leader'}">${CNAME[e.cert||'leader']||''}</span><span class="ybadge">${e.y} 年</span>
       <span class="chip ${cls}">${e.type}</span><span class="chip c-t">${e.topic}</span>
-      ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}
+      ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}${SRS.badge(e)}
       <span class="stars">${stars(e.star)}</span>
       <button class="del" data-del="${e.id}" title="從錯題本移除">✕ 移除</button></div>
     ${(function(){const r=ENREAD.get(e.cert||'leader',e.y,e.no);return r?ENREAD.html(r,{open:mode!=='review',full:mode==='review',say:true}):'';})()}
@@ -255,14 +261,13 @@ function cardEl(e){
     if(mode!=='quiz'||el.dataset.done)return;
     el.dataset.done='1';
     const i=+b.dataset.i; reveal(i); el.classList.add('show');
-    if(SCORE.ok(e,i)){
-      const o=wbLoad(); delete o[e.id]; wbSave(o);
-      el.classList.add('mastered'); fb.textContent='✅ 答對了!已從錯題本移除'; fb.className='fb ok';
-      updCnt();
-    }else{
-      const o=wbLoad(); if(o[e.id]){o[e.id].wrong=(o[e.id].wrong||1)+1; o[e.id].picked=i; wbSave(o);}
-      fb.textContent='✗ 又錯了,正解是 '+SCORE.ansLabel(e)+' — 這題留在錯題本繼續練'; fb.className='fb no';
-    }
+    /* C9 間隔複習:到期答對 → 往後排 3/7/14 天,第 4 關答對才移出;答錯 → 回第 1 關明天再來 */
+    const ok=SCORE.ok(e,i), o=wbLoad(), raw=o[e.id];
+    const r=raw?SRS.answer(raw,ok):{act:ok?'mastered':'reset',box:0,days:1};
+    if(raw){if(r.act==='mastered')delete o[e.id];else if(!ok)raw.picked=i;wbSave(o);}
+    if(r.act==='mastered')el.classList.add('mastered');
+    fb.textContent=SRS.msg(r,SCORE.ansLabel(e)); fb.className='fb '+(ok?'ok':'no');
+    updCnt();buildFilters();
   }));
   el.querySelector('[data-del]').addEventListener('click',()=>{
     const o=wbLoad(); delete o[e.id]; wbSave(o);
@@ -281,7 +286,7 @@ function render(){
   updCnt();
   document.getElementById('hint').textContent = mode==='review'
     ? '複習模式:答案與完整詳解全部攤開;點 🔊 聽發音;「移除」把已會的題刪掉'
-    : '再測模式:先作答,答對自動移出錯題本,答錯留著繼續練';
+    : '再測模式:先作答;到期答對 → 依 3、7、14 天往後排,4 關都過就移出;答錯 → 明天重來';
   const total=allEntries().length;
   if(!total){
     app.innerHTML=`<div class="empty"><div class="ic">🗒️</div>
@@ -290,7 +295,7 @@ function render(){
       <p><a href="英語詳解.html?mode=test">✍️ 去英語詳解自測</a>　<a href="模擬測驗.html">📝 模擬測驗</a></p></div>`;
     return;
   }
-  if(!arr.length){app.innerHTML=`<div class="empty"><div class="ic">🔍</div><h2>這個篩選沒有錯題</h2><p>換個年份或題型看看。</p></div>`;return;}
+  if(!arr.length){app.innerHTML=fd==='due'?`<div class="empty"><div class="ic">🎉</div><h2>今天到期的都複習完了</h2><p>其他錯題依間隔排在之後的日子,明天再回來。</p></div>`:`<div class="empty"><div class="ic">🔍</div><h2>這個篩選沒有錯題</h2><p>換個年份或題型看看。</p></div>`;return;}
   app.innerHTML='';
   arr.forEach(e=>app.appendChild(cardEl(e)));
 }
@@ -301,6 +306,7 @@ app.addEventListener('click',e=>{const s=e.target.closest('.say');if(!s)return;e
 document.getElementById('fCert').addEventListener('click',e=>{const c=e.target.closest('[data-fc]');if(!c)return;fc=c.dataset.fc;fy='all';ft='all';buildFilters();render();});
 document.getElementById('fYear').addEventListener('click',e=>{const c=e.target.closest('[data-fy]');if(!c)return;fy=c.dataset.fy;buildFilters();render();});
 document.getElementById('fType').addEventListener('click',e=>{const c=e.target.closest('[data-ft]');if(!c)return;ft=c.dataset.ft;buildFilters();render();});
+document.getElementById('fDue').addEventListener('click',e=>{const c=e.target.closest('[data-fd]');if(!c)return;fd=c.dataset.fd;buildFilters();render();});
 const mReview=document.getElementById('mReview'),mQuiz=document.getElementById('mQuiz');
 mReview.onclick=()=>{mode='review';mReview.classList.add('on');mQuiz.classList.remove('on');render();};
 mQuiz.onclick=()=>{mode='quiz';mQuiz.classList.add('on');mReview.classList.remove('on');render();};
@@ -317,6 +323,7 @@ document.getElementById('clearBtn').onclick=function(){
 };
 
 SCORE.notice(document.getElementById('app'),SCORE.pruneWB(WB_KEY,(id,e)=>withCur(Object.assign({id:id},e))));
+if(mode==='quiz'){mQuiz.classList.add('on');mReview.classList.remove('on');}
 buildFilters();
 render();
 </script>

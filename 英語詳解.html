@@ -132,6 +132,7 @@
 <script src="prefs.js"></script>
 <script src="scoring.js"></script>
 <script src="notes.js"></script>
+<script src="srs.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="backlink.js" defer></script>
@@ -208,6 +209,8 @@ function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){
 function wbAdd(item,picked){var o=wbLoad(),id=CERT+'-'+YEAR+'-'+item.no,e=o[id]||{};
   o[id]={cert:CERT,y:YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
 function wbRemove(no){var o=wbLoad();delete o[CERT+'-'+YEAR+'-'+no];wbSave(o);}
+/* C9 錯題本裡的題目在這裡答對,視同一次間隔複習(到期才往後排,第 4 關答對才移出) */
+function wbCorrect(no){var o=wbLoad(),k=CERT+'-'+YEAR+'-'+no;if(!o[k])return;var r=SRS.answer(o[k],true);if(r.act==='mastered')delete o[k];wbSave(o);}
 
 function chip(v,t,on,attr){return `<button class="chip2 ${on?'on':''}" data-${attr}="${v}">${t}</button>`;}
 function buildFilters(){
@@ -320,7 +323,7 @@ document.getElementById('app').addEventListener('click',e=>{
   const opts=[...card.querySelectorAll('.opt')];
   opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
   opts.forEach((x,k)=>{const m=SCORE.mark(item,k,i);if(m[0]){x.classList.add(m[0]);x.querySelector('.mk').textContent=m[1];}});
-  if(!SCORE.ok(item,i)){wbAdd(item,i);}else{wbRemove(no);}
+  if(!SCORE.ok(item,i)){wbAdd(item,i);}else{wbCorrect(no);}
   card.classList.add('show');updateScore();
 });
 

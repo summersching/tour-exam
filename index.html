@@ -129,7 +129,8 @@
   .scard .empty{font-size:.95rem;font-weight:700}
   /* C2 智慧複習 */
   #reviewCard{margin-top:12px}
-  #examCard{margin-top:12px}
+  #examCard,#guideCard{margin-top:12px}
+  .xcard ol.steps{margin:4px 0 0;padding-left:22px} .xcard ol.steps li{margin:7px 0}
   .xcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
   .xcard>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;padding:14px 16px;flex-wrap:wrap}
   .xcard>summary::-webkit-details-marker{display:none}
@@ -161,6 +162,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="subjects.js"></script>
+<script src="srs.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>
@@ -218,6 +220,23 @@
   </details>
 </div>
 
+<div class="wrap" id="guideCard">
+  <details class="xcard" id="guideInfo">
+    <summary><span class="xh">🧭 建議使用順序</span><span class="xs">第一次用?照這個順序最有效</span></summary>
+    <div class="xb">
+      <ol class="steps">
+        <li><b>看詳解打底</b>:到「<a href="歷屆試題.html">歷屆試題</a>」先挑最近 2–3 屆,用複習模式把題目和解析看過一輪。</li>
+        <li><b>自測找弱點</b>:各科詳解切「自測模式」,或用「<a href="模擬測驗.html">模擬測驗</a>」隨機組卷;答錯的題目會自動收進錯題本。</li>
+        <li><b>每天清錯題</b>:點上方「今日複習」的科目,把今天到期的錯題做完;答對會依 3、7、14 天往後排,4 關都過就移出。</li>
+        <li><b>背高頻考點</b>:「考前衝刺」「考點速記」「法規速查」「英語 / 日語學習中心」,零碎時間背單字與重點。</li>
+        <li><b>考前整卷模擬</b>:最後兩週用「模擬測驗 → 整卷模擬 + 官方時間」,每週 2–3 份,目標穩定 70 分以上(及格線 60)。</li>
+        <li><b>外語導遊口試</b>:筆試後到「<a href="口試練習.html">口試練習</a>」用「口試模擬」計時練習、錄音回放。</li>
+      </ol>
+      <p class="xn">搭配「學習儀表板」看成績趨勢與弱點;「收藏與筆記」記下自己的口訣。</p>
+    </div>
+  </details>
+</div>
+
 <div class="wrap" id="main"></div>
 
 <footer>
@@ -238,7 +257,7 @@ const TOOLS = [
   { id:'wb',    name:'英語學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
   { id:'wbjp',  name:'日語學習中心', icon:'🎌', desc:'日語單字庫 1,712 詞 · 單字卡 · 讀音測驗', file:'日語學習中心.html', cat:'review', subj:['jp'] },
   { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語 · 日語 高頻必背 · 片語 · 易混字 · 敬語', file:'考前衝刺.html', cat:'review', subj:['en','jp'] },
-  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 跟讀', file:'口試練習.html', cat:'review', subj:['en','jp'] },
+  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 口試模擬(計時 + 錄音)', file:'口試練習.html', cat:'review', subj:['en','jp'] },
   { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
   { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 · 執業法規 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr','pr2'] },
   { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all' },
@@ -257,10 +276,11 @@ function match(t){return FILTER==='all'||t.subj==='all'||(Array.isArray(t.subj)&
 function toolCard(t){return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
     <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
 /* 錯題本快捷:與工具卡同款大卡(icon 底框 + 科目 + 題數說明 + 右側題數角標)*/
-function wchip(t){const n=t.wb?wbCount(t.wb):0;
+function wchip(t){let o={};try{o=JSON.parse(localStorage.getItem(t.wb)||'{}');}catch(e){}
+  const n=Object.keys(o).length,d=SRS.countDue(o);   // C9 角標 = 今天到期的題數
   return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
-    <div><div class="tt">${esc(t.name)}</div><div class="dd">${n?n+' 題待複習':'尚無錯題'}</div></div>
-    ${n?`<span class="wn">${n}</span>`:''}</a>`;}
+    <div><div class="tt">${esc(t.name)}</div><div class="dd">${n?(d?d+' 題今天要複習 · 共 '+n+' 題':'共 '+n+' 題 · 今天已複習完'):'尚無錯題'}</div></div>
+    ${d?`<span class="wn">${d}</span>`:''}</a>`;}
 
 function render(){
   let html=`<div class="subs subjbar">`+SUBJFILTERS.map(([k,n])=>
@@ -337,22 +357,21 @@ function renderStudyCard(){
 /* 規則:錯題上次接觸(ts)在今天之前 → 今天該再看一次;今天已複習(ts=今天)或答對移除者不再列入 */
 function renderReviewCard(){
   const box=document.getElementById('reviewCard'); if(!box)return;
-  const t0=new Date(); t0.setHours(0,0,0,0); const todayStart=t0.getTime();
+  /* C9 間隔複習:到期 = 依 1、3、7、14 天排程排到今天(srs.js) */
   let pool=0, due=0; const per={};
   SUBJ.forEach(s=>{
     let o={}; try{o=JSON.parse(LSg(s.wb)||'{}');}catch(e){}
-    const ids=Object.keys(o); let d=0;
-    ids.forEach(id=>{const ts=+(o[id]&&o[id].ts)||0; if(ts<todayStart)d++;});
+    const ids=Object.keys(o), d=ids.filter(id=>SRS.isDue(o[id])).length;
     per[s.k]={total:ids.length,due:d}; pool+=ids.length; due+=d;
   });
   if(!pool){box.innerHTML=''; return; }   // 沒有任何錯題就不顯示
   const chips=SUBJ.filter(s=>per[s.k].total>0).map(s=>{
     const p=per[s.k];
-    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}">${s.icon} ${s.name}<span class="b">${p.due?p.due:'✓'}</span></a>`;
+    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}${p.due?'?due=1':''}">${s.icon} ${s.name}<span class="b">${p.due?p.due:'✓'}</span></a>`;
   }).join('');
   const tip = due
-    ? `建議今天把這 <b>${due}</b> 題再做一次(答對即從錯題本移除),把記憶趁遺忘前補回來。`
-    : (pool? '🎉 今天的複習都完成了!錯題本還有 '+pool+' 題,明天會再排進來。' : '');
+    ? `今天到期 <b>${due}</b> 題,點科目直接開始複習。答對會依 3、7、14 天往後排,4 關都答對就移出錯題本;答錯明天重來。`
+    : '🎉 今天的複習都完成了!錯題本還有 '+pool+' 題,會依間隔排在之後的日子。';
   box.innerHTML=`<div class="rcard">
     <div class="top"><h3>🧠 今日複習</h3>${due?`<span class="due">待複習 ${due} 題</span>`:`<span class="due" style="color:var(--teal);background:var(--tealbg)">今日已完成</span>`}</div>
     <div class="chips">${chips}</div>
@@ -363,6 +382,11 @@ function renderReviewCard(){
 render();
 renderStudyCard();
 renderReviewCard();
+/* C11 建議使用順序:還沒有任何測驗紀錄的新使用者預設展開;之後記住展開狀態 */
+(function(){const d=document.getElementById('guideInfo');if(!d)return;let v=null;
+  try{v=localStorage.getItem('pref_guide_open');if(v===null)v=JSON.parse(localStorage.getItem('quiz_history')||'[]').length?'0':'1';}catch(e){}
+  d.open=v==='1';
+  d.addEventListener('toggle',function(){try{localStorage.setItem('pref_guide_open',d.open?'1':'0');}catch(e){}});})();
 /* B7 考試制度速覽:記住展開狀態 */
 (function(){const d=document.getElementById('examInfo');if(!d)return;
   try{if(localStorage.getItem('pref_exam_open')==='1')d.open=true;}catch(e){}

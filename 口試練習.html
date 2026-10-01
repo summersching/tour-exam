@@ -63,6 +63,27 @@
   .jz{font-size:.86rem;color:var(--sub);margin:-2px 0 8px 28px}
   .kwt{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}.kwt td{border-top:1px solid var(--line);padding:5px 6px}.kwt td:first-child{font-weight:700}
   .playall{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:3px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;margin-left:auto}
+  .mkrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .mkl{font-size:.8rem;font-weight:700;color:var(--sub);min-width:66px}
+  .mkopt{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:4px 13px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .mkopt.on{background:var(--hd2);color:#fff;border-color:var(--hd2)}
+  .mkh{font-weight:800;font-size:.92rem;margin:4px 0 8px}
+  .mkq0{margin:6px 0;font-size:.92rem}
+  .mkq{font-size:1.15rem;font-weight:700;color:var(--enk);margin:8px 0 2px;line-height:1.6}
+  .mkzh{font-size:.86rem;color:var(--sub);margin-bottom:8px}
+  .mkstage{font-size:1.25rem;font-weight:800;text-align:center;background:var(--enbg);border-radius:12px;padding:12px;margin:10px 0}
+  .mkstage.ans{background:#fde8e8;color:#b91c1c}
+  :root[data-theme="dark"] .mkstage.ans{background:#3a1a1a;color:#ff8080}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mkstage.ans{background:#3a1a1a;color:#ff8080}}
+  #mkTime{font-variant-numeric:tabular-nums;margin-left:6px}
+  .mkbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .mkbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 16px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit}
+  .mkbtn.pri{background:var(--hd2);border-color:var(--hd2);color:#fff;flex:1}
+  .mkhint{margin:6px 0;font-size:.85rem} .mkhint summary{cursor:pointer;color:var(--sub);font-weight:700} .mkhint .chip{display:inline-block;margin:4px 2px 0}
+  .mkref{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+  .mksum{border-top:1px solid var(--line);padding:9px 0}
+  .mkno{font-size:.8rem;color:var(--sub)} .mkerr{font-size:.82rem;color:#b45309;background:#fff4e5;border-radius:10px;padding:8px 12px;margin:8px 0}
+  .ocard audio{width:100%;margin:6px 0}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -71,6 +92,7 @@
 <script src="pwa.js" defer></script>
 <script src="oral.js"></script>
 <script src="oral_jp.js"></script>
+<script src="oral_mock.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -101,8 +123,8 @@
 
 <script>
 const CNAME={leader:'領隊',guide:'導遊'};
-const TABS={en:[['phrases','🗣️ 帶團實用句'],['topics','📋 口試主題準備']],jp:[['jphr','🗣️ 接待實用句'],['jtop','📋 口試主題範例']]};
-const SUBT={en:'帶團現場實用句 · 口試主題準備 · 點英文句跟讀',jp:'日語接待實用句 · 口試主題範例(附中譯與關鍵字)· 點日文句跟讀'};
+const TABS={en:[['phrases','🗣️ 帶團實用句'],['topics','📋 主題準備'],['mock','🎙 口試模擬']],jp:[['jphr','🗣️ 接待實用句'],['jtop','📋 主題範例'],['mock','🎙 口試模擬']]};
+const SUBT={en:'帶團現場實用句 · 口試主題準備 · 口試模擬(計時 + 錄音)',jp:'日語接待實用句 · 口試主題範例 · 口試模擬(計時 + 錄音)'};
 let LANG=(function(){try{return localStorage.getItem('pref_oral_lang')==='jp'?'jp':'en';}catch(e){return 'en';}})();
 let cur=TABS[LANG][0][0];
 const app=document.getElementById('app');
@@ -128,6 +150,9 @@ function introText(k,n){
   return '📋 <b>'+n+' 個</b>日語口試主題範例:自我介紹與台灣代表景點、美食、節慶。先聽、再跟讀,最後換成自己的話說說看。';
 }
 function render(){
+  const barEl=document.querySelector('.bar');
+  if(cur==='mock'){barEl.style.display='none';renderMock();return;}
+  barEl.style.display='';
   const kw=document.getElementById('q').value.trim().toLowerCase();
   let base, arr, html;
   if(cur==='jphr'){
@@ -156,11 +181,22 @@ function paintTabs(){
   document.getElementById('tabs').innerHTML=TABS[LANG].map(t=>'<button class="tab'+(t[0]===cur?' on':'')+'" data-k="'+t[0]+'">'+t[1]+'</button>').join('');
   document.getElementById('sub').textContent=SUBT[LANG];
 }
-document.getElementById('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;cur=t.dataset.k;
+document.getElementById('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;if(cur==='mock'&&t.dataset.k!=='mock'){mockStop();MOCK.set=null;}cur=t.dataset.k;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.getElementById('q').value='';render();});
 document.getElementById('q').addEventListener('input',render);
 app.addEventListener('click',e=>{
+  const mk=e.target.closest('[data-mk]');
+  if(mk){const a=mk.dataset.mk;
+    if(a==='start'){(async function(){await mockMic();mockStartQ();})();}
+    else if(a==='newset'||a==='again'){mockStop();mockNewSet();renderMock();}
+    else if(a==='go')mockAnswer();
+    else if(a==='done')mockDone();
+    else if(a==='next')mockNext();
+    else if(a==='say'){const x=MOCK.set[MOCK.i];speak(x.q,LANG==='jp'?'ja':'en');}
+    return;}
+  const ms=e.target.closest('[data-mkset]');
+  if(ms){const n=ms.dataset.mkset,v=+ms.dataset.v;if(n==='rec')MOCK.recOn=!!v;else MOCK[n]=v;MOCK.err='';mockSave();renderMock();return;}
   const pa=e.target.closest('.playall');if(pa){const x=ORALJP.topics[+pa.dataset.all];if(x)speak(x.ja.join(''),'ja');return;}
   const en=e.target.closest('.en');if(en)speak(en.dataset.say,en.dataset.lang);});
 (function(){
@@ -170,7 +206,7 @@ app.addEventListener('click',e=>{
   paint();
   bar.addEventListener('click',function(e){
     const l=e.target.closest('.cbtn[data-l]');
-    if(l){if(l.dataset.l===LANG)return;LANG=l.dataset.l;try{localStorage.setItem('pref_oral_lang',LANG);}catch(err){}
+    if(l){if(l.dataset.l===LANG)return;mockStop();MOCK.set=null;LANG=l.dataset.l;try{localStorage.setItem('pref_oral_lang',LANG);}catch(err){}
       paint();paintTabs();document.getElementById('q').value='';render();return;}
     const b=e.target.closest('.cbtn[data-c]');if(!b||b.dataset.c===CERT)return;
     CERT=b.dataset.c;
@@ -178,6 +214,84 @@ app.addEventListener('click',e=>{
     paint();render();
   });
 })();
+/* ===== C10 口試模擬:三大部分各抽 1 題 → 準備 → 計時作答(可錄音)→ 回放 + 參考範例 ===== */
+const MOCK={set:null,i:0,phase:'intro',left:0,timer:null,stream:null,rec:null,chunks:[],audio:[],err:'',prep:30,dur:120,recOn:true};
+(function(){try{const s=JSON.parse(localStorage.getItem('pref_oral_mock')||'{}');if(s.prep!=null)MOCK.prep=+s.prep;if(s.dur)MOCK.dur=+s.dur;if(s.rec!=null)MOCK.recOn=!!s.rec;}catch(e){}})();
+const CAN_REC=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
+function mockSave(){try{localStorage.setItem('pref_oral_mock',JSON.stringify({prep:MOCK.prep,dur:MOCK.dur,rec:MOCK.recOn}));}catch(e){}}
+function mockNewSet(){
+  MOCK.audio.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});
+  const P=LANG==='jp'?ORALMOCK.jp:ORALMOCK.en;
+  const pick=p=>{const a=P.filter(x=>x.p===p);return a[Math.floor(Math.random()*a.length)];};
+  MOCK.set=[pick(1),pick(2),pick(3)];MOCK.i=0;MOCK.audio=[];MOCK.phase='intro';MOCK.err='';
+}
+function mockClear(){if(MOCK.timer){clearInterval(MOCK.timer);MOCK.timer=null;}}
+function recStop(){if(MOCK.rec&&MOCK.rec.state!=='inactive'){try{MOCK.rec.stop();}catch(e){}}MOCK.rec=null;}
+function mockStop(){mockClear();recStop();if(MOCK.stream){MOCK.stream.getTracks().forEach(t=>t.stop());MOCK.stream=null;}}
+async function mockMic(){   // 在「開始模擬」按下時就要麥克風權限(手機瀏覽器需要使用者操作才肯開)
+  if(!MOCK.recOn||!CAN_REC)return false;
+  if(MOCK.stream)return true;
+  try{MOCK.stream=await navigator.mediaDevices.getUserMedia({audio:true});return true;}
+  catch(e){MOCK.recOn=false;MOCK.err='無法使用麥克風(沒有授權或裝置不支援),這次先不錄音,其餘照常進行。';return false;}
+}
+function recStart(){
+  if(!MOCK.stream)return;
+  const idx=MOCK.i;MOCK.chunks=[];
+  let r;try{r=new MediaRecorder(MOCK.stream);}catch(e){return;}
+  r.ondataavailable=e=>{if(e.data&&e.data.size)MOCK.chunks.push(e.data);};
+  r.onstop=()=>{if(MOCK.chunks.length)MOCK.audio[idx]=URL.createObjectURL(new Blob(MOCK.chunks,{type:r.mimeType||'audio/webm'}));if(cur==='mock')renderMock();};
+  r.start();MOCK.rec=r;
+}
+function fmtT(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function mockTick(){
+  MOCK.left--;
+  const el=document.getElementById('mkTime');if(el)el.textContent=fmtT(MOCK.left);
+  if(MOCK.left<=0){mockClear();if(MOCK.phase==='prep')mockAnswer();else if(MOCK.phase==='answer')mockDone();}
+}
+function mockStartQ(){mockClear();if(MOCK.prep>0){MOCK.phase='prep';MOCK.left=MOCK.prep;renderMock();MOCK.timer=setInterval(mockTick,1000);}else mockAnswer();}
+function mockAnswer(){mockClear();MOCK.phase='answer';MOCK.left=MOCK.dur;recStart();renderMock();MOCK.timer=setInterval(mockTick,1000);}
+function mockDone(){mockClear();recStop();MOCK.phase='done';renderMock();}
+function mockNext(){if(MOCK.i<2){MOCK.i++;mockStartQ();}else{MOCK.phase='summary';mockClear();recStop();renderMock();setTimeout(function(){if(MOCK.phase==='summary'&&MOCK.stream){MOCK.stream.getTracks().forEach(t=>t.stop());MOCK.stream=null;}},800);}}
+function kwList(x){return LANG==='jp'?((ORALJP.topics[x.ref]||{}).kw||[]).map(w=>w[0]+(w[1]?'('+w[1]+')':'')+' '+(w[2]||'')):x.kw.map(w=>w[0]+' '+w[1]);}
+function kwHint(x){const k=kwList(x);return k.length?'<details class="mkhint"><summary>💡 提示關鍵字</summary>'+k.map(t=>'<span class="chip">'+esc(t)+'</span>').join(' ')+'</details>':'';}
+function refHtml(x){
+  if(LANG==='jp'){const t=ORALJP.topics[x.ref];if(!t)return '';
+    return '<div class="mkref"><div class="mkh">📖 參考回答(日語範例 · 點句子跟讀)</div>'+t.ja.map((s,k)=>jaRow(s)+'<div class="jz">'+esc(t.zh[k]||'')+'</div>').join('')+
+      (t.kw&&t.kw.length?'<table class="kwt">'+t.kw.map(w=>'<tr><td>'+esc(w[0])+'</td><td>'+esc(w[1]||'')+'</td><td>'+esc(w[2]||'')+'</td></tr>').join('')+'</table>':'')+'</div>';}
+  return '<div class="mkref"><div class="mkh">📖 參考回答(英語範例 · 點句子跟讀)</div><div class="ens">'+enRows(x.sample)+'</div>'+
+    '<table class="kwt">'+x.kw.map(w=>'<tr><td>'+esc(w[0])+'</td><td>'+esc(w[1])+'</td></tr>').join('')+'</table></div>';
+}
+function mkOpt(n,v,curV,label){return '<button class="mkopt'+(curV===v?' on':'')+'" data-mkset="'+n+'" data-v="'+v+'">'+label+'</button>';}
+function renderMock(){
+  if(!MOCK.set)mockNewSet();
+  const L=LANG==='jp'?'日語':'英語';
+  let h='<div class="intro">🎙 <b>外語導遊口試模擬('+L+')</b>:依官方口試三大部分——<b>自我介紹</b>、<b>本國文化與國情</b>、<b>風景、節慶與美食</b>,每部分抽 1 題。正式口試每人約 10–12 分鐘(115 年簡章)。錄音只在這台裝置播放,不會上傳,離開頁面就消失。</div>';
+  if(MOCK.err)h+='<div class="mkerr">'+esc(MOCK.err)+'</div>';
+  if(MOCK.phase==='intro'){
+    h+='<div class="ocard"><div class="mkrow"><span class="mkl">準備時間</span>'+mkOpt('prep',0,MOCK.prep,'不準備')+mkOpt('prep',30,MOCK.prep,'30 秒')+mkOpt('prep',60,MOCK.prep,'1 分鐘')+'</div>'+
+       '<div class="mkrow"><span class="mkl">每題作答</span>'+mkOpt('dur',60,MOCK.dur,'1 分鐘')+mkOpt('dur',120,MOCK.dur,'2 分鐘')+mkOpt('dur',180,MOCK.dur,'3 分鐘')+'</div>'+
+       '<div class="mkrow"><span class="mkl">錄音回放</span>'+(CAN_REC?mkOpt('rec',1,MOCK.recOn?1:0,'開')+mkOpt('rec',0,MOCK.recOn?1:0,'關'):'<span class="mkno">這個瀏覽器不支援錄音,會只計時</span>')+'</div></div>';
+    h+='<div class="ocard"><div class="mkh">這次抽到的題目</div>'+MOCK.set.map((x,k)=>'<div class="mkq0"><span class="chip">'+(k+1)+'. '+ORALMOCK.parts[x.p]+'</span> '+esc(x.zh)+'</div>').join('')+
+       '<div class="mkbtns"><button class="mkbtn pri" data-mk="start">▶ 開始模擬</button><button class="mkbtn" data-mk="newset">🔀 換一組題目</button></div></div>';
+  }else if(MOCK.phase==='summary'){
+    h+='<div class="ocard"><div class="mkh">🎉 模擬完成!回放自己的回答,對照參考範例再練一次</div>'+MOCK.set.map((x,k)=>'<div class="mksum"><div><span class="chip">'+(k+1)+'. '+ORALMOCK.parts[x.p]+'</span> '+esc(x.q)+'</div>'+
+       (MOCK.audio[k]?'<audio controls src="'+MOCK.audio[k]+'"></audio>':'<div class="mkno">(這題沒有錄音)</div>')+'</div>').join('')+
+       '<div class="mkbtns"><button class="mkbtn pri" data-mk="again">🔀 再來一組</button></div></div>';
+  }else{
+    const x=MOCK.set[MOCK.i];
+    h+='<div class="ocard"><div class="ohead"><span class="chip">第 '+(MOCK.i+1)+'/3 題 · '+ORALMOCK.parts[x.p]+'</span><button class="playall" data-mk="say">🔊 聽題目</button></div>'+
+       '<div class="mkq">'+esc(x.q)+'</div><div class="mkzh">'+esc(x.zh)+'</div>';
+    if(MOCK.phase==='prep')h+='<div class="mkstage">準備中 <span id="mkTime">'+fmtT(MOCK.left)+'</span></div>'+kwHint(x)+'<div class="mkbtns"><button class="mkbtn pri" data-mk="go">開始回答</button></div>';
+    else if(MOCK.phase==='answer')h+='<div class="mkstage ans">'+(MOCK.rec?'🔴 錄音中':'⏱ 作答中')+' <span id="mkTime">'+fmtT(MOCK.left)+'</span></div>'+kwHint(x)+'<div class="mkbtns"><button class="mkbtn pri" data-mk="done">✓ 回答完畢</button></div>';
+    else h+=(MOCK.audio[MOCK.i]?'<div class="mkh">🎧 你的回答</div><audio controls src="'+MOCK.audio[MOCK.i]+'"></audio>':'')+refHtml(x)+
+         '<div class="mkbtns"><button class="mkbtn pri" data-mk="next">'+(MOCK.i<2?'下一題 →':'看總結')+'</button></div>';
+    h+='</div>';
+  }
+  h+='<p class="tip">💡 回答技巧:先用一句話點題,再講 2–3 個重點(地點 / 特色 / 推薦),最後一句收尾。卡住時放慢,不必追求完美。</p>';
+  app.innerHTML=h;
+}
+window.addEventListener('pagehide',mockStop);
+document.addEventListener('visibilitychange',function(){if(document.hidden&&(MOCK.phase==='prep'||MOCK.phase==='answer'))mockDone();});
 paintTabs();
 render();
 </script>
