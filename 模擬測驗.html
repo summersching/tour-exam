@@ -377,7 +377,7 @@ function buildSetup(){
   mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'},{v:'閱讀',t:'閱讀'}],'type');
   mkChips('sTopic',[{v:'all',t:'全部'},{v:'史',t:'🏛 歷史'},{v:'地',t:'🗺 地理'},{v:'維護',t:'🛡 資源維護'}],'gtopic');
   mkChips('sNum',[{v:10,t:'10 題'},{v:20,t:'20 題'},{v:30,t:'30 題'},{v:50,t:'50 題'}],'num');
-  mkChips('sTime',[{v:0,t:'不限時'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
+  mkChips('sTime',[{v:0,t:'不限時'},{v:-1,t:'官方時間'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
   syncSubjectUI();
   updateModeUI();
   updAvail();
@@ -387,10 +387,17 @@ function pool(){
     &&(cfg.gtopic==='all'||(ghData(q)&&ghData(q).t===cfg.gtopic)));
   return enBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
 }
-function updAvail(){const n=pool().length;
-  document.getElementById('avail').textContent = cfg.mode==='whole'
+/* A3 官方時間:官方試卷(106–115 年)每卷考試時間——執業實務 / 執業法規 / 觀光資源概要 1 小時,外語 1 小時 20 分;
+   隨機組卷依官方節奏換算(非外語每題 1.2 分鐘、外語每題 1 分鐘) */
+function isLang(){return cfg.subj==='en'||cfg.subj==='jp';}
+function officialMin(n){if(cfg.mode==='whole')return isLang()?80:60;return Math.max(1,Math.ceil(n*(isLang()?1:1.2)));}
+function timeMin(n){return cfg.time===-1?officialMin(n):cfg.time;}
+function updAvail(){const n=pool().length, m=cfg.mode==='whole'?n:Math.min(cfg.num,n);
+  const oc=document.querySelector('#sTime [data-v="-1"]');if(oc)oc.textContent='官方時間 '+officialMin(m)+' 分';
+  const lim=cfg.time===-1?' · 限時 '+officialMin(m)+' 分(官方)':'';
+  document.getElementById('avail').textContent = (cfg.mode==='whole'
     ? '整卷:'+CNAME[cfg.cert]+' '+cfg.year+' 年共 '+n+' 題 · 依題號順序作答 · 交卷後看及格判定(60%)'
-    : '符合條件題數:'+n+' 題,將隨機抽 '+Math.min(cfg.num,n)+' 題';}
+    : '符合條件題數:'+n+' 題,將隨機抽 '+m+' 題')+lim;}
 
 /* ===== 作答 ===== */
 let paper=[],picks={},timerId=null,remain=0,warned5=false;
@@ -399,7 +406,7 @@ const DRAFT_KEY='quiz_draft';
 function saveDraft(){ if(!paper.length||document.getElementById('quiz').dataset.done)return;
   try{localStorage.setItem(DRAFT_KEY,JSON.stringify({
     cfg:cfg, refs:paper.map(q=>({c:q.c,y:q.y,no:q.no})), picks:picks,
-    remain:(cfg.time>0?remain:0), ts:Date.now()
+    remain:(timeMin(paper.length)>0?remain:0), ts:Date.now()
   }));}catch(e){}}
 function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
 function loadDraft(){try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');}catch(e){return null;}}
@@ -418,7 +425,7 @@ function startQuiz(){
   document.getElementById('result').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
   renderPaper(); updProg(); buildNav(); window.scrollTo(0,0);
-  if(cfg.time>0){remain=cfg.time*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
+  const tm=timeMin(paper.length);if(tm>0){remain=tm*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
 }
 /* B2 從草稿接續作答 */
 function resumeQuiz(d){
@@ -433,7 +440,7 @@ function resumeQuiz(d){
   renderPaper(); updProg(); buildNav();
   Object.keys(picks).forEach(qi=>{const b=document.querySelector('.opt[data-qi="'+qi+'"][data-i="'+picks[qi]+'"]');if(b)b.classList.add('sel');});
   updNav();
-  if(cfg.time>0){remain=d.remain||cfg.time*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
+  const tm=timeMin(paper.length);if(tm>0){remain=d.remain||tm*60;startTimer();}else{document.getElementById('timer').classList.add('hidden');}
   window.scrollTo(0,0);
 }
 /* B3 題號答題卡 */
@@ -469,7 +476,7 @@ function renderPaper(){
 function updProg(){const done=Object.keys(picks).length;document.getElementById('prog').innerHTML=`已答 <b>${done}</b> / ${paper.length}`;}
 function startTimer(){const t=document.getElementById('timer');t.classList.remove('hidden');
   function tick(){const m=Math.floor(remain/60),s=remain%60;t.textContent='⏱ '+m+':'+(s<10?'0':'')+s;t.classList.toggle('warn',remain<=60);
-    if(cfg.time>5 && !warned5 && remain<=300 && remain>0){warned5=true;qtoast('⏰ 剩 5 分鐘,把握時間');}   // B6 五分鐘提醒
+    if(timeMin(paper.length)>5 && !warned5 && remain<=300 && remain>0){warned5=true;qtoast('⏰ 剩 5 分鐘,把握時間');}   // B6 五分鐘提醒
     if(remain%10===0)saveDraft();   // B2 定時保存進度
     if(remain<=0){clearInterval(timerId);submit(true);return;}remain--;}
   tick();timerId=setInterval(tick,1000);}
@@ -518,8 +525,10 @@ function showResult(correct,wrong){
   document.getElementById('result').classList.remove('hidden');
   const n=paper.length,pct=Math.round(correct/n*100);
   document.getElementById('scNum').textContent=correct+' / '+n;
+  /* 及格:各科平均滿 60;外語類的外語科另需滿 50(114 年評量測驗簡章) */
+  const judge=pct>=60?'✅ 達及格線 60':(isLang()&&pct>=50)?'⚠️ 已過外語科門檻 50,但各科平均要滿 60 才及格':isLang()?'❌ 未達外語科門檻 50':'❌ 未達 60,再加強';
   document.getElementById('scSub').textContent = cfg.mode==='whole'
-    ? '答對率 '+pct+'%　'+(pct>=60?'✅ 達及格標準(60%)':'❌ 未達 60%,再加強')
+    ? '答對率 '+pct+'%　'+judge
     : '答對率 '+pct+'%　'+(pct>=80?'🎉 很棒!':pct>=60?'👍 再加強':'💪 多練幾組');
   const wbn=wrong.filter(qi=>picks[qi]!=null).length;
   var wbName=cfg.subj==='gh'?'觀光':cfg.subj==='pr'?'執業實務':cfg.subj==='pr2'?'執業法規':cfg.subj==='jp'?'日語':'';
@@ -592,7 +601,7 @@ function applyQueryPreset(){
   const cert=qp.get('cert'); if(cert==='leader'||cert==='guide'||cert==='all')cfg.cert=cert;
   const topic=qp.get('topic'); if(topic&&cfg.subj==='gh'&&['史','地','維護'].includes(topic))cfg.gtopic=topic;
   const num=+qp.get('num'); if([10,20,30,50].indexOf(num)>=0)cfg.num=num;
-  const time=+qp.get('time'); if([0,15,25,40].indexOf(time)>=0)cfg.time=time;
+  const time=+qp.get('time'); if([0,-1,15,25,40].indexOf(time)>=0)cfg.time=time;
   return qp.get('auto')==='1';
 }
 buildSetup();

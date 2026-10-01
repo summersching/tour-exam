@@ -55,7 +55,15 @@
         'color:var(--ink,#1c2330);border-radius:10px;padding:7px 4px;cursor:pointer;font-size:13px;',
         'font-weight:700;font-family:inherit;transition:.12s;white-space:nowrap}',
       '#prefsPanel .pbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}',
-      '#prefsPanel .aa1{font-size:12px} #prefsPanel .aa2{font-size:15px} #prefsPanel .aa3{font-size:17px} #prefsPanel .aa4{font-size:19px}'
+      '#prefsPanel .aa1{font-size:12px} #prefsPanel .aa2{font-size:15px} #prefsPanel .aa3{font-size:17px} #prefsPanel .aa4{font-size:19px}',
+      /* A2 觸控裝置(手機 / 平板)放大點擊範圍;滑鼠操作的電腦版外觀不變 */
+      '@media (pointer:coarse){',
+        '.chip2,.schip,.cbtn,.vbtn,.sbtn,.mbtn,.tabbtn,button[data-f],button[data-si]{min-height:34px}',
+        '.tchip,.fchip,.home{min-height:34px;display:inline-flex;align-items:center}',
+        'a.hit{min-height:30px;display:inline-flex;align-items:center}',
+        '.favbtn{min-width:36px;min-height:36px}',
+      '}',
+      '@media print{.home{display:none!important}}'
     ].join('');
     document.head.appendChild(css);
 

@@ -62,7 +62,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>🔎 全站搜尋</h1>
-  <p>跨五科 · 搜題幹 / 選項關鍵字 · 直達該題詳解</p>
+  <p>跨五科 · 搜題幹 / 選項 / 閱讀文章 · 直達該題詳解</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
@@ -77,13 +77,17 @@
 const CNAME={leader:'領隊',guide:'導遊'};
 /* 各題庫皆為 classic script 的 top-level const,須用裸名取用(window.X 取不到);typeof 防未載入 */
 const SRC=[
-  {k:'en', name:'英語', color:'#2563eb', bank:()=>(typeof BANK!=='undefined'?BANK:null),     page:q=>`英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
+  {k:'en', name:'英語', color:'#2563eb', bank:()=>(typeof BANK!=='undefined'?(typeof ENREAD!=='undefined'?BANK.concat(ENREAD.list()):BANK):null), page:q=>`英語詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
   {k:'jp', name:'日語', color:'#e11d48', bank:()=>(typeof JPBANK!=='undefined'?JPBANK:null), page:q=>`日文詳解.html?cert=${q.c}&year=${q.y}#q${q.no}`},
   {k:'gh', name:'觀光', color:'#0d9488', bank:()=>(typeof GHBANK!=='undefined'?GHBANK:null), page:q=>`觀光複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
   {k:'pr', name:'執業實務', color:'#b45309', bank:()=>(typeof PRBANK!=='undefined'?PRBANK:null), page:q=>`執業實務複習.html?cert=${q.c}&year=${q.y}#q${q.no}`},
   {k:'pr2',name:'執業法規', color:'#7c3aed', bank:()=>(typeof PR2BANK!=='undefined'?PR2BANK:null),page:q=>`執業法規複習.html?cert=${q.c}&year=${q.y}#q${q.no}`}
 ];
 const CAP=120;
+/* A4 閱讀題:英語 71–80(en_review + enread)與日語讀解(jp_psg)的文章本文也能搜;同一篇文章只列一次 */
+const PSG_TXT=new Map();
+function psgOf(k,q){if(k==='en')return q.psg||null;if(k==='jp'&&typeof JPREAD!=='undefined')return JPREAD.get(q.c,q.y,q.no);return null;}
+function psgText(p){if(!PSG_TXT.has(p))PSG_TXT.set(p,(p.text||[]).join(' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' '));return PSG_TXT.get(p);}
 let filter='all', timer=null;
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function hl(text,kw){const t=esc(text);if(!kw)return t;
@@ -99,20 +103,26 @@ function search(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
   const list=document.getElementById('list'), cnt=document.getElementById('cnt');
   if(kw.length<2){list.innerHTML=`<div class="empty"><div class="ic">🔎</div><p>輸入至少 2 個字開始搜尋<br><small>可搜中文考點、英文單字、日文假名/漢字</small></p></div>`;cnt.textContent='';return;}
-  let hits=[],truncated=false;
+  let hits=[],truncated=false;const seenP=new Set();
   for(const s of SRC){
     if(filter!=='all'&&filter!==s.k)continue;
     const bank=s.bank(); if(!bank)continue;
     for(const q of bank){
       const hay=(q.stem+' '+(q.opts||[]).join(' ')).toLowerCase();
-      if(hay.indexOf(kw)>=0){ hits.push({s,q}); if(hits.length>=CAP){truncated=true;break;} }
+      let ps=null;
+      if(hay.indexOf(kw)<0){
+        const p=psgOf(s.k,q);if(!p||seenP.has(p))continue;
+        const pt=psgText(p),i=pt.toLowerCase().indexOf(kw);if(i<0)continue;
+        seenP.add(p);ps=(i>28?'…':'')+pt.slice(Math.max(0,i-28),i+kw.length+40)+'…';
+      }
+      hits.push({s,q,ps}); if(hits.length>=CAP){truncated=true;break;}
     }
     if(truncated)break;
   }
   cnt.textContent = hits.length? ('找到 '+hits.length+(truncated?'+ (僅顯示前'+CAP+'筆,請再縮小關鍵字)':'')+' 筆') : '';
   if(!hits.length){list.innerHTML=`<div class="empty"><div class="ic">🕳️</div><p>找不到「${esc(kw)}」<br><small>換個關鍵字,或到各科詳解逐題看</small></p></div>`;return;}
   const rawKw=document.getElementById('q').value.trim();
-  list.innerHTML=hits.map(({s,q})=>{
+  list.innerHTML=hits.map(({s,q,ps})=>{
     const opt=(q.opts||[]).find(o=>String(o).toLowerCase().indexOf(kw)>=0);
     const stem=String(q.stem).replace('__BLANK__','（　）');
     return `<a class="card" href="${s.page(q)}">
@@ -121,6 +131,7 @@ function search(){
         <span class="go">看詳解 ›</span></div>
       <div class="stem">${hl(stem,rawKw)}</div>
       ${opt?`<div class="opt">${hl(String(opt),rawKw)}</div>`:''}
+      ${ps?`<div class="opt">📖 閱讀文章:${hl(ps,rawKw)}</div>`:''}
     </a>`;
   }).join('');
 }
@@ -129,6 +140,13 @@ document.getElementById('subs').addEventListener('click',e=>{const b=e.target.cl
   filter=b.dataset.k;buildSubs();search();});
 buildSubs();search();
 document.getElementById('q').focus();
+/* 英語閱讀題與英日閱讀文章資料較大(約 1.5 MB),頁面開好後才背景載入,不拖慢開頁 */
+function loadJs(src){return new Promise((ok,no)=>{const t=document.createElement('script');t.src=src;t.onload=ok;t.onerror=no;document.head.appendChild(t);});}
+setTimeout(function(){
+  Promise.all([loadJs('en_review.js').then(()=>loadJs('enread.js')),loadJs('jp_psg.js')])
+    .then(function(){buildSubs();if(document.getElementById('q').value.trim().length>=2)search();})
+    .catch(function(){});
+},200);
 </script>
 </body>
 </html>
