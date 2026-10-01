@@ -10,16 +10,19 @@
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;
     --sel:#c2410c;--hd1:#9a3412;--hd2:#c2410c;--chipbg:#fdeee5;--chipk:#c2410c;
     --freq:#ea580c;--ok:#15904a;--no:#c62a2a;--shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+    --gbg:#e5f6ec;--gk:#15904a;
   }
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;
     --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
     --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
+    --gbg:#173023;--gk:#5ad48a;
   }}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;
     --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
     --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
+    --gbg:#173023;--gk:#5ad48a;
   }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
@@ -56,6 +59,9 @@
   ul.pts li b{color:var(--ink)} ul.pts li b.ac{color:var(--ok)} ul.pts li b.wr{color:var(--no)}
   .empty{text-align:center;color:var(--sub);padding:50px 10px}
   .tip{font-size:.76rem;color:var(--sub);background:var(--chipbg);border-radius:10px;padding:9px 12px;margin:14px 0 2px}
+  a.qs{display:inline-block;font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;margin-left:4px;line-height:1.7;white-space:nowrap;vertical-align:1px}
+  a.qs.l{background:var(--chipbg);color:var(--chipk)} a.qs.g{background:var(--gbg);color:var(--gk)}
+  .qmore{font-size:.68rem;color:var(--sub);margin-left:4px;white-space:nowrap}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -82,7 +88,7 @@
 </div></div>
 
 <div class="wrap">
-  <div class="tip">💡 依「大類 → 細類」按<b>考試頻率</b>排序,數字=考過次數。點大類展開,右側越紅的越常考,優先背。</div>
+  <div class="tip">💡 依「大類 → 細類」按<b>考試頻率</b>排序,數字=考過次數。點大類展開,右側越紅的越常考,優先背。每條後面的「領 / 導 年-題號」可點,跳回原題看完整解析。</div>
   <div id="app"></div>
 </div>
 
@@ -91,6 +97,12 @@ let SUBJ=(function(){try{const v=localStorage.getItem('pref_sprintcn_subj');retu
 const app=document.getElementById('app');
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function plain(s){return String(s).replace(/<[^>]+>/g,'');}
+/* B8 出處題號:每條重點附來源題,點了跳到該科複習頁的那一題(最多列 3 題) */
+const PAGE={gh:'觀光複習.html',pr:'執業實務複習.html',pr2:'執業法規複習.html'};
+function srcHtml(refs){if(!refs||!refs.length)return '';
+  const a=refs.slice(0,3).map(r=>{const m=r.match(/^([gl])(\d+)-(\d+)$/);if(!m)return '';const c=m[1]==='g'?'guide':'leader';
+    return `<a class="qs ${m[1]}" href="${PAGE[SUBJ]}?cert=${c}&amp;year=${m[2]}#q${m[3]}" title="${m[1]==='g'?'導遊':'領隊'} ${m[2]} 年第 ${m[3]} 題">${m[1]==='g'?'導':'領'}${m[2]}-${m[3]}</a>`;}).join('');
+  return a+(refs.length>3?`<span class="qmore">等 ${refs.length} 題</span>`:'');}
 
 function render(){
   const data=(typeof SPRINTCN!=='undefined')&&SPRINTCN[SUBJ];
@@ -102,8 +114,8 @@ function render(){
     if(kw){
       items=items.map(it=>{
         if(it.tt.toLowerCase().includes(kw))return it;
-        const pts=it.pts.filter(p=>plain(p).toLowerCase().includes(kw));
-        return pts.length?{tt:it.tt,n:it.n,pts:pts}:null;
+        const ix=it.pts.map((p,i)=>i).filter(i=>plain(it.pts[i]).toLowerCase().includes(kw));
+        return ix.length?{tt:it.tt,n:it.n,pts:ix.map(i=>it.pts[i]),src:ix.map(i=>(it.src||[])[i])}:null;
       }).filter(Boolean);
       if(!items.length)return;
     }
@@ -112,7 +124,7 @@ function render(){
     items.forEach(it=>{
       shownPts+=it.pts.length;
       body+=`<div class="tt"><span class="ttn">${esc(it.tt)}</span><span class="freq">${it.n}×</span></div>`;
-      body+=`<ul class="pts">${it.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+      body+=`<ul class="pts">${it.pts.map((p,i)=>`<li>${p}${srcHtml((it.src||[])[i])}</li>`).join('')}</ul>`;
     });
     html+=`<details class="grp"${open}><summary><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
   });

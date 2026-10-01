@@ -129,6 +129,21 @@
   .scard .empty{font-size:.95rem;font-weight:700}
   /* C2 智慧複習 */
   #reviewCard{margin-top:12px}
+  #examCard{margin-top:12px}
+  .xcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .xcard>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;padding:14px 16px;flex-wrap:wrap}
+  .xcard>summary::-webkit-details-marker{display:none}
+  .xcard>summary::after{content:"▸";margin-left:auto;color:var(--sub);transition:.2s}
+  .xcard[open]>summary::after{transform:rotate(90deg)}
+  .xcard .xh{font-weight:800;font-size:1.02rem} .xcard .xs{font-size:.78rem;color:var(--sub)}
+  .xcard .xb{padding:0 16px 14px;font-size:.88rem;line-height:1.65}
+  .xcard h4{margin:12px 0 5px;font-size:.92rem;color:var(--accent)}
+  .xcard ul{margin:0;padding-left:20px} .xcard li{margin:3px 0}
+  .xcard table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .xcard th,.xcard td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .xcard th{background:var(--bg);font-weight:700}
+  .xcard .xn{font-size:.78rem;color:var(--sub);margin:10px 0 0}
+  .xcard a{color:var(--accent);font-weight:700}
   .rcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
   .rcard .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
   .rcard h3{margin:0;font-size:1.02rem}
@@ -161,6 +176,48 @@
 
 <div class="wrap" id="reviewCard"></div>
 
+<div class="wrap" id="examCard">
+  <details class="xcard" id="examInfo">
+    <summary><span class="xh">📋 考試制度速覽</span><span class="xs">依 115 年官方簡章 · 點開</span></summary>
+    <div class="xb">
+      <h4>考哪些科目</h4>
+      <table>
+        <tr><th>類科</th><th>筆試科目</th></tr>
+        <tr><td>華語導遊 / 華語領隊</td><td>執業實務、執業法規、觀光資源概要(3 科)</td></tr>
+        <tr><td>外語導遊 / 外語領隊</td><td>上面 3 科 + 外國語(導遊:英、日、韓、越、馬來語;領隊:英、日、韓語)</td></tr>
+        <tr><td>外語導遊</td><td>筆試及格後再考<b>口試</b></td></tr>
+      </table>
+      <h4>題數與時間</h4>
+      <ul>
+        <li>專業科目:每科 <b>50 題</b>、每題 2 分、<b>1 小時</b></li>
+        <li>外國語:<b>80 題</b>、每題 1.25 分、<b>1 小時 20 分</b></li>
+        <li>全部是選擇題,不能用計算機;開考 15 分鐘後不能入場、45 分鐘內不能離場</li>
+      </ul>
+      <h4>及格標準</h4>
+      <ul>
+        <li>各科<b>平均滿 60 分</b></li>
+        <li>外語類:平均滿 60,且<b>外國語滿 50 分</b>(外語科以外 3 科免測者:外國語滿 60)</li>
+        <li>缺考視為 0 分;<b>任一科 0 分不及格</b></li>
+        <li>外語導遊口試:口試委員評分平均滿 60 分</li>
+      </ul>
+      <h4>外語導遊口試</h4>
+      <ul>
+        <li>每人約 10–12 分鐘,在臺北考區舉行</li>
+        <li>三大部分:<b>自我介紹</b>、<b>本國文化與國情</b>、<b>風景、節慶與美食</b> → 可到「<a href="口試練習.html">口試練習</a>」準備</li>
+      </ul>
+      <h4>115 年時程(參考)</h4>
+      <table>
+        <tr><td>筆試報名</td><td>114/12/9 – 12/18</td></tr>
+        <tr><td>筆試</td><td>115/3/14(領隊)、3/15(導遊)</td></tr>
+        <tr><td>試題疑義</td><td>考後 3/16 – 3/18 線上提出</td></tr>
+        <tr><td>口試報名</td><td>115/4/28 – 5/4</td></tr>
+        <tr><td>口試</td><td>115/5/23(英語)、5/24(日語等其他語言)</td></tr>
+      </table>
+      <p class="xn">報名資格:高中(職)以上畢業或同等學力。另有「專用制外語導遊 / 領隊」(旅行業現職 2 年以上、由公司推薦,考「執業實務及法規」+ 外國語)。116 年簡章以交通部觀光署公告為準;往年約 11 月公告、12 月報名、隔年 3 月中筆試。報名網站:register-exam.tad.gov.tw</p>
+    </div>
+  </details>
+</div>
+
 <div class="wrap" id="main"></div>
 
 <footer>
@@ -178,7 +235,8 @@ const TOOLS = [
   { id:'past',  name:'歷屆試題', icon:'📚', desc:'五科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
   { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
   { id:'search',name:'全站搜尋', icon:'🔎', desc:'跨五科搜題幹 / 關鍵字 · 直達詳解', file:'搜尋.html', cat:'do', subj:'all' },
-  { id:'wb',    name:'學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
+  { id:'wb',    name:'英語學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
+  { id:'wbjp',  name:'日語學習中心', icon:'🎌', desc:'日語單字庫 1,712 詞 · 單字卡 · 讀音測驗', file:'日語學習中心.html', cat:'review', subj:['jp'] },
   { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語 · 日語 高頻必背 · 片語 · 易混字 · 敬語', file:'考前衝刺.html', cat:'review', subj:['en','jp'] },
   { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 跟讀', file:'口試練習.html', cat:'review', subj:['en','jp'] },
   { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
@@ -305,6 +363,10 @@ function renderReviewCard(){
 render();
 renderStudyCard();
 renderReviewCard();
+/* B7 考試制度速覽:記住展開狀態 */
+(function(){const d=document.getElementById('examInfo');if(!d)return;
+  try{if(localStorage.getItem('pref_exam_open')==='1')d.open=true;}catch(e){}
+  d.addEventListener('toggle',function(){try{localStorage.setItem('pref_exam_open',d.open?'1':'0');}catch(e){}});})();
 </script>
 </body>
 </html>

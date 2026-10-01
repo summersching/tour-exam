@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#e11d48">
+<title>外語日語 學習中心</title>
+<!-- v125 (2026-10-01) B6 初版:日語單字庫(解析單字表 + 選項中譯 1,712 詞)· 單字卡 · 測驗(看日選中 / 看中選日 / 看漢字選讀音) -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#be123c;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--hd1:#9f1239;--hd2:#e11d48;
+    --chip:#fde7ec;--chipk:#be123c;--gchip:#e5f6ec;--gchipk:#15904a;--yrbg:#fff4cc;--yrc:#7a5b12;--grp:#be123c;--kana:#0e7c86;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#fb7185;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--hd1:#7f1d3a;--hd2:#9f1239;
+    --chip:#3a1f28;--chipk:#fda4b8;--gchip:#173023;--gchipk:#5ad48a;--yrbg:#3d3413;--yrc:#f2d778;--grp:#fb7185;--kana:#57cdd8;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#fb7185;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--hd1:#7f1d3a;--hd2:#9f1239;
+    --chip:#3a1f28;--chipk:#fda4b8;--gchip:#173023;--gchipk:#5ad48a;--yrbg:#3d3413;--yrc:#f2d778;--grp:#fb7185;--kana:#57cdd8;
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC","Yu Gothic","Hiragino Kaku Gothic Pro",system-ui,sans-serif;line-height:1.7;padding:0 0 70px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;padding:calc(18px + env(safe-area-inset-top)) 16px 15px;position:relative}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+  header h1{margin:0 0 4px;font-size:1.22rem;padding-right:76px}
+  header p{margin:2px 0;opacity:.92;font-size:.82rem}
+  header a.xl{color:#fff;font-weight:700}
+  .home{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.18);padding:4px 11px;border-radius:16px}
+  .certbar{background:var(--card);border-bottom:1px solid var(--line)}
+  .certbar .wrap{display:flex;align-items:center;gap:8px;padding:9px 16px}
+  .certbar .clb{font-size:.8rem;color:var(--sub);font-weight:700}
+  .cbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 16px;border-radius:18px;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:700}
+  .cbtn.on{background:var(--grp);color:#fff;border-color:var(--grp)}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:9px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  #q{flex:1;min-width:130px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:.9rem;font-family:inherit}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 11px;border-radius:10px;cursor:pointer;font-size:.82rem;font-family:inherit}
+  .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .sep{width:1px;height:22px;background:var(--line)}
+  .cnt{font-size:.8rem;color:var(--sub);margin-left:auto}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 2px}
+  .tchip{font-size:.78rem;padding:4px 10px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  .tchip.on{background:var(--chip);color:var(--chipk);border-color:var(--chipk);font-weight:700}
+  .grp{color:var(--grp);font-size:.95rem;margin:16px 0 6px;padding-bottom:3px;border-bottom:1px solid var(--line)}
+  .word{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin:6px 0}
+  .wtop{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .jw{font-weight:700;color:var(--accent);font-size:1.08rem}
+  .jr{color:var(--kana);font-size:.88rem}
+  .acc{display:inline-block;min-width:1.3em;text-align:center;font-size:.68rem;border:1px solid var(--line);border-radius:6px;color:var(--sub);padding:0 4px;line-height:1.5}
+  .zh{color:var(--ink);margin-left:auto;text-align:right}
+  .fq{color:var(--sub);font-size:.75rem}
+  .say{cursor:pointer;font-size:.82rem;border:1px solid var(--line);border-radius:6px;padding:0 6px;background:var(--card);user-select:none}
+  .wsrc{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+  .hit{font-size:.72rem;padding:1px 7px;border-radius:6px;text-decoration:none;font-weight:700;white-space:nowrap;line-height:1.7}
+  .hit.leader{background:var(--chip);color:var(--chipk)} .hit.guide{background:var(--gchip);color:var(--gchipk)}
+  .lzmore{text-align:center;color:var(--sub);font-size:.8rem;padding:16px 0}
+  .tip{font-size:.75rem;color:var(--sub)}
+  .intro{font-size:.8rem;color:var(--sub);margin:12px 0 4px;line-height:1.65}
+  #flash,#quiz{display:none;text-align:center;padding:16px 0}
+  #flash.on,#quiz.on{display:block}
+  .fcard{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:30px 20px;margin:12px auto;max-width:440px;min-height:180px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.08)}
+  .fcard .ftp{font-size:.75rem;color:var(--sub);margin-bottom:6px}
+  .fcard .fw{font-size:1.9rem;font-weight:700;color:var(--accent)}
+  .fcard .fr{color:var(--kana);margin-top:12px;font-size:1.1rem}
+  .fcard .fm{font-size:1.2rem;margin-top:6px}
+  .frow{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+  .prog{font-size:.82rem;color:var(--sub);margin-top:8px}
+  .qset{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0 8px}
+  .qset .lab{font-size:.76rem;color:var(--sub);align-self:center}
+  .schip{font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-family:inherit}
+  .schip.on{background:var(--chip);color:var(--chipk);border-color:var(--chipk);font-weight:700}
+  .qscore{font-size:.85rem;color:var(--sub);margin:2px 0 8px}
+  .qscore b{color:var(--ink)} .qscore .pc{color:var(--grp);font-weight:700}
+  .qcard{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:22px 18px 18px;margin:8px auto;max-width:480px;box-shadow:0 3px 14px rgba(0,0,0,.08)}
+  .qhd{font-size:.74rem;color:var(--sub);margin-bottom:8px}
+  .qprompt{font-size:1.6rem;font-weight:700;color:var(--accent);margin-bottom:2px;word-break:break-word}
+  .qsub{color:var(--kana);font-size:.95rem;margin-bottom:4px;min-height:1.2em}
+  .qopts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  .qopt{text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);cursor:pointer;font-size:1rem;font-family:inherit}
+  .qopt:hover:not(:disabled){border-color:var(--accent);background:var(--chip)}
+  .qopt:disabled{cursor:default}
+  .qopt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:700}
+  .qopt.no{background:var(--nobg);border-color:var(--no);color:var(--no)}
+  .qfb{min-height:22px;margin-top:12px;font-size:.9rem;font-weight:700}
+  .qfb.ok{color:var(--ok)} .qfb.no{color:var(--no)}
+  @media print{
+    .toolbar,.certbar{display:none} #flash,#quiz{display:none!important} .say,.lzmore,.home{display:none}
+    header{background:#be123c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #list{display:block!important} .word{break-inside:avoid} body{background:#fff}
+  }
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+</head><body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🎌 外語日語 學習中心</h1>
+  <p>單字庫:領隊 + 導遊 106–115(共 20 份)日語考題的單字與選項 · 讀音 · 中文 · 點出處跳回原題</p>
+  <p>文法、敬語、慣用句重點整理在「<a class="xl" href="考前衝刺.html">考前衝刺</a>」(科目選日語)</p>
+</div></header>
+
+<div class="certbar"><div class="wrap">
+  <span class="clb">範圍</span>
+  <button class="cbtn" data-c="all">全部</button>
+  <button class="cbtn" data-c="leader">領隊</button>
+  <button class="cbtn" data-c="guide">導遊</button>
+</div></div>
+
+<div class="toolbar">
+  <div class="wrap">
+    <input id="q" placeholder="搜尋日文、讀音或中文…" autocomplete="off">
+    <button class="btn on" id="mList">清單</button>
+    <button class="btn" id="mFlash">單字卡</button>
+    <button class="btn" id="mQuiz">測驗</button>
+    <span class="sep"></span>
+    <button class="btn on" id="sGrp">分類</button>
+    <button class="btn" id="sFreq">頻率</button>
+    <button class="btn" id="sKana">五十音</button>
+    <span class="sep"></span>
+    <button class="btn" id="printBtn">🖨 匯出 PDF</button>
+    <span class="cnt" id="cnt"></span>
+  </div>
+  <div class="wrap"><div class="chips" id="chips"></div></div>
+</div>
+
+<main class="wrap">
+  <div class="intro" id="intro">🎌 依考題分類整理:<b>漢字讀音</b>(讀音題的漢字詞)、<b>語彙</b>、<b>慣用句・諺語</b>、<b>敬語</b>、<b>讀解單字</b>。<b>×N</b> = 在幾題出現過,數字越大越常考。點 🔊 聽發音,點「領/導 年-題號」跳回原題。</div>
+  <div id="list"></div>
+  <div id="flash">
+    <div class="fcard" id="fcard"><div class="ftp" id="ftp"></div><div class="fw" id="fw"></div><div id="fback" style="display:none"><div class="fr" id="fr"></div><div class="fm" id="fm"></div></div></div>
+    <div class="prog" id="fprog"></div>
+    <div class="frow">
+      <button class="btn" id="fprev">← 上一張</button>
+      <button class="btn" id="fflip">翻面</button>
+      <button class="btn" id="fnext">下一張 →</button>
+      <button class="btn" id="fshuffle">🔀 洗牌</button>
+      <button class="btn" id="fsay">🔊 唸</button>
+    </div>
+    <div class="tip">單字卡跟著上面選的分類與搜尋走;點卡片或「翻面」看讀音與中文</div>
+  </div>
+  <div id="quiz">
+    <div class="qset">
+      <span class="lab">題型</span>
+      <button class="schip on" data-dir="j2c">看日選中</button>
+      <button class="schip" data-dir="c2j">看中選日</button>
+      <button class="schip" data-dir="read">看漢字選讀音</button>
+    </div>
+    <div class="qset">
+      <span class="lab">範圍</span>
+      <button class="schip on" data-lv="all">全部</button>
+      <button class="schip" data-lv="core">★ 常考(出現 ≥2 題)</button>
+    </div>
+    <div class="qscore">答對 <b id="qc">0</b> / 已答 <b id="qd">0</b>　正確率 <span class="pc" id="qa">—</span>　連對 <b id="qs">0</b></div>
+    <div class="qcard">
+      <div class="qhd" id="qhead"></div>
+      <div class="qprompt" id="qprompt"></div>
+      <div class="qsub" id="qsub"></div>
+      <div class="qopts" id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+    </div>
+    <div class="frow">
+      <button class="btn" id="qnext" disabled>下一題 →</button>
+      <button class="btn" id="qsay">🔊 唸</button>
+      <button class="btn" id="qreset">重新計分</button>
+    </div>
+    <div class="tip" id="qtip">測驗範圍 = 上面選的分類 × 範圍;答對自動跳下一題,答錯會顯示正解</div>
+  </div>
+</main>
+
+<script src="learn_jp.js"></script>
+<script>
+const CNAME={l:'領',g:'導'}, CFULL={l:'leader',g:'guide'};
+const GROUPS=['漢字讀音','語彙','慣用句・諺語','敬語','讀解單字'];
+const GICON={'漢字讀音':'🈶','語彙':'📘','慣用句・諺語':'🎭','敬語':'🙇','讀解單字':'📖'};
+const listEl=document.getElementById('list'),qEl=document.getElementById('q'),cntEl=document.getElementById('cnt'),chipsEl=document.getElementById('chips');
+let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
+let curGrp='__ALL__',sortMode='grp';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=+(localStorage.getItem('pref_jp_rate'))||0.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function sayText(x){return x.r||x.w;}   // 有讀音唸讀音(避免語音引擎把漢字讀錯)
+function kanaKey(x){return x.r||x.w;}
+/* 證照範圍:只留該證照的出處 */
+function scoped(){
+  if(CERT==='all')return JPWORDS;
+  const k=CERT==='leader'?'l':'g';
+  return JPWORDS.map(x=>{const h=x.h.filter(s=>s[0]===k);return h.length?Object.assign({},x,{h:h,f:h.length}):null;}).filter(Boolean);
+}
+function filtered(){
+  const kw=qEl.value.trim().toLowerCase();
+  return scoped().filter(x=>(curGrp==='__ALL__'||x.g===curGrp)&&(!kw||x.w.toLowerCase().includes(kw)||(x.r||'').includes(kw)||x.m.toLowerCase().includes(kw)));
+}
+function buildChips(){
+  const S=scoped();
+  let h='<span class="tchip'+(curGrp==='__ALL__'?' on':'')+'" data-g="__ALL__">全部 ('+S.length+')</span>';
+  GROUPS.forEach(g=>{const n=S.filter(x=>x.g===g).length;if(n)h+='<span class="tchip'+(curGrp===g?' on':'')+'" data-g="'+g+'">'+GICON[g]+' '+g+' ('+n+')</span>';});
+  chipsEl.innerHTML=h;
+}
+function srcHtml(x){return x.h.map(s=>{const c=CFULL[s[0]];return '<a class="hit '+c+'" href="日文詳解.html?cert='+c+'&year='+s[1]+'#q'+s[2]+'" title="'+(c==='guide'?'導遊':'領隊')+' '+s[1]+' 年第 '+s[2]+' 題(點我跳到該題)">'+CNAME[s[0]]+s[1]+'-'+s[2]+'</a>';}).join('');}
+function wordHtml(x){
+  return '<div class="word"><div class="wtop"><span class="jw">'+esc(x.w)+'</span>'+(x.r?'<span class="jr">'+esc(x.r)+'</span>':'')+
+    (x.a!==''?'<span class="acc" title="重音">'+esc(x.a)+'</span>':'')+
+    '<span class="say" data-say="'+esc(sayText(x))+'">🔊</span><span class="fq">×'+x.f+'</span><span class="zh">'+esc(x.m)+'</span></div>'+
+    '<div class="wsrc">'+srcHtml(x)+'</div></div>';
+}
+/* 分批顯示:先畫一批,捲到接近底部再補;匯出 PDF / 列印前一次補齊 */
+function Lazy(el,step){
+  let parts=[],pos=0,sent=null;
+  const io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;}))more();},{rootMargin:'1000px 0px'}):null;
+  function near(){if(!sent||!el.offsetParent)return false;return sent.getBoundingClientRect().top<innerHeight+1000;}
+  function more(){
+    if(!sent)return;
+    const end=io?Math.min(parts.length,pos+step):parts.length;
+    sent.insertAdjacentHTML('beforebegin',parts.slice(pos,end).join(''));pos=end;
+    if(pos>=parts.length){if(io)io.unobserve(sent);sent.remove();sent=null;return;}
+    requestAnimationFrame(function(){if(near())more();});
+  }
+  return {
+    set:function(arr,empty){if(sent&&io)io.unobserve(sent);parts=arr;pos=0;sent=null;
+      if(!arr.length){el.innerHTML=empty||'';return;}
+      el.innerHTML='<div class="lzmore">⋯ 往下捲載入更多</div>';sent=el.firstChild;more();if(sent&&io)io.observe(sent);},
+    all:function(){while(sent)more();}
+  };
+}
+const lazy=Lazy(listEl,60);
+function renderList(){
+  let arr=filtered();
+  cntEl.textContent='共 '+arr.length+' 詞';
+  const parts=[];
+  if(sortMode==='grp'){
+    GROUPS.forEach(g=>{const a=arr.filter(x=>x.g===g);if(!a.length)return;parts.push('<h3 class="grp">'+GICON[g]+' '+g+' ('+a.length+')</h3>');a.forEach(x=>parts.push(wordHtml(x)));});
+  }else{
+    arr=arr.slice().sort(sortMode==='freq'?(a,b)=>b.f-a.f||kanaKey(a).localeCompare(kanaKey(b),'ja'):(a,b)=>kanaKey(a).localeCompare(kanaKey(b),'ja'));
+    arr.forEach(x=>parts.push(wordHtml(x)));
+  }
+  lazy.set(parts,'<p class="tip" style="padding:20px 0">找不到符合的詞</p>');
+}
+buildChips();renderList();
+qEl.addEventListener('input',function(){renderList();if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}if(quizEl.classList.contains('on'))newQ();});
+listEl.addEventListener('click',function(e){const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
+chipsEl.addEventListener('click',function(e){const c=e.target.closest('.tchip');if(!c)return;curGrp=c.dataset.g;chipsEl.querySelectorAll('.tchip').forEach(x=>x.classList.toggle('on',x===c));
+  renderList();if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}if(quizEl.classList.contains('on'))newQ();});
+const sGrp=document.getElementById('sGrp'),sFreq=document.getElementById('sFreq'),sKana=document.getElementById('sKana');
+function setSort(m,btn){sortMode=m;[sGrp,sFreq,sKana].forEach(b=>b.classList.toggle('on',b===btn));renderList();}
+sGrp.onclick=()=>setSort('grp',sGrp);sFreq.onclick=()=>setSort('freq',sFreq);sKana.onclick=()=>setSort('kana',sKana);
+document.getElementById('printBtn').onclick=function(){setMode('list');lazy.all();setTimeout(()=>window.print(),150);};
+window.addEventListener('beforeprint',function(){lazy.all();});
+
+/* ===== 單字卡 ===== */
+let deck=filtered(),idx=0;
+const fcard=document.getElementById('fcard'),ftp=document.getElementById('ftp'),fw=document.getElementById('fw'),fback=document.getElementById('fback'),fr=document.getElementById('fr'),fm=document.getElementById('fm'),fprog=document.getElementById('fprog');
+function showCard(){
+  if(!deck.length){fw.textContent='(沒有符合的詞)';ftp.textContent='';fback.style.display='none';fprog.textContent='0 / 0';return;}
+  const c=deck[idx];ftp.textContent=GICON[c.g]+' '+c.g+'　×'+c.f;fw.textContent=c.w;
+  fr.textContent=(c.r||'')+(c.a!==''?'　重音 '+c.a:'');fm.textContent=c.m;fback.style.display='none';fprog.textContent=(idx+1)+' / '+deck.length;
+}
+function flip(){fback.style.display=fback.style.display==='none'?'block':'none';}
+document.getElementById('fflip').onclick=flip;fcard.onclick=flip;
+document.getElementById('fnext').onclick=function(){if(deck.length){idx=(idx+1)%deck.length;showCard();}};
+document.getElementById('fprev').onclick=function(){if(deck.length){idx=(idx-1+deck.length)%deck.length;showCard();}};
+document.getElementById('fshuffle').onclick=function(){shuffleArr(deck);idx=0;showCard();};
+document.getElementById('fsay').onclick=function(){if(deck.length)speak(sayText(deck[idx]));};
+
+/* ===== 測驗 ===== */
+let qDir='j2c',qLevel='all',qAns=0,qDone=0,qStreak=0,qWord=null,qLock=false;
+const quizEl=document.getElementById('quiz'),qHead=document.getElementById('qhead'),qPrompt=document.getElementById('qprompt'),qSub=document.getElementById('qsub'),qOpts=document.getElementById('qopts'),qFb=document.getElementById('qfb'),qNextBtn=document.getElementById('qnext');
+const KANJI=/[一-鿿々]/;
+/* 看漢字選讀音只用「解析單字表」的讀音(v=1,人工整理),不用斷詞補的讀音,避免教錯 */
+function quizPool(){return filtered().filter(x=>(qLevel==='all'||x.f>=2)&&(qDir!=='read'||(x.v&&x.r&&KANJI.test(x.w))));}
+function updScore(){document.getElementById('qc').textContent=qAns;document.getElementById('qd').textContent=qDone;document.getElementById('qs').textContent=qStreak;document.getElementById('qa').textContent=qDone?Math.round(qAns/qDone*100)+'%':'—';}
+function newQ(){
+  qLock=false;qFb.textContent='';qFb.className='qfb';qNextBtn.disabled=true;
+  const pool=quizPool();
+  if(pool.length<4){qHead.textContent='';qPrompt.textContent='這個範圍的詞太少';qSub.textContent='';qOpts.innerHTML='<p class="tip">請把分類選「全部」或範圍選「全部」(至少需 4 個詞'+(qDir==='read'?',且是有漢字的讀音題單字':'')+')</p>';return;}
+  qWord=pool[Math.floor(Math.random()*pool.length)];
+  const key=qDir==='read'?'r':qDir==='j2c'?'m':'w';
+  const seen=new Set([qWord[key]]);
+  /* 干擾選項:優先同分類,答案文字不可重複 */
+  const cand=shuffleArr(pool.filter(x=>x!==qWord&&x.g===qWord.g)).concat(shuffleArr(pool.filter(x=>x!==qWord&&x.g!==qWord.g)));
+  const dis=[];for(const x of cand){if(dis.length>=3)break;if(seen.has(x[key]))continue;seen.add(x[key]);dis.push(x);}
+  const opts=shuffleArr([qWord].concat(dis));
+  qHead.textContent=GICON[qWord.g]+' '+qWord.g+'　×'+qWord.f+'　'+(qDir==='j2c'?'選正確中文':qDir==='c2j'?'選正確日文':'選正確讀音');
+  if(qDir==='c2j'){qPrompt.textContent=qWord.m;qSub.textContent='';}
+  else{qPrompt.textContent=qWord.w;qSub.textContent=qDir==='j2c'&&qWord.r?qWord.r:'';}
+  qOpts.innerHTML=opts.map(o=>'<button class="qopt" data-k="'+esc(o.w)+'">'+esc(o[key])+'</button>').join('');
+}
+qOpts.addEventListener('click',function(e){
+  const b=e.target.closest('.qopt');if(!b||qLock||!qWord)return;qLock=true;
+  const picked=b.dataset.k,correct=qWord.w;qDone++;
+  qOpts.querySelectorAll('.qopt').forEach(function(x){x.disabled=true;if(x.dataset.k===correct)x.classList.add('ok');else if(x.dataset.k===picked)x.classList.add('no');});
+  if(picked===correct){qAns++;qStreak++;qFb.textContent='✓ 答對!';qFb.className='qfb ok';updScore();setTimeout(function(){if(quizEl.classList.contains('on'))newQ();},700);}
+  else{qStreak=0;qFb.textContent='✗ 正解:'+qWord.w+(qWord.r?'('+qWord.r+')':'')+' — '+qWord.m;qFb.className='qfb no';qNextBtn.disabled=false;updScore();}
+});
+qNextBtn.onclick=newQ;
+document.getElementById('qsay').onclick=function(){if(qWord)speak(sayText(qWord));};
+document.getElementById('qreset').onclick=function(){qAns=0;qDone=0;qStreak=0;updScore();newQ();};
+document.querySelectorAll('.schip[data-dir]').forEach(function(c){c.onclick=function(){qDir=c.dataset.dir;document.querySelectorAll('.schip[data-dir]').forEach(x=>x.classList.toggle('on',x===c));newQ();};});
+document.querySelectorAll('.schip[data-lv]').forEach(function(c){c.onclick=function(){qLevel=c.dataset.lv;document.querySelectorAll('.schip[data-lv]').forEach(x=>x.classList.toggle('on',x===c));newQ();};});
+
+/* ===== 模式切換 ===== */
+const mList=document.getElementById('mList'),mFlash=document.getElementById('mFlash'),mQuiz=document.getElementById('mQuiz'),flashEl=document.getElementById('flash'),introEl=document.getElementById('intro');
+function setMode(m){
+  mList.classList.toggle('on',m==='list');mFlash.classList.toggle('on',m==='flash');mQuiz.classList.toggle('on',m==='quiz');
+  listEl.style.display=m==='list'?'':'none';introEl.style.display=m==='list'?'':'none';
+  flashEl.classList.toggle('on',m==='flash');quizEl.classList.toggle('on',m==='quiz');
+  if(m==='flash'){deck=filtered();idx=0;showCard();}
+  if(m==='quiz')newQ();
+}
+mList.onclick=()=>setMode('list');mFlash.onclick=()=>setMode('flash');mQuiz.onclick=()=>setMode('quiz');
+updScore();
+
+/* ===== 證照範圍 ===== */
+(function(){
+  const bar=document.querySelector('.certbar');
+  function paint(){bar.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));}
+  paint();
+  bar.addEventListener('click',function(e){
+    const b=e.target.closest('.cbtn');if(!b||b.dataset.c===CERT)return;
+    CERT=b.dataset.c;try{localStorage.setItem('pref_cert',CERT);}catch(err){}
+    paint();curGrp='__ALL__';buildChips();renderList();
+    if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}
+    if(quizEl.classList.contains('on'))newQ();
+  });
+})();
+</script>
+</body>
+</html>
