@@ -253,7 +253,7 @@ function render(){
     return `<div class="card" id="q${q.no}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('gh',q)}<span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
-      <div class="stem">${esc(q.stem)}</div>
+      <div class="stem">${esc(q.stem)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
   }).join('')||'<div class="empty">找不到符合的題目</div>';

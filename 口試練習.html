@@ -252,10 +252,12 @@ function mockStartQ(){mockClear();if(MOCK.prep>0){MOCK.phase='prep';MOCK.left=MO
 function mockAnswer(){mockClear();MOCK.phase='answer';MOCK.left=MOCK.dur;recStart();renderMock();MOCK.timer=setInterval(mockTick,1000);}
 function mockDone(){mockClear();recStop();MOCK.phase='done';renderMock();}
 function mockNext(){if(MOCK.i<2){MOCK.i++;mockStartQ();}else{MOCK.phase='summary';mockClear();recStop();renderMock();setTimeout(function(){if(MOCK.phase==='summary'&&MOCK.stream){MOCK.stream.getTracks().forEach(t=>t.stop());MOCK.stream=null;}},800);}}
-function kwList(x){return LANG==='jp'?((ORALJP.topics[x.ref]||{}).kw||[]).map(w=>w[0]+(w[1]?'('+w[1]+')':'')+' '+(w[2]||'')):x.kw.map(w=>w[0]+' '+w[1]);}
+/* 日語模擬題的參考回答:沿用口試主題範例(ref),或直接附在題目上(ja / jz / jk)*/
+function jpTopic(x){return x.ref!=null?(ORALJP.topics[x.ref]||null):(x.ja?{ja:x.ja,zh:x.jz||[],kw:x.jk||[]}:null);}
+function kwList(x){return LANG==='jp'?((jpTopic(x)||{}).kw||[]).map(w=>w[0]+(w[1]?'('+w[1]+')':'')+' '+(w[2]||'')):x.kw.map(w=>w[0]+' '+w[1]);}
 function kwHint(x){const k=kwList(x);return k.length?'<details class="mkhint"><summary>💡 提示關鍵字</summary>'+k.map(t=>'<span class="chip">'+esc(t)+'</span>').join(' ')+'</details>':'';}
 function refHtml(x){
-  if(LANG==='jp'){const t=ORALJP.topics[x.ref];if(!t)return '';
+  if(LANG==='jp'){const t=jpTopic(x);if(!t)return '';
     return '<div class="mkref"><div class="mkh">📖 參考回答(日語範例 · 點句子跟讀)</div>'+t.ja.map((s,k)=>jaRow(s)+'<div class="jz">'+esc(t.zh[k]||'')+'</div>').join('')+
       (t.kw&&t.kw.length?'<table class="kwt">'+t.kw.map(w=>'<tr><td>'+esc(w[0])+'</td><td>'+esc(w[1]||'')+'</td><td>'+esc(w[2]||'')+'</td></tr>').join('')+'</table>':'')+'</div>';}
   return '<div class="mkref"><div class="mkh">📖 參考回答(英語範例 · 點句子跟讀)</div><div class="ens">'+enRows(x.sample)+'</div>'+

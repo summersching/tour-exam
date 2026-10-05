@@ -463,7 +463,7 @@ function renderPaper(){
         ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
         ${starsHtml(q)}</div>
-      ${psg}<div class="stem">${stem}</div>
+      ${psg}<div class="stem">${stem}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-qi="${qi}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${optInner(o)}</span><span class="mk"></span></button>`).join('')}</div>
       <div class="reveal">${revealHtml(q)}</div></div>`;
   }).join('');
@@ -549,7 +549,7 @@ function renderResult(mode,wrong){
         ${qChips(q)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span>
         ${starsHtml(q)}</div>
-      ${psg}<div class="stem">${stem} ${stemSay(q)}</div>
+      ${psg}<div class="stem">${stem} ${stemSay(q)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>{const[c,mk]=optMark(q,i,p);
         return `<div class="opt ${c}"><span class="lab">${LAB[i]}</span><span>${OPTIMG.html(q,i)}${optInner(o)}${ozHtml(q,i)}</span>${optSay(q,o)}<span class="mk">${mk}</span></div>`;}).join('')}</div>
       <div class="reveal">

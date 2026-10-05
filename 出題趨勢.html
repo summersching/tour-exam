@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0369a1">
+<title>出題趨勢</title>
+<!-- 出題趨勢 · v129(2026-10-05)
+     中文三科(觀光資源概要、執業實務、執業法規)各主題 106–115 年出題熱圖:
+     依「占當年題數比例」比較近 3 年與前 7 年 → 升溫 / 降溫;點主題看細項、近 3 年考題,並可直接抽題練(miniquiz.js)。
+     主題分類來自各科解析檔的 t / tt 欄。
+     變更履歷:v129 初版 -->
+<style>
+  :root{
+    --bg:#f2f6fa;--card:#fff;--ink:#16263a;--sub:#55687f;--line:#dde6ef;--soft:#e8f3fb;
+    --sel:#0369a1;--accent:#0369a1;--hd1:#0c4a6e;--hd2:#0369a1;--onsel:#fff;--heat:3,105,161;--heatink:#fff;
+    --up:#c2410c;--upbg:#ffedd5;--down:#475569;--downbg:#e2e8f0;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#10161d;--card:#18212b;--ink:#e5edf6;--sub:#9fb0c3;--line:#29343f;--soft:#13283a;
+    --sel:#38bdf8;--accent:#0ea5e9;--hd1:#082f49;--hd2:#0c4a6e;--onsel:#04223a;--heat:56,189,248;--heatink:#04223a;
+    --up:#fdba74;--upbg:#3b2414;--down:#cbd5e1;--downbg:#273341;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#10161d;--card:#18212b;--ink:#e5edf6;--sub:#9fb0c3;--line:#29343f;--soft:#13283a;
+    --sel:#38bdf8;--accent:#0ea5e9;--hd1:#082f49;--hd2:#0c4a6e;--onsel:#04223a;--heat:56,189,248;--heatink:#04223a;
+    --up:#fdba74;--upbg:#3b2414;--down:#cbd5e1;--downbg:#273341;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow);padding:6px 0 10px}
+  .row{display:flex;gap:7px;padding:4px 0 0;flex-wrap:wrap;align-items:center}
+  .lb{font-size:.78rem;color:var(--sub);font-weight:700;margin-right:2px}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 12px;border-radius:999px;
+    font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin:14px 0}
+  .card h2{margin:0 0 6px;font-size:1rem}
+  .sum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sum .col{border-radius:12px;padding:9px 12px}
+  .sum .u{background:var(--upbg)} .sum .d{background:var(--downbg)}
+  .sum h3{margin:0 0 4px;font-size:.86rem} .sum .u h3{color:var(--up)} .sum .d h3{color:var(--down)}
+  .sum ul{margin:0;padding-left:1.1em;font-size:.84rem}
+  .sum li button{background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left;text-decoration:underline dotted}
+  .note{font-size:.76rem;color:var(--sub);margin-top:8px}
+  .hm{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+  table{border-collapse:separate;border-spacing:2px;min-width:100%;font-size:.78rem}
+  th,td{text-align:center;padding:0;height:30px;min-width:28px}
+  th{color:var(--sub);font-weight:700;font-size:.7rem}
+  th.tl,td.tl{position:sticky;left:0;z-index:1;background:var(--card);text-align:left;min-width:108px;max-width:150px;padding-right:6px}
+  td.tl button{width:100%;text-align:left;background:none;border:0;color:var(--ink);font:inherit;font-weight:700;cursor:pointer;padding:3px 2px;line-height:1.35;font-size:.8rem}
+  td.tl button[aria-expanded="true"]{color:var(--sel)}
+  td.c{border-radius:6px;font-weight:700;color:var(--ink)}
+  td.c.z{color:var(--sub);opacity:.45;font-weight:400}
+  td.c.hi{color:var(--heatink)}
+  td.tot{font-weight:800;color:var(--sub)}
+  tr.gh td{text-align:left;font-weight:800;font-size:.82rem;color:var(--sel);padding:8px 2px 2px;height:auto}
+  .ghl{position:sticky;left:2px;white-space:nowrap}
+  .tr{display:inline-block;font-size:.66rem;font-weight:800;border-radius:6px;padding:0 5px;margin-left:4px;vertical-align:1px}
+  .tr.up{background:var(--upbg);color:var(--up)} .tr.down{background:var(--downbg);color:var(--down)}
+  tr.dt td{text-align:left;height:auto;padding:0}
+  .dt-in{background:var(--soft);border-radius:12px;padding:10px 12px;margin:2px 0 8px;font-size:.84rem;position:sticky;left:0;max-width:calc(100vw - 40px)}
+  .dt-in h4{margin:0 0 4px;font-size:.84rem}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0 8px}
+  .tags span{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:0 7px;font-size:.74rem}
+  .ql{list-style:none;margin:0;padding:0}
+  .ql li{padding:5px 0;border-top:1px solid var(--line);font-size:.82rem;line-height:1.55}
+  .ql a{color:var(--sel);font-weight:800;text-decoration:none;margin-right:6px;white-space:nowrap}
+  .stale{font-size:.7rem;color:var(--warn);background:var(--warnbg);border-radius:6px;padding:0 5px;margin-left:4px}
+  .qbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .qbtns button{flex:1;min-width:130px;border:0;background:var(--sel);color:var(--onsel);font-weight:800;border-radius:12px;padding:9px;cursor:pointer;font-family:inherit;font-size:.86rem}
+  .qbtns button.o{background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
+  .qbtns button:disabled{opacity:.5;cursor:wait}
+  .legend{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--sub);margin:6px 0 2px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:18px;height:12px;border-radius:3px}
+  .empty{text-align:center;color:var(--sub);padding:40px 10px}
+  @media (max-width:420px){.sum{grid-template-columns:1fr}}
+  @media (max-width:480px){
+    .card{padding:12px 10px}
+    table{border-spacing:1.5px;font-size:.7rem}
+    th,td{min-width:0;height:26px}
+    th{font-size:.6rem;letter-spacing:-.02em}
+    th.tl,td.tl{min-width:76px;max-width:92px}
+    td.tl button{font-size:.72rem;padding:2px 1px}
+    .tr{font-size:.56rem;padding:0 3px;margin-left:2px}
+  }
+  @media print{.bar,.home,.qbtns{display:none!important}.card{box-shadow:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📈 出題趨勢</h1>
+  <p>中文三科各主題 10 年出題熱圖 · 近 3 年升溫 / 降溫 · 點主題看近年考題、直接抽題練</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row" id="subjRow"></div>
+  <div class="row" id="certRow"></div>
+</div></div>
+
+<div class="wrap">
+  <div id="app"><div class="empty">載入題庫中…</div></div>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function plain(s){return String(s).replace(/<[^>]+>/g,'');}
+const SUBJS = ['gh','pr','pr2'];
+const GROUPNAME = { '史':'📜 歷史', '地':'🗺️ 地理', '維護':'🌿 觀光資源維護' };
+const CERTS = [['all','導遊 + 領隊'],['guide','導遊'],['leader','領隊']];
+const RECENT_N = 3;           // 近 N 年
+const QUIZ_N = 10;
+const LS = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch(e){ return d; } };
+const LSS = (k, v) => { try { localStorage.setItem(k, v); } catch(e){} };
+let S = LS('pref_trend_subj', 'gh'); if (!SUBJS.includes(S)) S = 'gh';
+let CERT = LS('pref_trend_cert', 'all'); if (!CERTS.some(c=>c[0]===CERT)) CERT = 'all';
+let OPEN = null;              // 展開的主題 key
+let MODEL = null;
+
+function chips(){
+  $('subjRow').innerHTML = '<span class="lb">科目</span>' + SUBJS.map(k=>`<button class="chip${k===S?' on':''}" type="button" data-s="${k}">${esc(PRACTICE.SUBJ[k].name)}</button>`).join('');
+  $('certRow').innerHTML = '<span class="lb">範圍</span>' + CERTS.map(([k,l])=>`<button class="chip${k===CERT?' on':''}" type="button" data-c="${k}">${l}</button>`).join('');
+}
+
+/* 依科目 + 證照建模型:主題列(觀光用細類 tt 並依大類分組;執業兩科用大類 t)× 年度 */
+function build(d){
+  const qs = d.bank.filter(q=>CERT==='all' || q.c===CERT);
+  const years = [...new Set(qs.map(q=>+q.y))].sort((a,b)=>a-b);
+  const recent = years.slice(-RECENT_N), older = years.slice(0, -RECENT_N);
+  const yTot = {}; years.forEach(y=>yTot[y]=0);
+  const rows = {};
+  const byTT = S === 'gh';
+  qs.forEach(q=>{
+    const y = +q.y; yTot[y]++;
+    const a = d.ana[PRACTICE.key(q)] || {};
+    const t = a.t || '其他', tt = a.tt || '其他';
+    const key = byTT ? tt : t;                   // 觀光:同名細類不分大類合併(少數題的大類標記不同)
+    const r = rows[key] || (rows[key] = { key, label: key, group: '', gc: {}, cnt: {}, qs: [], sub: {} });
+    r.cnt[y] = (r.cnt[y] || 0) + 1; r.qs.push(q);
+    if (byTT) r.gc[t] = (r.gc[t] || 0) + 1; else r.sub[tt] = (r.sub[tt] || 0) + 1;
+  });
+  if (byTT) Object.values(rows).forEach(r=>{ r.group = Object.keys(r.gc).sort((a,b)=>r.gc[b]-r.gc[a])[0]; });
+  const sumY = ys => ys.reduce((a,y)=>a+yTot[y],0);
+  const tOld = sumY(older), tNew = sumY(recent);
+  let maxShare = 0;
+  Object.values(rows).forEach(r=>{
+    r.total = r.qs.length;
+    r.share = {}; years.forEach(y=>{ r.share[y] = yTot[y] ? (r.cnt[y]||0)/yTot[y] : 0; maxShare = Math.max(maxShare, r.share[y]); });
+    const cOld = older.reduce((a,y)=>a+(r.cnt[y]||0),0), cNew = recent.reduce((a,y)=>a+(r.cnt[y]||0),0);
+    r.sOld = tOld ? cOld/tOld : 0; r.sNew = tNew ? cNew/tNew : 0; r.cOld = cOld; r.cNew = cNew;
+    r.trend = (r.sNew >= r.sOld*1.5 && r.sNew - r.sOld >= 0.01 && cNew >= 3) ? 'up'
+            : (r.sNew <= r.sOld/1.5 && r.sOld - r.sNew >= 0.01 && cOld >= 5) ? 'down' : '';
+  });
+  const list = Object.values(rows).sort((a,b)=>(a.group===b.group?0:(a.group<b.group?-1:1)) || b.total-a.total);
+  if (byTT) { const gOrder = ['史','地','維護']; list.sort((a,b)=>(gOrder.indexOf(a.group)-gOrder.indexOf(b.group)) || b.total-a.total); }
+  return { years, recent, older, yTot, rows: list, maxShare, tOld, tNew };
+}
+
+function pct(x){ return (x*100).toFixed(1).replace(/\.0$/,'') + '%'; }
+function heatA(share, max){ return share ? 0.12 + 0.78 * Math.min(1, share / (max || 1)) : 0; }
+function cellStyle(share, max){
+  if (!share) return '';
+  return ` style="background:rgba(var(--heat),${heatA(share, max).toFixed(2)})"`;
+}
+function render(){
+  chips();
+  const M = MODEL, ys = M.years;
+  const ups = M.rows.filter(r=>r.trend==='up').sort((a,b)=>(b.sNew-b.sOld)-(a.sNew-a.sOld));
+  const downs = M.rows.filter(r=>r.trend==='down').sort((a,b)=>(a.sNew-a.sOld)-(b.sNew-b.sOld));
+  const li = r => `<li><button type="button" data-open="${esc(r.key)}">${esc(r.label)}</button> <span style="color:var(--sub)">${pct(r.sOld)} → ${pct(r.sNew)}</span></li>`;
+  const rng = `${M.recent[0]}–${M.recent[M.recent.length-1]}`, rngOld = `${M.older[0]}–${M.older[M.older.length-1]}`;
+  let html = `<div class="card"><h2>${esc(PRACTICE.SUBJ[S].name)} · 近 ${RECENT_N} 年(${rng})vs 前 ${M.older.length} 年(${rngOld})</h2>
+    <div class="sum"><div class="col u"><h3>▲ 升溫(占比明顯變高)</h3>${ups.length?'<ul>'+ups.slice(0,8).map(li).join('')+'</ul>':'<div style="font-size:.84rem">沒有明顯升溫的主題</div>'}</div>
+    <div class="col d"><h3>▼ 降溫(占比明顯變低)</h3>${downs.length?'<ul>'+downs.slice(0,8).map(li).join('')+'</ul>':'<div style="font-size:.84rem">沒有明顯降溫的主題</div>'}</div></div>
+    <div class="note">數字是「占當期題數的比例」(106 年每份 80 題、其餘每份 50 題,所以不用題數直接比)。升溫 = 近 ${RECENT_N} 年占比至少是以前的 1.5 倍且多 1 個百分點以上;降溫反之。分類為本 App 解析的主題,僅供安排複習順序參考,不代表必考或不考。</div></div>`;
+  html += `<div class="card"><h2>🔥 各主題每年出幾題</h2>
+    <div class="legend">顏色越深 = 占當年題數比例越高 <i style="background:rgba(var(--heat),.15)"></i><i style="background:rgba(var(--heat),.5)"></i><i style="background:rgba(var(--heat),.9)"></i> · 點主題名稱看細項與近年考題</div>
+    <div class="hm"><table><thead><tr><th class="tl">主題</th>${ys.map(y=>`<th>${y}</th>`).join('')}<th>合計</th></tr></thead><tbody>`;
+  let lastG = null;
+  M.rows.forEach(r=>{
+    if (r.group && r.group !== lastG) { html += `<tr class="gh"><td colspan="${ys.length+2}"><span class="ghl">${esc(GROUPNAME[r.group]||r.group)}</span></td></tr>`; lastG = r.group; }
+    const op = OPEN === r.key;
+    html += `<tr><td class="tl"><button type="button" data-open="${esc(r.key)}" aria-expanded="${op}">${esc(r.label)}${r.trend?`<span class="tr ${r.trend}">${r.trend==='up'?'▲':'▼'}</span>`:''}</button></td>` +
+      ys.map(y=>{ const n = r.cnt[y]||0; return `<td class="c${n?'':' z'}${heatA(r.share[y], M.maxShare)>0.55?' hi':''}"${cellStyle(r.share[y], M.maxShare)} title="${y} 年:${n} 題(占 ${pct(r.share[y])})">${n||'·'}</td>`; }).join('') +
+      `<td class="tot">${r.total}</td></tr>`;
+    if (op) html += `<tr class="dt"><td colspan="${ys.length+2}">${detail(r)}</td></tr>`;
+  });
+  html += `<tr><td class="tl" style="color:var(--sub);font-size:.72rem;padding-left:4px">每年總題數</td>${ys.map(y=>`<td class="tot">${M.yTot[y]}</td>`).join('')}<td class="tot">${M.rows.reduce((a,r)=>a+r.total,0)}</td></tr>`;
+  html += `</tbody></table></div></div>`;
+  $('app').innerHTML = html;
+}
+function detail(r){
+  const subs = Object.entries(r.sub).sort((a,b)=>b[1]-a[1]);
+  const recentQs = r.qs.filter(q=>MODEL.recent.includes(+q.y)).sort((a,b)=>(+b.y)-(+a.y) || (a.c<b.c?-1:1) || a.no-b.no);
+  const quizable = r.qs.filter(q=>{ const st = STALE.note(S, q); return !(st && st.k==='old'); }).length;
+  return `<div class="dt-in"><h4>${esc(r.label)} · 共 ${r.total} 題 · 近 ${RECENT_N} 年 ${r.cNew} 題(${pct(r.sNew)})· 以前 ${pct(r.sOld)}</h4>
+    ${subs.length?`<div class="tags">${subs.slice(0,12).map(([k,n])=>`<span>${esc(k)} ${n}</span>`).join('')}${subs.length>12?`<span>…等 ${subs.length} 個細項</span>`:''}</div>`:''}
+    ${recentQs.length?`<div style="font-weight:700;font-size:.8rem;margin-bottom:2px">近 ${RECENT_N} 年考過(${recentQs.length} 題)</div><ul class="ql">${recentQs.slice(0,12).map(q=>{
+      const st = STALE.note(S, q);
+      return `<li><a href="${PRACTICE.href(S,q)}">${PRACTICE.short(q)}</a>${esc(q.stem.length>60?q.stem.slice(0,60)+'…':q.stem)}${st?`<span class="stale">${st.k==='old'?'法規已修正':'時效提醒'}</span>`:''}</li>`; }).join('')}</ul>${recentQs.length>12?`<div class="note">…還有 ${recentQs.length-12} 題,用下面按鈕全部練</div>`:''}`:'<div class="note">近 3 年沒有考這個主題</div>'}
+    <div class="qbtns"><button type="button" data-quiz="${esc(r.key)}"${quizable?'':' disabled'}>🎯 抽 ${Math.min(QUIZ_N, quizable)} 題練</button><button class="o" type="button" data-quiz="${esc(r.key)}" data-all="1"${quizable?'':' disabled'}>全部 ${quizable} 題逐題做</button></div></div>`;
+}
+
+function load(){
+  $('app').innerHTML = '<div class="empty">載入題庫中…</div>';
+  PRACTICE.load(S).then(d=>{ MODEL = build(d); render(); })
+    .catch(()=>{ $('app').innerHTML = '<div class="empty">題庫載入失敗,請重新整理再試</div>'; });
+}
+$('subjRow').addEventListener('click', e=>{ const b = e.target.closest('[data-s]'); if (!b || b.dataset.s===S) return; S = b.dataset.s; LSS('pref_trend_subj', S); OPEN = null; load(); });
+$('certRow').addEventListener('click', e=>{ const b = e.target.closest('[data-c]'); if (!b || b.dataset.c===CERT) return; CERT = b.dataset.c; LSS('pref_trend_cert', CERT); OPEN = null; load(); });
+$('app').addEventListener('click', e=>{
+  const o = e.target.closest('[data-open]');
+  if (o) {
+    const k = o.dataset.open; OPEN = OPEN === k ? null : k; render();
+    if (OPEN) { const b = document.querySelector(`[data-open="${CSS.escape(k)}"][aria-expanded="true"]`); if (b) b.scrollIntoView({ behavior:'smooth', block:'center' }); }
+    return;
+  }
+  const qz = e.target.closest('[data-quiz]');
+  if (qz) {
+    const r = MODEL.rows.find(x=>x.key===qz.dataset.quiz); if (!r) return;
+    const list = r.qs.filter(q=>{ const st = STALE.note(S, q); return !(st && st.k==='old'); }).map(q=>({ s:S, q }));
+    MINIQUIZ.start({ title: '📈 ' + r.label + (qz.dataset.all ? ' · 全部' : ' · 抽題'), list, n: qz.dataset.all ? 0 : QUIZ_N });
+  }
+});
+chips();
+load();
+</script>
+</body>
+</html>

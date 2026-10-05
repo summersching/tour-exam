@@ -6,8 +6,9 @@
        n     題數(0 = 全部),從 list 隨機抽
    作答:點選項或按 1–4 / A–D;判分、標正解一律用 scoring.js(送分 / 一題多解照官方公告)
    答完顯示解析(題庫解析檔)、時效提醒(stale.js)、原題連結與收藏;答錯收進該科錯題本、每題計入首頁「今日已練」(practice.js)
-   需要:scoring.js、practice.js;選用:stale.js、fav.js、optimg.js
+   需要:scoring.js、practice.js;選用:stale.js、fav.js;optimg.js(圖片題用)沒載入時開測驗前自動載入
    變更履歷:
+     v129 (2026-10-05) 題幹附圖(OPTIMG.fig);沒載入 optimg.js 的頁面自動補載
      v127 (2026-10-05) 初版
 */
 (function () {
@@ -48,7 +49,9 @@
     var list = (opt.list || []).filter(function (x) { return x && x.q && SCORE.acc(x.q).length; });
     if (!list.length) return;
     var subs = {}; list.forEach(function (x) { subs[x.s] = 1; });
-    Promise.all(Object.keys(subs).map(function (s) { return PRACTICE.load(s).then(function (d) { return [s, d.ana]; }); })).then(function (rs) {
+    var img = window.OPTIMG ? Promise.resolve() : PRACTICE.loadJs('optimg.js').catch(function () {});   // 圖片題(選項圖、題幹附圖)要用
+    Promise.all(Object.keys(subs).map(function (s) { return PRACTICE.load(s).then(function (d) { return [s, d.ana]; }); }).concat([img])).then(function (rs) {
+      rs = rs.slice(0, Object.keys(subs).length);
       var ana = {}; rs.forEach(function (r) { ana[r[0]] = r[1]; });
       ST = { title: opt.title || '小測驗', pool: list, n: opt.n || 0, ana: ana };
       run(pick(list, ST.n));
@@ -79,7 +82,7 @@
       var img = window.OPTIMG ? OPTIMG.html(q, i) : '';
       return '<button class="mq-opt" type="button" data-i="' + i + '"><span class="lt">' + L[i] + '</span><span>' + img + esc(clean(o)) + '</span><span class="mk"></span></button>';
     }).join('');
-    bd().innerHTML = '<div class="mq-src">' + esc(PRACTICE.label(s, q)) + '</div><div class="mq-stem">' + esc(clean(q.stem)) + '</div>' + stale +
+    bd().innerHTML = '<div class="mq-src">' + esc(PRACTICE.label(s, q)) + '</div><div class="mq-stem">' + esc(clean(q.stem)) + '</div>' + (window.OPTIMG && OPTIMG.fig ? OPTIMG.fig(q) : '') + stale +
       '<div class="mq-opts">' + opts + '</div><div class="mq-fb"></div>';
     bd().querySelector('.mq-opts').onclick = function (e) { var b = e.target.closest('.mq-opt'); if (b) answer(+b.dataset.i); };
     document.querySelector('.mq-ov').scrollTop = 0;

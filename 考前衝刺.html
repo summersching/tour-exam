@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ea580c">
 <title>考前衝刺</title>
+<!-- 考前衝刺 · v129(2026-10-05)
+     英語:高頻必背 / 片語 / 易混字(sprint.js);日語:文法 / 讀音 / 敬語 / 慣用 / 語彙(jp.js 即時彙整);
+     中文三科:必背 100 條(sprint_cn.js + must100.js,依出題比例挑選,可遮住答案、標記已背)。
+     變更履歷:v129 新增中文三科必背 100 條 -->
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;--kk:#0e7c86;
@@ -64,6 +68,20 @@
   .jw{font-weight:800;color:var(--accent);font-size:1.05rem} .jr{color:var(--kk);font-size:.85rem}
   .jl{font-size:.7rem;font-weight:800;border-radius:8px;padding:1px 7px;background:var(--chipv);color:var(--chipvk)}
   .jtx{font-size:.9rem;margin-top:5px;line-height:1.7} .jtx b{color:var(--fq)}
+  .mtool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0 6px}
+  .mtb{border:1.5px solid var(--hd2);background:var(--card);color:var(--hd2);font-weight:800;border-radius:12px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:.84rem;white-space:nowrap}
+  .mtb.on{background:var(--hd2);color:#fff}
+  .mprog{flex:1;min-width:150px;font-size:.8rem;color:var(--sub);font-weight:700}
+  .mbar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:3px}.mbar i{display:block;height:100%;background:var(--ok)}
+  .mgh{font-weight:800;font-size:.86rem;color:var(--tabk);margin:16px 0 4px;padding-bottom:3px;border-bottom:2px solid var(--fqbg)}
+  .mu{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:6px 0}
+  .mu.done{opacity:.62}
+  .mn{flex:0 0 auto;min-width:2.1em;font-weight:800;color:var(--fq);font-size:.85rem;padding-top:3px}
+  .mb{flex:1;min-width:0}.mp{font-size:.95rem;line-height:1.75}
+  .mtt{font-size:.7rem;color:var(--sub);font-weight:700;margin-right:4px}
+  .mchk{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--sub);border-radius:10px;padding:3px 9px;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:700;white-space:nowrap}
+  .mu.done .mchk{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+  .qmore{font-size:.72rem;color:var(--sub);align-self:center}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -87,7 +105,8 @@
 <div class="certbar"><div class="wrap">
   <span class="cgrp"><span class="clb">科目</span>
   <button class="cbtn" data-l="en">英語</button>
-  <button class="cbtn" data-l="jp">日語</button></span>
+  <button class="cbtn" data-l="jp">日語</button>
+  <button class="cbtn" data-l="cn">中文三科</button></span>
   <span class="cgrp"><span class="clb">範圍</span>
   <button class="cbtn" data-c="all">全部</button>
   <button class="cbtn" data-c="leader">領隊</button>
@@ -105,10 +124,12 @@ const CNAME={leader:'領隊',guide:'導遊'};
 /* 科目分頁:英語用 sprint.js(預先萃取);日語由 jp.js + jp_ana.js 即時彙整(首次切到日語才載入) */
 const TABS={
   en:[['hot','🔥 高頻必背'],['phrase','🧩 必考片語'],['confuse','🔀 易混字']],
-  jp:[['gram','📝 文法句型'],['read','🔤 漢字讀音'],['keigo','🙇 敬語'],['idiom','🎌 慣用・諺語'],['vocab','📚 語彙・常識']]
+  jp:[['gram','📝 文法句型'],['read','🔤 漢字讀音'],['keigo','🙇 敬語'],['idiom','🎌 慣用・諺語'],['vocab','📚 語彙・常識']],
+  cn:[['gh','🏯 觀光資源概要'],['pr','🧳 執業實務'],['pr2','⚖️ 執業法規']]
 };
-const SUBT={en:'從 20 份考卷萃取的高頻精華 · 考前一週快速掃',jp:'外語日語 20 份考卷 · 文法 / 讀音 / 敬語 / 慣用語 · 依考過次數排序'};
-let LANG=(function(){try{return localStorage.getItem('pref_sprint_lang')==='jp'?'jp':'en';}catch(e){return 'en';}})();
+const SUBT={en:'從 20 份考卷萃取的高頻精華 · 考前一週快速掃',jp:'外語日語 20 份考卷 · 文法 / 讀音 / 敬語 / 慣用語 · 依考過次數排序',
+  cn:'中文三科 · 依歷屆出題比例挑出每科最該背的 100 條 · 遮住答案自測 · 標記已背'};
+let LANG=(function(){try{var v=localStorage.getItem('pref_sprint_lang');return v==='jp'||v==='cn'?v:'en';}catch(e){return 'en';}})();
 let cur=TABS[LANG][0][0];
 const app=document.getElementById('app');
 let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
@@ -119,6 +140,67 @@ function speak(t,lang){try{const u=new SpeechSynthesisUtterance(t);u.lang=lang==
 function srcChips(x){var page=LANG==='jp'?'日文詳解.html':'英語詳解.html';return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=page+'?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
+
+/* ===== 中文三科 · 必背 100 條(must100.js 挑選;首次切到中文三科才載入)===== */
+let CNOK=false,CNLOAD=null,CNMASK=false,CNTODO=false,CNLIST=null;const CNCACHE={};
+const CNPAGE={gh:'觀光複習.html',pr:'執業實務複習.html',pr2:'執業法規複習.html'};
+const CNNAME={gh:'觀光資源概要',pr:'執業實務',pr2:'執業法規'};
+function ensureCN(){
+  if(CNOK)return Promise.resolve();
+  if(!CNLOAD)CNLOAD=(window.STALE?Promise.resolve():loadScript('stale.js'))
+    .then(function(){return typeof SPRINTCN!=='undefined'?null:loadScript('sprint_cn.js');})
+    .then(function(){return window.MUST100?null:loadScript('must100.js');})
+    .then(function(){return window.MASK?null:loadScript('mask.js');})
+    .then(function(){CNOK=true;})
+    .catch(function(e){CNLOAD=null;throw e;});
+  return CNLOAD;
+}
+function mGet(){try{return JSON.parse(localStorage.getItem('pref_must100')||'{}')||{};}catch(e){return {};}}
+function mSet(o){try{localStorage.setItem('pref_must100',JSON.stringify(o));}catch(e){}}
+function mProg(){const el=document.getElementById('mProg');if(!el||!CNLIST)return;const o=mGet(),d=CNLIST.filter(x=>o[x.id]).length;
+  el.innerHTML='已背 '+d+' / '+CNLIST.length+'<div class="mbar"><i style="width:'+(CNLIST.length?Math.round(d*100/CNLIST.length):0)+'%"></i></div>';}
+function markPt(p){
+  if(/=/.test(p))return {h:p.replace(/=([^,，。;；、(（|]+)/g,function(m,a){return a.trim()?'=<span class="mkn">'+a+'</span>':m;}),own:true};
+  const i=p.lastIndexOf('→');
+  if(i>=0){const rest=p.slice(i+1),m=rest.match(/^([^,，。;；、(（|]+)/);if(m&&m[1].trim())return {h:p.slice(0,i+1)+'<span class="mkn">'+m[1]+'</span>'+rest.slice(m[1].length),own:true};}
+  return {h:p,own:false};
+}
+function cnSrc(refs){
+  const a=refs.slice(0,3).map(function(r){const m=r.match(/^([gl])(\d+)-(\d+)$/);if(!m)return '';const c=m[1]==='g'?'guide':'leader';
+    return '<a class="hit '+c+'" href="'+CNPAGE[cur]+'?cert='+c+'&amp;year='+m[2]+'#q'+m[3]+'" title="'+CNAME[c]+' '+m[2]+' 年第 '+m[3]+' 題(點我看原題詳解)">'+(m[1]==='g'?'導':'領')+m[2]+'-'+m[3]+'</a>';}).join('');
+  return a+(refs.length>3?'<span class="qmore">等 '+refs.length+' 題</span>':'');
+}
+function renderCN(kw){
+  if(!CNOK){app.innerHTML='<div class="empty">載入中文三科重點中…</div>';document.getElementById('cnt').textContent='';
+    ensureCN().then(render).catch(function(){app.innerHTML='<div class="empty">載入失敗,請重新整理再試</div>';});return;}
+  const key=cur+'|'+CERT;
+  const L=CNCACHE[key]||(CNCACHE[key]=MUST100.build(SPRINTCN,cur,CERT,100));
+  CNLIST=L;
+  const o=mGet();
+  let arr=L.map(function(x,i){return Object.assign({n:i+1},x);});
+  if(kw)arr=arr.filter(function(x){return (x.p+' '+x.tt).toLowerCase().indexOf(kw)>=0;});
+  if(CNTODO)arr=arr.filter(function(x){return !o[x.id];});
+  const left=L.filter(function(x){return !o[x.id];}).length;
+  const scope=CERT==='all'?'':'('+CNAME[CERT]+'考題)';
+  let html='<div class="intro">📌 <b>'+CNNAME[cur]+' 必背 100 條</b>'+scope+':依歷屆出題比例分配名額,同一重點考越多次排越前面、已排除法規修正後不適用的舊答案。按「遮住答案」自測,背熟了點「背了」。</div>'+
+    '<div class="mtool"><button class="mtb'+(CNMASK?' on':'')+'" id="mMask" type="button">'+(CNMASK?'👀 顯示答案':'🙈 遮住答案')+'</button>'+
+    '<button class="mtb'+(CNTODO?' on':'')+'" id="mTodo" type="button">只看未背('+left+')</button>'+
+    '<div class="mprog" id="mProg"></div><button class="mtb" id="mReset" type="button">↺ 重設本科</button></div><div id="mList">';
+  let lastG='',lastT='';
+  arr.forEach(function(x){
+    if(x.g+'/'+x.tt!==lastG+'/'+lastT){html+='<div class="mgh nomask">'+esc((x.icon?x.icon+' ':'')+x.g+' · '+x.tt)+'</div>';lastG=x.g;lastT=x.tt;}
+    const mk=markPt(esc(x.p)),d=!!o[x.id];
+    html+='<div class="mu'+(d?' done':'')+'"><span class="mn nomask">'+x.n+'</span><div class="mb"><div class="mp'+(mk.own?' nomask':'')+'">'+mk.h+'</div><div class="wsrc nomask">'+cnSrc(x.refs)+'</div></div>'+
+      '<button class="mchk" type="button" data-id="'+x.id+'">'+(d?'✅ 已背':'☐ 背了')+'</button></div>';
+  });
+  html+='</div>';
+  if(!arr.length)html+='<div class="empty">'+(CNTODO&&!kw?'這一科 100 條都背過了 🎉':'找不到符合的內容')+'</div>';
+  app.innerHTML=html;
+  document.getElementById('cnt').textContent='共 '+arr.length+' 條';
+  const ml=document.getElementById('mList');
+  MASK.prepare(ml);MASK.set(ml,CNMASK);
+  mProg();
+}
 
 /* ===== 日語 ===== */
 let JPS=null,JPLOAD=null;
@@ -179,6 +261,7 @@ function introText(k,n){
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
+  if(LANG==='cn')return renderCN(kw);
   if(LANG==='jp'){
     if(!JPS){app.innerHTML='<div class="empty">載入日語題庫中…</div>';document.getElementById('cnt').textContent='';
       ensureJP().then(render).catch(function(){app.innerHTML='<div class="empty">日語題庫載入失敗,請重新整理再試</div>';});return;}
@@ -203,13 +286,23 @@ function paintTabs(){
   if(!TABS[LANG].some(function(t){return t[0]===cur;}))cur=TABS[LANG][0][0];
   document.getElementById('tabs').innerHTML=TABS[LANG].map(function(t){return '<button class="tab'+(t[0]===cur?' on':'')+'" data-k="'+t[0]+'">'+t[1]+'</button>';}).join('');
   document.getElementById('sub').textContent=SUBT[LANG];
-  document.getElementById('q').placeholder=LANG==='jp'?'搜尋…(如 〜にかぎらず、承る、いおう)':'搜尋…';
+  document.getElementById('q').placeholder=LANG==='jp'?'搜尋…(如 〜にかぎらず、承る、いおう)':LANG==='cn'?'搜尋…(如 牡丹社、CPR、海基會)':'搜尋…';
 }
 document.getElementById('tabs').addEventListener('click',function(e){const t=e.target.closest('.tab');if(!t)return;cur=t.dataset.k;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.getElementById('q').value='';render();});
 document.getElementById('q').addEventListener('input',render);
-app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say,s.dataset.lang);});
+app.addEventListener('click',e=>{const s=e.target.closest('.say');if(s)speak(s.dataset.say,s.dataset.lang);
+  const ck=e.target.closest('.mchk');
+  if(ck){const o=mGet(),id=ck.dataset.id;if(o[id])delete o[id];else o[id]=1;mSet(o);
+    if(CNTODO&&o[id]){render();return;}
+    const row=ck.closest('.mu');row.classList.toggle('done',!!o[id]);ck.textContent=o[id]?'✅ 已背':'☐ 背了';mProg();return;}
+  if(e.target.closest('#mMask')){CNMASK=!CNMASK;render();return;}
+  if(e.target.closest('#mTodo')){CNTODO=!CNTODO;render();return;}
+  const rb=e.target.closest('#mReset');
+  if(rb){if(!rb.dataset.arm){rb.dataset.arm='1';rb.textContent='⚠️ 再按一次重設';setTimeout(()=>{if(rb.isConnected){delete rb.dataset.arm;rb.textContent='↺ 重設本科';}},3000);return;}
+    const o=mGet();(CNLIST||[]).forEach(x=>{delete o[x.id];});mSet(o);render();}
+});
 (function(){
   const bar=document.querySelector('.certbar');if(!bar)return;
   function paint(){bar.querySelectorAll('.cbtn[data-c]').forEach(b=>b.classList.toggle('on',b.dataset.c===CERT));

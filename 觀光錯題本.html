@@ -223,7 +223,7 @@ function render(){
         ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}${SRS.badge(e.raw)}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}</span>
         <button class="del" data-del="${e.id}">✕ 移除</button></div>
-      <div class="stem">${esc(q.stem)}</div>
+      <div class="stem">${esc(q.stem)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>optHtml(e,i,o)).join('')}</div>
       <div class="fb" data-fb="${e.id}"></div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;

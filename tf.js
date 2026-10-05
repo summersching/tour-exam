@@ -41,7 +41,7 @@
     if (!q || !Array.isArray(q.opts) || q.opts.length !== 4) return null;
     if (q.sungei || (Array.isArray(q.alt) && q.alt.length > 1)) return null;
     if (typeof q.ans !== 'number' || q.ans < 0 || q.ans > 3) return null;
-    if (q.img) return null;
+    if (q.img || q.fig) return null;
     if (window.STALE && STALE.note(subj, q)) return null;
     var stem = clean(q.stem).replace(/\s/g, '');
     if (/[①②③④⑤⑥]/.test(stem)) return null;

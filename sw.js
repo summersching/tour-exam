@@ -1,16 +1,20 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v128';
+const CACHE = 'ylenpass-v129';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js', '搜尋.html', '收藏.html', '歷屆試題.html', '英語詳解.html', '日文詳解.html',
-  '學習中心.html', '日語學習中心.html', '考前衝刺.html', '法規速查.html', '考點速記.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '日文錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html', '是非快問.html', '數字速記.html', '兩岸入出境.html', '實務工具箱.html',
-  'subjects.js', 'prefs.js', 'fav.js', 'notes.js', 'srs.js', 'backlink.js', 'practice.js', 'miniquiz.js', 'mask.js', 'tf.js', 'cs_data.js', 'toolbox_data.js', 'learn_en.js', 'learn_jp.js', 'scoring.js', 'stale.js', 'enread.js', 'optimg.js',
+  '學習中心.html', '日語學習中心.html', '考前衝刺.html', '法規速查.html', '考點速記.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '日文錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html', '是非快問.html', '數字速記.html', '兩岸入出境.html', '實務工具箱.html', '觀光圖鑑.html', '出題趨勢.html',
+  'subjects.js', 'prefs.js', 'fav.js', 'notes.js', 'srs.js', 'backlink.js', 'practice.js', 'miniquiz.js', 'mask.js', 'tf.js', 'cs_data.js', 'toolbox_data.js', 'atlas_data.js', 'must100.js', 'learn_en.js', 'learn_jp.js', 'scoring.js', 'stale.js', 'enread.js', 'optimg.js',
   'glossary.js', 'dict.json', 'bank.js', 'sprint.js', 'sprint_cn.js', 'oral.js', 'oral_jp.js', 'oral_mock.js', 'gh.js', 'gh_ana.js', 'en_review.js', 'pr.js', 'pr_ana.js', 'pr2.js', 'pr2_ana.js', 'jp.js', 'jp_ana.js', 'jp_psg.js', 'jplook.js',
   'kuromoji/kuromoji.js',
   'dict/base.dat.gz', 'dict/cc.dat.gz', 'dict/check.dat.gz', 'dict/tid.dat.gz', 'dict/tid_map.dat.gz', 'dict/tid_pos.dat.gz',
   'dict/unk.dat.gz', 'dict/unk_char.dat.gz', 'dict/unk_compat.dat.gz', 'dict/unk_invoke.dat.gz', 'dict/unk_map.dat.gz', 'dict/unk_pos.dat.gz',
   'img/gh/guide-106-52-a.jpg', 'img/gh/guide-106-52-b.jpg', 'img/gh/guide-106-52-c.jpg', 'img/gh/guide-106-52-d.jpg', 'img/gh/guide-107-27-a.jpg', 'img/gh/guide-107-27-b.jpg', 'img/gh/guide-107-27-c.jpg', 'img/gh/guide-107-27-d.jpg', 'img/gh/leader-106-49-a.jpg', 'img/gh/leader-106-49-b.jpg', 'img/gh/leader-106-49-c.jpg', 'img/gh/leader-106-49-d.jpg', 'img/gh/leader-107-50-a.jpg', 'img/gh/leader-107-50-b.jpg', 'img/gh/leader-107-50-c.jpg', 'img/gh/leader-107-50-d.jpg',
   'img/pr2/guide-106-13-a.jpg', 'img/pr2/guide-106-13-b.jpg', 'img/pr2/guide-106-13-c.jpg', 'img/pr2/guide-106-13-d.jpg',
+  'img/gh/guide-106-33-q.jpg', 'img/gh/guide-108-22-q.jpg', 'img/gh/guide-108-31-q.jpg', 'img/gh/guide-108-34-q.jpg', 'img/gh/guide-108-37-q.jpg', 'img/gh/guide-108-40-q.jpg',
+  'img/gh/guide-109-25-q.jpg', 'img/gh/guide-109-32-q.jpg', 'img/gh/guide-109-34-q.jpg', 'img/gh/guide-110-39-q.jpg', 'img/gh/leader-106-58-q.jpg', 'img/gh/leader-107-15-q.jpg',
+  'img/gh/leader-108-34-q.jpg', 'img/gh/leader-109-33-q.jpg', 'img/gh/leader-109-44-q.jpg', 'img/gh/leader-110-26-q.jpg', 'img/gh/leader-110-28-q.jpg', 'img/gh/leader-110-33-q.jpg',
+  'img/gh/leader-111-33-q.jpg', 'img/gh/leader-111-44-q.jpg', 'img/gh/leader-112-27-q.jpg', 'img/gh/leader-112-30-q.jpg', 'img/gh/leader-112-43-q.jpg', 'img/gh/leader-112-44-q.jpg',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'
 ];
 

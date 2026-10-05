@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#15803d">
+<title>觀光資源圖鑑</title>
+<!-- 觀光資源圖鑑 · v129(2026-10-05)
+     觀光資源概要最常考的 6 大類:國家公園、國家風景區、原住民族 16 族、節慶、地形景觀、世界遺產,
+     一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測 + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。
+     資料在 atlas_data.js(官方來源與資料日期見檔頭)。
+     變更履歷:v129 初版 -->
+<style>
+  :root{
+    --bg:#f3f7f4;--card:#fff;--ink:#1a2a20;--sub:#58705f;--line:#dfe9e2;--soft:#e9f6ee;
+    --sel:#15803d;--accent:#15803d;--hd1:#14532d;--hd2:#15803d;--onsel:#fff;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#111712;--card:#19211b;--ink:#e6efe8;--sub:#9db3a3;--line:#2a372e;--soft:#16301f;
+    --sel:#4ade80;--accent:#22c55e;--hd1:#052e16;--hd2:#14532d;--onsel:#052e16;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#111712;--card:#19211b;--ink:#e6efe8;--sub:#9db3a3;--line:#2a372e;--soft:#16301f;
+    --sel:#4ade80;--accent:#22c55e;--hd1:#052e16;--hd2:#14532d;--onsel:#052e16;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .row{display:flex;gap:7px;padding:9px 0 0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
+  .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.85rem;white-space:nowrap}
+  .tbtn.on{background:var(--sel);color:var(--onsel)}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip strong{color:var(--ink)}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:14px 0;box-shadow:var(--shadow);overflow:hidden}
+  .sec>summary{cursor:pointer;padding:14px 16px;list-style:none;display:flex;align-items:center;gap:10px}
+  .sec>summary::-webkit-details-marker{display:none}
+  .sec>summary::after{content:'▸';margin-left:auto;color:var(--sub);transition:.2s}
+  .sec[open]>summary::after{transform:rotate(90deg)}
+  .si{font-size:1.4rem} .st{font-weight:800;font-size:1.05rem} .sd{display:block;font-size:.74rem;color:var(--sub);font-weight:500}
+  .sb{padding:0 16px 14px}
+  .note{font-size:.84rem;background:var(--soft);border-radius:10px;padding:9px 12px;margin:0 0 6px;line-height:1.8}
+  .note b{color:var(--sel)}
+  .r{border-bottom:1px solid var(--line);padding:10px 0;scroll-margin-top:120px;border-radius:8px;transition:background .6s}
+  .r:last-of-type{border-bottom:0}
+  .r.flash{background:var(--warnbg)}
+  .rk{font-weight:800;font-size:.98rem;color:var(--ink);margin-bottom:2px}
+  .rf{display:grid;grid-template-columns:2.9em 1fr;gap:3px 8px;font-size:.92rem}
+  .lb{font-size:.72rem;font-weight:700;color:var(--sub);padding-top:3px;white-space:nowrap}
+  .rv b{color:var(--sel)}
+  .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:5px}
+  a.qs{font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  .nos{font-size:.68rem;color:var(--sub)}
+  .qz{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .qz button{flex:1 1 30%;min-width:120px;border:0;background:var(--sel);color:var(--onsel);font-weight:800;border-radius:12px;padding:10px;cursor:pointer;font-family:inherit;font-size:.88rem}
+  .qz button.o{background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
+  .qz button:disabled{opacity:.5;cursor:wait}
+  .gq{background:var(--bg);border:1.5px solid var(--sel);border-radius:14px;padding:12px 14px;margin:12px 0 0}
+  .gq .tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--soft);color:var(--sel);border-radius:8px;padding:0 8px;margin-bottom:4px}
+  .gq .sc{float:right;font-size:.78rem;color:var(--sub);font-weight:700}
+  .gq .pr{font-weight:800;font-size:1.02rem;line-height:1.7;margin:4px 0 8px}
+  .gq .op{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;margin:7px 0;font-size:.95rem;font-family:inherit;cursor:pointer}
+  .gq .op:disabled{cursor:default} .gq .op.ok{border-color:var(--ok);background:var(--okbg)} .gq .op.no{border-color:var(--no);background:var(--nobg)}
+  .gq .ex{font-size:.88rem;background:var(--card);border-radius:10px;padding:9px 12px;margin-top:8px;line-height:1.8}
+  .gq .act{display:flex;gap:8px;margin-top:10px}
+  .gq .act button{flex:1;border:0;background:var(--sel);color:var(--onsel);font-weight:800;border-radius:12px;padding:10px;cursor:pointer;font-family:inherit}
+  .gq .act button.o{background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
+  .gq .big{font-size:2.2rem;font-weight:900;color:var(--sel);text-align:center;line-height:1.3}
+  .gq ul{margin:8px 0 0;padding-left:1.2em;font-size:.86rem}
+  .gq .lnk{background:none;border:0;color:var(--sel);font-weight:700;cursor:pointer;font-family:inherit;font-size:.82rem;padding:0;text-decoration:underline}
+  .basis{font-size:.72rem;color:var(--sub);margin:16px 2px}
+  .empty{text-align:center;color:var(--sub);padding:40px 10px}
+  mark{background:#fde68a;color:inherit;border-radius:3px}
+  @media print{.bar,.home,.qz,.tip,.gq{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+<script src="mask.js"></script>
+<script src="atlas_data.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🗺️ 觀光資源圖鑑</h1>
+  <p>國家公園 · 國家風景區 · 原住民族 16 族 · 節慶 · 地形景觀 · 世界遺產 — 一表看懂 + 出處題號 + 配對小測 + 歷屆原題測驗</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row" id="secRow"></div>
+  <div class="tools">
+    <input id="q" placeholder="搜尋…(如 布農、潟湖、元宵、玄武岩)" aria-label="搜尋">
+    <button class="tbtn" id="maskBtn" type="button">🙈 遮住重點</button>
+    <button class="tbtn" id="resetBtn" type="button" hidden>↺ 重新遮住</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="tip">💡 <strong>怎麼用</strong>:先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。</div>
+  <div id="app"></div>
+  <div class="basis" id="basis"></div>
+</div>
+
+<script>
+'use strict';
+const D = window.ATLAS;
+const QUIZ_N = 10;
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function plain(s){return String(s).replace(/<[^>]+>/g,'');}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const IDS = D.sections.map(s=>s.id);
+function initSec(){
+  const h = location.hash.slice(1);
+  if (IDS.includes(h)) return h;
+  try { const v = localStorage.getItem('pref_atlas_sec'); return v && (v==='all' || IDS.includes(v)) ? v : 'all'; } catch(e){ return 'all'; }
+}
+let SEC = initSec();
+let MASKON = false;
+
+function srcLink(sr){
+  const m = sr.match(/^([gl])(\d+)-(\d+)$/); if (!m) return '';
+  const q = { c: m[1]==='g'?'guide':'leader', y: m[2], no: +m[3] };
+  return `<a class="qs" href="${PRACTICE.href('gh',q)}" title="${esc(PRACTICE.label('gh',q))}">${m[1]==='g'?'導':'領'}${m[2]}-${m[3]}</a>`;
+}
+function hl(html, kw){
+  if (!kw) return html;
+  const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return html.split(/(<[^>]+>)/).map(p=>p.startsWith('<')?p:p.replace(re, m=>`<mark>${m}</mark>`)).join('');
+}
+function renderRow(sec, r, i, kw){
+  const fields = r.c.slice(1).map((v,j)=>v==='—'?'':`<div class="lb nomask">${esc(sec.cols[j+1])}</div><div class="rv">${hl(v,kw)}</div>`).join('');
+  const src = (r.src||[]).length ? r.src.map(srcLink).join('') : '<span class="nos">官方資料整理(歷屆未直接考)</span>';
+  return `<div class="r" id="r-${sec.id}-${i}"><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
+    <div class="meta nomask">${src}</div></div>`;
+}
+function qaCount(sec){ return sec.rows.reduce((n,r)=>n+(r.qa||[]).length,0); }
+function render(){
+  $('secRow').innerHTML = [['all','全部']].concat(D.sections.map(s=>[s.id, s.icon+' '+s.t])).map(([v,l])=>
+    `<button class="chip${SEC===v?' on':''}" type="button" data-v="${v}">${esc(l)}</button>`).join('');
+  const kw = $('q').value.trim();
+  const k = kw.toLowerCase();
+  let html = '';
+  D.sections.forEach(sec=>{
+    if (SEC !== 'all' && sec.id !== SEC) return;
+    const idx = [];
+    sec.rows.forEach((r,i)=>{ if (!k || r.c.map(plain).join(' ').toLowerCase().includes(k)) idx.push(i); });
+    if (!idx.length) return;
+    const open = kw || SEC !== 'all' ? ' open' : '';
+    html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
+      <div class="sb"><div class="note">${sec.note}</div>${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
+      <div class="qz nomask"><button type="button" data-pair="${sec.id}">🎯 配對小測 ${qaCount(sec)} 題</button><button class="o" type="button" data-quiz="${sec.id}">📝 歷屆原題 ${QUIZ_N} 題</button><button class="o" type="button" data-quiz="${sec.id}" data-all="1">全部相關原題</button></div>
+      <div class="gq nomask" id="gq-${sec.id}" hidden></div></div></details>`;
+  });
+  $('app').innerHTML = html || `<div class="empty">找不到「${esc(kw)}」<br><span style="font-size:.85rem">換個關鍵字或切到「全部」</span></div>`;
+  MASK.prepare($('app'));
+  MASK.set($('app'), MASKON);
+  const row = $('secRow'), on = row.querySelector('.chip.on');
+  if (on) row.scrollLeft = Math.max(0, on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2);
+}
+
+/* ===== 歷屆原題:本區出處題 + 依規則篩出的相關題(排除法規已變、官方答案不適用的題)===== */
+function quizList(sec){
+  return PRACTICE.load('gh').then(d=>{
+    const seen = new Set(), list = [];
+    const add = q=>{
+      if (!q) return;
+      const st = window.STALE && STALE.note('gh', q);
+      if (st && st.k === 'old') return;
+      const id = PRACTICE.key(q); if (seen.has(id)) return; seen.add(id);
+      list.push({ s:'gh', q });
+    };
+    sec.rows.forEach(r=>(r.src||[]).forEach(sr=>{
+      const m = sr.match(/^([gl])(\d+)-(\d+)$/);
+      if (m) add(d.map[(m[1]==='g'?'guide':'leader')+'-'+m[2]+'-'+m[3]]);
+    }));
+    d.bank.forEach(q=>{
+      const a = d.ana[PRACTICE.key(q)] || {};
+      if (sec.quiz.tt.test(a.tt || '') && sec.quiz.kw.test(q.stem + ' ' + q.opts.join(' '))) add(q);
+    });
+    return list;
+  });
+}
+
+/* ===== 配對小測:用表上內容即時出題(不進錯題本,只計入今日練習)===== */
+function pairItems(sec){
+  const out = [];
+  sec.rows.forEach((r,ri)=>(r.qa||[]).forEach(x=>out.push({ q:x[0], a:x[1], cat:x[2], d:x[3], ri })));
+  return out;
+}
+function pairOpts(sec, it, all){
+  let ds = it.d ? it.d.slice() : shuffle([...new Set(all.filter(x=>x.cat===it.cat && x.a!==it.a).map(x=>x.a))]).slice(0,3);
+  ds = ds.filter(x=>x!==it.a).slice(0,3);
+  return shuffle([it.a].concat(ds));
+}
+const PQ = {};
+function pairStart(id){
+  const sec = D.sections.find(s=>s.id===id), all = pairItems(sec);
+  PQ[id] = { sec, all, list: shuffle(all.slice()), i:0, ok:0, wrong:[] };
+  const box = $('gq-'+id); box.hidden = false;
+  pairShow(id);
+  box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+function pairShow(id){
+  const st = PQ[id], box = $('gq-'+id);
+  if (st.i >= st.list.length) return pairDone(id);
+  const it = st.list[st.i], opts = pairOpts(st.sec, it, st.all);
+  st.cur = { it, opts };
+  box.innerHTML = `<span class="sc">${st.i+1} / ${st.list.length} · ✓ ${st.ok}</span><span class="tag">${esc(st.sec.icon+' '+st.sec.t)}</span>
+    <div class="pr">${esc(it.q)} → ?</div>` + opts.map((o,i)=>`<button class="op" type="button" data-i="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('') + '<div class="fbk"></div>';
+}
+function pairAnswer(id, p){
+  const st = PQ[id], box = $('gq-'+id), { it, opts } = st.cur, ans = opts.indexOf(it.a), ok = p === ans;
+  if (box.querySelector('.op:disabled')) return;
+  box.querySelectorAll('.op').forEach((x,i)=>{ x.disabled = true; if (i===ans) x.classList.add('ok'); else if (i===p) x.classList.add('no'); });
+  if (ok) st.ok++; else st.wrong.push(it);
+  PRACTICE.addDaily(1);
+  box.querySelector('.sc').textContent = `${st.i+1} / ${st.list.length} · ✓ ${st.ok}`;
+  const row = st.sec.rows[it.ri];
+  box.querySelector('.fbk').innerHTML = `<div class="ex">${ok?'✅ 答對!':'✗ 答錯,正解:<strong>'+esc(it.a)+'</strong>'}<br>出自「${esc(plain(row.c[0]))}」:${esc(plain(row.c.slice(1).filter(v=>v!=='—').join(' · ')))}
+    <br><button class="lnk" type="button" data-row="r-${st.sec.id}-${it.ri}">看表上這一列 ↑</button></div>
+    <div class="act"><button type="button" data-next="${id}">${st.i+1 < st.list.length ? '下一題 →' : '看成績'}</button></div>`;
+}
+function pairDone(id){
+  const st = PQ[id], box = $('gq-'+id), n = st.list.length;
+  box.innerHTML = `<span class="tag">${esc(st.sec.icon+' '+st.sec.t)} · 配對小測</span><div class="big">${st.ok} / ${n}</div>
+    <div style="text-align:center;color:var(--sub);font-size:.86rem">${st.ok===n?'全對,這區記得很熟 👍':'答錯的回表上再看一次,過幾天再測'}</div>
+    ${st.wrong.length?'<ul>'+st.wrong.map(it=>`<li>${esc(it.q)} → <strong>${esc(it.a)}</strong> <button class="lnk" type="button" data-row="r-${st.sec.id}-${it.ri}">看這列</button></li>`).join('')+'</ul>':''}
+    <div class="act">${st.wrong.length?`<button type="button" data-redo="${id}">只重測答錯的 ${st.wrong.length} 題</button>`:''}<button class="o" type="button" data-again="${id}">再測一次</button></div>`;
+}
+function jumpRow(rid){
+  const el = $(rid); if (!el) return;
+  const det = el.closest('details'); if (det) det.open = true;
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 1400);
+}
+
+$('secRow').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if (!b) return;
+  SEC = b.dataset.v; try { localStorage.setItem('pref_atlas_sec', SEC); } catch(err){}
+  history.replaceState(null, '', SEC==='all' ? location.pathname + location.search : '#'+SEC);
+  render(); window.scrollTo(0,0);
+});
+window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if (IDS.includes(h) && h!==SEC){ SEC = h; render(); } });
+$('app').addEventListener('click', e=>{
+  let b;
+  if ((b = e.target.closest('[data-pair]'))) return pairStart(b.dataset.pair);
+  if ((b = e.target.closest('.gq .op'))) return pairAnswer(b.closest('.gq').id.slice(3), +b.dataset.i);
+  if ((b = e.target.closest('[data-next]'))) { PQ[b.dataset.next].i++; return pairShow(b.dataset.next); }
+  if ((b = e.target.closest('[data-again]'))) return pairStart(b.dataset.again);
+  if ((b = e.target.closest('[data-redo]'))) {
+    const id = b.dataset.redo, st = PQ[id];
+    PQ[id] = { sec: st.sec, all: st.all, list: shuffle(st.wrong.slice()), i:0, ok:0, wrong:[] };
+    return pairShow(id);
+  }
+  if ((b = e.target.closest('[data-row]'))) return jumpRow(b.dataset.row);
+  if ((b = e.target.closest('[data-quiz]'))) {
+    const sec = D.sections.find(s=>s.id===b.dataset.quiz), all = !!b.dataset.all;
+    b.disabled = true;
+    quizList(sec).then(list=>{
+      b.disabled = false;
+      MINIQUIZ.start({ title: sec.icon+' '+sec.t+(all?' · 全部相關原題':' · 歷屆原題'), list, n: all ? 0 : QUIZ_N });
+    }).catch(()=>{ b.disabled = false; });
+  }
+});
+$('maskBtn').addEventListener('click', ()=>{
+  MASKON = !MASKON;
+  $('maskBtn').classList.toggle('on', MASKON);
+  $('maskBtn').textContent = MASKON ? '👀 顯示全部' : '🙈 遮住重點';
+  $('resetBtn').hidden = !MASKON;
+  MASK.reset($('app')); MASK.set($('app'), MASKON);
+});
+$('resetBtn').addEventListener('click', ()=>MASK.reset($('app')));
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(render, 200); });
+window.addEventListener('beforeprint', ()=>document.querySelectorAll('details.sec').forEach(d=>d.open=true));
+$('basis').textContent = `資料核對日期 ${D.updated} · ${D.basis}`;
+render();
+</script>
+</body>
+</html>
