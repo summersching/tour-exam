@@ -260,6 +260,9 @@ const TOOLS = [
   { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 口試模擬(計時 + 錄音)', file:'口試練習.html', cat:'review', subj:['en','jp'] },
   { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
   { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 · 執業法規 高頻考點速背', file:'考點速記.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'tf',    name:'是非快問', icon:'⭕', desc:'歷屆考題拆成 1,600+ 句對錯判斷 · 左右滑作答 · 錯的收進錯題本', file:'是非快問.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'num',   name:'數字速記', icon:'🔢', desc:'金額 · 期限 · 人數 · 年齡 數字題速記表 · 遮住自測 · 抽題測驗', file:'數字速記.html', cat:'review', subj:['pr2','pr','gh'] },
+  { id:'cs',    name:'兩岸與入出境', icon:'🛂', desc:'護照 · 簽證 · 攜帶規定 · 役男 · 兩岸 · 港澳 · 外匯 系統整理 + 分區測驗', file:'兩岸入出境.html', cat:'review', subj:['pr2'] },
   { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all' },
   { id:'fav',   name:'收藏與筆記', icon:'⭐', desc:'收藏的重點題 + 自己寫的筆記 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all' },
   { id:'backup',name:'資料備份', icon:'💾', desc:'錯題 · 成績 · 收藏 · 筆記 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' }
@@ -306,7 +309,11 @@ function LSs(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function daysUntil(s){const t=new Date();t.setHours(0,0,0,0);const e=new Date(s+'T00:00:00');return Math.round((e-t)/86400000);}
 function histByDay(){let h=[];try{h=JSON.parse(LSg('quiz_history')||'[]');}catch(e){}
-  const m={};h.forEach(x=>{if(!x.ts)return;m[dkey(new Date(x.ts))]=(m[dkey(new Date(x.ts))]||0)+(x.total||0);});return m;}
+  const m={};h.forEach(x=>{if(!x.ts)return;m[dkey(new Date(x.ts))]=(m[dkey(new Date(x.ts))]||0)+(x.total||0);});
+  /* v127 是非快問、數字速記、分區小測驗的作答數(practice.js 寫入 practice_daily)也算進每日練習 */
+  let p={};try{p=JSON.parse(LSg('practice_daily')||'{}');}catch(e){}
+  Object.keys(p).forEach(k=>{m[k]=(m[k]||0)+(+p[k]||0);});
+  return m;}
 function streakOf(m){let s=0,d=new Date();d.setHours(0,0,0,0);
   if(!m[dkey(d)])d.setDate(d.getDate()-1);           // 今天還沒練 → 從昨天起算(寬限一天)
   while(m[dkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
@@ -337,7 +344,7 @@ function renderStudyCard(){
       <div class="gtrack"><div class="gfill ${today>=goal?'done':''}" style="width:${pct}%"></div></div>
       <span class="gpct">${today}/${goal} 題</span>
     </div>
-    ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗題數計。</div>`}
+    ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗、是非快問、數字速記等的作答數計。</div>`}
     <div class="setwrap" id="scForm">
       <label class="glabel">考試日期 <input type="date" id="scDate" value="${exam}"></label>
       <label class="glabel">每日目標 <input type="number" id="scGoal" min="1" max="500" value="${goal}"> 題</label>

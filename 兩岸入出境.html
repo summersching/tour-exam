@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#9f1239">
+<title>兩岸與入出境</title>
+<!-- 兩岸與入出境 · v127(2026-10-05)
+     執業法規最常考的兩岸、入出境(含護照、簽證、攜帶規定、役男出境)、港澳、外匯,系統整理成表;
+     每條附出處題號與法源,可遮住重點自測,每區可抽題測驗(miniquiz.js)。資料在 cs_data.js。
+     變更履歷:v127 初版 -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#fdeef2;
+    --sel:#9f1239;--accent:#9f1239;--hd1:#881337;--hd2:#e11d48;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#33161f;
+    --sel:#fb7185;--accent:#e11d48;--hd1:#4c0519;--hd2:#9f1239;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#33161f;
+    --sel:#fb7185;--accent:#e11d48;--hd1:#4c0519;--hd2:#9f1239;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .row{display:flex;gap:7px;padding:9px 0 0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.85rem;white-space:nowrap}
+  .tbtn.on{background:var(--sel);color:#fff}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip b{color:var(--ink)}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:14px 0;box-shadow:var(--shadow);overflow:hidden}
+  .sec>summary{cursor:pointer;padding:14px 16px;list-style:none;display:flex;align-items:center;gap:10px}
+  .sec>summary::-webkit-details-marker{display:none}
+  .sec>summary::after{content:'▸';margin-left:auto;color:var(--sub);transition:.2s}
+  .sec[open]>summary::after{transform:rotate(90deg)}
+  .si{font-size:1.4rem} .st{font-weight:800;font-size:1.05rem} .sd{display:block;font-size:.74rem;color:var(--sub);font-weight:500}
+  .sb{padding:0 16px 14px}
+  .gh{font-weight:800;font-size:.86rem;color:var(--sel);margin:14px 0 2px;padding-bottom:4px;border-bottom:2px solid var(--soft)}
+  .r{display:grid;grid-template-columns:7.2em 1fr;gap:4px 12px;border-bottom:1px solid var(--line);padding:9px 0}
+  .r:last-child{border-bottom:0}
+  .rk{font-weight:800;font-size:.86rem;color:var(--ink)}
+  .rv{font-size:.92rem}
+  .rv b{color:var(--sel)}
+  .meta{grid-column:2;display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:2px}
+  a.qs{font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  a.qs.p{background:var(--okbg);color:var(--ok)}
+  .law{font-size:.68rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px;white-space:nowrap}
+  .upd{grid-column:2;font-size:.76rem;background:var(--warnbg);color:var(--warn);border-radius:8px;padding:4px 8px;margin-top:3px}
+  .qz{display:flex;gap:8px;margin-top:12px}
+  .qz button{flex:1;border:0;background:var(--sel);color:#fff;font-weight:800;border-radius:12px;padding:10px;cursor:pointer;font-family:inherit;font-size:.9rem}
+  .qz button.o{background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
+  .basis{font-size:.72rem;color:var(--sub);margin:16px 2px}
+  .empty{text-align:center;color:var(--sub);padding:40px 10px}
+  mark{background:#fde68a;color:inherit;border-radius:3px}
+  @media (max-width:420px){.r{grid-template-columns:1fr}.meta,.upd{grid-column:1}}
+  @media print{.bar,.home,.qz,.tip{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+<script src="mask.js"></script>
+<script src="cs_data.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🛂 兩岸與入出境</h1>
+  <p>執業法規最常考:兩岸 · 護照 · 簽證 · 攜帶規定 · 役男出境 · 港澳 · 外匯 — 系統整理 + 出處題號 + 分區測驗</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row" id="secRow"></div>
+  <div class="tools">
+    <input id="q" placeholder="搜尋…(如 人民幣、e-Gate、海基會、183)" aria-label="搜尋">
+    <button class="tbtn" id="maskBtn" type="button">🙈 遮住重點</button>
+    <button class="tbtn" id="resetBtn" type="button" hidden>↺ 重新遮住</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="tip">💡 <b>怎麼用</b>:先整區念過,再按「遮住重點」把粗體與數字蓋起來自測(點一下看答案)。每區最下面可「抽 10 題」用歷屆原題測驗,答錯會收進執業法規 / 執業實務錯題本。<b>黃色</b>是修法提醒:舊題答案與現行規定不同時,考試以現行規定為準。後面的「導 / 領 年-題號」可點,看原題詳解(綠色 = 執業實務題)。</div>
+  <div id="app"></div>
+  <div class="basis" id="basis"></div>
+</div>
+
+<script>
+'use strict';
+const D = window.CSDATA;
+const QUIZ_N = 10;
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function plain(s){return String(s).replace(/<[^>]+>/g,'');}
+let SEC = (function(){ try { const v = localStorage.getItem('pref_cs_sec'); return v && (v==='all' || D.sections.some(s=>s.id===v)) ? v : 'all'; } catch(e){ return 'all'; } })();
+let MASKON = false;
+
+function srcLink(sr){
+  const m = sr.match(/^(?:(pr):)?([gl])(\d+)-(\d+)$/); if (!m) return '';
+  const s = m[1] || 'pr2', q = { c: m[2]==='g'?'guide':'leader', y: m[3], no: +m[4] };
+  return `<a class="qs${s==='pr'?' p':''}" href="${PRACTICE.href(s,q)}" title="${esc(PRACTICE.label(s,q))}">${m[2]==='g'?'導':'領'}${m[3]}-${m[4]}</a>`;
+}
+function hl(html, kw){
+  if (!kw) return html;
+  const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return html.split(/(<[^>]+>)/).map(p=>p.startsWith('<')?p:p.replace(re, m=>`<mark>${m}</mark>`)).join('');
+}
+function renderRow(r, kw){
+  return `<div class="r"><div class="rk">${hl(esc(r.k),kw)}</div><div class="rv">${hl(r.v,kw)}</div>
+    <div class="meta nomask">${(r.src||[]).map(srcLink).join('')}${r.law?`<span class="law">${esc(r.law)}</span>`:''}</div>
+    ${r.upd?`<div class="upd nomask">⚠ ${esc(r.upd)}</div>`:''}</div>`;
+}
+function render(){
+  $('secRow').innerHTML = [['all','全部']].concat(D.sections.map(s=>[s.id, s.icon+' '+s.t])).map(([v,l])=>
+    `<button class="chip${SEC===v?' on':''}" type="button" data-v="${v}">${esc(l)}</button>`).join('');
+  const kw = $('q').value.trim();
+  const k = kw.toLowerCase();
+  let html = '', shown = 0;
+  D.sections.forEach(sec=>{
+    if (SEC !== 'all' && sec.id !== SEC) return;
+    let body = '', n = 0;
+    sec.groups.forEach(g=>{
+      const rows = g.rows.filter(r=>!k || (r.k+' '+plain(r.v)+' '+(r.law||'')+' '+(r.upd||'')).toLowerCase().includes(k));
+      if (!rows.length) return;
+      n += rows.length;
+      body += (g.h?`<div class="gh">${esc(g.h)}</div>`:'') + rows.map(r=>renderRow(r, kw)).join('');
+    });
+    if (!n) return;
+    shown += n;
+    const open = kw || SEC !== 'all' ? ' open' : '';
+    html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${n} 條</span></span></summary>
+      <div class="sb">${body}<div class="qz"><button type="button" data-quiz="${sec.id}">📝 抽 ${QUIZ_N} 題測驗</button><button class="o" type="button" data-quiz="${sec.id}" data-all="1">全部題目逐題做</button></div></div></details>`;
+  });
+  $('app').innerHTML = html || `<div class="empty">找不到「${esc(kw)}」<br><span style="font-size:.85rem">換個關鍵字或切到「全部」</span></div>`;
+  MASK.prepare($('app'));
+  MASK.set($('app'), MASKON);
+}
+function quizList(sec){
+  const subs = [...new Set(sec.quiz.map(r=>r.s))];
+  return Promise.all(subs.map(s=>PRACTICE.load(s).then(d=>[s,d]))).then(rs=>{
+    const data = Object.fromEntries(rs), seen = new Set(), list = [];
+    sec.quiz.forEach(r=>{
+      const d = data[r.s];
+      d.bank.forEach(q=>{
+        const a = d.ana[PRACTICE.key(q)] || {};
+        if (r.t && a.t !== r.t) return;
+        if (r.tt && !r.tt.test(a.tt || '')) return;
+        if (r.kw && !r.kw.test(q.stem)) return;
+        const st = window.STALE && STALE.note(r.s, q);
+        if (st && st.k === 'old') return;          // 法規已修正、官方答案已不適用的題目不出
+        const id = r.s + '|' + PRACTICE.key(q);
+        if (seen.has(id)) return; seen.add(id);
+        list.push({ s:r.s, q });
+      });
+    });
+    return list;
+  });
+}
+
+$('secRow').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if (!b) return;
+  SEC = b.dataset.v; try { localStorage.setItem('pref_cs_sec', SEC); } catch(err){}
+  render(); window.scrollTo(0,0);
+});
+$('app').addEventListener('click', e=>{
+  const b = e.target.closest('[data-quiz]'); if (!b) return;
+  const sec = D.sections.find(s=>s.id===b.dataset.quiz);
+  const all = !!b.dataset.all;
+  b.disabled = true;
+  quizList(sec).then(list=>{
+    b.disabled = false;
+    MINIQUIZ.start({ title: sec.icon+' '+sec.t+(all?' · 全部題目':' · 測驗'), list, n: all ? 0 : QUIZ_N });
+  }).catch(()=>{ b.disabled = false; });
+});
+$('maskBtn').addEventListener('click', ()=>{
+  MASKON = !MASKON;
+  $('maskBtn').classList.toggle('on', MASKON);
+  $('maskBtn').textContent = MASKON ? '👀 顯示全部' : '🙈 遮住重點';
+  $('resetBtn').hidden = !MASKON;
+  if (MASKON) document.querySelectorAll('details.sec').forEach(d=>d.open = d.open || SEC!=='all');
+  MASK.reset($('app')); MASK.set($('app'), MASKON);
+});
+$('resetBtn').addEventListener('click', ()=>MASK.reset($('app')));
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(render, 200); });
+window.addEventListener('beforeprint', ()=>document.querySelectorAll('details.sec').forEach(d=>d.open=true));
+$('basis').textContent = `資料核對日期 ${D.updated} · ${D.basis}`;
+render();
+</script>
+</body>
+</html>

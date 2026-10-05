@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>數字速記</title>
+<!-- 數字速記 · v127(2026-10-05)
+     歷屆選項全是數字(金額 / 期限 / 人數 / 年齡…)的單選題,依主題或數字類型整理成速記表,可遮住答案自測、抽題測驗。
+     答案沿用官方公告;法規已修正的題目標出現行規定(stale.js)。
+     變更履歷:v127 初版 -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
+    --sel:#0f766e;--accent:#0f766e;--hd1:#115e59;--hd2:#14b8a6;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .row{display:flex;flex-wrap:wrap;gap:7px;padding:8px 0 0}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .chip .n{font-weight:600;font-size:.72rem;opacity:.8;margin-left:3px}
+  .scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .scroll::-webkit-scrollbar{display:none} .scroll .chip{flex:0 0 auto}
+  .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.86rem;white-space:nowrap}
+  .tbtn.fill{background:var(--sel);color:#fff}
+  .cnt{font-size:.78rem;color:var(--sub);padding:2px 2px 8px}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip b{color:var(--ink)}
+  .grp{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+  .grp>summary{cursor:pointer;font-weight:800;font-size:1rem;padding:13px 16px;list-style:none;display:flex;align-items:center;gap:8px}
+  .grp>summary::-webkit-details-marker{display:none}
+  .grp>summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  .grp[open]>summary::after{transform:rotate(90deg)}
+  .gn{font-size:.74rem;color:var(--sub);font-weight:600}
+  .gbody{padding:0 16px 12px}
+  .sub{font-weight:800;font-size:.86rem;color:var(--sel);margin:12px 0 4px}
+  .it{border-top:1px solid var(--line);padding:9px 0}
+  .it:first-of-type{border-top:0}
+  .st{font-size:.9rem}
+  .an{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px}
+  .ans{display:inline-block;border-radius:9px;padding:2px 10px;font-weight:800;font-size:.9rem;background:var(--okbg);color:var(--ok);cursor:pointer;border:0;font-family:inherit}
+  .ans.mask{background:var(--line);color:transparent;text-shadow:0 0 9px rgba(90,107,130,.55);user-select:none;position:relative;min-width:6.4em}
+  .ans.mask::after{content:'點我看答案';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.74rem;text-shadow:none;white-space:nowrap}
+  .ans.old{background:var(--warnbg);color:var(--warn)}
+  a.qs{font-size:.7rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  .ty{font-size:.68rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px}
+  .nt{font-size:.78rem;border-radius:8px;padding:6px 9px;margin-top:6px;line-height:1.6}
+  .nt.old{background:var(--warnbg);color:var(--warn)} .nt.info{background:var(--soft);color:var(--sub)}
+  .empty{text-align:center;color:var(--sub);padding:50px 10px}
+  @media print{.bar,.home,.tip{display:none!important}.grp{break-inside:avoid;box-shadow:none}.ans.mask{color:inherit;text-shadow:none;background:none}.ans.mask::after{content:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🔢 數字速記</h1>
+  <p>金額、期限、人數、年齡…歷屆「選項都是數字」的考題整理 · 遮住答案自測 · 抽題測驗</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row" id="subjRow"></div>
+  <div class="row scroll" id="topicRow"></div>
+  <div class="row" id="optRow"></div>
+  <div class="tools">
+    <input id="q" placeholder="搜尋…(如 保證金、護照、人民幣、天)" aria-label="搜尋">
+    <button class="tbtn" id="maskBtn" type="button"></button>
+    <button class="tbtn fill" id="quizBtn" type="button">📝 抽 10 題</button>
+  </div>
+  <div class="cnt" id="cnt">載入中…</div>
+</div></div>
+
+<div class="wrap">
+  <div class="tip">💡 <b>怎麼用</b>:先「遮住答案」從頭念一遍,想不起來的點一下看答案;再按「抽 10 題」用原題測驗,答錯的會收進該科錯題本。黃色標記代表<b>法規已修正</b>,請以現行規定為準(官方答案仍照當年公告)。每題後面的「導 / 領 年-題號」可點,跳回原題看完整詳解。</div>
+  <div id="app"></div>
+</div>
+
+<script>
+'use strict';
+const SUBJS = [['pr2','⚖️ 執業法規'],['pr','🚩 執業實務'],['gh','🗺️ 觀光']];
+const RANGES = [['all','全部年度'],['recent','近 3 年']];
+const GROUPS = [['topic','依主題'],['type','依數字類型']];
+const QUIZ_N = 10;
+const NUM = /[0-9０-９一二三四五六七八九十百千萬億兩半]/;
+const UNIT = /(新臺幣|新台幣|美元|美金|美幣|人民幣|日圓|歐元|港幣|萬元|千元|百元|元|萬|億|年|個月|月|週|星期|日|天|小時|時|分鐘|分|秒|歲|人|名|次|倍|%|％|公尺|公里|公分|公斤|公升|毫升|度|節|家|條|項|張|件|間|層|班|團|位|個|座|處|成|折|級|期|屆|梯|趟|本|支|瓶|隻|磅|號|線|字|課)/g;
+const TYPES = [
+  ['💰 金額', /元|萬|億|美金|美元|美幣|幣|鎊/],
+  ['🎂 年齡', /歲/],
+  ['⏱ 期限 · 時間', /年|月|日|天|小時|時|分鐘|週|星期|秒/],
+  ['👥 人數 · 次數', /人|名|位|次|團|家|個|件|張|支|瓶|隻|座|處|條|項|班/],
+  ['📏 數量 · 比例', /%|％|公尺|公里|公分|公斤|公升|毫升|倍|成|折|級|節|課|磅|度|字/]
+];
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'');}
+const cfg = Object.assign({ subj:'pr2', topic:'__ALL__', range:'all', group:'topic', mask:true }, PRACTICE.LSget('pref_num', {}));
+function saveCfg(){ PRACTICE.LSset('pref_num', cfg); }
+
+/* 選項是不是「數字」:去掉數字、單位、常見連接詞後幾乎不剩字 */
+function isNumOpt(o){
+  const s = clean(o).replace(/\s/g,'');
+  if (!NUM.test(s)) return false;
+  const r = s.replace(/[0-9０-９.,，、．:：~～\-－—–;；()（）／/＋+]/g,'').replace(/至|到|以上|以下|以內|未滿|逾|超過|起算|前|後|各|每|約|共|計|為|止|或|及|與|並|之間|內|外|第/g,'')
+    .replace(UNIT,'').replace(/[一二三四五六七八九十百千萬億兩半零〇]/g,'');
+  return r.length <= 2;
+}
+function numTypeOf(text){ for (const [n,re] of TYPES) if (re.test(text)) return n; return '🔢 其他'; }
+
+const DATA = {};   // s → [{q, d(解析), note(時效), ans:[文字], type}]
+function build(s, d){
+  const out = [];
+  d.bank.forEach(q=>{
+    if (SCORE.free(q) || !Array.isArray(q.opts) || q.opts.length !== 4) return;
+    const numN = q.opts.filter(isNumOpt).length;
+    if (numN < 3) return;
+    const acc = SCORE.acc(q); if (!acc.length || !acc.every(i=>isNumOpt(q.opts[i]))) return;
+    const ana = d.ana[PRACTICE.key(q)] || {};
+    const ans = acc.map(i=>clean(q.opts[i]));
+    out.push({ q, s, t: ana.t || '其他', tt: ana.tt || '其他', note: window.STALE ? STALE.note(s, q) : null, ans, type: numTypeOf(ans.join(' ')) });
+  });
+  return out;
+}
+function ensure(s){
+  if (DATA[s]) return Promise.resolve(DATA[s]);
+  return PRACTICE.load(s).then(d=>{ DATA[s] = build(s, d); return DATA[s]; });
+}
+function maxYear(arr){ return arr.reduce((m,x)=>Math.max(m,+x.q.y),0); }
+function filtered(){
+  let arr = DATA[cfg.subj] || [];
+  if (cfg.topic !== '__ALL__') arr = arr.filter(x=>x.t===cfg.topic);
+  if (cfg.range === 'recent'){ const m = maxYear(DATA[cfg.subj]||[]); arr = arr.filter(x=>+x.q.y>=m-2); }
+  const kw = $('q').value.trim().toLowerCase();
+  if (kw) arr = arr.filter(x=>(clean(x.q.stem)+' '+x.ans.join(' ')+' '+x.tt).toLowerCase().includes(kw));
+  return arr;
+}
+
+function chips(id, items, cur, key){
+  $(id).innerHTML = items.map(([v,l,n])=>`<button class="chip${String(v)===String(cur)?' on':''}" type="button" data-k="${key}" data-v="${esc(v)}">${l}${n!=null?`<span class="n">${n}</span>`:''}</button>`).join('');
+}
+function renderBar(){
+  chips('subjRow', SUBJS.map(([k,l])=>[k,l,DATA[k]?DATA[k].length:null]), cfg.subj, 'subj');
+  const all = DATA[cfg.subj] || [], tc = {};
+  all.forEach(x=>{ tc[x.t]=(tc[x.t]||0)+1; });
+  if (cfg.topic !== '__ALL__' && !tc[cfg.topic]) cfg.topic = '__ALL__';
+  chips('topicRow', [['__ALL__','全部主題',all.length]].concat(Object.keys(tc).sort((a,b)=>tc[b]-tc[a]).map(t=>[t,t,tc[t]])), cfg.topic, 'topic');
+  $('optRow').innerHTML = RANGES.map(([v,l])=>`<button class="chip${cfg.range===v?' on':''}" type="button" data-k="range" data-v="${v}">${l}</button>`).join('') +
+    '<span style="width:6px"></span>' + GROUPS.map(([v,l])=>`<button class="chip${cfg.group===v?' on':''}" type="button" data-k="group" data-v="${v}">${l}</button>`).join('');
+  $('maskBtn').textContent = cfg.mask ? '👀 顯示答案' : '🙈 遮住答案';
+}
+function itemHtml(x){
+  const q = x.q, old = x.note && x.note.k === 'old';
+  const ansHtml = x.ans.map(a=>`<button class="ans${cfg.mask?' mask':''}${old?' old':''}" type="button" title="${old?'官方答案(當年規定)':'官方答案'}">${esc(a)}</button>`).join('<span class="ty">或</span>');
+  const note = x.note ? `<div class="nt ${old?'old':'info'}">${old?'⚠ 法規已修正:':'ℹ️ '}${esc(x.note.t)}</div>` : '';
+  return `<div class="it"><div class="st">${esc(clean(q.stem))}</div>
+    <div class="an">${old?'<span class="ty">當年答案</span>':''}${ansHtml}<a class="qs" href="${PRACTICE.href(x.s,q)}" title="${esc(PRACTICE.label(x.s,q))}">${PRACTICE.short(q)}</a>${cfg.group==='topic'?`<span class="ty">${esc(x.type.replace(/^\S+ /,''))}</span>`:`<span class="ty">${esc(x.t)}</span>`}</div>${note}</div>`;
+}
+function render(){
+  renderBar();
+  if (!DATA[cfg.subj]){ $('app').innerHTML = '<div class="empty">載入題庫中…</div>'; return; }
+  const arr = filtered();
+  $('cnt').textContent = `${PRACTICE.SUBJ[cfg.subj].name} · 符合 ${arr.length} 題` + (arr.length ? `(已排除送分題;黃色 = 法規已修正 ${arr.filter(x=>x.note&&x.note.k==='old').length} 題)` : '');
+  $('quizBtn').disabled = !arr.some(x=>!(x.note&&x.note.k==='old'));
+  if (!arr.length){ $('app').innerHTML = '<div class="empty">沒有符合的題目,換個條件試試</div>'; return; }
+  const groups = {};
+  arr.forEach(x=>{
+    const g = cfg.group === 'topic' ? x.t : x.type, sg = cfg.group === 'topic' ? x.tt : x.t;
+    (groups[g] = groups[g] || {}); (groups[g][sg] = groups[g][sg] || []).push(x);
+  });
+  const gsize = g => Object.values(groups[g]).reduce((a,b)=>a+b.length,0);
+  const order = cfg.group === 'type' ? TYPES.map(t=>t[0]).concat(['🔢 其他']).filter(g=>groups[g]) : Object.keys(groups).sort((a,b)=>gsize(b)-gsize(a));
+  const kw = $('q').value.trim();
+  $('app').innerHTML = order.map((g,gi)=>{
+    const subs = Object.keys(groups[g]).sort((a,b)=>groups[g][b].length-groups[g][a].length);
+    const body = subs.map(sg=>{
+      const items = groups[g][sg].sort((a,b)=>(+b.q.y)-(+a.q.y));
+      return `<div class="sub">${esc(sg)} · ${items.length}</div>` + items.map(itemHtml).join('');
+    }).join('');
+    return `<details class="grp"${(kw||gi===0||order.length<=2)?' open':''}><summary>${esc(g)}<span class="gn">${gsize(g)} 題</span></summary><div class="gbody">${body}</div></details>`;
+  }).join('');
+}
+
+document.querySelector('.bar').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if (!b) return;
+  const k = b.dataset.k, v = b.dataset.v;
+  if (cfg[k] === v) return;
+  cfg[k] = v; if (k === 'subj') cfg.topic = '__ALL__';
+  saveCfg();
+  if (k === 'subj' && !DATA[v]){ render(); ensure(v).then(render); return; }
+  render(); window.scrollTo(0,0);
+});
+$('app').addEventListener('click', e=>{
+  const a = e.target.closest('.ans'); if (a) a.classList.toggle('mask');
+});
+$('maskBtn').addEventListener('click', ()=>{ cfg.mask = !cfg.mask; saveCfg(); render(); });
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(render, 200); });
+$('quizBtn').addEventListener('click', ()=>{
+  const list = filtered().filter(x=>!(x.note&&x.note.k==='old')).map(x=>({ s:x.s, q:x.q }));
+  MINIQUIZ.start({ title:'🔢 數字速記 · 測驗', list, n:QUIZ_N });
+});
+window.addEventListener('beforeprint', ()=>document.querySelectorAll('details.grp').forEach(d=>d.open=true));
+
+render();
+ensure(cfg.subj).then(render);   // 只載入目前科目的題庫(其他科切換時才載)
+</script>
+</body>
+</html>
