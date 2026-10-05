@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e7490">
+<title>實務工具箱</title>
+<!-- 實務工具箱 · v128(2026-10-05)
+     執業實務四大工具題:急救 SOP 卡、時差計算練習(即時出題)、航空 / 旅遊代碼速查與測驗、國際禮儀圖解。
+     內容依歷屆官方答案整理(資料在 toolbox_data.js),急救依衛生福利部 2021 年民眾版心肺復甦術參考指引。
+     變更履歷:v128 初版 -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f6fa;
+    --sel:#0e7490;--accent:#0e7490;--hd1:#155e75;--hd2:#06b6d4;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--gold:#d97706;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#14303a;
+    --sel:#22d3ee;--accent:#0891b2;--hd1:#164e63;--hd2:#0e7490;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--gold:#fbbf24;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root:not([data-theme="light"]) .tab.on,:root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .qzb,:root:not([data-theme="light"]) .gq .nx,:root:not([data-theme="light"]) .sv-w{color:#06222b;fill:#06222b}}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#14303a;
+    --sel:#22d3ee;--accent:#0891b2;--hd1:#164e63;--hd2:#0e7490;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--gold:#fbbf24;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root[data-theme="dark"] .tab.on,:root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .qzb,:root[data-theme="dark"] .gq .nx,:root[data-theme="dark"] .sv-w{color:#06222b;fill:#06222b}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .tabs{display:flex;gap:6px;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow);padding:10px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:6}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:1 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:999px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:inherit}
+  .tab.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .pane{display:none} .pane.on{display:block}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip b{color:var(--ink)}
+  .tools{display:flex;gap:8px;align-items:center;margin:12px 0 4px;flex-wrap:wrap}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.85rem;white-space:nowrap}
+  .tbtn.on,.tbtn.fill{background:var(--sel);color:#fff}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .row{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:12px 0;overflow:hidden}
+  .card>summary{cursor:pointer;list-style:none;padding:13px 16px;display:flex;gap:10px;align-items:center}
+  .card>summary::-webkit-details-marker{display:none}
+  .card>summary::after{content:'▸';margin-left:auto;color:var(--sub);transition:.2s}
+  .card[open]>summary::after{transform:rotate(90deg)}
+  .ci{font-size:1.4rem} .ct{font-weight:800;font-size:1.02rem} .cw{display:block;font-size:.74rem;color:var(--sub);font-weight:500}
+  .cb{padding:0 16px 14px}
+  ol.steps{margin:4px 0 8px;padding-left:22px} ol.steps li{margin:5px 0;font-size:.93rem}
+  .cb b{color:var(--sel)}
+  .kl{list-style:none;padding:0;margin:6px 0}
+  .kl li{font-size:.86rem;padding:5px 9px;border-radius:9px;margin:5px 0}
+  .kl.key li{background:var(--soft)} .kl.key li::before{content:'💡 '}
+  .kl.no li{background:var(--nobg);color:var(--no)} .kl.no li::before{content:'✗ ';font-weight:800}
+  .src{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  a.qs{font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  .qzb{display:block;width:100%;border:0;background:var(--sel);color:#fff;font-weight:800;border-radius:12px;padding:11px;cursor:pointer;font-family:inherit;font-size:.92rem;margin:14px 0}
+  .fig{display:block;width:100%;max-width:520px;margin:6px auto 10px}
+  .fig text{font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",sans-serif}
+  .sv-l{fill:none;stroke:var(--sub);stroke-width:2}
+  .sv-f{fill:var(--soft);stroke:var(--sub);stroke-width:1.5}
+  .sv-1{fill:var(--gold)} .sv-n{fill:var(--sel)} .sv-t{fill:var(--ink);font-size:13px} .sv-s{fill:var(--sub);font-size:11px} .sv-w{fill:#fff;font-size:13px;font-weight:700}
+  table.tz{width:100%;border-collapse:collapse;font-size:.86rem;margin:6px 0}
+  table.tz th,table.tz td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+  table.tz th{color:var(--sub);font-size:.76rem}
+  .gq{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin:12px 0}
+  .gq .tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--soft);color:var(--sel);border-radius:8px;padding:0 8px;margin-bottom:4px}
+  .gq .pr{font-weight:800;font-size:1.02rem;line-height:1.7;margin:4px 0 8px}
+  .gq .op{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;margin:7px 0;font-size:.95rem;font-family:inherit;cursor:pointer}
+  .gq .op:disabled{cursor:default} .gq .op.ok{border-color:var(--ok);background:var(--okbg)} .gq .op.no{border-color:var(--no);background:var(--nobg)}
+  .gq .ex{font-size:.88rem;background:var(--soft);border-radius:10px;padding:9px 12px;margin-top:8px;line-height:1.8}
+  .gq .sc{float:right;font-size:.78rem;color:var(--sub);font-weight:700}
+  .gq .nx{display:block;width:100%;border:0;background:var(--sel);color:#fff;font-weight:800;border-radius:12px;padding:10px;margin-top:10px;cursor:pointer;font-family:inherit}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  table.cd{width:100%;border-collapse:collapse;font-size:.88rem}
+  table.cd td{border-bottom:1px solid var(--line);padding:6px 6px;vertical-align:top}
+  table.cd td:first-child{font-weight:800;color:var(--sel);white-space:nowrap;font-family:Consolas,"Segoe UI",monospace;width:8.5em}
+  .cdh{font-weight:800;font-size:.86rem;color:var(--sub);margin:14px 0 4px}
+  .basis{font-size:.72rem;color:var(--sub);margin:16px 2px}
+  @media print{.tabs,.home,.qzb,.tools,.gq{display:none!important}.pane{display:block!important}.card{break-inside:avoid;box-shadow:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+<script src="mask.js"></script>
+<script src="toolbox_data.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🧰 實務工具箱</h1>
+  <p>急救 SOP · 時差計算 · 航空代碼 · 國際禮儀圖解 — 執業實務年年必考的工具題</p>
+</div></header>
+<nav class="tabs" id="tabs">
+  <button class="tab" type="button" data-t="aid">🚑 急救</button>
+  <button class="tab" type="button" data-t="tz">🕐 時差</button>
+  <button class="tab" type="button" data-t="code">✈️ 代碼</button>
+  <button class="tab" type="button" data-t="etiq">🍽️ 禮儀</button>
+</nav>
+<div class="wrap">
+  <section class="pane" id="p-aid">
+    <div class="tip nomask">🚑 依<b>衛生福利部 2021 年「民眾版心肺復甦術參考指引」</b>與歷屆官方答案整理。考試以題目情境為準;真的遇到狀況請立即撥 <b>119</b>(國外撥當地急救電話)。</div>
+    <div class="tools"><button class="tbtn mk" type="button">🙈 遮住重點</button></div>
+    <div id="aidList"></div>
+    <button class="qzb" type="button" data-quiz="aid">📝 急救 · 安全題庫測驗(抽 10 題)</button>
+  </section>
+  <section class="pane" id="p-tz">
+    <div class="tip">🕐 <b>口訣</b>:當地時間 = 已知時間 +(當地 UTC − 已知地 UTC)。往東時間較快、往西較慢;經度每 15° 差 1 小時。<b>飛行時間</b> = 把抵達時間換回出發地時間,再減出發時間。臺灣是 <b>UTC+8</b>,不實施夏令時間;夏令時間時鐘撥快 1 小時(美國 3 月第 2 個週日至 11 月第 1 個週日;歐洲 3 月最後一個週日至 10 月最後一個週日;南半球澳洲、紐西蘭約 10 月至隔年 4 月)。</div>
+    <div class="row" id="tzMode"></div>
+    <div class="gq" id="tzQ"></div>
+    <details class="card"><summary><span class="ci">🌍</span><span class="ct">城市時區表</span></summary><div class="cb" id="tzTable"></div></details>
+    <button class="qzb" type="button" data-quiz="tz">📝 歷屆時差、時區題</button>
+  </section>
+  <section class="pane" id="p-code">
+    <div class="row" id="codeCats"></div>
+    <div class="tools"><input id="q" placeholder="搜尋代碼或中文(如 KSML、羽田、候補)" aria-label="搜尋代碼"></div>
+    <div class="row" id="codeMode"></div>
+    <div class="gq" id="codeQ"></div>
+    <div id="codeList"></div>
+    <button class="qzb" type="button" data-quiz="code">📝 票務題庫測驗(抽 10 題)</button>
+  </section>
+  <section class="pane" id="p-etiq">
+    <div class="tip nomask">🍽️ 國際禮儀以<b>「以右為尊」</b>為核心;以下依歷屆官方答案整理,圖中 <b style="color:var(--gold)">①</b> 為最尊位。</div>
+    <div class="tools"><button class="tbtn mk" type="button">🙈 遮住重點</button></div>
+    <div id="etiqList"></div>
+    <button class="qzb" type="button" data-quiz="etiq">📝 國際禮儀題庫測驗(抽 10 題)</button>
+  </section>
+  <div class="basis">內容依歷屆導遊、領隊「執業實務」官方答案整理;每張卡下方的題號可點,看原題詳解。</div>
+</div>
+
+<script>
+'use strict';
+const T = window.TOOLBOX;
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function rnd(n){return Math.floor(Math.random()*n);}
+function srcLinks(arr){
+  return (arr||[]).map(s=>{const m=s.match(/^([gl])(\d+)-(\d+)$/); if(!m) return '';
+    const q={c:m[1]==='g'?'guide':'leader',y:m[2],no:+m[3]};
+    return `<a class="qs" href="${PRACTICE.href('pr',q)}" title="${esc(PRACTICE.label('pr',q))}">${m[1]==='g'?'導':'領'}${m[2]}-${m[3]}</a>`;}).join('');
+}
+
+/* ===== 分頁 ===== */
+const TABS = ['aid','tz','code','etiq'];
+let TAB = (function(){ const h=(location.hash||'').slice(1); if (TABS.includes(h)) return h;
+  try { const v=localStorage.getItem('pref_tb_tab'); return TABS.includes(v)?v:'aid'; } catch(e){ return 'aid'; } })();
+function showTab(t){
+  TAB = t; try { localStorage.setItem('pref_tb_tab', t); } catch(e){}
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', b.dataset.t===t));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on', p.id==='p-'+t));
+  if (t==='tz' && !$('tzQ').innerHTML) tzNext();
+  if (t==='code' && !$('codeQ').innerHTML) codeNext();
+}
+$('tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab'); if(b){ showTab(b.dataset.t); window.scrollTo(0,0); } });
+window.addEventListener('hashchange', ()=>{ const h=(location.hash||'').slice(1); if (TABS.includes(h)) showTab(h); });
+
+/* ===== 遮住重點 ===== */
+document.querySelectorAll('.tbtn.mk').forEach(btn=>btn.addEventListener('click', ()=>{
+  const pane = btn.closest('.pane'), on = !btn.classList.contains('on');
+  btn.classList.toggle('on', on); btn.textContent = on ? '👀 顯示全部' : '🙈 遮住重點';
+  if (on) pane.querySelectorAll('details.card').forEach(d=>d.open=true);
+  MASK.reset(pane); MASK.set(pane, on);
+}));
+
+/* ===== 急救 ===== */
+$('aidList').innerHTML = T.AID.map((c,i)=>`<details class="card"${i===0?' open':''}><summary class="nomask"><span class="ci">${c.icon}</span><span><span class="ct">${esc(c.t)}</span><span class="cw">${esc(c.when)}</span></span></summary>
+  <div class="cb"><ol class="steps">${c.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+  ${c.key&&c.key.length?`<ul class="kl key">${c.key.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
+  ${c.no&&c.no.length?`<ul class="kl no nomask">${c.no.map(s=>`<li>${s}</li>`).join('')}</ul>`:''}
+  <div class="src nomask">${srcLinks(c.src)}</div></div></details>`).join('');
+MASK.prepare($('p-aid'));
+
+/* ===== 禮儀(含圖解)===== */
+const FIG = {
+  car(){
+    /* 俯視圖,車頭朝上;臺灣駕駛座在左。名次圈 ① 為最尊位 */
+    const seat = (cx, cy, w, label, rank) => `<g><rect x="${cx-w/2}" y="${cy-20}" width="${w}" height="40" rx="9" class="sv-f"/>` +
+      (rank ? `<circle cx="${cx}" cy="${cy}" r="12" class="${rank===1?'sv-1':'sv-n'}"/><text x="${cx}" y="${cy+5}" text-anchor="middle" class="sv-w">${rank}</text><text x="${cx}" y="${cy+36}" text-anchor="middle" class="sv-s">${label}</text>`
+            : `<text x="${cx}" y="${cy+4}" text-anchor="middle" class="sv-s">${label}</text>`) + '</g>';
+    const car = (x, title, r) => `<g transform="translate(${x},0)"><text x="95" y="18" text-anchor="middle" class="sv-t" font-weight="700">${title}</text>
+        <rect x="20" y="32" width="150" height="250" rx="40" class="sv-l"/><path d="M45 70 Q95 48 145 70" class="sv-l"/>
+        <text x="95" y="62" text-anchor="middle" class="sv-s">車頭</text>
+        ${seat(60,112,52,r.d,0)}${seat(130,112,52,'前座',r.f)}${seat(52,205,38,'後左',r.l)}${seat(95,205,38,'後中',r.m)}${seat(138,205,38,'後右',r.r)}</g>`;
+    return `<svg class="fig" viewBox="0 0 400 290" role="img" aria-label="乘車座次圖">` +
+      car(0, '有司機駕駛', { d:'司機', f:4, l:2, m:3, r:1 }) + car(205, '主人親自開車', { d:'主人', f:1, l:3, m:4, r:2 }) + `</svg>`;
+  },
+  table(){
+    return `<svg class="fig" viewBox="0 0 400 250" role="img" aria-label="西餐餐具擺設圖">
+      <circle cx="200" cy="150" r="58" class="sv-f"/><circle cx="200" cy="150" r="40" class="sv-l"/><text x="200" y="154" text-anchor="middle" class="sv-s">主餐盤</text>
+      <rect x="112" y="98" width="7" height="105" rx="3" class="sv-n"/><rect x="126" y="98" width="7" height="105" rx="3" class="sv-n"/>
+      <text x="122" y="222" text-anchor="middle" class="sv-s">叉(由外往內)</text>
+      <rect x="268" y="98" width="7" height="105" rx="3" class="sv-n"/><rect x="282" y="98" width="7" height="105" rx="3" class="sv-n"/><ellipse cx="303" cy="108" rx="7" ry="11" class="sv-n"/><rect x="300" y="116" width="6" height="87" rx="3" class="sv-n"/>
+      <text x="285" y="222" text-anchor="middle" class="sv-s">刀 · 湯匙(由外往內)</text>
+      <rect x="160" y="66" width="80" height="6" rx="3" class="sv-n"/><rect x="160" y="78" width="80" height="6" rx="3" class="sv-n"/><text x="200" y="58" text-anchor="middle" class="sv-s">甜點匙叉</text>
+      <circle cx="105" cy="55" r="24" class="sv-f"/><rect x="88" y="52" width="34" height="5" rx="2" class="sv-n"/><text x="105" y="95" text-anchor="middle" class="sv-s">麵包盤(左)</text>
+      <circle cx="268" cy="44" r="13" class="sv-f"/><circle cx="300" cy="50" r="13" class="sv-f"/><circle cx="332" cy="56" r="13" class="sv-f"/>
+      <text x="268" y="48" text-anchor="middle" class="sv-s">水</text><text x="300" y="54" text-anchor="middle" class="sv-s">紅</text><text x="332" y="60" text-anchor="middle" class="sv-s">白</text>
+      <text x="300" y="86" text-anchor="middle" class="sv-s">杯子(右上)</text></svg>`;
+  },
+  cutlery(){
+    const plate = (x, title, a1, a2, x1, x2) => `<g transform="translate(${x},0)"><text x="90" y="20" text-anchor="middle" class="sv-t" font-weight="700">${title}</text>
+      <circle cx="90" cy="105" r="70" class="sv-f"/><circle cx="90" cy="105" r="50" class="sv-l"/>
+      <g transform="rotate(${a1} ${x1} 105)"><rect x="${x1-3}" y="50" width="6" height="110" rx="3" class="sv-n"/><text x="${x1}" y="45" text-anchor="middle" class="sv-s">叉</text></g>
+      <g transform="rotate(${a2} ${x2} 105)"><rect x="${x2-3}" y="50" width="6" height="110" rx="3" class="sv-1"/><text x="${x2}" y="45" text-anchor="middle" class="sv-s">刀</text></g></g>`;
+    return `<svg class="fig" viewBox="0 0 380 200" role="img" aria-label="刀叉擺放暗號圖">`+
+      plate(0,'用餐中(還要吃)',28,-28,62,118)+plate(195,'用餐完畢',-52,-52,96,114)+`</svg>`;
+  },
+  round(){
+    const n = 10, cx = 200, cy = 130, R = 92, seats = [];
+    /* 主人在上方面向門(門在下);主人的右手邊 = 畫面左側。名次依「右高左低、近高遠低」交錯 */
+    const order = { 0:'主人', 1:'1', 9:'2', 2:'3', 8:'4', 3:'5', 7:'6', 4:'7', 6:'8', 5:'陪' };
+    for (let i=0;i<n;i++){
+      const ang = -Math.PI/2 - i*2*Math.PI/n;   // 0 = 正上方,逆時針(畫面左側)為主人的右手邊
+      const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang), lab = order[i];
+      const cls = lab==='主人' ? 'sv-n' : lab==='1' ? 'sv-1' : 'sv-f';
+      seats.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="17" class="${cls}"/><text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" class="${cls==='sv-f'?'sv-t':'sv-w'}" font-size="12">${lab}</text>`);
+    }
+    return `<svg class="fig" viewBox="0 0 400 270" role="img" aria-label="圓桌席次圖"><circle cx="${cx}" cy="${cy}" r="66" class="sv-f"/>
+      <text x="${cx}" y="${cy-4}" text-anchor="middle" class="sv-s">主人面門而坐</text><text x="${cx}" y="${cy+14}" text-anchor="middle" class="sv-s">① 坐主人右手邊</text>${seats.join('')}
+      <rect x="170" y="246" width="60" height="16" rx="3" class="sv-l"/><text x="200" y="259" text-anchor="middle" class="sv-s">門</text></svg>`;
+  },
+  walk(){
+    const p = (x, lab, rank) => `<circle cx="${x}" cy="70" r="20" class="${rank===1?'sv-1':'sv-n'}"/><text x="${x}" y="75" text-anchor="middle" class="sv-w">${rank}</text><text x="${x}" y="108" text-anchor="middle" class="sv-s">${lab}</text>`;
+    return `<svg class="fig" viewBox="0 0 400 150" role="img" aria-label="三人並行位次圖"><text x="200" y="20" text-anchor="middle" class="sv-t" font-weight="700">三人並行(從背後看,往前走)</text>
+      ${p(130,'左',3)}${p(200,'中',1)}${p(270,'右',2)}<path d="M330 95 L330 40 M322 52 L330 40 L338 52" class="sv-l"/><text x="352" y="70" class="sv-s">前進</text>
+      <text x="200" y="138" text-anchor="middle" class="sv-s">兩人並行:右側為尊</text></svg>`;
+  },
+  flag(){
+    const fl = (x, lab, main) => `<line x1="${x}" y1="40" x2="${x}" y2="150" class="sv-l"/><rect x="${x}" y="40" width="70" height="46" class="${main?'sv-1':'sv-f'}"/><text x="${x+35}" y="68" text-anchor="middle" class="${main?'sv-w':'sv-t'}">${lab}</text>`;
+    return `<svg class="fig" viewBox="0 0 400 190" role="img" aria-label="國旗懸掛位置圖"><text x="200" y="22" text-anchor="middle" class="sv-t" font-weight="700">國旗與其他旗並掛(觀眾面對旗子看)</text>
+      ${fl(110,'國旗',true)}${fl(220,'他旗',false)}<text x="200" y="172" text-anchor="middle" class="sv-s">觀眾看:國旗在左 = 以旗面本身為準居右(尊位)</text></svg>`;
+  }
+};
+$('etiqList').innerHTML = T.ETIQ.map((c,i)=>`<details class="card"${i===0?' open':''}><summary class="nomask"><span class="ci">${c.icon}</span><span class="ct">${esc(c.t)}</span></summary>
+  <div class="cb">${c.fig&&FIG[c.fig]?`<div class="nomask">${FIG[c.fig]()}</div>`:''}<ul class="kl key">${c.pts.map(s=>`<li>${s}</li>`).join('')}</ul>
+  <div class="src nomask">${srcLinks(c.src)}</div></div></details>`).join('');
+MASK.prepare($('p-etiq'));
+
+/* ===== 即時出題元件(時差、代碼共用)===== */
+function genQuiz(box, make, tally){
+  const it = make();
+  box.innerHTML = `<span class="sc">✓ ${tally.ok} · ✗ ${tally.ng}</span><span class="tag">${esc(it.tag)}</span><div class="pr">${it.prompt}</div>` +
+    it.opts.map((o,i)=>`<button class="op" type="button" data-i="${i}">${esc(o)}</button>`).join('') + '<div class="fbk"></div>';
+  box.onclick = e=>{
+    const b = e.target.closest('.op'); if (!b || b.disabled) return;
+    const p = +b.dataset.i, ok = p === it.ans;
+    box.querySelectorAll('.op').forEach((x,i)=>{ x.disabled = true; if (i===it.ans) x.classList.add('ok'); else if (i===p) x.classList.add('no'); });
+    ok ? tally.ok++ : tally.ng++;
+    PRACTICE.addDaily(1);
+    box.querySelector('.sc').textContent = `✓ ${tally.ok} · ✗ ${tally.ng}`;
+    box.querySelector('.fbk').innerHTML = `<div class="ex">${ok?'✅ 答對!':'✗ 答錯,正解是 '+esc(it.opts[it.ans])}<br>${it.explain}</div><button class="nx" type="button">下一題 →</button>`;
+    box.querySelector('.nx').onclick = ()=>genQuiz(box, make, tally);
+  };
+}
+function uniqOpts(correct, cands){
+  const out = [correct]; for (const c of cands) { if (out.length >= 4) break; if (!out.includes(c)) out.push(c); }
+  return out;
+}
+
+/* ===== 時差練習 ===== */
+const TZM = [['conv','換算當地時間'],['dur','求飛行時間'],['arr','求抵達時間']];
+let tzMode = 'conv'; const tzTally = { ok:0, ng:0 };
+function utc(o){ const s = o<0?'−':'+', a = Math.abs(o), h = Math.floor(a), m = Math.round((a-h)*60); return 'UTC'+s+h+(m?':'+String(m).padStart(2,'0'):''); }
+function pickCity(not){ let c; do { c = T.TZ[rnd(T.TZ.length)]; } while (not && c[0]===not); const dst = c[2]!=null && Math.random()<0.4; return { n:c[0], off: dst?c[2]:c[1], dst }; }
+function cityLabel(c){ return `${c.n}(${utc(c.off)}${c.dst?',夏令時間':''})`; }
+function clock(min){ const m = ((min%1440)+1440)%1440; return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+function dayOf(min){ const d = Math.floor(min/1440); return d<0 ? '前一天' : d===0 ? '當天' : d===1 ? '隔天' : d+' 天後'; }
+function hm(min){ return dayOf(min)+' '+clock(min); }
+function dur(min){ const h = Math.floor(min/60), m = min%60; return h+' 小時'+(m?' '+m+' 分':''); }
+function diffText(a, b){ const d = b.off - a.off; if (!d) return `${b.n}與${a.n}沒有時差`;
+  return `${b.n}比${a.n}${d>0?'快':'慢'} ${dur(Math.abs(d)*60).replace(' 0 分','')}`; }
+function tzMake(){
+  const A = pickCity(); let B; do { B = pickCity(A.n); } while (B.off === A.off);   // 避免兩地沒有時差
+  const d = Math.round((B.off - A.off)*60);
+  const t0 = (rnd(24)*60) + [0,15,30,45][rnd(4)];
+  if (tzMode === 'conv'){
+    const ans = t0 + d;
+    const opts = uniqOpts(hm(ans), shuffle([hm(t0 - d), hm(ans + 60), hm(ans - 60), hm(t0), hm(ans + 120)]));
+    const sh = shuffle(opts.slice());
+    return { tag:'換算當地時間', prompt:`${cityLabel(A)}當天 ${clock(t0)} 時,${cityLabel(B)}是幾點?`, opts:sh, ans:sh.indexOf(hm(ans)),
+      explain:`① 時差:${utc(B.off)} − (${utc(A.off)}) → ${diffText(A,B)}<br>② ${clock(t0)} ${d>=0?'+':'−'} ${dur(Math.abs(d))} = <b>${hm(ans)}</b>` };
+  }
+  const fly = (2 + rnd(13))*60 + [0,10,20,30,40,50][rnd(6)];
+  const arr = t0 + fly + d;
+  if (tzMode === 'dur'){
+    const naive = arr - t0, sign = naive + d;
+    const c = dur(fly);
+    const cands = [naive, sign, fly + 60, fly - 60, fly + 120].filter(x=>x>0).map(dur);
+    const sh = shuffle(uniqOpts(c, shuffle(cands)));
+    return { tag:'求飛行時間', prompt:`班機${cityLabel(A)}當天 ${clock(t0)} 起飛,${dayOf(arr)} ${clock(arr)} 抵達${cityLabel(B)},飛行時間多久?`, opts:sh, ans:sh.indexOf(c),
+      explain:`① ${diffText(A,B)}<br>② 抵達時間換回${A.n}時間:${hm(arr)} ${d>=0?'−':'+'} ${dur(Math.abs(d))} = ${hm(arr - d)}<br>③ 飛行時間 = ${hm(arr-d)} − 當天 ${clock(t0)} = <b>${c}</b>` };
+  }
+  const c = hm(arr);
+  const sh = shuffle(uniqOpts(c, shuffle([hm(t0+fly), hm(t0+fly-d), hm(arr+60), hm(arr-60)])));
+  return { tag:'求抵達時間', prompt:`班機${cityLabel(A)}當天 ${clock(t0)} 起飛,飛行 ${dur(fly)},抵達${cityLabel(B)}時是當地幾點?`, opts:sh, ans:sh.indexOf(c),
+    explain:`① 先用${A.n}時間算:${clock(t0)} + ${dur(fly)} = ${hm(t0+fly)}(${A.n}時間)<br>② ${diffText(A,B)} → ${hm(t0+fly)} ${d>=0?'+':'−'} ${dur(Math.abs(d))} = <b>${c}</b>` };
+}
+function tzNext(){ genQuiz($('tzQ'), tzMake, tzTally); }
+$('tzMode').innerHTML = TZM.map(([v,l])=>`<button class="chip${v===tzMode?' on':''}" type="button" data-v="${v}">${l}</button>`).join('');
+$('tzMode').addEventListener('click', e=>{ const b=e.target.closest('.chip'); if(!b) return; tzMode=b.dataset.v;
+  $('tzMode').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===b)); tzNext(); });
+$('tzTable').innerHTML = `<table class="tz"><tr><th>城市</th><th>標準時間</th><th>夏令時間</th><th>與臺北</th></tr>`+
+  T.TZ.map(([n,o,ds])=>`<tr><td>${n}</td><td>${utc(o)}</td><td>${ds==null?'—':utc(ds)}</td><td>${o===8?'—':(o>8?'快 ':'慢 ')+dur(Math.abs(o-8)*60).replace(' 0 分','')}</td></tr>`).join('')+`</table>
+  <div class="tz" style="font-size:.78rem;color:var(--sub)">美國本土分 4 個時區;中國全境統一使用 UTC+8;國際換日線大致沿 180° 經線、有偏折。</div>`;
+
+/* ===== 代碼 ===== */
+const CATS = Object.keys(T.CODES);
+let codeCat = '__ALL__', codeDir = 'c2m'; const codeTally = { ok:0, ng:0 };
+function codePool(){ return codeCat==='__ALL__' ? CATS.flatMap(c=>T.CODES[c].map(x=>[x[0],x[1],c])) : T.CODES[codeCat].map(x=>[x[0],x[1],codeCat]); }
+function renderCodes(){
+  $('codeCats').innerHTML = [['__ALL__','全部']].concat(CATS.map(c=>[c,c])).map(([v,l])=>`<button class="chip${v===codeCat?' on':''}" type="button" data-v="${esc(v)}">${esc(l)}</button>`).join('');
+  $('codeMode').innerHTML = [['c2m','看代碼選意思'],['m2c','看意思選代碼']].map(([v,l])=>`<button class="chip${v===codeDir?' on':''}" type="button" data-v="${v}">🎯 ${l}</button>`).join('');
+  const kw = $('q').value.trim().toLowerCase();
+  const cats = codeCat==='__ALL__' ? CATS : [codeCat];
+  $('codeList').innerHTML = cats.map(c=>{
+    const rows = T.CODES[c].filter(([k,v])=>!kw || (k+' '+v).toLowerCase().includes(kw));
+    if (!rows.length) return '';
+    return `<div class="cdh">${esc(c)} · ${rows.length}</div><table class="cd">${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table>`;
+  }).join('') || '<div class="tip">找不到相關代碼</div>';
+}
+function codeMake(){
+  const pool = codePool(), it = pool[rnd(pool.length)];
+  const same = shuffle(pool.filter(x=>x[0]!==it[0] && x[1]!==it[1] && x[2]===it[2]));
+  const others = same.length >= 3 ? same : same.concat(shuffle(pool.filter(x=>x[0]!==it[0] && x[1]!==it[1] && x[2]!==it[2])));
+  if (codeDir === 'c2m'){
+    const sh = shuffle(uniqOpts(it[1], others.map(x=>x[1])));
+    return { tag:it[2], prompt:`<span style="font-family:Consolas,monospace;font-size:1.3rem">${esc(it[0])}</span> 是什麼?`, opts:sh, ans:sh.indexOf(it[1]), explain:`<b>${esc(it[0])}</b> = ${esc(it[1])}` };
+  }
+  const sh = shuffle(uniqOpts(it[0], others.map(x=>x[0])));
+  return { tag:it[2], prompt:`「${esc(it[1])}」的代碼是?`, opts:sh, ans:sh.indexOf(it[0]), explain:`${esc(it[1])} = <b>${esc(it[0])}</b>` };
+}
+function codeNext(){ genQuiz($('codeQ'), codeMake, codeTally); }
+$('codeCats').addEventListener('click', e=>{ const b=e.target.closest('.chip'); if(!b) return; codeCat=b.dataset.v; renderCodes(); codeNext(); });
+$('codeMode').addEventListener('click', e=>{ const b=e.target.closest('.chip'); if(!b) return; codeDir=b.dataset.v; renderCodes(); codeNext(); });
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr=setTimeout(renderCodes,180); });
+renderCodes();
+
+/* ===== 題庫測驗(執業實務歷屆題)===== */
+const QUIZ = {
+  aid:  { title:'🚑 急救 · 安全', pick:(q,a)=>a.t==='安全', n:10 },
+  tz:   { title:'🕐 時差 · 時區', pick:(q,a)=>/時差|時區/.test(a.tt||''), n:0 },
+  code: { title:'✈️ 票務', pick:(q,a)=>a.t==='票務', n:10 },
+  etiq: { title:'🍽️ 國際禮儀', pick:(q,a)=>a.t==='禮儀', n:10 }
+};
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-quiz]'); if (!b) return;
+  const cfg = QUIZ[b.dataset.quiz]; b.disabled = true;
+  PRACTICE.load('pr').then(d=>{
+    b.disabled = false;
+    const list = d.bank.filter(q=>{ const a = d.ana[PRACTICE.key(q)]||{}; const st = window.STALE && STALE.note('pr',q); return cfg.pick(q,a) && !(st && st.k==='old'); }).map(q=>({ s:'pr', q }));
+    MINIQUIZ.start({ title:cfg.title, list, n:cfg.n });
+  }).catch(()=>{ b.disabled = false; });
+});
+
+showTab(TAB);
+</script>
+</body>
+</html>

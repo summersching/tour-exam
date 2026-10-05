@@ -62,6 +62,11 @@
   a.qs{display:inline-block;font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;margin-left:4px;line-height:1.7;white-space:nowrap;vertical-align:1px}
   a.qs.l{background:var(--chipbg);color:var(--chipk)} a.qs.g{background:var(--gbg);color:var(--gk)}
   .qmore{font-size:.68rem;color:var(--sub);margin-left:4px;white-space:nowrap}
+  .orow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;padding:0 0 4px}
+  .ochip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:5px 12px;border-radius:999px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .ochip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .mbtn{margin-left:auto;border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:5px 11px;cursor:pointer;font-family:inherit;font-size:.82rem}
+  .mbtn.on{background:var(--sel);color:#fff}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -69,6 +74,7 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="sprint_cn.js"></script>
+<script src="mask.js"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -84,16 +90,29 @@
     <button class="sbtn" data-s="pr2">⚖️ 執業法規</button>
   </div>
   <div class="srow"><input id="q" placeholder="搜尋考點關鍵字…(如 慢城、CPR、履約保證、護照)"></div>
+  <div class="orow"><button class="ochip" type="button" data-r="all">全部年度</button><button class="ochip" type="button" data-r="recent">近 3 年考過</button>
+    <button class="mbtn" type="button" id="maskBtn">🙈 遮住重點</button><button class="mbtn" type="button" id="resetBtn" hidden>↺</button></div>
   <div class="cnt" id="cnt"></div>
 </div></div>
 
 <div class="wrap">
-  <div class="tip">💡 依「大類 → 細類」按<b>考試頻率</b>排序,數字=考過次數。點大類展開,右側越紅的越常考,優先背。每條後面的「領 / 導 年-題號」可點,跳回原題看完整解析。</div>
+  <div class="tip">💡 依「大類 → 細類」按<b>考試頻率</b>排序,數字=考過次數。點大類展開,右側越紅的越常考,優先背。每條後面的「領 / 導 年-題號」可點,跳回原題看完整解析。<br>🙈「遮住重點」會蓋住「=」後面的答案(沒有「=」的蓋數字),點一下看答案;「近 3 年考過」只列最近三屆出現過的重點。</div>
   <div id="app"></div>
 </div>
 
 <script>
 let SUBJ=(function(){try{const v=localStorage.getItem('pref_sprintcn_subj');return ['gh','pr','pr2'].includes(v)?v:'gh';}catch(e){return 'gh';}})(), KW='';
+/* v128 只看近 3 年 + 遮住重點 */
+let RECENT=(function(){try{return localStorage.getItem('pref_sprintcn_recent')==='1';}catch(e){return false;}})(), MASKON=false;
+function refYear(r){const m=String(r||'').match(/^[gl](\d+)-/);return m?+m[1]:0;}
+function maxYear(data){let m=0;data.groups.forEach(g=>g.items.forEach(it=>(it.src||[]).forEach(a=>(a||[]).forEach(r=>{m=Math.max(m,refYear(r));}))));return m;}
+/* 自測遮罩:「X=答案」遮答案;沒有「=」但有「→」遮最後一段;都沒有就交給 mask.js 遮數字 */
+function markPt(p){
+  if(/=/.test(p)) return {h:p.replace(/=([^,，。;；、(（|]+)/g,(m,a)=>a.trim()?'=<span class="mkn">'+a+'</span>':m),own:true};
+  const i=p.lastIndexOf('→');
+  if(i>=0){const rest=p.slice(i+1),m=rest.match(/^([^,，。;；、(（|]+)/);if(m&&m[1].trim())return {h:p.slice(0,i+1)+'<span class="mkn">'+m[1]+'</span>'+rest.slice(m[1].length),own:true};}
+  return {h:p,own:false};
+}
 const app=document.getElementById('app');
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function plain(s){return String(s).replace(/<[^>]+>/g,'');}
@@ -102,15 +121,20 @@ const PAGE={gh:'觀光複習.html',pr:'執業實務複習.html',pr2:'執業法�
 function srcHtml(refs){if(!refs||!refs.length)return '';
   const a=refs.slice(0,3).map(r=>{const m=r.match(/^([gl])(\d+)-(\d+)$/);if(!m)return '';const c=m[1]==='g'?'guide':'leader';
     return `<a class="qs ${m[1]}" href="${PAGE[SUBJ]}?cert=${c}&amp;year=${m[2]}#q${m[3]}" title="${m[1]==='g'?'導遊':'領隊'} ${m[2]} 年第 ${m[3]} 題">${m[1]==='g'?'導':'領'}${m[2]}-${m[3]}</a>`;}).join('');
-  return a+(refs.length>3?`<span class="qmore">等 ${refs.length} 題</span>`:'');}
+  return a+(refs.length>3?`<span class="qmore nomask">等 ${refs.length} 題</span>`:'');}
 
 function render(){
   const data=(typeof SPRINTCN!=='undefined')&&SPRINTCN[SUBJ];
   if(!data){app.innerHTML='<div class="empty">資料載入失敗</div>';return;}
-  const kw=KW.trim().toLowerCase();
+  const kw=KW.trim().toLowerCase(), MY=maxYear(data);
   let html='', totalPts=0, shownPts=0;
   data.groups.forEach(g=>{
     let items=g.items.map(it=>{totalPts+=it.pts.length;return it;});
+    if(RECENT){
+      items=items.map(it=>{const ix=it.pts.map((p,i)=>i).filter(i=>((it.src||[])[i]||[]).some(r=>refYear(r)>=MY-2));
+        return ix.length?{tt:it.tt,n:it.n,pts:ix.map(i=>it.pts[i]),src:ix.map(i=>(it.src||[])[i])}:null;}).filter(Boolean);
+      if(!items.length)return;
+    }
     if(kw){
       items=items.map(it=>{
         if(it.tt.toLowerCase().includes(kw))return it;
@@ -119,19 +143,22 @@ function render(){
       }).filter(Boolean);
       if(!items.length)return;
     }
-    const open=kw?' open':(g===data.groups[0]?' open':'');
+    const open=(kw||RECENT||MASKON)?' open':(g===data.groups[0]?' open':'');
     let body='';
     items.forEach(it=>{
       shownPts+=it.pts.length;
-      body+=`<div class="tt"><span class="ttn">${esc(it.tt)}</span><span class="freq">${it.n}×</span></div>`;
-      body+=`<ul class="pts">${it.pts.map((p,i)=>`<li>${p}${srcHtml((it.src||[])[i])}</li>`).join('')}</ul>`;
+      body+=`<div class="tt nomask"><span class="ttn">${esc(it.tt)}</span><span class="freq">${it.n}×</span></div>`;
+      body+=`<ul class="pts">${it.pts.map((p,i)=>{const mk=markPt(p);return `<li${mk.own?' class="nomask"':''}>${mk.h}${srcHtml((it.src||[])[i])}</li>`;}).join('')}</ul>`;
     });
-    html+=`<details class="grp"${open}><summary><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
+    html+=`<details class="grp"${open}><summary class="nomask"><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
   });
-  if(html&&SUBJ==='pr2')html='<div class="tip">⏱ 法規常修正:已排除依現行法規過時的舊題重點;想看舊題與現行規定的差異,到「執業法規複習」看各題的時效提醒。</div>'+html;
-  if(!html)html=`<div class="empty">找不到「${esc(KW)}」相關考點<br><span style="font-size:.85rem">換個關鍵字或切換科目試試</span></div>`;
+  if(html&&SUBJ==='pr2')html='<div class="tip nomask">⏱ 法規常修正:已排除依現行法規過時的舊題重點;想看舊題與現行規定的差異,到「執業法規複習」看各題的時效提醒。</div>'+html;
+  if(!html)html=`<div class="empty">找不到${kw?'「'+esc(KW)+'」':''}相關考點<br><span style="font-size:.85rem">換個關鍵字、切換科目或改看全部年度</span></div>`;
   app.innerHTML=html;
-  document.getElementById('cnt').textContent=kw?`符合「${KW}」的重點 ${shownPts} 條`:`${data.name} · 共 ${totalPts} 條高頻重點`;
+  MASK.prepare(app); MASK.set(app,MASKON);
+  const rng=RECENT?`近 3 年(${MY-2}–${MY} 年)考過的`:'';
+  document.getElementById('cnt').textContent=kw?`符合「${KW}」的${rng}重點 ${shownPts} 條`:(RECENT?`${data.name} · ${rng}重點 ${shownPts} 條(全部 ${totalPts} 條)`:`${data.name} · 共 ${totalPts} 條高頻重點`);
+  document.querySelectorAll('.ochip').forEach(x=>x.classList.toggle('on',(x.dataset.r==='recent')===RECENT));
 }
 
 document.querySelector('.subbar').addEventListener('click',e=>{
@@ -144,6 +171,19 @@ let t; document.getElementById('q').addEventListener('input',e=>{
   clearTimeout(t); KW=e.target.value; t=setTimeout(render,180);
 });
 document.querySelectorAll('.sbtn').forEach(x=>x.classList.toggle('on',x.dataset.s===SUBJ));
+document.querySelector('.orow').addEventListener('click',e=>{
+  const c=e.target.closest('.ochip'); if(!c)return;
+  RECENT=c.dataset.r==='recent'; try{localStorage.setItem('pref_sprintcn_recent',RECENT?'1':'0');}catch(err){}
+  render(); window.scrollTo(0,0);
+});
+document.getElementById('maskBtn').addEventListener('click',()=>{
+  MASKON=!MASKON; const b=document.getElementById('maskBtn');
+  b.classList.toggle('on',MASKON); b.textContent=MASKON?'👀 顯示全部':'🙈 遮住重點';
+  document.getElementById('resetBtn').hidden=!MASKON;
+  if(MASKON)document.querySelectorAll('details.grp').forEach(d=>d.open=true);
+  MASK.reset(app); MASK.set(app,MASKON);
+});
+document.getElementById('resetBtn').addEventListener('click',()=>MASK.reset(app));
 render();
 </script>
 </body>

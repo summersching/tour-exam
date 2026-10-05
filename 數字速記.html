@@ -21,13 +21,15 @@
     --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
     --shadow:0 1px 6px rgba(0,0,0,.3);
-  }}
+  }
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill{color:#05211d}}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
     --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;
     --shadow:0 1px 6px rgba(0,0,0,.3);
   }
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill{color:#05211d}
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
     font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
