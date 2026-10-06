@@ -1,6 +1,6 @@
 /* 外語英檢 考照中心 — Service Worker(離線快取)
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取 */
-const CACHE = 'ylenpass-v131';
+const CACHE = 'ylenpass-v132';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js', 'lock_config.js', 'lock.js', 'examsel.js', '搜尋.html', '收藏.html', '歷屆試題.html', '英語詳解.html', '日文詳解.html',
   '學習中心.html', '日語學習中心.html', '考前衝刺.html', '法規速查.html', '考點速記.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '日文錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html', '是非快問.html', '數字速記.html', '兩岸入出境.html', '實務工具箱.html', '觀光圖鑑.html', '出題趨勢.html',
@@ -22,7 +22,8 @@ const ASSETS = [
 self.addEventListener('install', e => {
   self.skipWaiting();
   // 逐一 add,單一檔失敗不影響其他(檔名含中文時特別保險)
-  e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(ASSETS.map(u => c.add(u)))));
+  // cache:'no-cache' 每個檔都先跟伺服器確認是不是最新(沒變就沿用不重下載),避免新版快取存到瀏覽器裡上一版的 JS
+  e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(ASSETS.map(u => c.add(new Request(u, { cache: 'no-cache' }))))));
 });
 
 self.addEventListener('activate', e => {
@@ -47,10 +48,10 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // 進入密碼設定:網路優先(更換或移除密碼後,有網路就立刻生效);離線用快取
+  // 進入密碼設定:網路優先,且每次都跟伺服器確認最新版(cache:'no-cache'),更換或移除密碼後有網路就立刻生效;離線用快取
   if (/\/lock_config\.js$/.test(new URL(req.url).pathname)) {
     e.respondWith(
-      fetch(req).then(res => {
+      fetch(req.url, { cache: 'no-cache' }).then(res => {
         if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
         return res;
       }).catch(() => caches.match(req))

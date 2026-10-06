@@ -108,7 +108,9 @@ const BACKUP_APP='tour-exam';
 /* 錯題本統計清單取自 subjects.js(SSoT);含全部科目(含日語),避免漏科顯示 */
 const WB=(window.SUBJECTS||[]).map(s=>[s.wb,s.name]);
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
-function snapshot(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}return d;}
+/* 進入密碼的「這台裝置已解鎖」與輸錯次數記錄不進備份、也不從備份還原(換裝置要再輸入一次密碼) */
+const NO_BACKUP=['app_unlock','app_lock_fail'];
+function snapshot(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!NO_BACKUP.includes(k))d[k]=localStorage.getItem(k);}return d;}
 function objLen(v){try{return Object.keys(JSON.parse(v||'{}')).length;}catch(e){return 0;}}
 function countsOf(get){
   const c={history:0,wb:{},fav:objLen(get('favorites')),note:objLen(get('qnotes'))};
@@ -166,7 +168,7 @@ document.getElementById('fileInput').onchange=function(ev){
       <button class="btn pri block" id="doRestore">✅ 確定還原(覆蓋目前資料)</button>`;
     document.getElementById('doRestore').onclick=function(){
       try{
-        Object.keys(obj.data).forEach(k=>{localStorage.setItem(k,obj.data[k]);});
+        Object.keys(obj.data).forEach(k=>{if(!NO_BACKUP.includes(k))localStorage.setItem(k,obj.data[k]);});
         pv.innerHTML=`<div class="okbox">✅ 還原完成!已載入備份資料。</div>`;
         renderSummary();
         setTimeout(()=>{location.href='儀表板.html';},1200);
