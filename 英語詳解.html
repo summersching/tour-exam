@@ -119,7 +119,7 @@
   .guide{background:var(--realbg);border:1px solid var(--realbd);border-radius:12px;padding:14px 16px;margin:14px 0 8px;font-size:.92rem}
   .guide .lbl{color:var(--realk)} .guide ol{margin:6px 0 0;padding-left:20px}
   .fold{display:none} .show .fold{display:block}
-  .card.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
+  .card.hl,.passage.hl{animation:hlp 2.4s ease}@keyframes hlp{0%,100%{box-shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05)}18%,55%{box-shadow:0 0 0 3px var(--accent)}}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   footer{max-width:840px;margin:26px auto 0;padding:0 16px;color:var(--sub);font-size:.78rem;text-align:center}
   @media print{
@@ -258,8 +258,10 @@ function qCard(item){
       ${NOTE.box('en',qref(item))}
     </div></div>`;
 }
-function passageHtml(item){
-  return `<div class="passage"><div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+
+/* 閱讀文章錨點:單一份卷 #p76 / 多份卷 #pg109-76(76 = 這篇的第一題),學習中心等處的「導109-76~80」出處連到這裡 */
+function psgId(u){return 'p'+(ONE?'':u.c.charAt(0)+u.y+'-')+u.start;}
+function passageHtml(item,u){
+  return `<div class="passage"${u&&u.start?` id="${psgId(u)}"`:''}><div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+
     item.text.map(t=>`<p>${t}</p>`).join('')+
     (item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:'')+
     `<div class="reveal"><div class="lbl">難字</div><table class="vocab">${vRows(item.vocab)}</table></div></div>`;
@@ -273,10 +275,10 @@ function render(){
   const units=[]; let shownQ=0, totalQ=0;
   EX.forEach(([c,y])=>{
     const D=EN_REVIEW[c+'-'+y], start=units.length;
-    D.forEach(item=>{
+    D.forEach((item,ix)=>{
       if(item.kind==='guide'){ if(plain&&ONE)units.push({html:`<div class="guide"><div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div></div>`}); return; }
       if(item.kind==='strategy'){ if(plain&&ONE)units.push({html:`<div class="strategy"><button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div></div>`}); return; }
-      if(item.kind==='passage'){ if(TYPE==='all'||TYPE==='閱讀'){ if(!kw)units.push({item}); } return; }
+      if(item.kind==='passage'){ if(TYPE==='all'||TYPE==='閱讀'){ if(!kw){const nq=D.slice(ix+1).find(x=>x.kind==='q');units.push({item,c,y,start:nq?nq.no:0});} } return; }
       totalQ++;
       if(TYPE!=='all'&&item.type!==TYPE)return;
       if(!qMatch(item,kw))return;
@@ -287,7 +289,7 @@ function render(){
   });
   const box=document.getElementById('app');
   if(!shownQ&&!units.some(u=>u.item)){box.innerHTML='<div class="empty">找不到符合的題目</div>';LV=null;}
-  else LV=EXAMSEL.mount(box,units,u=>u.q?qCard(u.q):u.item?passageHtml(u.item):u.html,{first:units.length>150?50:units.length,isQ:u=>!!u.q});
+  else LV=EXAMSEL.mount(box,units,u=>u.q?qCard(u.q):u.item?passageHtml(u.item,u):u.html,{first:units.length>150?50:units.length,isQ:u=>!!u.q});
   document.getElementById('cnt').textContent=(ONE?`${CNAME[CERT]} ${YEAR} 年`:EXAMSEL.scope(CERT,YEAR))+` · 共 ${totalQ} 題`+((TYPE!=='all'||kw)?`(篩選後 ${shownQ})`:'');
   updateScore();
 }
@@ -346,6 +348,19 @@ buildFilters();render();FAV.onClick(document.getElementById('app'));NOTE.onClick
 
 /* 深連結 #qN:跳到指定題並高亮(來自工具頁時的「← 回…」由 backlink.js 處理) */
 function goHash(){
+  const pm=(location.hash||'').match(/^#p(?:([gl])(\d{3})-)?(\d+)$/);
+  if(pm){   // 閱讀文章:#p76(單一份卷)/ #pg109-76(多份卷)
+    const pc=pm[1]?(pm[1]==='g'?'guide':'leader'):null,py=pm[2],pno=+pm[3];
+    if(!pc&&!ONE)return;
+    const pid='p'+(pc?pm[1]+py+'-':'')+pno;
+    const findP=()=>{if(LV)LV.until(u=>u.item&&u.start===pno&&(!pc||(u.c===pc&&u.y===py)));return document.getElementById(pid);};
+    let el=findP();
+    if(!el){TYPE='all';document.getElementById('q').value='';buildFilters();render();el=findP();}
+    if(!el)return;
+    el.classList.add('hl');el.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(()=>el.classList.remove('hl'),2400);
+    return;
+  }
   const h=EXAMSEL.hash();if(!h||(!h.c&&!ONE))return;    // #q37 只用在單一份卷;多份卷用 #qg108-37
   const id=h.c?'q'+h.c.charAt(0)+h.y+'-'+h.no:'q'+h.no;
   const find=()=>{if(LV)LV.until(u=>u.q&&u.q.no===h.no&&(!h.c||(u.q.c===h.c&&u.q.y===h.y)));return document.getElementById(id);};

@@ -144,8 +144,13 @@ let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(
 function scopedKB(data){if(CERT==='all')return data;return data.map(function(x){var h=(x.hits||[]).filter(function(hh){return hh.c===CERT;});return h.length?Object.assign({},x,{hits:h,freq:h.length}):null;}).filter(Boolean);}
 function pureEn(w){return w.replace(/\s*\(.*/,'').trim();}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function speak(t,lang){try{const u=new SpeechSynthesisUtterance(t);u.lang=lang==='ja'?'ja-JP':'en-US';u.rate=lang==='ja'?(+(localStorage.getItem('pref_jp_rate'))||0.9):.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
-function srcChips(x){var page=LANG==='jp'?'日文詳解.html':'英語詳解.html';return (x.hits||[]).map(function(h){var g=h.c==='guide';var file=page+'?cert='+h.c+'&year='+h.y+'#q'+h.n;return '<a class="hit '+h.c+'" href="'+file+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
+/* 朗讀日文:填空「＿＿＿」念成停頓;底線標記的「」『』不念(避免「鮮」やか 被拆開念錯) */
+function jpSay(t){return String(t==null?'':t).replace(/＿+/g,'、').replace(/[「」『』]/g,'');}
+function speak(t,lang){try{const u=new SpeechSynthesisUtterance(lang==='ja'?jpSay(t):t);u.lang=lang==='ja'?'ja-JP':'en-US';u.rate=lang==='ja'?(+(localStorage.getItem('pref_jp_rate'))||0.9):.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+/* 出處小標:出自閱讀文章單字表的(p = 第幾篇)標「導109-76~80」,連到該篇文章 */
+function srcChips(x){var page=LANG==='jp'?'日文詳解.html':'英語詳解.html';return (x.hits||[]).map(function(h){var g=h.c==='guide',base=page+'?cert='+h.c+'&year='+h.y;
+  if(h.p)return '<a class="hit '+h.c+'" href="'+base+'#p'+h.n+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 閱讀第 '+h.p+' 篇(第 '+h.n+'–'+(h.n+4)+' 題的文章,點我跳到文章)">'+(g?'導':'領')+h.y+'-'+h.n+'~'+(h.n+4)+'</a>';
+  return '<a class="hit '+h.c+'" href="'+base+'#q'+h.n+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}).join('');}
 function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 function noteHtml(x){return '<div class="ncard"><div class="nhtml">'+x.html+'</div><div class="wsrc">'+srcChips(x)+'</div></div>';}
 

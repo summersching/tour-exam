@@ -145,7 +145,9 @@ function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.n
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function findQ(id){return JPBANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
 function ansOk(q,p){return SCORE.ok(q,p);}
-function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=(+(localStorage.getItem('pref_jp_rate'))||0.9);speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+/* 朗讀日文:填空「＿＿＿」念成停頓;底線標記的「」『』不念(避免「鮮」やか 被拆開念錯) */
+function jpSay(t){return String(t==null?'':t).replace(/＿+/g,'、').replace(/[「」『』]/g,'');}
+function speak(t){try{const u=new SpeechSynthesisUtterance(jpSay(t));u.lang='ja-JP';u.rate=(+(localStorage.getItem('pref_jp_rate'))||0.9);speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
 const QPD=new URLSearchParams(location.search).get('due')==='1';   // 從首頁「今日複習」進來:只看今日到期 + 直接自測

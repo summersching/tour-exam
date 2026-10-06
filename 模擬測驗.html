@@ -240,7 +240,9 @@ function wbjpAdd(q,picked){var o;try{o=JSON.parse(localStorage.getItem(WBJP_KEY)
   try{localStorage.setItem(WBJP_KEY,JSON.stringify(o));}catch(e){}}
 
 function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+m[2]+'</span>':o;}
-function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+/* 朗讀日文:填空「＿＿＿」念成停頓;底線標記的「」『』不念(避免「鮮」やか 被拆開念錯) */
+function jpSay(t){return String(t==null?'':t).replace(/＿+/g,'、').replace(/[「」『』]/g,'');}
+function speak(t){try{const u=new SpeechSynthesisUtterance(jpSay(t));u.lang='ja-JP';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 function sayBtn(t){return `<span class="say" data-say="${String(t).replace(/"/g,'&quot;').replace(/</g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
 /* 檢討畫面逐選項朗讀:日文唸整個選項(ja)、英文唸英文部分(en);中文科不加 */
@@ -568,7 +570,7 @@ document.getElementById('rlist').addEventListener('click',e=>{
   const s=e.target.closest('.say'); if(!s)return;
   e.preventDefault();   // 文章標題列裡的🔊只朗讀,不要順便收合/展開文章
   const lang=s.dataset.lang==='en'?'en-US':'ja-JP';
-  try{const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang=lang;
+  try{const u=new SpeechSynthesisUtterance(lang==='ja-JP'?jpSay(s.dataset.say):s.dataset.say);u.lang=lang;
     u.rate=lang==='ja-JP'?(+(localStorage.getItem('pref_jp_rate'))||0.9):0.9;
     speechSynthesis.cancel();speechSynthesis.speak(u);}catch(err){}
 });
