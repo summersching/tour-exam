@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e3a8a">
 <title>領隊·導遊 考照中心</title>
@@ -242,6 +244,7 @@
 <footer>
   全部功能離線可用,免費、無廣告、不需註冊<br>
   外語(英語/日語)+ 觀光 + 執業實務 + 執業法規 · <b>10 屆完整詳解 + 模擬測驗 + 錯題本</b>
+  <div><button id="lockNow" type="button" hidden style="margin-top:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">🔒 立即上鎖</button></div>
 </footer>
 
 <script>
@@ -266,9 +269,9 @@ const TOOLS = [
   { id:'atlas', name:'觀光資源圖鑑', icon:'🗺️', desc:'國家公園 · 國家風景區 · 原住民族 16 族 · 節慶 · 地形 · 世界遺產 一表看懂 + 配對小測', file:'觀光圖鑑.html', cat:'review', subj:['gh'] },
   { id:'trend', name:'出題趨勢', icon:'📈', desc:'中文三科各主題 10 年出題熱圖 · 近 3 年升溫 / 降溫 · 點主題直接練', file:'出題趨勢.html', cat:'review', subj:['gh','pr','pr2'] },
   { id:'cs',    name:'兩岸與入出境', icon:'🛂', desc:'護照 · 簽證 · 攜帶規定 · 役男 · 兩岸 · 港澳 · 外匯 系統整理 + 分區測驗', file:'兩岸入出境.html', cat:'review', subj:['pr2'] },
-  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all' },
-  { id:'fav',   name:'收藏與筆記', icon:'⭐', desc:'收藏的重點題 + 自己寫的筆記 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all' },
-  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題 · 成績 · 收藏 · 筆記 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all' }
+  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all', noSubj:true },
+  { id:'fav',   name:'收藏與筆記', icon:'⭐', desc:'收藏的重點題 + 自己寫的筆記 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all', noSubj:true },
+  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題 · 成績 · 收藏 · 筆記 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all', noSubj:true }
 ].concat(SUBJ.map(s=>(
   { id:'wb_'+s.k, name:s.name, icon:s.icon, file:s.page, cat:'wrong', subj:[s.k], wb:s.wb }
 )));
@@ -279,7 +282,13 @@ try{const s=localStorage.getItem('pref_subj'); if(s&&SUBJFILTERS.some(x=>x[0]===
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function wbCount(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||'{}')).length;}catch(e){return 0;}}
 function match(t){return FILTER==='all'||t.subj==='all'||(Array.isArray(t.subj)&&t.subj.indexOf(FILTER)>=0);}
-function toolCard(t){return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+/* 首頁選了某一科時,多科工具的連結帶 ?subj=,進去直接是該科(不用再選一次) */
+function toolHref(t){
+  if(FILTER==='all'||t.noSubj)return t.file;
+  const multi=t.subj==='all'||(Array.isArray(t.subj)&&t.subj.length>1&&t.subj.indexOf(FILTER)>=0);
+  return multi?t.file+'?subj='+FILTER:t.file;
+}
+function toolCard(t){return `<a class="tc" href="${esc(toolHref(t))}"><div class="ic">${t.icon}</div>
     <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
 /* 錯題本快捷:與工具卡同款大卡(icon 底框 + 科目 + 題數說明 + 右側題數角標)*/
 function wchip(t){let o={};try{o=JSON.parse(localStorage.getItem(t.wb)||'{}');}catch(e){}
@@ -300,6 +309,8 @@ function render(){
   document.getElementById('main').innerHTML=html;
 }
 
+/* 有設定進入密碼時才顯示「立即上鎖」(清除這台裝置的記住狀態) */
+(function(){const b=document.getElementById('lockNow');if(b&&window.APPLOCK&&APPLOCK.enabled()){b.hidden=false;b.onclick=()=>APPLOCK.lock();}})();
 document.getElementById('main').addEventListener('click',e=>{
   const b=e.target.closest('.subjbar button'); if(!b)return;
   FILTER=b.dataset.f; try{localStorage.setItem('pref_subj',FILTER);}catch(e){}

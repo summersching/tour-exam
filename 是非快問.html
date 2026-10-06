@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4338ca">
 <title>是非快問</title>
@@ -197,6 +199,8 @@ function LSset(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 /* ---- 設定(記住上次的選擇)---- */
 const cfg = Object.assign({ subj:'pr2', topic:'__ALL__', range:'all', n:20, wrongOnly:false, auto:true, wb:true }, LSget('pref_tf', {}));
 function saveCfg(){LSset('pref_tf',cfg);}
+(function(){const s=new URLSearchParams(location.search).get('subj');   // 首頁帶來的科目
+  if(['gh','pr','pr2'].includes(s)&&s!==cfg.subj){cfg.subj=s;cfg.topic='__ALL__';saveCfg();}})();
 
 /* ---- 題庫延遲載入 + 是非題快取 ---- */
 const POOL = {}, QMAP = {}, LOADING = {};

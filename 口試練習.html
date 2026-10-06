@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4338ca">
 <title>口試練習</title>
@@ -126,6 +128,7 @@ const CNAME={leader:'領隊',guide:'導遊'};
 const TABS={en:[['phrases','🗣️ 帶團實用句'],['topics','📋 主題準備'],['mock','🎙 口試模擬']],jp:[['jphr','🗣️ 接待實用句'],['jtop','📋 主題範例'],['mock','🎙 口試模擬']]};
 const SUBT={en:'帶團現場實用句 · 口試主題準備 · 口試模擬(計時 + 錄音)',jp:'日語接待實用句 · 口試主題範例 · 口試模擬(計時 + 錄音)'};
 let LANG=(function(){try{return localStorage.getItem('pref_oral_lang')==='jp'?'jp':'en';}catch(e){return 'en';}})();
+(function(){const s=new URLSearchParams(location.search).get('subj');if(s==='en'||s==='jp'){LANG=s;try{localStorage.setItem('pref_oral_lang',LANG);}catch(e){}}})();   // 首頁帶來的科目
 let cur=TABS[LANG][0][0];
 const app=document.getElementById('app');
 let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();

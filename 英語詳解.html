@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e3a8a">
 <title>外語英語 · 逐題完整詳解</title>
@@ -134,6 +136,7 @@
 <script src="notes.js"></script>
 <script src="srs.js"></script>
 <script src="fav.js"></script>
+<script src="examsel.js"></script>
 <script src="pwa.js" defer></script>
 <script src="backlink.js" defer></script>
 <script src="en_review.js"></script>
@@ -191,31 +194,35 @@ function vRows(v){return (v||[]).map(x=>`<tr><td><span class="vw">${esc(x[0])}</
 
 const YEARS=[115,114,113,112,111,110,109,108,107,106];
 const QP=new URLSearchParams(location.search);
-let CERT=QP.get('cert')||(function(){try{return localStorage.getItem('pref_cert');}catch(e){return null;}})();
-if(CERT!=='guide'&&CERT!=='leader')CERT='leader';
-let YEAR=QP.get('year')||String(YEARS[0]);
-if(!YEARS.includes(+YEAR))YEAR=String(YEARS[0]);
+let CERT=EXAMSEL.cert(QP.get('cert'),'leader');                     // all = 導遊 + 領隊
+let YEAR=EXAMSEL.year(QP.get('year'),YEARS.map(String));            // all = 全部年份
+let ONE=true, LV=null;      // 是否單一份卷、分批顯示控制
+/* 每題補上自己的證照 / 年份(EN_REVIEW 以「證照-年份」分組,題目本身沒有這兩個欄位) */
+if(typeof EN_REVIEW!=='undefined')Object.keys(EN_REVIEW).forEach(function(k){var p=k.split('-');EN_REVIEW[k].forEach(function(it){if(it.kind==='q'){it.c=p[0];it.y=p[1];}});});
+/* 目前範圍內的考卷:[[證照, 年份], …](年份新 → 舊、領隊 → 導遊) */
+function exams(){const cs=CERT==='all'?['leader','guide']:[CERT],ys=YEAR==='all'?YEARS.map(String):[YEAR],out=[];
+  ys.forEach(y=>cs.forEach(c=>{if(typeof EN_REVIEW!=='undefined'&&EN_REVIEW[c+'-'+y])out.push([c,y]);}));return out;}
 let TYPE='all', MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆試題直接進自測
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const answered={};   // 自測作答:no → 選項index(依 cert-year 分開)
 function curKey(){return CERT+'-'+YEAR;}
 function curData(){return (typeof EN_REVIEW!=='undefined'&&EN_REVIEW[curKey()])||[];}
-function ansKey(no){return curKey()+'-'+no;}
+function ansKey(item){return item.c+'-'+item.y+'-'+item.no;}
 
 /* 錯題本(沿用英語 wrongbook_en) */
 const WB_KEY='wrongbook_en';
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WB_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WB_KEY,JSON.stringify(o));}catch(e){}}
-function wbAdd(item,picked){var o=wbLoad(),id=CERT+'-'+YEAR+'-'+item.no,e=o[id]||{};
-  o[id]={cert:CERT,y:YEAR,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
-function wbRemove(no){var o=wbLoad();delete o[CERT+'-'+YEAR+'-'+no];wbSave(o);}
+function wbAdd(item,picked){var o=wbLoad(),id=item.c+'-'+item.y+'-'+item.no,e=o[id]||{};
+  o[id]={cert:item.c,y:item.y,no:item.no,type:item.type,topic:item.topic,star:item.star,stem:item.stem,opts:item.opts,ans:item.ans,zh:item.zh,ana:item.ana,skill:item.skill||'',note:item.note||'',gram:item.gram||'',real:item.real||'',vocab:item.vocab||[],picked:picked,wrong:(e.wrong||0)+1,ts:Date.now()};wbSave(o);}
+function wbRemove(item){var o=wbLoad();delete o[item.c+'-'+item.y+'-'+item.no];wbSave(o);}
 /* C9 錯題本裡的題目在這裡答對,視同一次間隔複習(到期才往後排,第 4 關答對才移出) */
-function wbCorrect(no){var o=wbLoad(),k=CERT+'-'+YEAR+'-'+no;if(!o[k])return;var r=SRS.answer(o[k],true);if(r.act==='mastered')delete o[k];wbSave(o);}
+function wbCorrect(item){var o=wbLoad(),k=item.c+'-'+item.y+'-'+item.no;if(!o[k])return;var r=SRS.answer(o[k],true);if(r.act==='mastered')delete o[k];wbSave(o);}
 
 function chip(v,t,on,attr){return `<button class="chip2 ${on?'on':''}" data-${attr}="${v}">${t}</button>`;}
 function buildFilters(){
-  document.getElementById('fCert').innerHTML=[['leader','領隊'],['guide','導遊']].map(([v,t])=>chip(v,t,v===CERT,'fc')).join('');
-  document.getElementById('fYear').innerHTML=YEARS.map(y=>chip(y,y+'年',String(y)===YEAR,'fy')).join('');
+  document.getElementById('fCert').innerHTML=EXAMSEL.certChips(CERT,(v,t,on)=>chip(v,t,on,'fc'));
+  document.getElementById('fYear').innerHTML=EXAMSEL.yearChips(YEARS.map(String),YEAR,(v,t,on)=>chip(v,t,on,'fy'));
   document.getElementById('fType').innerHTML=TYPES.map(([v,t])=>chip(v,t,v===TYPE,'ft')).join('');
 }
 
@@ -226,16 +233,16 @@ function qMatch(item,kw){
 }
 function optBtn(item,i,o){const en=enPhrase(o);return `<button class="opt" data-no="${item.no}" data-i="${i}"><span class="lab">${LAB[i]}</span><span>${splitOpt(o)}</span>${en?sayBtn(en):''}<span class="mk"></span></button>`;}
 /* 題目識別(收藏 / 筆記用):EN_REVIEW 題目本身不含考別年份,由目前篩選補上 */
-function qref(item){return {c:CERT,y:YEAR,no:item.no,stem:item.stem};}
+function qref(item){return {c:item.c,y:item.y,no:item.no,stem:item.stem};}
 function qCard(item){
   const cls=item.type==='字彙'?'c-v':item.type==='對話'?'c-d':'c-r';
   const stem=esc(item.stem).replace('__BLANK__','<span class="blank"></span>');
   const rawStem=item.stem.replace('__BLANK__','blank').replace(/[A-Za-z]+:/g,'').replace(/　/g,' ');
-  const showCls=(MODE==='review'||answered[ansKey(item.no)]!=null)?' show':'';
-  return `<div class="card${showCls}" id="q${item.no}">
+  const showCls=(MODE==='review'||answered[ansKey(item)]!=null)?' show':'';
+  return `<div class="card${showCls}" id="${EXAMSEL.cid(item,ONE)}" data-ex="${item.c}-${item.y}">
     <div class="qhead"><span class="qno">第 ${item.no} 題</span>
       <span class="chip ${cls}">${item.type}</span><span class="chip c-t">${item.topic}</span>
-      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span>${FAV.btn('en',qref(item))}</div>
+      <span class="stars" title="重要度/出現頻率">${stars(item.star)}</span>${FAV.btn('en',qref(item))}${ONE?'':`<span class="src">${CNAME[item.c]}${item.y}-${item.no}</span>`}</div>
     <div class="stem">${stem} ${sayBtn(rawStem)}</div>
     <div class="opts">${item.opts.map((o,i)=>optBtn(item,i,o)).join('')}</div>
     <div class="reveal fold">
@@ -259,29 +266,36 @@ function passageHtml(item){
 }
 
 function render(){
-  const D=curData();
+  const EX=exams();
+  ONE=EXAMSEL.single(CERT,YEAR);
   const kw=document.getElementById('q').value.trim().toLowerCase();
-  const plain=(TYPE==='all'&&!kw);   // 無篩選 → 完整呈現(含策略/導引/題組)
-  let html='', shownQ=0;
-  D.forEach(item=>{
-    if(item.kind==='guide'){ if(plain)html+=`<div class="guide"><div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div></div>`; return; }
-    if(item.kind==='strategy'){ if(plain)html+=`<div class="strategy"><button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div></div>`; return; }
-    if(item.kind==='passage'){ if(TYPE==='all'||TYPE==='閱讀'){ if(!kw)html+=passageHtml(item); } return; }
-    // q
-    if(TYPE!=='all'&&item.type!==TYPE)return;
-    if(!qMatch(item,kw))return;
-    html+=qCard(item); shownQ++;
+  const plain=(TYPE==='all'&&!kw);   // 無篩選 → 完整呈現(含策略/導引/題組;策略/導引只在單一份卷顯示)
+  const units=[]; let shownQ=0, totalQ=0;
+  EX.forEach(([c,y])=>{
+    const D=EN_REVIEW[c+'-'+y], start=units.length;
+    D.forEach(item=>{
+      if(item.kind==='guide'){ if(plain&&ONE)units.push({html:`<div class="guide"><div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div></div>`}); return; }
+      if(item.kind==='strategy'){ if(plain&&ONE)units.push({html:`<div class="strategy"><button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div></div>`}); return; }
+      if(item.kind==='passage'){ if(TYPE==='all'||TYPE==='閱讀'){ if(!kw)units.push({item}); } return; }
+      totalQ++;
+      if(TYPE!=='all'&&item.type!==TYPE)return;
+      if(!qMatch(item,kw))return;
+      units.push({q:item}); shownQ++;
+    });
+    const n=units.slice(start).filter(u=>u.q).length;
+    if(!ONE&&n)units.splice(start,0,{html:`<div class="exh">📄 ${CNAME[c]} ${y} 年<small>${n} 題</small></div>`});
   });
-  document.getElementById('app').innerHTML=html||'<div class="empty">找不到符合的題目</div>';
-  const totalQ=D.filter(d=>d.kind==='q').length;
-  document.getElementById('cnt').textContent=`${CNAME[CERT]} ${YEAR} 年 · 共 ${totalQ} 題`+((TYPE!=='all'||kw)?`(篩選後 ${shownQ})`:'');
+  const box=document.getElementById('app');
+  if(!shownQ&&!units.some(u=>u.item)){box.innerHTML='<div class="empty">找不到符合的題目</div>';LV=null;}
+  else LV=EXAMSEL.mount(box,units,u=>u.q?qCard(u.q):u.item?passageHtml(u.item):u.html,{first:units.length>150?50:units.length,isQ:u=>!!u.q});
+  document.getElementById('cnt').textContent=(ONE?`${CNAME[CERT]} ${YEAR} 年`:EXAMSEL.scope(CERT,YEAR))+` · 共 ${totalQ} 題`+((TYPE!=='all'||kw)?`(篩選後 ${shownQ})`:'');
   updateScore();
 }
 function updateScore(){
   const el=document.getElementById('score');
   if(MODE!=='test'){el.textContent='';return;}
-  const D=curData().filter(d=>d.kind==='q');
-  let done=0,ok=0;D.forEach(q=>{const p=answered[ansKey(q.no)];if(p!=null){done++;if(SCORE.ok(q,p))ok++;}});
+  const D=[].concat(...exams().map(([c,y])=>EN_REVIEW[c+'-'+y])).filter(d=>d.kind==='q');
+  let done=0,ok=0;D.forEach(q=>{const p=answered[ansKey(q)];if(p!=null){done++;if(SCORE.ok(q,p))ok++;}});
   el.textContent=done?`作答 ${done} · 答對 ${ok} · ${Math.round(ok/done*100)}%`:'';
 }
 
@@ -291,6 +305,7 @@ document.querySelector('.bar').addEventListener('click',e=>{
   if(b.dataset.fc!=null){CERT=b.dataset.fc;try{localStorage.setItem('pref_cert',CERT);}catch(e){}}
   else if(b.dataset.fy!=null)YEAR=b.dataset.fy;
   else if(b.dataset.ft!=null)TYPE=b.dataset.ft;
+  EXAMSEL.syncUrl(CERT,YEAR);
   buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
@@ -305,7 +320,7 @@ document.getElementById('zhBtn').addEventListener('click',function(){
   this.textContent=h?'🈚 顯示選項中文':'🈯 隱藏選項中文';
 });
 document.getElementById('printBtn').addEventListener('click',()=>{
-  const prev=MODE;MODE='review';document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m==='review'));render();
+  const prev=MODE;MODE='review';document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m==='review'));render();if(LV)LV.all();
   setTimeout(()=>{window.print();MODE=prev;document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===prev));render();},200);
 });
 /* 內容區:選項作答 / 朗讀 / 策略展開 */
@@ -318,12 +333,12 @@ document.getElementById('app').addEventListener('click',e=>{
   const b=e.target.closest('.opt');if(!b)return;
   const no=+b.dataset.no,i=+b.dataset.i;
   const card=b.closest('.card');if(card.dataset.done)return;card.dataset.done='1';
-  const item=curData().find(d=>d.kind==='q'&&d.no===no);if(!item)return;
-  answered[ansKey(no)]=i;
+  const item=(EN_REVIEW[card.dataset.ex]||[]).find(d=>d.kind==='q'&&d.no===no);if(!item)return;
+  answered[ansKey(item)]=i;
   const opts=[...card.querySelectorAll('.opt')];
   opts.forEach(x=>{x.classList.remove('ok','no');x.querySelector('.mk').textContent='';});
   opts.forEach((x,k)=>{const m=SCORE.mark(item,k,i);if(m[0]){x.classList.add(m[0]);x.querySelector('.mk').textContent=m[1];}});
-  if(!SCORE.ok(item,i)){wbAdd(item,i);}else{wbCorrect(no);}
+  if(!SCORE.ok(item,i)){wbAdd(item,i);}else{wbCorrect(item);}
   card.classList.add('show');updateScore();
 });
 
@@ -331,9 +346,11 @@ buildFilters();render();FAV.onClick(document.getElementById('app'));NOTE.onClick
 
 /* 深連結 #qN:跳到指定題並高亮(來自工具頁時的「← 回…」由 backlink.js 處理) */
 function goHash(){
-  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
-  let c=document.getElementById('q'+m[1]);
-  if(!c){TYPE='all';document.getElementById('q').value='';buildFilters();render();c=document.getElementById('q'+m[1]);}
+  const h=EXAMSEL.hash();if(!h||(!h.c&&!ONE))return;    // #q37 只用在單一份卷;多份卷用 #qg108-37
+  const id=h.c?'q'+h.c.charAt(0)+h.y+'-'+h.no:'q'+h.no;
+  const find=()=>{if(LV)LV.until(u=>u.q&&u.q.no===h.no&&(!h.c||(u.q.c===h.c&&u.q.y===h.y)));return document.getElementById(id);};
+  let c=find();
+  if(!c){TYPE='all';document.getElementById('q').value='';buildFilters();render();c=find();}
   if(!c)return;
   c.classList.add('show','hl');c.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(()=>c.classList.remove('hl'),2400);

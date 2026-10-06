@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ea580c">
 <title>考前衝刺</title>
@@ -131,6 +133,12 @@ const SUBT={en:'從 20 份考卷萃取的高頻精華 · 考前一週快速掃',
   cn:'中文三科 · 依歷屆出題比例挑出每科最該背的 100 條 · 遮住答案自測 · 標記已背'};
 let LANG=(function(){try{var v=localStorage.getItem('pref_sprint_lang');return v==='jp'||v==='cn'?v:'en';}catch(e){return 'en';}})();
 let cur=TABS[LANG][0][0];
+/* 首頁帶來的科目(?subj=):英語 / 日語 → 該語言;觀光 / 執業實務 / 執業法規 → 中文三科的該科 */
+(function(){const s=new URLSearchParams(location.search).get('subj');
+  if(s==='en'||s==='jp'){LANG=s;cur=TABS[LANG][0][0];}
+  else if(s==='gh'||s==='pr'||s==='pr2'){LANG='cn';cur=s;}
+  else return;
+  try{localStorage.setItem('pref_sprint_lang',LANG);}catch(e){}})();
 const app=document.getElementById('app');
 let CERT=(function(){try{return localStorage.getItem('pref_cert')||'all';}catch(e){return 'all';}})();
 function scopedKB(data){if(CERT==='all')return data;return data.map(function(x){var h=(x.hits||[]).filter(function(hh){return hh.c===CERT;});return h.length?Object.assign({},x,{hits:h,freq:h.length}):null;}).filter(Boolean);}

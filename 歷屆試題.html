@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e3a8a">
 <title>歷屆試題 · 領隊·導遊 考照中心</title>
@@ -41,6 +43,7 @@
     text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
   .nav{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
   .seg{display:flex;gap:8px;padding:10px 0 4px}
+  .yc.all .yr{font-size:1.45rem}
   .seg button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
     padding:9px 8px;border-radius:12px;cursor:pointer;font-size:.92rem;font-weight:700;
     font-family:inherit;display:flex;gap:6px;align-items:center;justify-content:center;transition:.15s}
@@ -181,10 +184,32 @@ const APP = {
   ]
 };
 
-/* 預設證照:沿用全站記憶 pref_cert */
+/* 「導遊 + 領隊」:同一年兩種證照的考卷一起看(進詳解頁帶 cert=all) */
+(function(){
+  const L=APP.cats[0], G=APP.cats[1];
+  APP.cats.push({ id:'all', name:'全部', icon:'📚', on:true, both:true,   // 名稱短一點,手機上不換行
+    subs:L.subs.map(s=>{const g=G.subs.find(x=>x.id===s.id)||s;
+      return { id:s.id, name:s.name, on:s.on&&g.on, years:s.years, file:s.file,
+        count:y=>(typeof s.count==='function'?s.count(y):80)+(typeof g.count==='function'?g.count(y):80),
+        meta:Object.fromEntries(s.years.map(y=>[y,[(s.meta[y]||['old'])[0],'']])) };})});
+})();
+/* 預設證照:沿用全站記憶 pref_cert;科目:網址 ?subj=(首頁帶來)→ 上次在這頁選的 → 首頁篩選 */
 let curCat = 0, curSub = 0;
 let viewMode = 'view';   // view=看詳解 / test=測驗計分(帶 &mode=test 進複習頁自測)
-try{const pc=localStorage.getItem('pref_cert');if(pc==='guide')curCat=1;}catch(e){}
+try{const pc=localStorage.getItem('pref_cert');if(pc==='guide')curCat=1;else if(pc==='all')curCat=2;}catch(e){}
+const SUBIDS=['en','gh','pr','pr2','jp'];
+(function(){
+  const LS=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
+  const q=new URLSearchParams(location.search).get('subj');
+  const s=[q,LS('pref_past_subj'),LS('pref_subj')].find(x=>SUBIDS.includes(x));
+  if(s){const i=APP.cats[curCat].subs.findIndex(x=>x.id===s);if(i>=0)curSub=i;}
+})();
+/* 科目改了:記住,並寫回網址(按上一頁回來仍是同一科) */
+function rememberSub(){
+  const id=APP.cats[curCat].subs[curSub].id;
+  try{localStorage.setItem('pref_past_subj',id);}catch(e){}
+  try{const u=new URL(location.href);u.searchParams.set('subj',id);history.replaceState(null,'',u.pathname+u.search);}catch(e){}
+}
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -208,7 +233,14 @@ function renderMain(){
   }
   const qcount = y => typeof sub.count==='function' ? sub.count(y) : (sub.count||80);
   const test = viewMode==='test';
-  const cards = sub.years.map(y=>{
+  const total = sub.years.reduce((a,y)=>a+qcount(y),0);
+  /* 全部年份:10 屆一次看(題目依年份新 → 舊排,可配合考點 / 搜尋跨年篩選) */
+  const allCard = `<a class="yc all" href="${esc(sub.file('all', cat.id))}${test?'&mode=test':''}">
+      <span class="done${test?' t':''}">${test?'✍️ 測 '+total+'題':'📚 '+total+'題'}</span>
+      <div class="yr">全部<small>年份</small></div>
+      <div class="sy">${sub.years.length} 屆一次看 · 新 → 舊</div>
+      <div class="row"><span class="badge b-new">跨年</span><span class="code">可配合考點、搜尋篩選</span></div></a>`;
+  const cards = allCard + sub.years.map(y=>{
     const [sys,code] = sub.meta[y];
     const isNew = sys==='new';
     return `<a class="yc" href="${esc(sub.file(y, cat.id))}${test?'&mode=test':''}">
@@ -217,7 +249,7 @@ function renderMain(){
       <div class="sy">${isNew?'交通部觀光署':'考選部'}</div>
       <div class="row">
         <span class="badge ${isNew?'b-new':'b-old'}">${isNew?'新制':'舊制'}</span>
-        <span class="code">卷${code}</span>
+        <span class="code">${cat.both?'導遊卷 + 領隊卷':'卷'+code}</span>
       </div></a>`;
   }).join('');
   const cnts = sub.years.map(qcount), cmin = Math.min(...cnts), cmax = Math.max(...cnts);
@@ -236,13 +268,15 @@ function renderMain(){
 
 document.getElementById('segCat').addEventListener('click', e=>{
   const b = e.target.closest('button[data-ci]'); if(!b||b.disabled) return;
-  curCat = +b.dataset.ci; curSub = 0;
+  const sid = APP.cats[curCat].subs[curSub].id;          // 換證照時保留同一科
+  curCat = +b.dataset.ci;
+  curSub = Math.max(0, APP.cats[curCat].subs.findIndex(x=>x.id===sid));
   try{localStorage.setItem('pref_cert', APP.cats[curCat].id);}catch(e){}
   renderNav(); renderMain();
 });
 document.getElementById('segSub').addEventListener('click', e=>{
   const b = e.target.closest('button[data-si]'); if(!b||b.disabled) return;
-  curSub = +b.dataset.si; renderNav(); renderMain();
+  curSub = +b.dataset.si; rememberSub(); renderNav(); renderMain();
 });
 document.getElementById('main').addEventListener('click', e=>{
   const b = e.target.closest('.mtog'); if(!b) return;

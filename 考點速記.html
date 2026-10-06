@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#c2410c">
 <title>考點速記</title>
@@ -101,7 +103,8 @@
 </div>
 
 <script>
-let SUBJ=(function(){try{const v=localStorage.getItem('pref_sprintcn_subj');return ['gh','pr','pr2'].includes(v)?v:'gh';}catch(e){return 'gh';}})(), KW='';
+let SUBJ=(function(){const s=new URLSearchParams(location.search).get('subj');if(['gh','pr','pr2'].includes(s)){try{localStorage.setItem('pref_sprintcn_subj',s);}catch(e){}return s;}   // 首頁帶來的科目優先
+  try{const v=localStorage.getItem('pref_sprintcn_subj');return ['gh','pr','pr2'].includes(v)?v:'gh';}catch(e){return 'gh';}})(), KW='';
 /* v128 只看近 3 年 + 遮住重點 */
 let RECENT=(function(){try{return localStorage.getItem('pref_sprintcn_recent')==='1';}catch(e){return false;}})(), MASKON=false;
 function refYear(r){const m=String(r||'').match(/^[gl](\d+)-/);return m?+m[1]:0;}

@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e3a8a">
 <title>全站搜尋</title>
@@ -88,7 +90,7 @@ const CAP=120;
 const PSG_TXT=new Map();
 function psgOf(k,q){if(k==='en')return q.psg||null;if(k==='jp'&&typeof JPREAD!=='undefined')return JPREAD.get(q.c,q.y,q.no);return null;}
 function psgText(p){if(!PSG_TXT.has(p))PSG_TXT.set(p,(p.text||[]).join(' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' '));return PSG_TXT.get(p);}
-let filter='all', timer=null;
+let filter=(function(){const s=new URLSearchParams(location.search).get('subj');return ['en','jp','gh','pr','pr2'].indexOf(s)>=0?s:'all';})(), timer=null;   // 首頁帶來的科目
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function hl(text,kw){const t=esc(text);if(!kw)return t;
   try{const re=new RegExp('('+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');return t.replace(re,'<mark>$1</mark>');}catch(e){return t;}}

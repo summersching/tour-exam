@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#e11d48">
 <title>日文詳解</title>
@@ -107,6 +109,7 @@
 <script src="scoring.js"></script>
 <script src="notes.js"></script>
 <script src="fav.js"></script>
+<script src="examsel.js"></script>
 <script src="pwa.js" defer></script>
 <script src="backlink.js" defer></script>
 <script src="jp.js"></script>
@@ -224,11 +227,9 @@ function ensureTokenizer(cb){
 function sayBtn(t){return `<span class="say" data-say="${esc(String(t)).replace(/&quot;/g,'')}" title="點我朗讀(日語)">🔊</span>`;}
 
 const QP=new URLSearchParams(location.search);
-let CERT=QP.get('cert')||(function(){try{return localStorage.getItem('pref_cert');}catch(e){return null;}})();
-if(CERT!=='guide'&&CERT!=='leader')CERT='guide';
-const YEARS=[...new Set(JPBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-let YEAR=QP.get('year')||YEARS[0];
-if(!YEARS.includes(YEAR))YEAR=YEARS[0];
+let CERT=EXAMSEL.cert(QP.get('cert'),'guide');                       // all = 導遊 + 領隊
+let YEAR=EXAMSEL.year(QP.get('year'),EXAMSEL.years(JPBANK,CERT));   // all = 全部年份
+let CUR=[], ONE=true, LV=null;      // 目前列出的題目、是否單一份卷、分批顯示控制
 let MODE=(QP.get('mode')==='test')?'test':'review';   // ?mode=test 可從歷屆試題直接進自測
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 const picks={};
@@ -240,9 +241,8 @@ function optMark(q,i,p){
 }
 function chip(v,t,on){return `<button class="chip2 ${on?'on':''}" data-v="${v}">${t}</button>`;}
 function buildFilters(){
-  document.getElementById('fCert').innerHTML=[['leader','領隊'],['guide','導遊']].map(([v,t])=>chip(v,t,v===CERT)).join('');
-  const ys=[...new Set(JPBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-  document.getElementById('fYear').innerHTML=ys.map(y=>chip(y,y+'年',y===YEAR)).join('');
+  document.getElementById('fCert').innerHTML=EXAMSEL.certChips(CERT,chip);
+  document.getElementById('fYear').innerHTML=EXAMSEL.yearChips(EXAMSEL.years(JPBANK,CERT),YEAR,chip);
 }
 function optHtml(q,i,o){
   const d=jpData(q), oz=(d&&d.oz&&d.oz[i])?`<span class="ozh">${esc(d.oz[i])}</span>`:'';
@@ -269,22 +269,30 @@ function revealHtml(q){
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
-  let arr=JPBANK.filter(x=>x.c===CERT&&x.y===YEAR).sort((a,b)=>a.no-b.no);
+  let arr=EXAMSEL.sort(JPBANK.filter(x=>EXAMSEL.match(x,CERT,YEAR)));
   if(kw)arr=arr.filter(x=>{const d=jpData(x);const hay=(x.stem+' '+x.opts.join(' ')+' '+(d?(d.a||'')+' '+(d.zh||''):'')).toLowerCase();return hay.includes(kw);});
-  document.getElementById('cnt').textContent='共 '+arr.length+' 題';
-  document.getElementById('list').innerHTML=arr.map((q,qi)=>{
-    const d=jpData(q);
+  CUR=arr; ONE=EXAMSEL.single(CERT,YEAR);
+  document.getElementById('cnt').textContent=(ONE?'':EXAMSEL.scope(CERT,YEAR)+' · ')+'共 '+arr.length+' 題';
+  const box=document.getElementById('list');
+  if(!arr.length){box.innerHTML='<div class="empty">找不到符合的題目</div>';LV=null;updScore(arr);return;}
+  const units=[];let ex='';
+  arr.forEach((q,qi)=>{const k=q.c+q.y;if(!ONE&&k!==ex){units.push({h:1,c:q.c,y:q.y,n:arr.filter(x=>x.c===q.c&&x.y===q.y).length});ex=k;}units.push({q,qi});});
+  LV=EXAMSEL.mount(box,units,u=>u.h?`<div class="exh">📄 ${CNAME[u.c]} ${u.y} 年<small>${u.n} 題</small></div>`:cardHtml(u.q,u.qi),
+    {first:units.length>120?40:units.length,isQ:u=>!u.h});
+  updScore(arr);
+}
+/* 一題的卡片(qi = 在 CUR 的位置,用來判斷是否與上一題同一篇閱讀文章) */
+function cardHtml(q,qi){
+    const arr=CUR, d=jpData(q);
     const psg=JPREAD.html(q,{same:qi>0&&JPREAD.get(q.c,q.y,q.no)&&JPREAD.get(q.c,q.y,q.no)===JPREAD.get(arr[qi-1].c,arr[qi-1].y,arr[qi-1].no),full:true,say:true,fmt:dsp});   // 讀解:同篇第一題前顯示文章
     const tags=(d&&d.tt?`<span class="chip c-r">${esc(d.t||'日語')}</span><span class="chip c-t">${esc(d.tt)}</span>`:`<span class="chip c-r">外語日語</span>`)+(d&&d.jl?`<span class="chip c-jl">${esc(d.jl)}</span>`:'');
     const show=(MODE==='review')||(picks[qid(q)]!=null);
-    return `<div class="card" id="q${q.no}">
+    return `<div class="card" id="${EXAMSEL.cid(q,ONE)}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('jp',q)}<span class="src">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       ${psg}<div class="stem">${dsp(q.stem)} ${sayBtn(q.stem)}</div>
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
-  }).join('')||'<div class="empty">找不到符合的題目</div>';
-  updScore(arr);
 }
 function updScore(arr){
   const el=document.getElementById('score');
@@ -296,9 +304,9 @@ document.querySelector('.bar').addEventListener('click',e=>{
   const b=e.target.closest('.chip2');if(!b)return;
   const p=b.parentElement.id,v=b.dataset.v;
   if(p==='fCert'){CERT=v;try{localStorage.setItem('pref_cert',CERT);}catch(e){}
-    const ys=[...new Set(JPBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-    if(!ys.includes(YEAR))YEAR=ys[0];}
+    YEAR=EXAMSEL.year(YEAR,EXAMSEL.years(JPBANK,CERT));}
   else if(p==='fYear')YEAR=v;
+  EXAMSEL.syncUrl(CERT,YEAR);
   buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
@@ -326,10 +334,13 @@ document.getElementById('list').addEventListener('click',e=>{
   if(MODE!=='test')return;
   const b=e.target.closest('.opt.clk');if(!b)return;
   const k=b.dataset.k;if(picks[k]!=null)return;
-  picks[k]=+b.dataset.i;render();
+  picks[k]=+b.dataset.i;
+  const card=b.closest('.card'),qi=CUR.findIndex(x=>qid(x)===k);
+  if(card&&qi>=0)card.outerHTML=cardHtml(CUR[qi],qi);else render();
+  updScore(CUR);
 });
 document.getElementById('printBtn').onclick=function(){
-  const prev=MODE;MODE='review';render();
+  const prev=MODE;MODE='review';render();if(LV)LV.all();
   setTimeout(function(){window.print();MODE=prev;render();},200);
 };
 /* B1:把已儲存的閱讀偏好套回設定列與畫面 */
@@ -355,9 +366,11 @@ JPLOOK.attach(document.getElementById('list'),{tokenizer:()=>TOK,speak:speak,rom
 buildFilters();render();applyJpPrefs();setLook();FAV.onClick(document.getElementById('list'));NOTE.onClick(document.getElementById('list'));
 /* 深連結 #qN(例:從考前衝刺點題號)→ 捲到該題並高亮;搜尋框有字時先清空 */
 function goHash(){
-  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
-  let c=document.getElementById('q'+m[1]);
-  if(!c&&document.getElementById('q').value){document.getElementById('q').value='';render();c=document.getElementById('q'+m[1]);}
+  const h=EXAMSEL.hash();if(!h||(!h.c&&!ONE))return;    // #q37 只用在單一份卷;多份卷用 #qg108-37
+  const hit=q=>q.no===h.no&&(!h.c||(q.c===h.c&&String(q.y)===h.y));
+  const find=()=>{if(LV)LV.until(u=>u.q&&hit(u.q));const q=CUR.find(hit);return q?document.getElementById(EXAMSEL.cid(q,ONE)):null;};
+  let c=find();
+  if(!c&&document.getElementById('q').value){document.getElementById('q').value='';render();c=find();}
   if(!c)return;
   c.classList.add('hl');c.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(()=>c.classList.remove('hl'),2400);

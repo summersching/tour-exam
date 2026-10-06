@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>數字速記</title>
@@ -133,6 +135,8 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','
 function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'');}
 const cfg = Object.assign({ subj:'pr2', topic:'__ALL__', range:'all', group:'topic', mask:true }, PRACTICE.LSget('pref_num', {}));
 function saveCfg(){ PRACTICE.LSset('pref_num', cfg); }
+(function(){ const s = new URLSearchParams(location.search).get('subj');   // 首頁帶來的科目
+  if (['gh','pr','pr2'].includes(s) && s !== cfg.subj) { cfg.subj = s; cfg.topic = '__ALL__'; saveCfg(); } })();
 
 /* 選項是不是「數字」:去掉數字、單位、常見連接詞後幾乎不剩字 */
 function isNumOpt(o){
@@ -149,6 +153,7 @@ function build(s, d){
   const out = [];
   d.bank.forEach(q=>{
     if (SCORE.free(q) || !Array.isArray(q.opts) || q.opts.length !== 4) return;
+    if (q.img || q.fig) return;                       // 要看圖才答得出來的題目不收
     const numN = q.opts.filter(isNumOpt).length;
     if (numN < 3) return;
     const acc = SCORE.acc(q); if (!acc.length || !acc.every(i=>isNumOpt(q.opts[i]))) return;

@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d9488">
 <title>觀光資源概要 · 複習</title>
@@ -99,6 +101,7 @@
 <script src="notes.js"></script>
 <script src="stale.js"></script>
 <script src="optimg.js"></script>
+<script src="examsel.js"></script>
 <script src="fav.js"></script>
 <script src="pwa.js" defer></script>
 <script src="backlink.js" defer></script>
@@ -200,11 +203,9 @@ function ghData(q){return (typeof GHANA!=='undefined'&&GHANA[q.c+'-'+q.y+'-'+q.n
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 const QP=new URLSearchParams(location.search);
-let CERT=QP.get('cert')||(function(){try{return localStorage.getItem('pref_cert');}catch(e){return null;}})();
-if(CERT!=='guide'&&CERT!=='leader')CERT='guide';
-const YEARS=[...new Set(GHBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-let YEAR=QP.get('year')||YEARS[0];
-if(!YEARS.includes(YEAR))YEAR=YEARS[0];
+let CERT=EXAMSEL.cert(QP.get('cert'),'guide');                       // all = 導遊 + 領隊
+let YEAR=EXAMSEL.year(QP.get('year'),EXAMSEL.years(GHBANK,CERT));       // all = 全部年份
+let CUR=[], ONE=true, LV=null;      // 目前列出的題目、是否單一份卷、分批顯示控制
 let TOPIC='all';
 let MODE=(QP.get('mode')==='test')?'test':'review';           // review=全攤開 / test=自測(?mode=test 可直接開)
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
@@ -218,9 +219,8 @@ function optMark(q,i,p){
 
 function chip(v,t,on){return `<button class="chip2 ${on?'on':''}" data-v="${v}">${t}</button>`;}
 function buildFilters(){
-  document.getElementById('fCert').innerHTML=[['leader','領隊'],['guide','導遊']].map(([v,t])=>chip(v,t,v===CERT)).join('');
-  const ys=[...new Set(GHBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-  document.getElementById('fYear').innerHTML=ys.map(y=>chip(y,y+'年',y===YEAR)).join('');
+  document.getElementById('fCert').innerHTML=EXAMSEL.certChips(CERT,chip);
+  document.getElementById('fYear').innerHTML=EXAMSEL.yearChips(EXAMSEL.years(GHBANK,CERT),YEAR,chip);
   document.getElementById('fTopic').innerHTML=[['all','全部'],['史','🏛 歷史'],['地','🗺 地理'],['維護','🛡 資源維護']].map(([v,t])=>chip(v,t,v===TOPIC)).join('');
 }
 function optHtml(q,i,o){
@@ -242,22 +242,30 @@ function revealHtml(q){
 }
 function render(){
   const kw=document.getElementById('q').value.trim().toLowerCase();
-  let arr=GHBANK.filter(x=>x.c===CERT&&x.y===YEAR).sort((a,b)=>a.no-b.no);
+  let arr=EXAMSEL.sort(GHBANK.filter(x=>EXAMSEL.match(x,CERT,YEAR)));
   if(TOPIC!=='all')arr=arr.filter(x=>{const d=ghData(x);return d&&d.t===TOPIC;});
   if(kw)arr=arr.filter(x=>{const d=ghData(x);const hay=(x.stem+' '+x.opts.join(' ')+' '+(d?d.a+' '+d.s+' '+(d.n||''):'')).toLowerCase();return hay.includes(kw);});
-  document.getElementById('cnt').textContent='共 '+arr.length+' 題'+(TOPIC!=='all'?'(已篩考點)':'');
-  document.getElementById('list').innerHTML=arr.map(q=>{
+  CUR=arr; ONE=EXAMSEL.single(CERT,YEAR);
+  document.getElementById('cnt').textContent=(ONE?'':EXAMSEL.scope(CERT,YEAR)+' · ')+'共 '+arr.length+' 題'+(TOPIC!=='all'?'(已篩考點)':'');
+  const box=document.getElementById('list');
+  if(!arr.length){box.innerHTML='<div class="empty">找不到符合的題目</div>';LV=null;updScore(arr);return;}
+  const units=[];let ex='';
+  arr.forEach(q=>{const k=q.c+q.y;if(!ONE&&k!==ex){units.push({h:1,c:q.c,y:q.y,n:arr.filter(x=>x.c===q.c&&x.y===q.y).length});ex=k;}units.push({q});});
+  LV=EXAMSEL.mount(box,units,u=>u.h?`<div class="exh">📄 ${CNAME[u.c]} ${u.y} 年<small>${u.n} 題</small></div>`:cardHtml(u.q),
+    {first:units.length>120?40:units.length,isQ:u=>!u.h});
+  updScore(arr);
+}
+/* 一題的卡片(自測作答後只重畫這一題) */
+function cardHtml(q){
     const d=ghData(q);
     const tags=d?`<span class="chip c-r">${GT[d.t]}</span><span class="chip c-t">${d.tt}</span>`:`<span class="chip c-r">觀光資源概要</span>`;
     const show=(MODE==='review')||(picks[qid(q)]!=null);
-    return `<div class="card" id="q${q.no}">
+    return `<div class="card" id="${EXAMSEL.cid(q,ONE)}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
         ${FAV.btn('gh',q)}<span class="src ${q.c}">${CNAME[q.c]}${q.y}-${q.no}</span></div>
       <div class="stem">${esc(q.stem)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>optHtml(q,i,o)).join('')}</div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
-  }).join('')||'<div class="empty">找不到符合的題目</div>';
-  updScore(arr);
 }
 function updScore(arr){
   const el=document.getElementById('score');
@@ -269,10 +277,10 @@ document.querySelector('.bar').addEventListener('click',e=>{
   const b=e.target.closest('.chip2');if(!b)return;
   const p=b.parentElement.id,v=b.dataset.v;
   if(p==='fCert'){CERT=v;try{localStorage.setItem('pref_cert',CERT);}catch(e){}
-    const ys=[...new Set(GHBANK.filter(x=>x.c===CERT).map(x=>x.y))].sort((a,b)=>b-a);
-    if(!ys.includes(YEAR))YEAR=ys[0];}
+    YEAR=EXAMSEL.year(YEAR,EXAMSEL.years(GHBANK,CERT));}
   else if(p==='fYear')YEAR=v;
   else if(p==='fTopic')TOPIC=v;
+  EXAMSEL.syncUrl(CERT,YEAR);
   buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
@@ -286,18 +294,23 @@ document.getElementById('list').addEventListener('click',e=>{
   if(MODE!=='test')return;
   const b=e.target.closest('.opt.clk');if(!b)return;
   const k=b.dataset.k;if(picks[k]!=null)return;
-  picks[k]=+b.dataset.i;render();
+  picks[k]=+b.dataset.i;
+  const card=b.closest('.card'),q=CUR.find(x=>qid(x)===k);
+  if(card&&q)card.outerHTML=cardHtml(q);else render();
+  updScore(CUR);
 });
 document.getElementById('printBtn').onclick=function(){
-  const prev=MODE;MODE='review';render();
+  const prev=MODE;MODE='review';render();if(LV)LV.all();
   setTimeout(function(){window.print();MODE=prev;render();},200);
 };
 buildFilters();render();FAV.onClick(document.getElementById('list'));NOTE.onClick(document.getElementById('list'));
 /* 深連結 #qN(收藏 / 筆記頁「看完整詳解」):跳到該題並高亮;被搜尋字或考點篩掉時先清除篩選 */
 function goHash(){
-  const m=(location.hash||'').match(/^#q(\d+)$/);if(!m)return;
-  let c=document.getElementById('q'+m[1]);
-  if(!c&&(document.getElementById('q').value||TOPIC!=='all')){document.getElementById('q').value='';TOPIC='all';buildFilters();render();c=document.getElementById('q'+m[1]);}
+  const h=EXAMSEL.hash();if(!h||(!h.c&&!ONE))return;    // #q37 只用在單一份卷;多份卷用 #qg108-37
+  const hit=q=>q.no===h.no&&(!h.c||(q.c===h.c&&String(q.y)===h.y));
+  const find=()=>{if(LV)LV.until(u=>u.q&&hit(u.q));const q=CUR.find(hit);return q?document.getElementById(EXAMSEL.cid(q,ONE)):null;};
+  let c=find();
+  if(!c&&(document.getElementById('q').value||TOPIC!=='all')){document.getElementById('q').value='';TOPIC='all';buildFilters();render();c=find();}
   if(!c)return;
   c.classList.add('hl');c.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(()=>c.classList.remove('hl'),2400);
