@@ -119,6 +119,7 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
+<script src="ana.js"></script>
 <script src="stale.js"></script>
 <script src="srs.js"></script>
 <script src="fav.js"></script>
@@ -331,7 +332,7 @@ function renderFb(it, ok){
   const verdict = ok ? `✅ 答對!這句是「${it.truth?'⭕ 對':'❌ 錯'}」的` : `✗ 答錯 — 這句是「${it.truth?'⭕ 對':'❌ 錯'}」的`;
   const opts = q.opts.map((o,i)=>{ const [cls,mk] = SCORE.mark(q,i,null);
     return `<div class="opt ${cls}${i===it.i?' me':''}"><span class="lt">${'ABCD'[i]}</span><span>${esc(TF.clean(o))}</span>${i===it.i?'<span class="me2">← 這句</span>':''}<span class="mk">${mk}</span></div>`; }).join('');
-  const ana = d.a ? `<div class="ana">${d.a}${d.s?`<span class="s">💡 ${d.s}</span>`:''}</div>` : '';
+  const ana = d.a ? `<div class="ana">${window.ANAUI?window.ANAUI.compact(d.a):d.a}${d.s?`<span class="s">💡 ${d.s}</span>`:''}</div>` : '';
   const wbNote = (!ok && cfg.wb) ? `<span class="wbn">📌 原題已收進「${S.short}」錯題本</span>` : '';
   const auto = ok && cfg.auto;
   $('fb').innerHTML = `<div class="verd ${ok?'ok':'no'}">${verdict}</div>

@@ -92,6 +92,7 @@
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   mark{background:#fde68a;color:inherit;border-radius:3px}
   @media print{.bar,.home,.qz,.tip,.gq{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
+  .amap{margin:10px 0 14px}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -99,6 +100,8 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
+<script src="twmap.js"></script>
+<script src="ana.js"></script>
 <script src="stale.js"></script>
 <script src="srs.js"></script>
 <script src="fav.js"></script>
@@ -162,6 +165,19 @@ function renderRow(sec, r, i, kw){
   return `<div class="r" id="r-${sec.id}-${i}"><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
     <div class="meta nomask">${src}</div></div>`;
 }
+/* 國家公園、國家風景區分布圖:編號＝表格順序,點地圖或圖例跳到那一列(twmap.js);搜尋時只畫符合的列 */
+const MAPKEYS = { '參山':['獅頭山','梨山','八卦山'], '北海岸及觀音山':['北海岸及觀音山','觀音山'], '大鵬灣':['大鵬灣','小琉球'] };
+function mapFor(sec, idx){
+  if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
+  const marks = [], leg = [];
+  idx.forEach(i => {
+    const r = sec.rows[i];
+    const name = plain(r.c[0]), keys = MAPKEYS[name] || [name], row = 'r-' + sec.id + '-' + i;
+    keys.forEach(k => { if (TWMAP.get(k)) marks.push({ k, n: i + 1, c: sec.id, row }); });
+    leg.push({ k: keys[0], n: i + 1, c: sec.id, row, label: name.replace(/(國家風景區|國家公園|國家自然公園)$/, '') });
+  });
+  return '<figure class="amap nomask">' + TWMAP.svg({ marks, title: sec.t + '分布圖' }) + TWMAP.legend(leg) + TWMAP.note + '</figure>';
+}
 function qaCount(sec){ return sec.rows.reduce((n,r)=>n+(r.qa||[]).length,0); }
 function render(){
   $('secRow').innerHTML = [['all','全部']].concat(D.sections.map(s=>[s.id, s.icon+' '+s.t])).map(([v,l])=>
@@ -176,7 +192,7 @@ function render(){
     if (!idx.length) return;
     const open = kw || SEC !== 'all' ? ' open' : '';
     html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
-      <div class="sb"><div class="note">${sec.note}</div>${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
+      <div class="sb"><div class="note">${sec.note}</div>${mapFor(sec, idx)}${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
       <div class="qz nomask"><button type="button" data-pair="${sec.id}">🎯 配對小測 ${qaCount(sec)} 題</button><button class="o" type="button" data-quiz="${sec.id}">📝 歷屆原題 ${QUIZ_N} 題</button><button class="o" type="button" data-quiz="${sec.id}" data-all="1">全部相關原題</button></div>
       <div class="gq nomask" id="gq-${sec.id}" hidden></div></div></details>`;
   });

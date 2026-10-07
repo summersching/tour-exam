@@ -101,7 +101,7 @@
     var last = ST.i + 1 >= ST.items.length;
     bd().querySelector('.mq-fb').innerHTML =
       '<div class="mq-verd ' + (ok ? 'ok' : 'no') + '">' + (ok ? '✅ 答對!' : '✗ 答錯,正解是 ' + SCORE.ansLabel(q)) + (rule ? ' · ' + esc(rule) : '') + '</div>' +
-      (d.a ? '<div class="mq-ana">' + d.a + (d.s ? '<span class="s">💡 ' + d.s + '</span>' : '') + '</div>' : '') +
+      (d.a ? '<div class="mq-ana">' + (window.ANAUI ? window.ANAUI.compact(d.a) : d.a) + (d.s ? '<span class="s">💡 ' + d.s + '</span>' : '') + '</div>' : '') +
       '<div class="mq-links"><a href="' + PRACTICE.href(s, q) + '">📖 看原題詳解 →</a>' + (window.FAV ? FAV.btn(s, q) : '') +
       (!ok && wbOn() ? '<span class="mq-wbn">📌 已收進「' + PRACTICE.SUBJ[s].short + '」錯題本</span>' : '') + '</div>' +
       '<button class="mq-btn mq-next" type="button">' + (last ? '看結果' : '下一題 →') + '</button>';
