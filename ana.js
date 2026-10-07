@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v135
+/* ana.js — 詳解排版(單一來源)· v136
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -17,10 +17,13 @@
    (名稱用 ANAUI:執業實務 / 法規複習頁自己有一個叫 ANA 的解析資料變數,避免同名)
    解析內地圖:<figure class='xm' data-twmap='地名|地名=標籤|地名=標籤@l' data-ranges='1'>,自動載入 twmap.js 畫出
      標籤結尾 @r / @l / @u / @d = 優先放在右 / 左 / 上 / 下(避免壓到山脈線)
+   世界地圖:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-view='world'>,自動載入 worldmap.js
+     data-view 省略 = 依標記自動放大;'world' = 全世界;也可給「西經,南緯,東經,北緯」
    時間軸:<figure class='xm' data-tline='1624=荷蘭人占領大員|1652=*郭懷一事件' data-era='tw'>
      年份可寫 1683、1895-1945(期間)、前221(西元前);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v136 (2026-10-07) 解析內世界地圖(worldmap.js,用到才載入)
      v135 (2026-10-07) 時間軸、臺灣歷史分期圖、逐項判斷與歷屆同考點樣式
      v134 (2026-10-06) 初版
 */
@@ -126,18 +129,24 @@
     });
   }
 
-  /* ---- 解析裡的地圖 ---- */
-  var waiting = [], loading = false;
-  function needMap(cb) {
-    if (window.TWMAP) return cb();
-    waiting.push(cb);
-    if (loading) return;
-    loading = true;
+  /* ---- 解析裡的地圖:用到才載入 twmap.js(臺灣)/ worldmap.js(世界) ---- */
+  var LIBS = {};
+  function need(file, ready, cb) {
+    if (ready()) return cb();
+    var L = LIBS[file] || (LIBS[file] = { wait: [], loading: false });
+    L.wait.push(cb);
+    if (L.loading) return;
+    L.loading = true;
     var sc = document.createElement('script');
-    sc.src = 'twmap.js';
-    sc.onload = function () { var q = waiting; waiting = []; q.forEach(function (f) { try { f(); } catch (e) {} }); };
-    sc.onerror = function () { loading = false; waiting = []; };
+    sc.src = file;
+    sc.onload = function () { var q = L.wait; L.wait = []; q.forEach(function (f) { try { f(); } catch (e) {} }); };
+    sc.onerror = function () { L.loading = false; L.wait = []; };
     document.head.appendChild(sc);
+  }
+  function needMap(cb) { need('twmap.js', function () { return !!window.TWMAP; }, cb); }
+  function needWorld(cb) { need('worldmap.js', function () { return !!window.WMAP; }, cb); }
+  function parseMarks(s) {
+    return String(s || '').split('|').filter(Boolean).map(function (x) { var kv = x.split('='), lb = kv[1] || '', at = lb.lastIndexOf('@'), side = ''; if (at > 0 && /^[rlud]$/.test(lb.slice(at + 1))) { side = lb.slice(at + 1); lb = lb.slice(0, at); } return { k: kv[0], label: lb || undefined, side: side }; });
   }
   function hydrate() {
     var tls = document.querySelectorAll('figure.xm[data-tline]:not([data-done])');
@@ -145,13 +154,24 @@
       f.setAttribute('data-done', '1');
       f.insertAdjacentHTML('afterbegin', tline(parseTline(f.getAttribute('data-tline')), { era: f.getAttribute('data-era') || 'tw' }));
     });
+    var wfs = document.querySelectorAll('figure.xm[data-wmap]:not([data-done])');
+    if (wfs.length) needWorld(function () {
+      Array.prototype.forEach.call(wfs, function (f) {
+        if (f.getAttribute('data-done')) return;
+        f.setAttribute('data-done', '1');
+        var vw = f.getAttribute('data-view') || 'auto', rv = f.getAttribute('data-rivers');
+        if (/^-?[\d.]+(,-?[\d.]+){3}$/.test(vw)) vw = vw.split(',').map(Number);
+        var se = f.getAttribute('data-seas');
+        f.insertAdjacentHTML('afterbegin', window.WMAP.svg({ marks: parseMarks(f.getAttribute('data-wmap')), rivers: rv ? rv.split('|') : [], seas: se ? se.split('|') : [], view: vw }) + window.WMAP.note);
+      });
+    });
     var figs = document.querySelectorAll('figure.xm[data-twmap]:not([data-done])');
     if (!figs.length) return;
     needMap(function () {
       Array.prototype.forEach.call(figs, function (f) {
         if (f.getAttribute('data-done')) return;
         f.setAttribute('data-done', '1');
-        var marks = f.getAttribute('data-twmap').split('|').filter(Boolean).map(function (x) { var kv = x.split('='), lb = kv[1] || '', at = lb.lastIndexOf('@'), side = ''; if (at > 0 && /^[rlud]$/.test(lb.slice(at + 1))) { side = lb.slice(at + 1); lb = lb.slice(0, at); } return { k: kv[0], label: lb || undefined, side: side }; });
+        var marks = parseMarks(f.getAttribute('data-twmap'));
         var ranges = f.getAttribute('data-ranges') === '1';
         f.insertAdjacentHTML('afterbegin', window.TWMAP.svg({ marks: marks, labels: true, ranges: ranges }) + (ranges ? window.TWMAP.rangeLegend : '') + window.TWMAP.note);
       });
@@ -161,5 +181,5 @@
   function schedule() { if (pend) return; pend = true; (window.requestAnimationFrame || setTimeout)(function () { pend = false; hydrate(); }); }
   try { if ('MutationObserver' in window) new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
   if (document.readyState !== 'loading') schedule(); else document.addEventListener('DOMContentLoaded', schedule);
-  window.ANAUI = { compact: compact, maps: hydrate, tline: tline, eraBar: eraBar, era: ERA_TW, parseTline: parseTline };
+  window.ANAUI = { compact: compact, maps: hydrate, tline: tline, eraBar: eraBar, era: ERA_TW, parseTline: parseTline, parseMarks: parseMarks };
 })();

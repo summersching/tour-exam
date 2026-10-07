@@ -101,6 +101,7 @@
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
 <script src="twmap.js"></script>
+<script src="worldmap.js"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
 <script src="srs.js"></script>
@@ -174,9 +175,18 @@ function renderRow(sec, r, i, kw){
 /* 國家公園、國家風景區分布圖:編號＝表格順序,點地圖或圖例跳到那一列(twmap.js);搜尋時只畫符合的列 */
 const MAPKEYS = { '參山':['獅頭山','梨山','八卦山'], '北海岸及觀音山':['北海岸及觀音山','觀音山'], '大鵬灣':['大鵬灣','小琉球'] };
 const PEAKS = ['玉山', '雪山', '秀姑巒山', '南湖大山', '北大武山', '合歡山', '大霸尖山'];
+/* 世界遺產:常考地點分布(worldmap.js),點的顏色＝遺產類型 */
+const WH_MARKS = [
+  { k: '黃石國家公園', label: '黃石', t: 'n' }, { k: '伊盧利薩特', label: '冰峽灣(格陵蘭)', t: 'n' },
+  { k: '加拉巴哥群島', label: '加拉巴哥', t: 'n' }, { k: '馬丘比丘', t: 'm' },
+  { k: '利物浦', label: '利物浦(2021 除名)', t: 'x' }, { k: '雅典', label: '雅典衛城', t: 'c' },
+  { k: '阿布辛貝', t: 'c' }, { k: '塞倫蓋蒂', t: 'n' }, { k: '吳哥窟', label: '吳哥', t: 'c' },
+  { k: '巴納韋梯田', label: '科迪勒拉梯田', t: 'c' }, { k: '濟州島', t: 'n' }, { k: '大堡礁', t: 'n' }
+];
 function mapFor(sec, idx){
   /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
+  if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
   if (sec.id === 'mt') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: PEAKS.map(k => ({ k })), labels: true, ranges: true, title: '五大山脈與常考高峰' }) + TWMAP.rangeLegend + TWMAP.note + '</figure>' : '';
   if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
   const marks = [], leg = [];
