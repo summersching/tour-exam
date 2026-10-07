@@ -93,6 +93,11 @@
   mark{background:#fde68a;color:inherit;border-radius:3px}
   @media print{.bar,.home,.qz,.tip,.gq{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
   .amap{margin:10px 0 14px}
+  .wera{display:flex;flex-wrap:wrap;gap:6px}
+  .wera span{flex:1 1 28%;min-width:92px;border-left:6px solid var(--c);background:var(--soft);border-radius:8px;padding:5px 8px;font-size:.78rem;color:var(--sub);line-height:1.35}
+  .wera b{display:block;color:var(--c);font-size:.92rem}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wera b{filter:brightness(1.6)}}
+  :root[data-theme="dark"] .wera b{filter:brightness(1.6)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -160,10 +165,16 @@ function hl(html, kw){
   const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
   return html.split(/(<[^>]+>)/).map(p=>p.startsWith('<')?p:p.replace(re, m=>`<mark>${m}</mark>`)).join('');
 }
-/* 臺灣史年表:每列左邊色條＝所屬時期(顏色同 ana.js 時間軸) */
+/* 世界史分期(世界史年表用;各書劃分略有不同,這裡採常見的 476 / 1453 / 1789 / 1914) */
+const ERA_W = [{ s: -1e9, e: 476, n: '古代', y: '到 476', c: '#64748b' }, { s: 476, e: 1453, n: '中古', y: '476–1453', c: '#0284c7' },
+  { s: 1453, e: 1789, n: '近代早期', y: '1453–1789', c: '#16a34a' }, { s: 1789, e: 1914, n: '近代', y: '1789–1914', c: '#d97706' }, { s: 1914, e: 1e9, n: '現代', y: '1914–', c: '#7c3aed' }];
+/* 年代欄 → 年份:「前27」= -27、「13世紀」= 1250、「1519–1522」取起始年 */
+function yearOf(s){ const m = plain(s).match(/(前)?\s*(\d+)\s*(世紀)?/); if (!m) return 0; let n = +m[2]; if (m[3]) n = (n - 1) * 100 + 50; return m[1] ? -n : n; }
+/* 臺灣史 / 世界史年表:每列左邊色條＝所屬時期(臺灣史顏色同 ana.js 時間軸) */
 function eraStyle(sec, r){
-  if (sec.id !== 'hist' || !window.ANAUI) return '';
-  const n = parseInt(plain(r.c[0]), 10) || 0, e = ANAUI.era.find(x => n >= x.s && n < x.e);
+  const eras = sec.id === 'hist' ? (window.ANAUI && ANAUI.era) : sec.id === 'whist' ? ERA_W : null;
+  if (!eras) return '';
+  const n = sec.id === 'hist' ? (parseInt(plain(r.c[0]), 10) || 0) : yearOf(r.c[0]), e = eras.find(x => n >= x.s && n < x.e);
   return e ? ' style="border-left:4px solid ' + e.c + ';padding-left:10px"' : '';
 }
 function renderRow(sec, r, i, kw){
@@ -186,6 +197,7 @@ const WH_MARKS = [
 function mapFor(sec, idx){
   /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
+  if (sec.id === 'whist') return '<figure class="amap nomask"><div class="wera">' + ERA_W.map(e => '<span style="--c:' + e.c + '"><b>' + e.n + '</b>' + e.y + '</span>').join('') + '</div><div class="twm-nt">每列左邊的色條＝所屬時期(分期採常見劃分,各書略有不同)</div></figure>';
   if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
   if (sec.id === 'mt') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: PEAKS.map(k => ({ k })), labels: true, ranges: true, title: '五大山脈與常考高峰' }) + TWMAP.rangeLegend + TWMAP.note + '</figure>' : '';
   if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
@@ -240,7 +252,8 @@ function quizList(sec){
     }));
     d.bank.forEach(q=>{
       const a = d.ana[PRACTICE.key(q)] || {};
-      if (sec.quiz.tt.test(a.tt || '') && sec.quiz.kw.test(q.stem + ' ' + q.opts.join(' '))) add(q);
+      const tx = q.stem + ' ' + q.opts.join(' ');
+      if ((!sec.quiz.c || q.c === sec.quiz.c) && sec.quiz.tt.test(a.tt || '') && sec.quiz.kw.test(tx) && !(sec.quiz.nkw && sec.quiz.nkw.test(tx))) add(q);
     });
     return list;
   });
