@@ -159,15 +159,25 @@ function hl(html, kw){
   const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
   return html.split(/(<[^>]+>)/).map(p=>p.startsWith('<')?p:p.replace(re, m=>`<mark>${m}</mark>`)).join('');
 }
+/* 臺灣史年表:每列左邊色條＝所屬時期(顏色同 ana.js 時間軸) */
+function eraStyle(sec, r){
+  if (sec.id !== 'hist' || !window.ANAUI) return '';
+  const n = parseInt(plain(r.c[0]), 10) || 0, e = ANAUI.era.find(x => n >= x.s && n < x.e);
+  return e ? ' style="border-left:4px solid ' + e.c + ';padding-left:10px"' : '';
+}
 function renderRow(sec, r, i, kw){
   const fields = r.c.slice(1).map((v,j)=>v==='—'?'':`<div class="lb nomask">${esc(sec.cols[j+1])}</div><div class="rv">${hl(v,kw)}</div>`).join('');
   const src = (r.src||[]).length ? r.src.map(srcLink).join('') : '<span class="nos">官方資料整理(歷屆未直接考)</span>';
-  return `<div class="r" id="r-${sec.id}-${i}"><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
+  return `<div class="r" id="r-${sec.id}-${i}"${eraStyle(sec, r)}><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
     <div class="meta nomask">${src}</div></div>`;
 }
 /* 國家公園、國家風景區分布圖:編號＝表格順序,點地圖或圖例跳到那一列(twmap.js);搜尋時只畫符合的列 */
 const MAPKEYS = { '參山':['獅頭山','梨山','八卦山'], '北海岸及觀音山':['北海岸及觀音山','觀音山'], '大鵬灣':['大鵬灣','小琉球'] };
+const PEAKS = ['玉山', '雪山', '秀姑巒山', '南湖大山', '北大武山', '合歡山', '大霸尖山'];
 function mapFor(sec, idx){
+  /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
+  if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
+  if (sec.id === 'mt') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: PEAKS.map(k => ({ k })), labels: true, ranges: true, title: '五大山脈與常考高峰' }) + TWMAP.rangeLegend + TWMAP.note + '</figure>' : '';
   if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
   const marks = [], leg = [];
   idx.forEach(i => {
