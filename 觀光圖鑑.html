@@ -204,7 +204,14 @@ const WGEO_MARKS = [
   { k: '伊瓜蘇瀑布', label: '伊瓜蘇瀑布', side: 'r' }, { k: '的的喀喀湖', label: '的的喀喀湖', side: 'l' },
   { k: '大峽谷', label: '大峽谷', side: 'l' }, { k: '北角', label: '極光:北角', side: 'u' }
 ];
+/* 氣候與季風:臺灣的地方風與季風現象(twmap.js) */
+const CLIM_MARKS = [
+  { k: '宜蘭', label: '蘭雨', side: 'd' }, { k: '新竹', label: '竹風、九降風', side: 'u' },
+  { k: '臺東', label: '焚風', side: 'r' }, { k: '恆春', label: '落山風', side: 'l' },
+  { k: '澎湖', label: '菜宅擋風', side: 'l' }, { k: '金門', label: '風獅爺' }
+];
 function mapFor(sec, idx){
+  if (sec.id === 'clim') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: CLIM_MARKS, labels: true, title: '臺灣的季風與地方風' }) + TWMAP.note + '<div class="twm-nt">東北季風(約 10 月到隔年 3 月)由東北方吹來,北部、東北部迎風多雨;西南季風(約 5–9 月)由西南方吹來,中南部夏雨集中</div></figure>' : '';
   if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
   /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
