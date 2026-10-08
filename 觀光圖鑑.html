@@ -194,7 +194,18 @@ const WH_MARKS = [
   { k: '阿布辛貝', t: 'c' }, { k: '塞倫蓋蒂', t: 'n' }, { k: '吳哥窟', label: '吳哥', t: 'c' },
   { k: '巴納韋梯田', label: '科迪勒拉梯田', t: 'c' }, { k: '濟州島', t: 'n' }, { k: '大堡礁', t: 'n' }
 ];
+/* 世界地理之最:代表地點(worldmap.js);標籤＝之最 + 名稱 */
+const WGEO_MARKS = [
+  { k: '聖母峰', label: '最高:聖母峰', side: 'u' }, { k: '死海', label: '最低:死海', side: 'l' },
+  { k: '貝加爾湖', label: '最深:貝加爾湖', side: 'u' }, { k: '伊盧利薩特', label: '最大島:格陵蘭', side: 'r' },
+  { k: '大堡礁', label: '大堡礁', side: 'r' }, { k: '乞拉朋吉', label: '最多雨:乞拉朋吉', side: 'd' },
+  { k: '阿他加馬', label: '最乾:阿他加馬', side: 'l' }, { k: '納米比沙海', label: '納米比沙漠', side: 'l' },
+  { k: '維多利亞瀑布', label: '維多利亞瀑布', side: 'r' }, { k: '尼加拉瀑布', label: '尼加拉瀑布', side: 'r' },
+  { k: '伊瓜蘇瀑布', label: '伊瓜蘇瀑布', side: 'r' }, { k: '的的喀喀湖', label: '的的喀喀湖', side: 'l' },
+  { k: '大峽谷', label: '大峽谷', side: 'l' }, { k: '北角', label: '極光:北角', side: 'u' }
+];
 function mapFor(sec, idx){
+  if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
   /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
   if (sec.id === 'whist') return '<figure class="amap nomask"><div class="wera">' + ERA_W.map(e => '<span style="--c:' + e.c + '"><b>' + e.n + '</b>' + e.y + '</span>').join('') + '</div><div class="twm-nt">每列左邊的色條＝所屬時期(分期採常見劃分,各書略有不同)</div></figure>';
