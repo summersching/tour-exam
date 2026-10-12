@@ -288,9 +288,42 @@ const LAND_MK = [
   { n: '水漾森林', p: [120.840, 23.460], c: '#a16207', lab: '水漾森林 堰塞湖', z: 1, d: '山崩堰塞湖(921 地震)' },
   { n: '大坡池', p: [121.220, 23.120], c: '#a16207', z: 1, d: '斷層形成的濕地(池上,花東縱谷)' }
 ];
+/* 宗教信仰與廟宇:顏色分類同圖例;廟宇位置為示意 */
+const C_MAZU = '#dc2626', C_WANG = '#ea580c', C_FOLK = '#7c3aed', C_BUD = '#0284c7', C_WEST = '#16a34a', C_PINGPU = '#a16207';
+const REL_MK = [
+  { n: '北港朝天宮', p: [120.304, 23.569], c: C_MAZU, pr: 1, d: '雲林北港:媽祖信仰重鎮(古稱笨港)' },
+  { n: '新港奉天宮', p: [120.347, 23.556], c: C_MAZU, z: 1, d: '嘉義新港:1988 年起大甲媽祖遶境的終點' },
+  { n: '大甲鎮瀾宮', p: [120.623, 24.346], c: C_MAZU, d: '臺中大甲:大甲媽祖遶境進香(農曆三月,九天八夜)' },
+  { n: '白沙屯拱天宮', p: [120.703, 24.565], c: C_MAZU, z: 1, d: '苗栗通霄:白沙屯媽祖徒步進香,路線不固定' },
+  { n: '鹿港天后宮', p: [120.436, 24.059], c: C_MAZU, d: '彰化鹿港:遶境約在農曆 3/23 媽祖誕辰前後' },
+  { n: '臺南大天后宮', p: [120.202, 22.997], c: C_MAZU, z: 1, d: '臺南府城:原為明寧靖王府邸,清代改為媽祖廟' },
+  { n: '澎湖天后宮', p: [119.564, 23.564], c: C_MAZU, d: '澎湖馬公:有「沈有容諭退紅毛番韋麻郎等」碑(紅毛番 = 荷蘭人)' },
+  { n: '南鯤鯓代天府', p: [120.141, 23.286], c: C_WANG, pr: 1, d: '臺南北門:王爺信仰重鎮,增建槺榔山莊、凌霄寶殿' },
+  { n: '東港東隆宮', p: [120.451, 22.463], c: C_WANG, d: '屏東東港:迎王平安祭典三年一科,最後燒王船' },
+  { n: '大龍峒保安宮', p: [121.515, 25.073], c: C_FOLK, d: '臺北大龍峒:主祀保生大帝(醫藥神),保生文化祭' },
+  { n: '學甲慈濟宮', p: [120.181, 23.232], c: C_FOLK, z: 1, d: '臺南學甲:主祀保生大帝' },
+  { n: '新竹都城隍廟', p: [120.966, 24.804], c: C_FOLK, d: '新竹:常被稱為全臺位階最高的城隍廟' },
+  { n: '霞海城隍廟', p: [121.510, 25.056], c: C_FOLK, z: 1, d: '臺北大稻埕:「五月十三人看人」,也以月老聞名' },
+  { n: '新埔義民廟', p: [121.099, 24.846], c: C_FOLK, z: 1, d: '新竹新埔褒忠義民廟:客家義民信仰(林爽文事件)' },
+  { n: '三峽長福巖', p: [121.369, 24.935], c: C_FOLK, z: 1, d: '新北三峽:主祀清水祖師(泉州安溪人),李梅樹主持重建' },
+  { n: '鹽水武廟', p: [120.266, 23.319], c: C_FOLK, z: 1, d: '臺南鹽水:主祀關聖帝君,元宵鹽水蜂炮' },
+  { n: '金門風獅爺', p: [118.380, 24.460], c: C_FOLK, lab: '風獅爺', d: '金門各村落:鎮風避煞,大、小金門都有' },
+  { n: '臺南孔廟', p: [120.204, 22.991], c: C_BUD, d: '全臺首學:1666 年依陳永華建議興建' },
+  { n: '艋舺龍山寺', p: [121.500, 25.037], c: C_BUD, z: 1, d: '臺北萬華:主祀觀音,泉州三邑人所建(1738)' },
+  { n: '鹿港龍山寺', p: [120.433, 24.053], c: C_BUD, z: 1, d: '彰化鹿港:國定古蹟;鹿港「三步一小廟、五步一大廟」' },
+  { n: '佛光山', p: [120.443, 22.750], c: C_BUD, d: '高雄大樹:佛教道場' },
+  { n: '中台禪寺', p: [120.951, 23.993], c: C_BUD, z: 1, d: '南投埔里:佛教道場' },
+  { n: '法鼓山', p: [121.620, 25.242], c: C_BUD, z: 1, d: '新北金山:佛教道場' },
+  { n: '淡水禮拜堂', p: [121.441, 25.169], c: C_WEST, lab: '淡水(馬偕)', d: '新北淡水:馬偕宣教據點,附近有牛津學堂、馬偕墓園' },
+  { n: '旗後教會', p: [120.268, 22.615], c: C_WEST, z: 1, lab: '旗後(馬雅各)', d: '高雄旗津:英籍馬雅各建立打狗禮拜堂' },
+  { n: '萬金聖母聖殿', p: [120.600, 22.589], c: C_WEST, d: '屏東萬巒:1870 年西班牙道明會郭德剛神父所建,臺灣現存最古老的天主教堂' },
+  { n: '臺北清真寺', p: [121.534, 25.031], c: C_WEST, z: 1, d: '臺北大安區新生南路:伊斯蘭教禮拜寺' },
+  { n: '頭社公廨', p: [120.400, 23.140], c: C_PINGPU, z: 1, d: '臺南大內頭社「太上龍頭忠義廟」:西拉雅族祀壺(阿立祖),農曆十月夜祭' }
+];
 const TG_LEG = {
   coast: '<div class="tg-lg"><span><i style="background:#7c3aed"></i>岬灣海岸</span><span><i style="background:#d97706"></i>沙岸</span><span><i style="background:#dc2626"></i>斷層海岸</span><span><i style="background:#db2777"></i>珊瑚礁海岸</span></div>',
   rock: '<div class="tg-lg"><span><b style="background:' + IGN + '"></b>火成岩</span><span><b style="background:' + SED + '"></b>沉積岩</span><span><b style="background:' + MET + '"></b>變質岩</span></div>',
+  rel: '<div class="tg-lg"><span><b style="background:' + C_MAZU + '"></b>媽祖</span><span><b style="background:' + C_WANG + '"></b>王爺</span><span><b style="background:' + C_FOLK + '"></b>其他民間信仰</span><span><b style="background:' + C_BUD + '"></b>儒學 · 佛教</span><span><b style="background:' + C_WEST + '"></b>基督教 · 天主教 · 伊斯蘭教</span><span><b style="background:' + C_PINGPU + '"></b>平埔族</span></div><div class="twm-nt">切到分區圖會多標臺南府城、臺北各廟等密集的點</div>',
   mt: '<div class="tg-lg"><span>1 中央山脈</span><span>2 雪山山脈</span><span>3 玉山山脈</span><span>4 阿里山山脈</span><span>5 海岸山脈</span></div><div class="twm-nt">咖啡色虛線＝山脈大致走向;由西到東:阿里山 → 玉山 → 雪山 → 中央 → 海岸</div>'
 };
 const TGCFG = {
@@ -300,7 +333,8 @@ const TGCFG = {
   coast: { layers: { coast: 1, mk: 1, cty: 0, rv: 0 }, marks: COAST_MK, mkName: '海岸地形', legend: TG_LEG.coast },
   rock: { layers: { mk: 1, cty: 0, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
   land: { layers: { mk: 1, cty: 0, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
-  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, legend: TG_LEG.mt }
+  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, legend: TG_LEG.mt },
+  rel: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: REL_MK, mkName: '廟宇', legend: TG_LEG.rel }
 };
 function mapFor(sec, idx){
   if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]);

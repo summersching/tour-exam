@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v142
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v143
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -10,6 +10,7 @@
    TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v143 (2026-10-12) 各區標示點改畫在縣市政府白點之後(位置重疊時不再被蓋住);供「宗教信仰與廟宇」區使用
      v142 (2026-10-12) 初版
 */
 (function (root) {
@@ -244,12 +245,6 @@
         p.t === 'pole' ? ({ '富貴角': '極北 富貴角', '三貂角': '極東 三貂角', '鵝鑾鼻': '極南 鵝鑾鼻', '國聖港燈塔': '極西 國聖港燈塔', '東引': '國土最北 東引' }[p.n] || p.n) : p.n,
         p.t === 'pole' ? 1 : 5, p.t === 'pole' ? 9.5 : 9);
     });
-    /* 自訂標示(圖鑑各區) */
-    if (L.mk) (cfg.marks || []).forEach(function (m) {
-      if ((m.z || 0) > zmax && st.hl !== 'mk:' + m.n) return;
-      var f2 = where(m.p); if (!f2) return;
-      ptDraw(m.p, f2, 'mk:' + m.n, m.c || '#dc2626', m.s || 'dot', m.lab === '' ? '' : (m.lab || m.n), m.pr != null ? m.pr : 2, 9.5);
-    });
     /* 縣市名稱、縣市政府 */
     if (L.cty) {
       D.C.forEach(function (c) {
@@ -272,6 +267,12 @@
         }
       });
     }
+    /* 自訂標示(圖鑑各區):畫在縣市政府之後,避免被白點蓋住 */
+    if (L.mk) (cfg.marks || []).forEach(function (m) {
+      if ((m.z || 0) > zmax && st.hl !== 'mk:' + m.n) return;
+      var f2 = where(m.p); if (!f2) return;
+      ptDraw(m.p, f2, 'mk:' + m.n, m.c || '#dc2626', m.s || 'dot', m.lab === '' ? '' : (m.lab || m.n), m.pr != null ? m.pr : 2, 9.5);
+    });
     /* 標籤避讓 */
     labels.sort(function (a, b) { return a.pr - b.pr; });
     labels.forEach(function (l) {
