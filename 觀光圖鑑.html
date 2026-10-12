@@ -7,11 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v129(2026-10-05)
-     觀光資源概要最常考的 6 大類:國家公園、國家風景區、原住民族 16 族、節慶、地形景觀、世界遺產,
-     一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測 + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。
-     資料在 atlas_data.js(官方來源與資料日期見檔頭)。
-     變更履歷:v129 初版 -->
+<!-- 觀光資源圖鑑 · v142(2026-10-12)
+     觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
+     山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
+     + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
+     變更履歷:
+       v142 臺灣地理總圖(twgeo.js:縣市、河川、山脈、四極、海岸類型,可切分區、點選看說明);每列「📍 圖上看」
+       v129 初版 -->
 <style>
   :root{
     --bg:#f3f7f4;--card:#fff;--ink:#1a2a20;--sub:#58705f;--line:#dfe9e2;--soft:#e9f6ee;
@@ -64,6 +66,7 @@
   .r{border-bottom:1px solid var(--line);padding:10px 0;scroll-margin-top:120px;border-radius:8px;transition:background .6s}
   .r:last-of-type{border-bottom:0}
   .r.flash{background:var(--warnbg)}
+  .tgb{font-size:.68rem;font-weight:700;border:0;padding:0 7px;border-radius:6px;background:var(--warnbg);color:var(--warn);cursor:pointer;font-family:inherit;line-height:1.7}
   .rk{font-weight:800;font-size:.98rem;color:var(--ink);margin-bottom:2px}
   .rf{display:grid;grid-template-columns:2.9em 1fr;gap:3px 8px;font-size:.92rem}
   .lb{font-size:.72rem;font-weight:700;color:var(--sub);padding-top:3px;white-space:nowrap}
@@ -91,7 +94,7 @@
   .basis{font-size:.72rem;color:var(--sub);margin:16px 2px}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
   mark{background:#fde68a;color:inherit;border-radius:3px}
-  @media print{.bar,.home,.qz,.tip,.gq{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
+  @media print{.bar,.home,.qz,.tip,.gq,.tgb,.tg-vs,.tg-ls{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
   .amap{margin:10px 0 14px}
   .wera{display:flex;flex-wrap:wrap;gap:6px}
   .wera span{flex:1 1 28%;min-width:92px;border-left:6px solid var(--c);background:var(--soft);border-radius:8px;padding:5px 8px;font-size:.78rem;color:var(--sub);line-height:1.35}
@@ -107,6 +110,8 @@
 <script src="scoring.js"></script>
 <script src="twmap.js"></script>
 <script src="worldmap.js"></script>
+<script src="twgeo_data.js"></script>
+<script src="twgeo.js"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
 <script src="srs.js"></script>
@@ -120,7 +125,7 @@
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>🗺️ 觀光資源圖鑑</h1>
-  <p>國家公園 · 國家風景區 · 原住民族 16 族 · 節慶 · 地形景觀 · 世界遺產 — 一表看懂 + 出處題號 + 配對小測 + 歷屆原題測驗</p>
+  <p>臺灣地理總圖(縣市 · 河川 · 山脈 · 四極)· 國家公園 · 國家風景區 · 原住民族 · 節慶 · 地形 · 海岸 · 岩石 · 世界遺產 · 歷史 — 一表看懂 + 出處題號 + 配對小測 + 歷屆原題測驗</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
@@ -133,7 +138,7 @@
 </div></div>
 
 <div class="wrap">
-  <div class="tip">💡 <strong>怎麼用</strong>:先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。</div>
+  <div class="tip">💡 <strong>怎麼用</strong>:地圖可切換分區、點縣市河川山岳看說明,表上每列按「📍 圖上看」直接在地圖標出來。先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。</div>
   <div id="app"></div>
   <div class="basis" id="basis"></div>
 </div>
@@ -180,12 +185,12 @@ function eraStyle(sec, r){
 function renderRow(sec, r, i, kw){
   const fields = r.c.slice(1).map((v,j)=>v==='—'?'':`<div class="lb nomask">${esc(sec.cols[j+1])}</div><div class="rv">${hl(v,kw)}</div>`).join('');
   const src = (r.src||[]).length ? r.src.map(srcLink).join('') : '<span class="nos">官方資料整理(歷屆未直接考)</span>';
+  const tgb = r.f && TGCFG[sec.id] && window.TWGEO ? `<button type="button" class="tgb" data-tgf="${esc(r.f)}" data-tgt="${sec.id}">📍 圖上看</button>` : '';
   return `<div class="r" id="r-${sec.id}-${i}"${eraStyle(sec, r)}><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
-    <div class="meta nomask">${src}</div></div>`;
+    <div class="meta nomask">${tgb}${src}</div></div>`;
 }
 /* 國家公園、國家風景區分布圖:編號＝表格順序,點地圖或圖例跳到那一列(twmap.js);搜尋時只畫符合的列 */
 const MAPKEYS = { '參山':['獅頭山','梨山','八卦山'], '北海岸及觀音山':['北海岸及觀音山','觀音山'], '大鵬灣':['大鵬灣','小琉球'] };
-const PEAKS = ['玉山', '雪山', '秀姑巒山', '南湖大山', '北大武山', '合歡山', '大霸尖山'];
 /* 世界遺產:常考地點分布(worldmap.js),點的顏色＝遺產類型 */
 const WH_MARKS = [
   { k: '黃石國家公園', label: '黃石', t: 'n' }, { k: '伊盧利薩特', label: '冰峽灣(格陵蘭)', t: 'n' },
@@ -220,7 +225,85 @@ const HERI_MARKS = [
   { k: '萬金', label: '萬金聖母聖殿', side: 'r' }, { k: '恆春', label: '恆春古城', side: 'l' },
   { k: '鵝鑾鼻', label: '鵝鑾鼻燈塔', side: 'r' }
 ];
+/* 臺灣地理總圖(twgeo.js):各區的圖層、標示與圖例;標示點顏色同各區說明 */
+const IGN = '#dc2626', SED = '#b45309', MET = '#7c3aed';
+const POLE_MK = [
+  { n: '最高峰 玉山', p: [120.957, 23.470], c: '#7c2d12', s: 'tri', pr: 1, d: '3,952 公尺;南投、嘉義、高雄三縣市交界' },
+  { n: '最大平原 嘉南平原', p: [120.30, 23.30], c: '#16a34a', s: 'sq', pr: 1, d: '雲林、嘉義、臺南;嘉南大圳灌溉' },
+  { n: '最大湖泊 日月潭', p: [120.913, 23.860], c: '#0284c7', s: 'sq', pr: 1, d: '南投魚池;原為天然湖,日治時期引濁水溪水發電後擴大' },
+  { n: '最大水庫 曾文水庫', p: [120.548, 23.219], c: '#0284c7', s: 'sq', pr: 1, d: '嘉義大埔、臺南楠西;曾文溪上游' },
+  { n: '最大高山湖泊 翠峰湖', p: [121.605, 24.510], c: '#0284c7', s: 'sq', pr: 1, d: '宜蘭大同(太平山國家森林遊樂區)' },
+  { n: '最大潟湖 七股潟湖', p: [120.08, 23.13], c: '#d97706', pr: 1, d: '臺南七股;台江國家公園' },
+  { n: '最大沙洲 外傘頂洲', p: [120.05, 23.48], c: '#d97706', pr: 1, d: '雲林、嘉義外海;行政上屬雲林縣口湖鄉' }
+];
+const COAST_MK = [
+  { n: '野柳', p: [121.690, 25.208], c: '#7c3aed', d: '岬灣海岸:女王頭 = 蕈狀岩' },
+  { n: '和平島', p: [121.765, 25.160], c: '#7c3aed', z: 1, d: '豆腐岩(垂直節理)、蕈狀岩' },
+  { n: '南方澳', p: [121.862, 24.585], c: '#d97706', d: '沙頸岬 = 陸連島 + 連島沙洲' },
+  { n: '清水斷崖', p: [121.680, 24.210], c: '#dc2626', d: '斷層海岸:大理岩峭壁直落太平洋' },
+  { n: '三仙台', p: [121.420, 23.120], c: '#dc2626', z: 1, d: '東部海岸:離岸小島與跨海步橋' },
+  { n: '墾丁', p: [120.800, 21.960], c: '#db2777', d: '珊瑚礁海岸,多為裙礁' },
+  { n: '風吹砂', p: [120.862, 21.985], c: '#d97706', z: 1, d: '東北季風(落山風)把沙吹上坡地' },
+  { n: '大鵬灣', p: [120.468, 22.443], c: '#d97706', d: '潟湖(東港、林邊);大鵬灣國家風景區' },
+  { n: '七股潟湖', p: [120.080, 23.130], c: '#d97706', d: '臺灣最大潟湖' },
+  { n: '外傘頂洲', p: [120.050, 23.480], c: '#d97706', d: '臺灣最大沙洲' },
+  { n: '鯤鯓', p: [120.150, 22.960], c: '#d97706', z: 1, d: '臺南沿海地名「鯤鯓」= 濱外沙洲' },
+  { n: '王功', p: [120.350, 23.965], c: '#d97706', z: 1, d: '彰化芳苑:潮間帶耕海牛車採蚵' },
+  { n: '觀音', p: [121.080, 25.035], c: '#d97706', z: 1, d: '桃園觀音:海岸結構物以南侵蝕(突堤效應)' },
+  { n: '奎壁山', p: [119.663, 23.598], c: '#d97706', z: 1, d: '澎湖摩西分海:潮間帶的連島沙洲' }
+];
+const ROCK_MK = [
+  { n: '紗帽山', p: [121.537, 25.145], c: IGN, lab: '紗帽山 安山岩', d: '安山岩(大屯火山群)' },
+  { n: '龜山島', p: [121.951, 24.843], c: IGN, lab: '龜山島 安山岩', d: '火山島(安山岩)' },
+  { n: '綠島', p: [121.490, 22.660], c: IGN, lab: '綠島 安山岩', z: 1, d: '火山島(安山岩)' },
+  { n: '蘭嶼', p: [121.550, 22.050], c: IGN, lab: '蘭嶼 安山岩', d: '火山島(安山岩)' },
+  { n: '澎湖', p: [119.580, 23.570], c: IGN, lab: '澎湖 玄武岩', d: '玄武岩方山、柱狀節理(花嶼例外)' },
+  { n: '馬祖', p: [119.950, 26.160], c: IGN, lab: '花崗岩', d: '花崗岩島嶼' },
+  { n: '金門', p: [118.410, 24.460], c: IGN, lab: '花崗岩類', d: '太武山花崗片麻岩;烈嶼也有玄武岩' },
+  { n: '野柳', p: [121.690, 25.208], c: SED, lab: '野柳 砂岩', d: '砂岩:蕈狀岩、燭狀岩' },
+  { n: '月世界', p: [120.380, 22.860], c: SED, lab: '月世界 泥岩', d: '泥岩惡地(高雄田寮、燕巢)' },
+  { n: '利吉惡地', p: [121.150, 22.810], c: SED, lab: '利吉 泥岩', d: '泥岩夾外來岩塊(臺東)' },
+  { n: '火炎山', p: [120.720, 24.380], c: SED, lab: '火炎山 礫岩', d: '礫岩惡地(苗栗三義)' },
+  { n: '小琉球', p: [120.370, 22.340], c: SED, lab: '小琉球 珊瑚礁岩', d: '珊瑚礁石灰岩(花瓶石)' },
+  { n: '壽山', p: [120.270, 22.650], c: SED, lab: '壽山 石灰岩', z: 1, d: '珊瑚礁石灰岩' },
+  { n: '太魯閣', p: [121.600, 24.160], c: MET, lab: '太魯閣 大理岩', d: '大理岩峽谷' },
+  { n: '霧台', p: [120.730, 22.745], c: MET, lab: '霧台 板岩', d: '魯凱族石板屋(板岩)' }
+];
+const LAND_MK = [
+  { n: '野柳', p: [121.690, 25.208], c: '#7c3aed', lab: '野柳 海蝕', d: '海蝕地形:女王頭 = 蕈狀岩' },
+  { n: '大屯火山群', p: [121.548, 25.170], c: IGN, d: '火山:陽明山(七星山最高、紗帽山安山岩)' },
+  { n: '龜山島', p: [121.951, 24.843], c: IGN, lab: '龜山島 火山島', d: '較年輕、可能再噴發的火山島' },
+  { n: '澎湖', p: [119.580, 23.570], c: IGN, lab: '澎湖 柱狀玄武岩', d: '玄武岩方山' },
+  { n: '小琉球', p: [120.370, 22.340], c: '#db2777', lab: '小琉球 珊瑚礁島', d: '主要由珊瑚礁堆積成的島' },
+  { n: '墾丁', p: [120.800, 21.960], c: '#db2777', lab: '恆春半島 裙礁', d: '珊瑚礁多為裙礁' },
+  { n: '東沙', p: [116.810, 20.700], c: '#db2777', lab: '環礁', d: '東沙環礁(高雄市管轄)' },
+  { n: '月世界', p: [120.380, 22.860], c: SED, lab: '月世界 泥岩惡地', d: '泥岩惡地' },
+  { n: '利吉惡地', p: [121.150, 22.810], c: SED, lab: '利吉 惡地', z: 1, d: '泥岩夾外來岩塊' },
+  { n: '火炎山', p: [120.720, 24.380], c: SED, lab: '火炎山 礫岩', d: '礫岩惡地' },
+  { n: '太魯閣峽谷', p: [121.600, 24.160], c: '#2563eb', d: '大理岩峽谷(立霧溪下切)' },
+  { n: '侯硐', p: [121.828, 25.087], c: '#2563eb', lab: '侯硐 壺穴', z: 1, d: '基隆河壺穴' },
+  { n: '七股潟湖', p: [120.080, 23.130], c: '#d97706', lab: '七股 潟湖', d: '海岸堆積:潟湖' },
+  { n: '南方澳', p: [121.862, 24.585], c: '#d97706', lab: '南方澳 沙頸岬', z: 1, d: '沙頸岬' },
+  { n: '烏山頂泥火山', p: [120.370, 22.790], c: '#a16207', lab: '泥火山', z: 1, d: '燕巢烏山頂(旗山斷層通過)' },
+  { n: '水漾森林', p: [120.840, 23.460], c: '#a16207', lab: '水漾森林 堰塞湖', z: 1, d: '山崩堰塞湖(921 地震)' },
+  { n: '大坡池', p: [121.220, 23.120], c: '#a16207', z: 1, d: '斷層形成的濕地(池上,花東縱谷)' }
+];
+const TG_LEG = {
+  coast: '<div class="tg-lg"><span><i style="background:#7c3aed"></i>岬灣海岸</span><span><i style="background:#d97706"></i>沙岸</span><span><i style="background:#dc2626"></i>斷層海岸</span><span><i style="background:#db2777"></i>珊瑚礁海岸</span></div>',
+  rock: '<div class="tg-lg"><span><b style="background:' + IGN + '"></b>火成岩</span><span><b style="background:' + SED + '"></b>沉積岩</span><span><b style="background:' + MET + '"></b>變質岩</span></div>',
+  mt: '<div class="tg-lg"><span>1 中央山脈</span><span>2 雪山山脈</span><span>3 玉山山脈</span><span>4 阿里山山脈</span><span>5 海岸山脈</span></div><div class="twm-nt">咖啡色虛線＝山脈大致走向;由西到東:阿里山 → 玉山 → 雪山 → 中央 → 海岸</div>'
+};
+const TGCFG = {
+  geo: { layers: { cty: 1, rv: 1, mt: 1, pt: 0, pole: 1 } },
+  river: { layers: { cty: 1, rv: 1, mt: 0, pt: 0 }, hint: '👆 點河川看流經縣市、長度與考點;切到分區圖,每條河都會標名稱' },
+  poles: { layers: { cty: 1, pole: 1, mk: 1, rv: 0, mt: 0 }, marks: POLE_MK, mkName: '臺灣之最' },
+  coast: { layers: { coast: 1, mk: 1, cty: 0, rv: 0 }, marks: COAST_MK, mkName: '海岸地形', legend: TG_LEG.coast },
+  rock: { layers: { mk: 1, cty: 0, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
+  land: { layers: { mk: 1, cty: 0, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
+  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, legend: TG_LEG.mt }
+};
 function mapFor(sec, idx){
+  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]);
   if (sec.id === 'heri') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: HERI_MARKS, labels: true, title: '常考古蹟的位置' }) + TWMAP.note + '<div class="twm-nt">四座龍山寺、王得祿墓、各地眷村沒有標在圖上;安平與臺南府城相距很近,標籤分開寫</div></figure>' : '';
   if (sec.id === 'clim') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: CLIM_MARKS, labels: true, title: '臺灣的季風與地方風' }) + TWMAP.note + '<div class="twm-nt">東北季風(約 10 月到隔年 3 月)由東北方吹來,北部、東北部迎風多雨;西南季風(約 5–9 月)由西南方吹來,中南部夏雨集中</div></figure>' : '';
   if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
@@ -228,7 +311,6 @@ function mapFor(sec, idx){
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
   if (sec.id === 'whist') return '<figure class="amap nomask"><div class="wera">' + ERA_W.map(e => '<span style="--c:' + e.c + '"><b>' + e.n + '</b>' + e.y + '</span>').join('') + '</div><div class="twm-nt">每列左邊的色條＝所屬時期(分期採常見劃分,各書略有不同)</div></figure>';
   if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
-  if (sec.id === 'mt') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: PEAKS.map(k => ({ k })), labels: true, ranges: true, title: '五大山脈與常考高峰' }) + TWMAP.rangeLegend + TWMAP.note + '</figure>' : '';
   if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
   const marks = [], leg = [];
   idx.forEach(i => {
