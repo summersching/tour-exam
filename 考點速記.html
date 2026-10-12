@@ -12,19 +12,19 @@
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;
     --sel:#c2410c;--hd1:#9a3412;--hd2:#c2410c;--chipbg:#fdeee5;--chipk:#c2410c;
     --freq:#ea580c;--ok:#15904a;--no:#c62a2a;--shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
-    --gbg:#e5f6ec;--gk:#15904a;
+    --gbg:#e5f6ec;--gk:#15904a;--abg:#e0f2fe;--ak:#0369a1;
   }
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;
     --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
     --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
-    --gbg:#173023;--gk:#5ad48a;
+    --gbg:#173023;--gk:#5ad48a;--abg:#0c2a3d;--ak:#7dd3fc;
   }}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;
     --sel:#fb923c;--hd1:#7c2d12;--hd2:#9a3412;--chipbg:#2c2015;--chipk:#fdba74;
     --freq:#fb923c;--ok:#5ad48a;--no:#ff8080;--shadow:0 1px 6px rgba(0,0,0,.3);
-    --gbg:#173023;--gk:#5ad48a;
+    --gbg:#173023;--gk:#5ad48a;--abg:#0c2a3d;--ak:#7dd3fc;
   }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 60px;
@@ -56,6 +56,13 @@
   .tt{display:flex;align-items:center;gap:8px;margin:14px 0 5px}
   .ttn{font-weight:800;font-size:.94rem;color:var(--sel)}
   .freq{font-size:.72rem;font-weight:700;color:#fff;background:var(--freq);border-radius:10px;padding:1px 8px}
+  /* v141 看圖整理:觀光細類旁的圖鑑連結(atlaslink.js) */
+  .alk{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1px 0 6px;font-size:.72rem;color:var(--sub)}
+  .alk a,.atlr a{display:inline-block;text-decoration:none;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--abg);color:var(--ak);white-space:nowrap;line-height:1.8}
+  .alk a:hover,.atlr a:hover{outline:1px solid currentColor}
+  .atl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:12px 0;box-shadow:var(--shadow)}
+  .atlh{font-weight:800;font-size:.86rem;margin-bottom:6px}
+  .atlr{display:flex;flex-wrap:wrap;gap:6px;font-size:.78rem}
   ul.pts{margin:2px 0 0;padding-left:20px}
   ul.pts li{margin:5px 0;font-size:.92rem}
   ul.pts li b{color:var(--ink)} ul.pts li b.ac{color:var(--ok)} ul.pts li b.wr{color:var(--no)}
@@ -76,6 +83,7 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="sprint_cn.js"></script>
+<script src="atlaslink.js"></script>
 <script src="mask.js"></script>
 </head>
 <body>
@@ -151,10 +159,12 @@ function render(){
     items.forEach(it=>{
       shownPts+=it.pts.length;
       body+=`<div class="tt nomask"><span class="ttn">${esc(it.tt)}</span><span class="freq">${it.n}×</span></div>`;
+      if(SUBJ==='gh'&&window.ATLASLINK)body+=ATLASLINK.chips(it.tt);   // v141 看圖整理:這個細類相關的圖鑑地圖 / 年表
       body+=`<ul class="pts">${it.pts.map((p,i)=>{const mk=markPt(p);return `<li${mk.own?' class="nomask"':''}>${mk.h}${srcHtml((it.src||[])[i])}</li>`;}).join('')}</ul>`;
     });
     html+=`<details class="grp"${open}><summary class="nomask"><span class="gi">${g.icon}</span>${esc(g.t)}<span class="gn">${g.total} 題 · ${items.length} 細類</span></summary><div class="gbody">${body}</div></details>`;
   });
+  if(html&&SUBJ==='gh'&&!kw&&window.ATLASLINK)html=ATLASLINK.strip()+html;   // v141 觀光科頁首:圖鑑各區捷徑
   if(html&&SUBJ==='pr2')html='<div class="tip nomask">⏱ 法規常修正:已排除依現行法規過時的舊題重點;想看舊題與現行規定的差異,到「執業法規複習」看各題的時效提醒。</div>'+html;
   if(!html)html=`<div class="empty">找不到${kw?'「'+esc(KW)+'」':''}相關考點<br><span style="font-size:.85rem">換個關鍵字、切換科目或改看全部年度</span></div>`;
   app.innerHTML=html;

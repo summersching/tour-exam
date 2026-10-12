@@ -7,28 +7,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ea580c">
 <title>考前衝刺</title>
-<!-- 考前衝刺 · v129(2026-10-05)
+<!-- 考前衝刺 · v141(2026-10-12)
      英語:高頻必背 / 片語 / 易混字(sprint.js);日語:文法 / 讀音 / 敬語 / 慣用 / 語彙(jp.js 即時彙整);
      中文三科:必背 100 條(sprint_cn.js + must100.js,依出題比例挑選,可遮住答案、標記已背)。
-     變更履歷:v129 新增中文三科必背 100 條 -->
+     變更履歷:v141 觀光必背 100 條每個細類加「看圖整理」(atlaslink.js,連到觀光圖鑑的地圖、年表),頁首加圖鑑捷徑
+               v129 新增中文三科必背 100 條 -->
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;--kk:#0e7c86;
     --hd1:#c2410c;--hd2:#ea580c;--tab:#fff2e8;--tabk:#c2410c;
     --chipv:#eef2ff;--chipvk:#3b4fd6;--okbg:#e5f6ec;--ok:#15904a;--fq:#ea580c;--fqbg:#fff2e8;
-    --notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;
+    --notebg:#fff3e6;--notek:#b5560c;--notebd:#f3bd7e;--abg:#e0f2fe;--ak:#0369a1;
   }
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;
     --hd1:#9a3412;--hd2:#c2410c;--tab:#3a2213;--tabk:#f4a361;
     --chipv:#22284a;--chipvk:#9db0ff;--okbg:#173023;--ok:#5ad48a;--fq:#f4a361;--fqbg:#3a2213;
-    --notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+    --notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;--abg:#0c2a3d;--ak:#7dd3fc;
   }}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;
     --hd1:#9a3412;--hd2:#c2410c;--tab:#3a2213;--tabk:#f4a361;
     --chipv:#22284a;--chipvk:#9db0ff;--okbg:#173023;--ok:#5ad48a;--fq:#f4a361;--fqbg:#3a2213;
-    --notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;
+    --notebg:#3a2a17;--notek:#f4b877;--notebd:#6a4a24;--abg:#0c2a3d;--ak:#7dd3fc;
   }
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;padding:0 0 60px}
@@ -76,6 +77,13 @@
   .mprog{flex:1;min-width:150px;font-size:.8rem;color:var(--sub);font-weight:700}
   .mbar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:3px}.mbar i{display:block;height:100%;background:var(--ok)}
   .mgh{font-weight:800;font-size:.86rem;color:var(--tabk);margin:16px 0 4px;padding-bottom:3px;border-bottom:2px solid var(--fqbg)}
+  /* v141 看圖整理:觀光細類旁的圖鑑連結(atlaslink.js) */
+  .alk{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:2px 0 6px;font-size:.72rem;color:var(--sub);font-weight:400}
+  .alk a,.atlr a{display:inline-block;text-decoration:none;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--abg);color:var(--ak);white-space:nowrap;line-height:1.8}
+  .alk a:hover,.atlr a:hover{outline:1px solid currentColor}
+  .atl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0 12px}
+  .atlh{font-weight:800;font-size:.84rem;margin-bottom:6px}
+  .atlr{display:flex;flex-wrap:wrap;gap:6px;font-size:.78rem}
   .mu{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:6px 0}
   .mu.done{opacity:.62}
   .mn{flex:0 0 auto;min-width:2.1em;font-weight:800;color:var(--fq);font-size:.85rem;padding-top:3px}
@@ -164,6 +172,7 @@ function ensureCN(){
     .then(function(){return typeof SPRINTCN!=='undefined'?null:loadScript('sprint_cn.js');})
     .then(function(){return window.MUST100?null:loadScript('must100.js');})
     .then(function(){return window.MASK?null:loadScript('mask.js');})
+    .then(function(){return window.ATLASLINK?null:loadScript('atlaslink.js');})
     .then(function(){CNOK=true;})
     .catch(function(e){CNLOAD=null;throw e;});
   return CNLOAD;
@@ -196,12 +205,13 @@ function renderCN(kw){
   const left=L.filter(function(x){return !o[x.id];}).length;
   const scope=CERT==='all'?'':'('+CNAME[CERT]+'考題)';
   let html='<div class="intro">📌 <b>'+CNNAME[cur]+' 必背 100 條</b>'+scope+':依歷屆出題比例分配名額,同一重點考越多次排越前面、已排除法規修正後不適用的舊答案。按「遮住答案」自測,背熟了點「背了」。</div>'+
+    (cur==='gh'&&!kw&&window.ATLASLINK?ATLASLINK.strip():'')+
     '<div class="mtool"><button class="mtb'+(CNMASK?' on':'')+'" id="mMask" type="button">'+(CNMASK?'👀 顯示答案':'🙈 遮住答案')+'</button>'+
     '<button class="mtb'+(CNTODO?' on':'')+'" id="mTodo" type="button">只看未背('+left+')</button>'+
     '<div class="mprog" id="mProg"></div><button class="mtb" id="mReset" type="button">↺ 重設本科</button></div><div id="mList">';
   let lastG='',lastT='';
   arr.forEach(function(x){
-    if(x.g+'/'+x.tt!==lastG+'/'+lastT){html+='<div class="mgh nomask">'+esc((x.icon?x.icon+' ':'')+x.g+' · '+x.tt)+'</div>';lastG=x.g;lastT=x.tt;}
+    if(x.g+'/'+x.tt!==lastG+'/'+lastT){html+='<div class="mgh nomask">'+esc((x.icon?x.icon+' ':'')+x.g+' · '+x.tt)+'</div>'+(cur==='gh'&&window.ATLASLINK?ATLASLINK.chips(x.tt):'');lastG=x.g;lastT=x.tt;}
     const mk=markPt(esc(x.p)),d=!!o[x.id];
     html+='<div class="mu'+(d?' done':'')+'"><span class="mn nomask">'+x.n+'</span><div class="mb"><div class="mp'+(mk.own?' nomask':'')+'">'+mk.h+'</div><div class="wsrc nomask">'+cnSrc(x.refs)+'</div></div>'+
       '<button class="mchk" type="button" data-id="'+x.id+'">'+(d?'✅ 已背':'☐ 背了')+'</button></div>';
