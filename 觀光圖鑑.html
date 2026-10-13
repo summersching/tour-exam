@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v142(2026-10-12)
+<!-- 觀光資源圖鑑 · v146(2026-10-13)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
-     山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
+     宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v146 臺灣地名由來(地圖依命名時期上色,標籤「今名(舊稱)」)
        v142 臺灣地理總圖(twgeo.js:縣市、河川、山脈、四極、海岸類型,可切分區、點選看說明);每列「📍 圖上看」
        v129 初版 -->
 <style>
@@ -68,8 +69,8 @@
   .r.flash{background:var(--warnbg)}
   .tgb{font-size:.68rem;font-weight:700;border:0;padding:0 7px;border-radius:6px;background:var(--warnbg);color:var(--warn);cursor:pointer;font-family:inherit;line-height:1.7}
   .rk{font-weight:800;font-size:.98rem;color:var(--ink);margin-bottom:2px}
-  .rf{display:grid;grid-template-columns:2.9em 1fr;gap:3px 8px;font-size:.92rem}
-  .lb{font-size:.72rem;font-weight:700;color:var(--sub);padding-top:3px;white-space:nowrap}
+  .rf{display:grid;grid-template-columns:minmax(2.9em,max-content) 1fr;gap:3px 8px;font-size:.92rem}
+  .lb{font-size:.72rem;font-weight:700;color:var(--sub);padding-top:3px;max-width:5.6em;word-break:keep-all;overflow-wrap:anywhere}
   .rv b{color:var(--sel)}
   .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:5px}
   a.qs{font-size:.68rem;font-weight:700;text-decoration:none;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
@@ -320,10 +321,50 @@ const REL_MK = [
   { n: '臺北清真寺', p: [121.534, 25.031], c: C_WEST, z: 1, d: '臺北大安區新生南路:伊斯蘭教禮拜寺' },
   { n: '頭社公廨', p: [120.400, 23.140], c: C_PINGPU, z: 1, d: '臺南大內頭社「太上龍頭忠義廟」:西拉雅族祀壺(阿立祖),農曆十月夜祭' }
 ];
+/* 臺灣地名由來:依命名(改名)時期上色;標籤寫「今名(舊稱)」 */
+const N_MZ = '#a16207', N_QING = '#dc2626', N_JP = '#0284c7', N_LAND = '#16a34a';
+const NAME_MK = [
+  { n: '臺南', p: [120.202, 22.992], c: N_MZ, lab: '臺南(承天府)', d: '鄭成功改赤崁為承天府、稱臺灣為東都;鄭經改稱東寧;荷治時期安平一帶稱大員' },
+  { n: '林鳳營', p: [120.32, 23.24], c: N_MZ, pr: 1, d: '臺南六甲:明鄭參軍林鳳的部隊屯墾地' },
+  { n: '新營', p: [120.32, 23.31], c: N_MZ, z: 1, d: '臺南新營:明鄭屯田留下的「營」地名' },
+  { n: '左營', p: [120.29, 22.68], c: N_MZ, d: '高雄左營:明鄭屯田留下的「營」地名' },
+  { n: '前鎮', p: [120.31, 22.59], c: N_MZ, z: 1, d: '高雄前鎮:明鄭屯田留下的「鎮」地名' },
+  { n: '彰化', p: [120.54, 24.08], c: N_QING, lab: '彰化(半線)', d: '1723 年增設彰化縣;半線源自平埔族半線社' },
+  { n: '嘉義', p: [120.45, 23.48], c: N_QING, lab: '嘉義(諸羅)', pr: 1, d: '1787 年林爽文事件後,諸羅改名嘉義' },
+  { n: '恆春', p: [120.74, 22.00], c: N_QING, lab: '恆春(琅嶠)', d: '1875 年牡丹社事件後設恆春縣;恆春縣城的城門全部保留' },
+  { n: '新竹', p: [120.97, 24.80], c: N_QING, lab: '新竹(竹塹)', d: '1875 年淡水廳改設新竹縣;竹塹源自平埔族竹塹社' },
+  { n: '宜蘭', p: [121.75, 24.75], c: N_QING, lab: '宜蘭(噶瑪蘭)', d: '1875 年噶瑪蘭廳改設宜蘭縣' },
+  { n: '基隆', p: [121.74, 25.13], c: N_QING, lab: '基隆(雞籠)', d: '1875 年取「基地昌隆」之意,雞籠改名基隆' },
+  { n: '苗栗', p: [120.82, 24.56], c: N_QING, lab: '苗栗(貓裏)', z: 1, d: '1889 年設苗栗縣,貓裏改成音近的雅字' },
+  { n: '臺東', p: [121.14, 22.76], c: N_QING, lab: '臺東(卑南)', d: '1875 年設卑南廳,1888 年改設臺東直隸州' },
+  { n: '高雄', p: [120.30, 22.63], c: N_JP, lab: '高雄(打狗)', pr: 1, d: '1920 年打狗(Takao)改為日語近音的高雄' },
+  { n: '屏東', p: [120.49, 22.67], c: N_JP, lab: '屏東(阿猴)', d: '1920 年改名屏東:取屏東書院之名,位在半屏山之東' },
+  { n: '萬華', p: [121.50, 25.036], c: N_JP, lab: '萬華(艋舺)', z: 1, d: '艋舺(凱達格蘭語「獨木舟」)1920 年改為日語近音的萬華' },
+  { n: '松山', p: [121.577, 25.050], c: N_JP, lab: '松山(錫口)', z: 1, d: '1920 年錫口改名松山;清代臺北府城東門是通往錫口、基隆的要道' },
+  { n: '汐止', p: [121.658, 25.063], c: N_JP, lab: '汐止(水返腳)', d: '淡水河潮水上溯到這裡折返(水返腳),1920 年意譯為汐止' },
+  { n: '豐原', p: [120.722, 24.252], c: N_JP, lab: '豐原(葫蘆墩)', d: '1920 年葫蘆墩改名豐原' },
+  { n: '清水', p: [120.559, 24.268], c: N_JP, lab: '清水(牛罵頭)', z: 1, d: '1920 年牛罵頭改名清水' },
+  { n: '民雄', p: [120.43, 23.55], c: N_JP, lab: '民雄(打貓)', d: '1920 年打貓改為日語近音的民雄(不是苗栗)' },
+  { n: '竹山', p: [120.69, 23.76], c: N_JP, lab: '竹山(林圮埔)', z: 1, d: '1920 年林圮埔改名竹山' },
+  { n: '玉井', p: [120.46, 23.12], c: N_JP, lab: '玉井(噍吧哖)', z: 1, d: '1920 年噍吧哖改為日語近音的玉井' },
+  { n: '馬公', p: [119.565, 23.565], c: N_JP, lab: '馬公(媽宮)', d: '媽宮源自澎湖的媽祖宮,1920 年改為日語近音的馬公' },
+  { n: '頭城', p: [121.82, 24.86], c: N_JP, lab: '頭城(頭圍)', z: 1, d: '吳沙入墾宜蘭築的第一個土圍;1920 年頭圍改名頭城' },
+  { n: '瑞穗', p: [121.37, 23.50], c: N_JP, lab: '瑞穗(水尾)', z: 1, d: '水尾在日治時期改名瑞穗' },
+  { n: '豐田', p: [121.508, 23.854], c: N_JP, lab: '豐田(移民村)', d: '花蓮壽豐:日治時期的日本人移民村' },
+  { n: '鹿野', p: [121.13, 22.91], c: N_JP, lab: '鹿野(移民村)', d: '臺東鹿野:日治時期的日本人移民村' },
+  { n: '五結', p: [121.79, 24.68], c: N_LAND, d: '宜蘭五結:吳沙開蘭「結首制」的「結」' },
+  { n: '六張犁', p: [121.55, 25.02], c: N_LAND, z: 1, d: '臺北:「張犁」是清代開墾的土地單位' },
+  { n: '竹子湖', p: [121.537, 25.176], c: N_LAND, z: 1, d: '臺北陽明山:地名的「湖」是山中低凹的盆地' },
+  { n: '奮起湖', p: [120.69, 23.50], c: N_LAND, d: '嘉義竹崎:地名的「湖」是山中低凹的盆地' },
+  { n: '南鯤鯓', p: [120.141, 23.286], c: N_LAND, lab: '鯤鯓', d: '臺南沿海:鯤鯓 = 濱外沙洲(南鯤鯓代天府的名稱和地形有關)' },
+  { n: '五溝水', p: [120.604, 22.598], c: N_LAND, z: 1, d: '屏東萬巒:頭溝水~五溝水因沖積扇扇端湧泉得名' },
+  { n: '苓雅', p: [120.312, 22.622], c: N_LAND, z: 1, d: '高雄苓雅:舊稱苓仔寮,區名由來和漁業有關' }
+];
 const TG_LEG = {
   coast: '<div class="tg-lg"><span><i style="background:#7c3aed"></i>岬灣海岸</span><span><i style="background:#d97706"></i>沙岸</span><span><i style="background:#dc2626"></i>斷層海岸</span><span><i style="background:#db2777"></i>珊瑚礁海岸</span></div>',
   rock: '<div class="tg-lg"><span><b style="background:' + IGN + '"></b>火成岩</span><span><b style="background:' + SED + '"></b>沉積岩</span><span><b style="background:' + MET + '"></b>變質岩</span></div>',
   rel: '<div class="tg-lg"><span><b style="background:' + C_MAZU + '"></b>媽祖</span><span><b style="background:' + C_WANG + '"></b>王爺</span><span><b style="background:' + C_FOLK + '"></b>其他民間信仰</span><span><b style="background:' + C_BUD + '"></b>儒學 · 佛教</span><span><b style="background:' + C_WEST + '"></b>基督教 · 天主教 · 伊斯蘭教</span><span><b style="background:' + C_PINGPU + '"></b>平埔族</span></div><div class="twm-nt">切到分區圖會多標臺南府城、臺北各廟等密集的點</div>',
+  name: '<div class="tg-lg"><span><b style="background:' + N_MZ + '"></b>明鄭</span><span><b style="background:' + N_QING + '"></b>清代設縣改名</span><span><b style="background:' + N_JP + '"></b>日治改名 · 移民村</span><span><b style="background:' + N_LAND + '"></b>拓墾 · 地形 · 產業</span></div><div class="twm-nt">標籤寫「今名(舊稱)」;切到分區圖會多標竹山、玉井、苗栗等點,點地圖上的圓點看舊稱與由來</div>',
   mt: '<div class="tg-lg"><span>1 中央山脈</span><span>2 雪山山脈</span><span>3 玉山山脈</span><span>4 阿里山山脈</span><span>5 海岸山脈</span></div><div class="twm-nt">咖啡色虛線＝山脈大致走向;由西到東:阿里山 → 玉山 → 雪山 → 中央 → 海岸</div>'
 };
 const TGCFG = {
@@ -334,7 +375,8 @@ const TGCFG = {
   rock: { layers: { mk: 1, cty: 0, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
   land: { layers: { mk: 1, cty: 0, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
   mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, legend: TG_LEG.mt },
-  rel: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: REL_MK, mkName: '廟宇', legend: TG_LEG.rel }
+  rel: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: REL_MK, mkName: '廟宇', legend: TG_LEG.rel },
+  name: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NAME_MK, mkName: '地名', legend: TG_LEG.name }
 };
 function mapFor(sec, idx){
   if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]);
