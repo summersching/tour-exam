@@ -7,11 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v149(2026-10-14)
+<!-- 觀光資源圖鑑 · v150(2026-10-14)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
      宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v150 導覽改「目錄格 → 單區頁」:目錄依分組一行三格;單區頁上方黏住「‹ 目錄 | 區名 | 上一區 / 下一區」,頁尾也有上一區 / 下一區;
+            一次只顯示一區,區塊再多頁面也不會越來越長;搜尋跨區列出;目錄上方「繼續看」上次的區
        v149 四極與臺灣之最加南海諸島、東沙、南沙(太平島)、釣魚臺 4 列與「臺灣周邊島嶼與南海諸島」位置圖;出處題號可連到執業實務、執業法規的歷屆題
        v148 導覽改一排分頁(全部 / 臺灣地理 / 臺灣人文 / 世界),點分組直接列出該組各區卡片;海岸、地形每列附圖解(lfig.js);
             阿里山改由山脈圖層標出(地理總圖也看得到);氣候區臺灣圖加冬季東北季風、夏季西南季風箭頭與副熱帶 / 熱帶季風氣候;
@@ -51,16 +53,28 @@
   .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
     text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
   .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
-  .seg{display:flex;gap:4px;margin-top:10px;background:var(--soft);border-radius:14px;padding:4px}
-  .seg button{flex:1 1 0;min-width:0;border:0;background:transparent;color:var(--sub);border-radius:11px;padding:6px 2px 5px;cursor:pointer;font-family:inherit;
-    display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.2}
-  .seg .gi{font-size:1.1rem;line-height:1.15} .seg .gt{font-size:.84rem;font-weight:800;color:var(--ink);white-space:nowrap} .seg small{font-size:.68rem;font-weight:600}
-  .seg button.on{background:var(--card);box-shadow:0 1px 4px rgba(16,24,40,.16)} .seg button.on .gt{color:var(--sel)}
-  .gh{display:flex;align-items:center;gap:8px;margin:20px 2px 0;font-size:.98rem;font-weight:900;color:var(--sel)}
-  .gh small{font-size:.74rem;font-weight:600;color:var(--sub)} .gh::after{content:'';flex:1;height:1px;background:var(--line)}
-  .crumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0 0;font-size:.86rem}
-  .crumb button{border:1.5px solid var(--line);background:var(--card);color:var(--sel);font-weight:800;border-radius:999px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:.82rem}
-  .crumb span{color:var(--sub)}
+  .dg{display:flex;align-items:center;gap:8px;margin:18px 2px 8px;font-size:.98rem;font-weight:900;color:var(--sel);scroll-margin-top:10px}
+  .dg small{font-size:.74rem;font-weight:600;color:var(--sub)} .dg::after{content:'';flex:1;height:1px;background:var(--line)}
+  .dir{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  @media (min-width:640px){.dir{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;text-decoration:none;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:14px;padding:10px 4px 8px;box-shadow:var(--shadow);line-height:1.3;min-width:0}
+  .tile .tic{font-size:1.45rem;line-height:1.25} .tile b{font-size:.82rem;font-weight:800;word-break:keep-all;overflow-wrap:anywhere} .tile small{font-size:.68rem;color:var(--sub)}
+  .tile:hover{border-color:var(--sel)} .tile.last{border-color:var(--sel);box-shadow:inset 0 0 0 1.5px var(--sel)}
+  .cont{display:block;margin:14px 0 0;text-decoration:none;background:var(--soft);color:var(--sel);font-weight:800;border-radius:12px;padding:9px 12px;font-size:.88rem}
+  .snav{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:6px;background:var(--bg);padding:8px 0;margin-top:4px;border-bottom:1px solid var(--line)}
+  .snav .nv{flex:0 0 auto;text-decoration:none;border:1.5px solid var(--line);background:var(--card);color:var(--sel);font-weight:800;border-radius:999px;padding:3px 11px;font-size:.84rem;line-height:1.5}
+  .snav .nv.off{visibility:hidden}
+  .snav .snt{flex:1 1 auto;min-width:0;font-weight:900;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .snav .snt small{font-weight:600;color:var(--sub);font-size:.7rem;margin-left:6px}
+  .sec.one>summary{cursor:default} .sec.one>summary::after{content:none}
+  .sfoot{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;margin:14px 0 6px}
+  .sfoot a{display:flex;flex-direction:column;gap:1px;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;color:var(--ink);box-shadow:var(--shadow);min-width:0}
+  .sfoot a small{font-size:.7rem;color:var(--sub);font-weight:700} .sfoot a b{font-size:.84rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sfoot a.nx{text-align:right} .sfoot a.mid{justify-content:center;text-align:center;padding:8px 12px}
+  .srch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 0;font-size:.86rem;color:var(--sub)}
+  .srch button{border:1.5px solid var(--line);background:var(--card);color:var(--sel);font-weight:800;border-radius:999px;padding:2px 10px;cursor:pointer;font-family:inherit}
+  .tg{scroll-margin-top:60px}
   .mtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
   .mtabs button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 8px;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
   .mtabs button.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
@@ -148,7 +162,6 @@
 </div></header>
 
 <div class="bar"><div class="wrap">
-  <div class="seg" id="grpRow" role="tablist" aria-label="分組"></div>
   <div class="tools">
     <input id="q" placeholder="搜尋…(如 布農、潟湖、元宵、玄武岩)" aria-label="搜尋">
     <button class="tbtn" id="maskBtn" type="button">🙈 遮住重點</button>
@@ -157,7 +170,7 @@
 </div></div>
 
 <div class="wrap">
-  <details class="tip"><summary>💡 怎麼用(點開)</summary>地圖可切換分區、點縣市河川山岳看說明,表上每列按「📍 圖上看」直接在地圖標出來。先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。海岸、地形每列附自繪圖解。</details>
+  <details class="tip" id="tip"><summary>💡 怎麼用(點開)</summary>地圖可切換分區、點縣市河川山岳看說明,表上每列按「📍 圖上看」直接在地圖標出來。先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。海岸、地形每列附自繪圖解。進到一區後,上方「‹ 目錄」回到這裡,‹ › 換上一區 / 下一區。</details>
   <div id="app"></div>
   <div class="basis" id="basis"></div>
 </div>
@@ -173,11 +186,9 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 const IDS = D.sections.map(s=>s.id);
 const GIDS = (D.groups||[]).map(g=>'g-'+g.id);
 function grpOf(v){ if (v && v.startsWith('g-')) return v.slice(2); const s = D.sections.find(x=>x.id===v); return s ? s.g : ''; }
-function initSec(){
-  const h = location.hash.slice(1);
-  if (IDS.includes(h) || GIDS.includes(h)) return h;
-  try { const v = localStorage.getItem('pref_atlas_sec'); return v && (v==='all' || IDS.includes(v) || GIDS.includes(v)) ? v : 'all'; } catch(e){ return 'all'; }
-}
+/* 網址 #區代號 = 單區頁;其他(含舊的分組網址 #g-tw)= 目錄 */
+function initSec(){ const h = location.hash.slice(1); return IDS.includes(h) ? h : 'all'; }
+const ORDER = (D.groups && D.groups.length) ? D.groups.flatMap(g=>D.sections.filter(s=>s.g===g.id)) : D.sections.slice();
 let SEC = initSec();
 let MASKON = false;
 
@@ -504,32 +515,60 @@ function climMaps(){
     '<div class="twm-nt">示意走向與位置,不作測量用途</div></figure>';
 }
 function qaCount(sec){ return sec.rows.reduce((n,r)=>n+(r.qa||[]).length,0); }
-function render(){
-  /* 導覽:一排分頁(全部 / 臺灣地理 / 臺灣人文 / 世界);內容依分組列出各區卡片,點卡片展開;單一區時上方有返回分組的路徑 */
-  const GR = D.groups || [], G = grpOf(SEC), cnt = gid => D.sections.filter(s=>s.g===gid).length;
-  const tabs = [{ v:'all', icon:'📚', t:'全部', n:D.sections.length, on:SEC==='all' }].concat(GR.map(g=>({ v:'g-'+g.id, icon:g.icon, t:g.t, n:cnt(g.id), on:G===g.id })));
-  $('grpRow').hidden = !GR.length;
-  $('grpRow').innerHTML = tabs.map(x=>`<button type="button" role="tab" aria-selected="${x.on}" data-v="${x.v}"${x.on?' class="on"':''}><span class="gi">${x.icon}</span><span class="gt">${esc(x.t)}</span><small>${x.n} 區</small></button>`).join('');
-  const kw = $('q').value.trim();
-  const k = kw.toLowerCase();
-  let html = '', lastG = null;
-  if (IDS.includes(SEC) && !kw) {
-    const s0 = D.sections.find(s=>s.id===SEC), g0 = GR.find(g=>g.id===s0.g);
-    html += `<div class="crumb nomask">${g0 ? `<button type="button" data-v="g-${g0.id}">‹ ${g0.icon} ${esc(g0.t)} ${cnt(g0.id)} 區</button>` : `<button type="button" data-v="all">‹ 全部</button>`}<span>›</span><b>${esc(s0.icon+' '+s0.t)}</b></div>`;
-  }
-  (GR.length ? GR.flatMap(g=>D.sections.filter(s=>s.g===g.id)) : D.sections).forEach(sec=>{
-    if (SEC !== 'all' && sec.id !== SEC && 'g-'+sec.g !== SEC) return;
-    const idx = [];
-    sec.rows.forEach((r,i)=>{ if (!k || r.c.map(plain).join(' ').toLowerCase().includes(k)) idx.push(i); });
-    if (!idx.length) return;
-    if (SEC === 'all' && GR.length && sec.g !== lastG) { const g = GR.find(x=>x.id===sec.g); html += `<h2 class="gh nomask">${g.icon} ${esc(g.t)}<small>${cnt(g.id)} 區</small></h2>`; lastG = sec.g; }
-    const open = kw || IDS.includes(SEC) ? ' open' : '';
-    html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
+/* ===== 導覽(A 案):目錄格 → 單區頁 ===== */
+function secHTML(sec, idx, kw, one){
+  return `<details class="sec${one?' one':''}" id="s-${sec.id}" open><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
       <div class="sb"><div class="note">${sec.note}</div>${mapFor(sec, idx)}${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
       <div class="qz nomask"><button type="button" data-pair="${sec.id}">🎯 配對小測 ${qaCount(sec)} 題</button><button class="o" type="button" data-quiz="${sec.id}">📝 歷屆原題 ${QUIZ_N} 題</button><button class="o" type="button" data-quiz="${sec.id}" data-all="1">全部相關原題</button></div>
       <div class="gq nomask" id="gq-${sec.id}" hidden></div></div></details>`;
+}
+/* 目錄:依分組,一行三格(寬螢幕四格);上方「繼續看」上次看到的區 */
+function dirHTML(){
+  const GR = (D.groups && D.groups.length) ? D.groups : [{ id: '', icon: '📚', t: '全部' }];
+  let last = ''; try { last = localStorage.getItem('pref_atlas_last') || ''; } catch(e){}
+  const ls = D.sections.find(x=>x.id===last);
+  let h = ls ? `<a class="cont nomask" href="#${ls.id}">↻ 繼續看:${esc(ls.icon+' '+ls.t)}</a>` : '';
+  GR.forEach(g=>{
+    const ss = g.id ? D.sections.filter(x=>x.g===g.id) : D.sections;
+    h += `<h2 class="dg nomask" id="dg-${g.id||'all'}">${g.icon} ${esc(g.t)}<small>${ss.length} 區</small></h2><div class="dir nomask">` +
+      ss.map(x=>`<a class="tile${x.id===last?' last':''}" href="#${x.id}"><span class="tic">${x.icon}</span><b>${esc(x.t)}</b><small>${x.rows.length} 列</small></a>`).join('') + '</div>';
   });
-  $('app').innerHTML = html || `<div class="empty">找不到「${esc(kw)}」<br><span style="font-size:.85rem">換個關鍵字或切到「全部」</span></div>`;
+  return h;
+}
+/* 單區頁上方(黏在畫面頂端)與頁尾的導覽 */
+function navHTML(i){
+  const x = ORDER[i], p = ORDER[i-1], n = ORDER[i+1];
+  return `<div class="snav nomask"><a class="nv dirb" href="#all">‹ 目錄</a><span class="snt">${x.icon} ${esc(x.t)}<small>${i+1}/${ORDER.length}</small></span>` +
+    `<a class="nv pv${p?'':' off'}" href="#${p?p.id:'all'}" aria-label="${p?'上一區:'+esc(p.t):'沒有上一區'}"${p?'':' tabindex="-1"'}>‹</a>` +
+    `<a class="nv nx${n?'':' off'}" href="#${n?n.id:'all'}" aria-label="${n?'下一區:'+esc(n.t):'沒有下一區'}"${n?'':' tabindex="-1"'}>›</a></div>`;
+}
+function footHTML(i){
+  const p = ORDER[i-1], n = ORDER[i+1];
+  return `<div class="sfoot nomask">${p?`<a class="pv" href="#${p.id}"><small>‹ 上一區</small><b>${esc(p.icon+' '+p.t)}</b></a>`:'<span></span>'}` +
+    `<a class="mid" href="#all"><small>回到</small><b>目錄</b></a>` +
+    `${n?`<a class="nx" href="#${n.id}"><small>下一區 ›</small><b>${esc(n.icon+' '+n.t)}</b></a>`:'<span></span>'}</div>`;
+}
+function render(){
+  const kw = $('q').value.trim(), k = kw.toLowerCase();
+  let html = '';
+  if (kw) {
+    /* 搜尋:跨區列出符合的列 */
+    let ns = 0, nr = 0, body = '';
+    ORDER.forEach(sec=>{
+      const idx = [];
+      sec.rows.forEach((r,i)=>{ if (r.c.map(plain).join(' ').toLowerCase().includes(k)) idx.push(i); });
+      if (!idx.length) return;
+      ns++; nr += idx.length; body += secHTML(sec, idx, kw, false);
+    });
+    html = `<div class="srch nomask">搜尋「${esc(kw)}」:${ns} 區 ${nr} 列<button type="button" data-clear>✕ 清除</button></div>` +
+      (body || `<div class="empty">找不到「${esc(kw)}」<br><span style="font-size:.85rem">換個關鍵字試試</span></div>`);
+  } else if (IDS.includes(SEC)) {
+    const i = ORDER.findIndex(x=>x.id===SEC), sec = ORDER[i];
+    html = navHTML(i) + secHTML(sec, sec.rows.map((r,j)=>j), '', true) + footHTML(i);
+    try { localStorage.setItem('pref_atlas_last', SEC); } catch(e){}
+  } else html = dirHTML();
+  $('tip').hidden = !!kw || IDS.includes(SEC);
+  $('app').innerHTML = html;
   MASK.prepare($('app'));
   MASK.set($('app'), MASKON);
 }
@@ -611,16 +650,19 @@ function jumpRow(rid){
   el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 1400);
 }
 
-function goSec(v){
-  SEC = v; try { localStorage.setItem('pref_atlas_sec', SEC); } catch(err){}
-  history.replaceState(null, '', SEC==='all' ? location.pathname + location.search : '#'+SEC);
-  render(); window.scrollTo(0,0);
-}
-$('grpRow').addEventListener('click', e=>{ const b = e.target.closest('button[data-v]'); if (b) goSec(b.dataset.v); });
-window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if ((IDS.includes(h) || GIDS.includes(h)) && h!==SEC){ SEC = h; render(); } });
+/* 換區:改網址(瀏覽器返回鍵可回上一區 / 目錄) */
+function goSec(v){ const h = v === 'all' ? 'all' : v; if (location.hash.slice(1) !== h) location.hash = h; else { SEC = IDS.includes(h) ? h : 'all'; render(); window.scrollTo(0,0); } }
+function toGroup(h){ if (GIDS.includes(h)) { const e = document.getElementById('dg-' + h.slice(2)); if (e) e.scrollIntoView(); } }
+window.addEventListener('hashchange', ()=>{
+  const h = location.hash.slice(1);
+  SEC = IDS.includes(h) ? h : 'all';
+  $('q').value = '';
+  render(); window.scrollTo(0,0); toGroup(h);
+});
 $('app').addEventListener('click', e=>{
   let b;
-  if ((b = e.target.closest('.crumb [data-v]'))) return goSec(b.dataset.v);
+  if (e.target.closest('.sec.one > summary')) { e.preventDefault(); return; }   /* 單區頁:標題不收合 */
+  if ((b = e.target.closest('[data-clear]'))) { $('q').value = ''; render(); return; }
   if ((b = e.target.closest('[data-mtab]'))) {
     const fg = b.closest('.mtab');
     fg.querySelectorAll('[data-mtab]').forEach(x=>x.classList.toggle('on', x===b));
@@ -657,7 +699,7 @@ $('resetBtn').addEventListener('click', ()=>MASK.reset($('app')));
 let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(render, 200); });
 window.addEventListener('beforeprint', ()=>document.querySelectorAll('details.sec').forEach(d=>d.open=true));
 $('basis').textContent = `資料核對日期 ${D.updated} · ${D.basis}`;
-render();
+render(); window.addEventListener('load', ()=>toGroup(location.hash.slice(1)));   /* 舊分組網址:等版面穩定再捲到該分組 */
 </script>
 </body>
 </html>
