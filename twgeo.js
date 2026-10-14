@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v148
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v149
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -13,6 +13,7 @@
    TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v149 (2026-10-14) 圖說:釣魚臺列嶼、南海諸島改指向圖鑑「四極與臺灣之最」的位置圖
      v148 (2026-10-14) 阿里山加進山脈圖層(地理總圖也標出);東沙小框放大、礁盤環留兩個水道缺口、東沙島放大繪示;
                        新增 cfg.arrows / cfg.texts / cfg.tropic(氣候區畫東北季風、西南季風與副熱帶 / 熱帶季風氣候)
      v147 (2026-10-14) 東沙改畫成環礁(礁盤環、潟湖、東沙島);小島在全臺圖不再被抽稀到看不見;
@@ -451,7 +452,7 @@
       '</div></div><div class="tg-ls">' + Object.keys(st.on).map(function (k) { return '<button type="button" data-tgl="' + k + '"' + (st.on[k] ? ' class="on"' : '') + '>' + (k === 'mk' && cfg.mkName ? cfg.mkName : LAYER_T[k]) + '</button>'; }).join('') +
       '<input class="tg-q" type="search" list="tgdl-' + id + '" placeholder="🔎 找:玉山、濁水溪、太保…" aria-label="在地圖上找地名"><datalist id="tgdl-' + id + '">' + names(cfg).map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist></div>' +
       '<div class="tg-map" data-lazy="1"><div class="tg-ph"></div></div><div class="tg-info">' + (cfg.hint || '👆 點地圖上的縣市、河川、山或地名看說明;也可以在右上搜尋') + '</div>' +
-      (cfg.legend || '') + '<figcaption class="tg-cap">縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版);河川長度與流域:經濟部水利署;河川、山脈為示意走向。釣魚臺列嶼、南沙太平島、彭佳嶼等外海小島因版面未繪。</figcaption></figure>';
+      (cfg.legend || '') + '<figcaption class="tg-cap">縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版);河川長度與流域:經濟部水利署;河川、山脈為示意走向。釣魚臺列嶼、南海諸島(西沙、中沙、南沙太平島)見圖鑑「四極與臺灣之最」的位置圖;彭佳嶼等外海小島因版面未繪。</figcaption></figure>';
     return html;
   }
   function focus(id, key) {

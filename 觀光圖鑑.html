@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v148(2026-10-14)
+<!-- 觀光資源圖鑑 · v149(2026-10-14)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
      宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v149 四極與臺灣之最加南海諸島、東沙、南沙(太平島)、釣魚臺 4 列與「臺灣周邊島嶼與南海諸島」位置圖;出處題號可連到執業實務、執業法規的歷屆題
        v148 導覽改一排分頁(全部 / 臺灣地理 / 臺灣人文 / 世界),點分組直接列出該組各區卡片;海岸、地形每列附圖解(lfig.js);
             阿里山改由山脈圖層標出(地理總圖也看得到);氣候區臺灣圖加冬季東北季風、夏季西南季風箭頭與副熱帶 / 熱帶季風氣候;
             季風洋流圖改成分頁(冬季季風 · 夏季季風 · 東亞洋流 · 世界洋流);改過的程式網址加 ?v=,避免新版頁面配到舊版快取程式
@@ -126,9 +127,9 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
-<script src="worldmap.js?v=148"></script>
+<script src="worldmap.js?v=149"></script>
 <script src="twgeo_data.js"></script>
-<script src="twgeo.js?v=148"></script>
+<script src="twgeo.js?v=149"></script>
 <script src="lfig.js?v=148"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
@@ -137,7 +138,7 @@
 <script src="practice.js"></script>
 <script src="miniquiz.js"></script>
 <script src="mask.js"></script>
-<script src="atlas_data.js?v=148"></script>
+<script src="atlas_data.js?v=149"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -181,9 +182,10 @@ let SEC = initSec();
 let MASKON = false;
 
 function srcLink(sr){
-  const m = sr.match(/^([gl])(\d+)-(\d+)$/); if (!m) return '';
-  const q = { c: m[1]==='g'?'guide':'leader', y: m[2], no: +m[3] };
-  return `<a class="qs" href="${PRACTICE.href('gh',q)}" title="${esc(PRACTICE.label('gh',q))}">${m[1]==='g'?'導':'領'}${m[2]}-${m[3]}</a>`;
+  /* 'g114-41' = 觀光資源概要;'pr:g108-22'、'pr2:g108-38' = 執業實務、執業法規的歷屆題 */
+  const m = sr.match(/^(?:(pr2?):)?([gl])(\d+)-(\d+)$/); if (!m) return '';
+  const s = m[1] || 'gh', q = { c: m[2]==='g'?'guide':'leader', y: m[3], no: +m[4] };
+  return `<a class="qs" href="${PRACTICE.href(s,q)}" title="${esc(PRACTICE.label(s,q))}">${{ gh:'', pr:'實務', pr2:'法規' }[s]}${m[2]==='g'?'導':'領'}${m[3]}-${m[4]}</a>`;
 }
 function hl(html, kw){
   if (!kw) return html;
@@ -308,7 +310,8 @@ const POLE_MK = [
   { n: '最大水庫 曾文水庫', alt: '曾文水庫', p: [120.548, 23.219], c: '#0284c7', s: 'sq', pr: 1, prAll: 0.95, d: '嘉義大埔、臺南楠西;曾文溪上游' },
   { n: '最大高山湖泊 翠峰湖', alt: '翠峰湖', p: [121.605, 24.510], c: '#0284c7', s: 'sq', pr: 1, d: '宜蘭大同(太平山國家森林遊樂區)' },
   { n: '最大潟湖 七股潟湖', alt: '七股潟湖', p: [120.08, 23.13], c: '#d97706', pr: 1, prAll: 0.95, d: '臺南七股;台江國家公園' },
-  { n: '最大沙洲 外傘頂洲', alt: '外傘頂洲', p: [120.05, 23.48], c: '#d97706', pr: 1, d: '雲林、嘉義外海;行政上屬雲林縣口湖鄉' }
+  { n: '最大沙洲 外傘頂洲', alt: '外傘頂洲', p: [120.05, 23.48], c: '#d97706', pr: 1, d: '雲林、嘉義外海;行政上屬雲林縣口湖鄉' },
+  { n: '東沙島', p: [116.83, 20.71], c: '#16a34a', lab: '', d: '東沙群島(南海北部,高雄市旗津區管轄);東沙環礁國家公園,我國第一個海洋保護區' }
 ];
 const COAST_MK = [
   { n: '野柳', p: [121.690, 25.208], c: '#7c3aed', d: '岬灣海岸:女王頭 = 蕈狀岩' },
@@ -464,13 +467,21 @@ const TGCFG = {
 };
 function mapFor(sec, idx){
   /* 臺灣各區:同一張縣市底圖(twgeo.js)+ 該區標示;氣候區另附東亞季風洋流、世界常考洋流兩張圖 */
-  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]) + (sec.id === 'clim' ? climMaps() : '');
+  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]) + (sec.id === 'clim' ? climMaps() : sec.id === 'poles' ? isleMap() : '');
   if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
   /* 臺灣史年表:各時期長度長條圖(ana.js)*/
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
   if (sec.id === 'whist') return '<figure class="amap nomask"><div class="wera">' + ERA_W.map(e => '<span style="--c:' + e.c + '"><b>' + e.n + '</b>' + e.y + '</span>').join('') + '</div><div class="twm-nt">每列左邊的色條＝所屬時期(分期採常見劃分,各書略有不同)</div></figure>';
   if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
   return '';
+}
+/* 四極:臺灣周邊島嶼與南海諸島位置圖(worldmap.js);綠 = 我國實際管轄、灰 = 我國主張主權但未實際管轄 */
+const ISLE_LEG = '<div class="wm-lg"><span><i style="background:#16a34a"></i>我國實際管轄</span><span><i style="background:#94a3b8"></i>我國主張主權、未實際管轄</span></div>';
+function isleMap(){
+  if (!window.WMAP) return '';
+  return '<figure class="amap nomask">' + WMAP.svg({ view: [106, 6, 126, 27], marks: [{ k: '臺北', label: '臺灣', t: 'n' }, { k: '東沙島', label: '東沙群島(東沙島)', t: 'n' }, { k: '太平島', label: '南沙群島(太平島)', t: 'n' },
+    { k: '西沙群島', t: 'x' }, { k: '中沙群島', t: 'x' }, { k: '釣魚臺列嶼', t: 'x', side: 'r' }], seas: ['南海'], title: '臺灣周邊島嶼與南海諸島' }) + ISLE_LEG + WMAP.note +
+    '<div class="twm-nt">南海四大群島:東沙、西沙、中沙、南沙;我國實際管轄東沙島與南沙太平島、中洲礁(行政上屬高雄市旗津區)。釣魚臺列嶼我國主張屬宜蘭縣頭城鎮</div></figure>';
 }
 /* 氣候與季風:季風、洋流示意(worldmap.js 的 flows、centers、notes);分頁切換 */
 const MON_VIEW = [62, 0, 150, 55];
