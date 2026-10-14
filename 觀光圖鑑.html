@@ -7,11 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v146(2026-10-13)
+<!-- 觀光資源圖鑑 · v147(2026-10-14)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
      宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v147 導覽分組(臺灣地理 / 臺灣人文 / 世界);國家公園、風景區、古蹟、氣候改用同一張縣市底圖;地形、海岸、岩石顯示縣市名稱;
+            山脈標阿里山與五大山脈名稱;四極之最、廟宇等標籤擠不下時改用短名或改到分區圖;東沙畫成環礁;
+            氣候加東亞季風洋流、世界常考洋流圖;不再載入 twmap.js(解析需要時由 ana.js 自動載入)
        v146 臺灣地名由來(地圖依命名時期上色,標籤「今名(舊稱)」)
        v142 臺灣地理總圖(twgeo.js:縣市、河川、山脈、四極、海岸類型,可切分區、點選看說明);每列「📍 圖上看」
        v129 初版 -->
@@ -46,6 +49,10 @@
   .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
   .row{display:flex;gap:7px;padding:9px 0 0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .row::-webkit-scrollbar{display:none}
+  .row.wrap{flex-wrap:wrap;overflow:visible;padding-top:8px} .row.wrap:empty{display:none}
+  .grp{display:flex;gap:5px;padding:10px 0 0;flex-wrap:wrap}
+  .grp button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);padding:7px 6px;border-radius:12px;font-size:.84rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .grp button small{font-weight:600;font-size:.72rem;color:var(--sub);margin-left:2px} .grp button.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)} .grp button.on small{color:var(--onsel);opacity:.85}
   .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;
     font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
   .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
@@ -109,7 +116,6 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
-<script src="twmap.js"></script>
 <script src="worldmap.js"></script>
 <script src="twgeo_data.js"></script>
 <script src="twgeo.js"></script>
@@ -130,7 +136,8 @@
 </div></header>
 
 <div class="bar"><div class="wrap">
-  <div class="row" id="secRow"></div>
+  <div class="grp" id="grpRow"></div>
+  <div class="row wrap" id="secRow"></div>
   <div class="tools">
     <input id="q" placeholder="搜尋…(如 布農、潟湖、元宵、玄武岩)" aria-label="搜尋">
     <button class="tbtn" id="maskBtn" type="button">🙈 遮住重點</button>
@@ -153,10 +160,12 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','
 function plain(s){return String(s).replace(/<[^>]+>/g,'');}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const IDS = D.sections.map(s=>s.id);
+const GIDS = (D.groups||[]).map(g=>'g-'+g.id);
+function grpOf(v){ if (v && v.startsWith('g-')) return v.slice(2); const s = D.sections.find(x=>x.id===v); return s ? s.g : ''; }
 function initSec(){
   const h = location.hash.slice(1);
-  if (IDS.includes(h)) return h;
-  try { const v = localStorage.getItem('pref_atlas_sec'); return v && (v==='all' || IDS.includes(v)) ? v : 'all'; } catch(e){ return 'all'; }
+  if (IDS.includes(h) || GIDS.includes(h)) return h;
+  try { const v = localStorage.getItem('pref_atlas_sec'); return v && (v==='all' || IDS.includes(v) || GIDS.includes(v)) ? v : 'all'; } catch(e){ return 'all'; }
 }
 let SEC = initSec();
 let MASKON = false;
@@ -190,8 +199,6 @@ function renderRow(sec, r, i, kw){
   return `<div class="r" id="r-${sec.id}-${i}"${eraStyle(sec, r)}><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
     <div class="meta nomask">${tgb}${src}</div></div>`;
 }
-/* 國家公園、國家風景區分布圖:編號＝表格順序,點地圖或圖例跳到那一列(twmap.js);搜尋時只畫符合的列 */
-const MAPKEYS = { '參山':['獅頭山','梨山','八卦山'], '北海岸及觀音山':['北海岸及觀音山','觀音山'], '大鵬灣':['大鵬灣','小琉球'] };
 /* 世界遺產:常考地點分布(worldmap.js),點的顏色＝遺產類型 */
 const WH_MARKS = [
   { k: '黃石國家公園', label: '黃石', t: 'n' }, { k: '伊盧利薩特', label: '冰峽灣(格陵蘭)', t: 'n' },
@@ -210,32 +217,86 @@ const WGEO_MARKS = [
   { k: '伊瓜蘇瀑布', label: '伊瓜蘇瀑布', side: 'r' }, { k: '的的喀喀湖', label: '的的喀喀湖', side: 'l' },
   { k: '大峽谷', label: '大峽谷', side: 'l' }, { k: '北角', label: '極光:北角', side: 'u' }
 ];
-/* 氣候與季風:臺灣的地方風與季風現象(twmap.js) */
-const CLIM_MARKS = [
-  { k: '宜蘭', label: '蘭雨', side: 'd' }, { k: '新竹', label: '竹風、九降風', side: 'u' },
-  { k: '臺東', label: '焚風', side: 'r' }, { k: '恆春', label: '落山風', side: 'l' },
-  { k: '澎湖', label: '菜宅擋風', side: 'l' }, { k: '金門', label: '風獅爺' }
+/* 國家公園、國家風景區、古蹟、氣候:v147 起改用同一張縣市底圖(twgeo.js),每列可「圖上看」 */
+const C_NP = '#15803d', C_NNP = '#0d9488', C_NSA = '#ea580c';
+const NP_MK = [
+  { n: '墾丁', p: [120.80, 21.96], c: C_NP, pr: 1, d: '墾丁國家公園(民國 71 年,最早):屏東恆春半島;隆起珊瑚礁、熱帶海岸林、灰面鵟鷹' },
+  { n: '玉山', p: [120.96, 23.47], c: C_NP, pr: 1, d: '玉山國家公園(74 年):南投、嘉義、花蓮、高雄;臺灣最高峰、高山生態,轄區以布農族為主' },
+  { n: '陽明山', p: [121.56, 25.17], c: C_NP, d: '陽明山國家公園(74 年):臺北市、新北市;大屯火山群、硫磺溫泉' },
+  { n: '太魯閣', p: [121.49, 24.17], c: C_NP, pr: 1, d: '太魯閣國家公園(75 年):花蓮、南投、臺中;大理岩峽谷(地殼抬升 + 立霧溪下切)' },
+  { n: '雪霸', p: [121.22, 24.41], c: C_NP, d: '雪霸國家公園(81 年):苗栗、新竹、臺中;雪山、大霸尖山,櫻花鉤吻鮭' },
+  { n: '金門', p: [118.37, 24.45], c: C_NP, lab: '金門國家公園', d: '金門國家公園(84 年):戰役史蹟、閩南聚落、候鳥;保育活化石鱟' },
+  { n: '東沙環礁', p: [116.83, 20.71], c: C_NP, lab: '', d: '東沙環礁國家公園(96 年):南海北部東沙群島;珊瑚環礁、海草床(不是玄武岩)' },
+  { n: '台江', p: [120.08, 23.06], c: C_NP, d: '台江國家公園(98 年):臺南;曾文溪口濕地、黑面琵鷺、台江內海移墾歷史' },
+  { n: '南方四島', p: [119.59, 23.25], c: C_NP, lab: '澎湖南方四島', d: '澎湖南方四島國家公園(103 年):東吉嶼、西吉嶼、東嶼坪嶼、西嶼坪嶼;玄武岩、珊瑚礁、梯田式菜宅' },
+  { n: '壽山', p: [120.27, 22.65], c: C_NNP, lab: '壽山(自然公園)', d: '壽山國家自然公園(100 年,第一座國家自然公園):高雄;珊瑚礁石灰岩、臺灣獼猴' }
 ];
-/* 臺灣古蹟:常考古蹟的位置(twmap.js);標籤＝該地的代表古蹟 */
-const HERI_MARKS = [
-  { k: '淡水', label: '紅毛城', side: 'l' }, { k: '和平島', label: '聖薩爾瓦多城', side: 'u' },
-  { k: '臺北', label: '府城、總督府', side: 'r' }, { k: '新竹', label: '新竹火車站', side: 'l' },
-  { k: '北埔', label: '金廣福', side: 'r' }, { k: '鹿港', label: '文開書院', side: 'l' },
-  { k: '彰化', label: '扇形車庫', side: 'r' }, { k: '安平', label: '熱蘭遮城、億載金城', side: 'l' },
-  { k: '臺南', label: '孔廟、州廳', side: 'r' }, { k: '鳳山', label: '鳳儀書院', side: 'l' },
-  { k: '萬金', label: '萬金聖母聖殿', side: 'r' }, { k: '恆春', label: '恆春古城', side: 'l' },
-  { k: '鵝鑾鼻', label: '鵝鑾鼻燈塔', side: 'r' }
+const NSA_MK = [
+  { n: '東北角暨宜蘭海岸', p: [121.90, 24.96], c: C_NSA, lab: '東北角', d: '東北角暨宜蘭海岸(新北、宜蘭):岬灣海岸、福隆沙雕季、草嶺古道、三貂角燈塔(臺灣極東)' },
+  { n: '北海岸及觀音山', p: [121.60, 25.24], c: C_NSA, lab: '北海岸', d: '北海岸及觀音山(新北、基隆):野柳女王頭、富貴角燈塔(臺灣極北)、和平島地質公園' },
+  { n: '觀音山', p: [121.42, 25.13], c: C_NSA, z: 1, d: '北海岸及觀音山國家風景區的觀音山區(新北八里、五股)' },
+  { n: '參山(獅頭山)', p: [120.99, 24.64], c: C_NSA, lab: '獅頭山', d: '參山國家風景區:獅頭山(雪山山脈餘脈)' },
+  { n: '參山(梨山)', p: [121.25, 24.25], c: C_NSA, lab: '梨山', d: '參山國家風景區:梨山(中央山脈);三區 = 獅頭山、梨山、八卦山' },
+  { n: '參山(八卦山)', p: [120.56, 24.07], c: C_NSA, lab: '八卦山', d: '參山國家風景區:八卦山(大佛、鷹揚八卦賞灰面鵟鷹)' },
+  { n: '日月潭', p: [120.91, 23.86], c: C_NSA, d: '日月潭(南投):高山湖泊、文武廟、伊達邵;邵族' },
+  { n: '阿里山', p: [120.80, 23.51], c: C_NSA, d: '阿里山(嘉義):森林鐵路(1912 通車)、櫻花、茶;鄒族、特富野古道' },
+  { n: '雲嘉南濱海', p: [120.10, 23.30], c: C_NSA, d: '雲嘉南濱海(雲林、嘉義、臺南):潟湖、濕地、鹽田;王爺信仰(南鯤鯓)' },
+  { n: '西拉雅', p: [120.45, 23.25], c: C_NSA, d: '西拉雅(臺南、嘉義):月世界、關子嶺溫泉、烏山頭水庫;西拉雅族文化' },
+  { n: '茂林', p: [120.66, 22.90], c: C_NSA, d: '茂林(高雄、屏東):溫泉、紫斑蝶越冬、排灣族與魯凱族、賽嘉航空公園' },
+  { n: '大鵬灣', p: [120.47, 22.44], c: C_NSA, d: '大鵬灣(屏東):潟湖、紅樹林、帆船;範圍含小琉球' },
+  { n: '小琉球', p: [120.37, 22.34], c: C_NSA, z: 1, lab: '小琉球(大鵬灣)', d: '屬大鵬灣國家風景區:珊瑚礁島、花瓶石' },
+  { n: '東部海岸', p: [121.50, 23.45], c: C_NSA, d: '東部海岸(花蓮、臺東,台 11 線):泛舟、賞鯨、八仙洞、小野柳、北回歸線地標' },
+  { n: '花東縱谷', p: [121.30, 23.33], c: C_NSA, d: '花東縱谷(花蓮、臺東,台 9 線):田園、鹿野高台熱氣球、池上大坡池' },
+  { n: '澎湖', p: [119.58, 23.57], c: C_NSA, lab: '', d: '澎湖國家風景區:石滬、潮間帶生態、柱狀玄武岩' },
+  { n: '馬祖', p: [119.95, 26.16], c: C_NSA, lab: '', d: '馬祖國家風景區(連江縣):閩東石屋(芹壁)、北海坑道、藍眼淚(約 4–9 月)' }
+];
+/* 古蹟:依興建時期上色(顏色同「臺灣史年表」) */
+const E_DH = '#0284c7', E_MZ = '#16a34a', E_QG = '#d97706', E_JP = '#dc2626';
+const HERI_MK = [
+  { n: '熱蘭遮城', p: [120.160, 23.001], c: E_DH, d: '1624 荷蘭人建(今安平古堡),臺南安平' },
+  { n: '億載金城', p: [120.159, 22.986], c: E_QG, z: 1, d: '1876 沈葆楨建(二鯤鯓砲臺),臺南安平' },
+  { n: '臺南孔廟', p: [120.204, 22.991], c: E_MZ, d: '1666 明鄭時期興建,全臺首學' },
+  { n: '臺南州廳', p: [120.205, 22.996], c: E_JP, z: 1, d: '1916 日治,今國立臺灣文學館' },
+  { n: '聖薩爾瓦多城', p: [121.765, 25.160], c: E_DH, d: '1626 西班牙人建,基隆和平島' },
+  { n: '紅毛城', p: [121.433, 25.175], c: E_DH, lab: '淡水紅毛城', d: '1628 西班牙建聖多明哥城 → 荷蘭重建;新北淡水' },
+  { n: '艋舺龍山寺', alt: '龍山寺', p: [121.500, 25.037], c: E_QG, z: 1, d: '1738 清,四座龍山寺之一(臺北萬華)' },
+  { n: '臺北府城', p: [121.512, 25.046], c: E_QG, z: 1, d: '1884 清;東門通往錫口、基隆,北門保留原貌' },
+  { n: '總督府', p: [121.512, 25.040], c: E_JP, lab: '臺灣總督府', z: 1, d: '1919 日治,今總統府' },
+  { n: '鳳儀書院', p: [120.357, 22.627], c: E_QG, d: '1814 清,高雄鳳山;現存規模最大的書院' },
+  { n: '文開書院', p: [120.433, 24.054], c: E_QG, d: '1824 清,彰化鹿港' },
+  { n: '金廣福', p: [121.055, 24.700], c: E_QG, lab: '金廣福公館', d: '1835 清,新竹北埔;大隘拓墾基地' },
+  { n: '王得祿墓', p: [120.350, 23.540], c: E_QG, d: '1842 清,嘉義縣;國定古蹟' },
+  { n: '萬金聖母聖殿', p: [120.600, 22.589], c: E_QG, d: '1870 清,屏東萬巒;現存最古老的天主教堂' },
+  { n: '恆春古城', p: [120.744, 22.003], c: E_QG, d: '1875 清,屏東恆春;四座城門全部保存' },
+  { n: '鵝鑾鼻燈塔', p: [120.853, 21.902], c: E_QG, d: '1883 清,屏東恆春;本島最南端的燈塔' },
+  { n: '新竹火車站', p: [120.971, 24.801], c: E_JP, d: '1913 日治,現存最古老的火車站站房' },
+  { n: '扇形車庫', p: [120.540, 24.081], c: E_JP, lab: '彰化扇形車庫', d: '1922 日治,2022 年升格國定古蹟' }
+];
+/* 氣候:臺灣的季風與地方風 */
+const C_NE = '#7c3aed', C_RAIN = '#2563eb', C_FOEHN = '#dc2626';
+const CLIM_MK = [
+  { n: '竹風、九降風', p: [120.97, 24.80], c: C_NE, d: '新竹:東北季風強勁(九降風),新埔柿餅、米粉利用強風曬製' },
+  { n: '蘭雨', p: [121.75, 24.75], c: C_RAIN, d: '宜蘭:冬季東北季風的迎風坡,地形雨多(竹風蘭雨)' },
+  { n: '焚風', p: [121.14, 22.76], c: C_FOEHN, d: '臺東:西南氣流越過中央山脈,沿背風坡下沉增溫;和東北季風無關' },
+  { n: '落山風', p: [120.74, 22.00], c: C_NE, d: '恆春半島:冬季東北季風越過山脈後的強陣風' },
+  { n: '菜宅擋風', p: [119.58, 23.57], c: C_NE, d: '澎湖:冬季東北季風強,菜宅用咾咕石(珊瑚礁岩)砌牆擋風' },
+  { n: '風獅爺', p: [118.37, 24.45], c: C_NE, d: '金門:鎮風避煞(冬季東北季風強)' },
+  { n: '玉山', p: [120.957, 23.47], c: '#64748b', s: 'tri', lab: '玉山(氣溫直減率)', d: '海拔每升高 1,000 公尺約降 6℃:嘉義市 36℃ 時,玉山主峰約 10℃' }
+];
+/* 山脈:常考的阿里山(五大山脈之一的阿里山山脈) */
+const MT_MK = [
+  { n: '阿里山', p: [120.805, 23.51], c: '#15803d', pr: 1, d: '嘉義阿里山鄉:屬<b>阿里山山脈</b>;森林遊樂區(神木、日出、雲海)、阿里山林業鐵路(1912 年由嘉義通車到二萬坪);鄒族的居住地' }
 ];
 /* 臺灣地理總圖(twgeo.js):各區的圖層、標示與圖例;標示點顏色同各區說明 */
 const IGN = '#dc2626', SED = '#b45309', MET = '#7c3aed';
 const POLE_MK = [
-  { n: '最高峰 玉山', p: [120.957, 23.470], c: '#7c2d12', s: 'tri', pr: 1, d: '3,952 公尺;南投、嘉義、高雄三縣市交界' },
-  { n: '最大平原 嘉南平原', p: [120.30, 23.30], c: '#16a34a', s: 'sq', pr: 1, d: '雲林、嘉義、臺南;嘉南大圳灌溉' },
-  { n: '最大湖泊 日月潭', p: [120.913, 23.860], c: '#0284c7', s: 'sq', pr: 1, d: '南投魚池;原為天然湖,日治時期引濁水溪水發電後擴大' },
-  { n: '最大水庫 曾文水庫', p: [120.548, 23.219], c: '#0284c7', s: 'sq', pr: 1, d: '嘉義大埔、臺南楠西;曾文溪上游' },
-  { n: '最大高山湖泊 翠峰湖', p: [121.605, 24.510], c: '#0284c7', s: 'sq', pr: 1, d: '宜蘭大同(太平山國家森林遊樂區)' },
-  { n: '最大潟湖 七股潟湖', p: [120.08, 23.13], c: '#d97706', pr: 1, d: '臺南七股;台江國家公園' },
-  { n: '最大沙洲 外傘頂洲', p: [120.05, 23.48], c: '#d97706', pr: 1, d: '雲林、嘉義外海;行政上屬雲林縣口湖鄉' }
+  { n: '最高峰 玉山', alt: '玉山', p: [120.957, 23.470], c: '#7c2d12', s: 'tri', pr: 1, d: '3,952 公尺;南投、嘉義、高雄三縣市交界' },
+  { n: '最大平原 嘉南平原', alt: '嘉南平原', p: [120.30, 23.30], c: '#16a34a', s: 'sq', pr: 1, d: '雲林、嘉義、臺南;嘉南大圳灌溉' },
+  { n: '最大湖泊 日月潭', alt: '日月潭', p: [120.913, 23.860], c: '#0284c7', s: 'sq', pr: 1, d: '南投魚池;原為天然湖,日治時期引濁水溪水發電後擴大' },
+  { n: '最大水庫 曾文水庫', alt: '曾文水庫', p: [120.548, 23.219], c: '#0284c7', s: 'sq', pr: 1, prAll: 0.95, d: '嘉義大埔、臺南楠西;曾文溪上游' },
+  { n: '最大高山湖泊 翠峰湖', alt: '翠峰湖', p: [121.605, 24.510], c: '#0284c7', s: 'sq', pr: 1, d: '宜蘭大同(太平山國家森林遊樂區)' },
+  { n: '最大潟湖 七股潟湖', alt: '七股潟湖', p: [120.08, 23.13], c: '#d97706', pr: 1, prAll: 0.95, d: '臺南七股;台江國家公園' },
+  { n: '最大沙洲 外傘頂洲', alt: '外傘頂洲', p: [120.05, 23.48], c: '#d97706', pr: 1, d: '雲林、嘉義外海;行政上屬雲林縣口湖鄉' }
 ];
 const COAST_MK = [
   { n: '野柳', p: [121.690, 25.208], c: '#7c3aed', d: '岬灣海岸:女王頭 = 蕈狀岩' },
@@ -298,19 +359,19 @@ const REL_MK = [
   { n: '白沙屯拱天宮', p: [120.703, 24.565], c: C_MAZU, z: 1, d: '苗栗通霄:白沙屯媽祖徒步進香,路線不固定' },
   { n: '鹿港天后宮', p: [120.436, 24.059], c: C_MAZU, d: '彰化鹿港:遶境約在農曆 3/23 媽祖誕辰前後' },
   { n: '臺南大天后宮', p: [120.202, 22.997], c: C_MAZU, z: 1, d: '臺南府城:原為明寧靖王府邸,清代改為媽祖廟' },
-  { n: '澎湖天后宮', p: [119.564, 23.564], c: C_MAZU, d: '澎湖馬公:有「沈有容諭退紅毛番韋麻郎等」碑(紅毛番 = 荷蘭人)' },
+  { n: '澎湖天后宮', alt: '天后宮', p: [119.564, 23.564], c: C_MAZU, d: '澎湖馬公:有「沈有容諭退紅毛番韋麻郎等」碑(紅毛番 = 荷蘭人)' },
   { n: '南鯤鯓代天府', p: [120.141, 23.286], c: C_WANG, pr: 1, d: '臺南北門:王爺信仰重鎮,增建槺榔山莊、凌霄寶殿' },
   { n: '東港東隆宮', p: [120.451, 22.463], c: C_WANG, d: '屏東東港:迎王平安祭典三年一科,最後燒王船' },
-  { n: '大龍峒保安宮', p: [121.515, 25.073], c: C_FOLK, d: '臺北大龍峒:主祀保生大帝(醫藥神),保生文化祭' },
+  { n: '大龍峒保安宮', alt: '保安宮', p: [121.515, 25.073], c: C_FOLK, prAll: 0.95, d: '臺北大龍峒:主祀保生大帝(醫藥神),保生文化祭' },
   { n: '學甲慈濟宮', p: [120.181, 23.232], c: C_FOLK, z: 1, d: '臺南學甲:主祀保生大帝' },
-  { n: '新竹都城隍廟', p: [120.966, 24.804], c: C_FOLK, d: '新竹:常被稱為全臺位階最高的城隍廟' },
-  { n: '霞海城隍廟', p: [121.510, 25.056], c: C_FOLK, z: 1, d: '臺北大稻埕:「五月十三人看人」,也以月老聞名' },
+  { n: '新竹都城隍廟', alt: '都城隍廟', p: [120.966, 24.804], c: C_FOLK, d: '新竹:常被稱為全臺位階最高的城隍廟' },
+  { n: '霞海城隍廟', alt: '霞海城隍', p: [121.510, 25.056], c: C_FOLK, z: 1, d: '臺北大稻埕:「五月十三人看人」,也以月老聞名' },
   { n: '新埔義民廟', p: [121.099, 24.846], c: C_FOLK, z: 1, d: '新竹新埔褒忠義民廟:客家義民信仰(林爽文事件)' },
   { n: '三峽長福巖', p: [121.369, 24.935], c: C_FOLK, z: 1, d: '新北三峽:主祀清水祖師(泉州安溪人),李梅樹主持重建' },
   { n: '鹽水武廟', p: [120.266, 23.319], c: C_FOLK, z: 1, d: '臺南鹽水:主祀關聖帝君,元宵鹽水蜂炮' },
   { n: '金門風獅爺', p: [118.380, 24.460], c: C_FOLK, lab: '風獅爺', d: '金門各村落:鎮風避煞,大、小金門都有' },
   { n: '臺南孔廟', p: [120.204, 22.991], c: C_BUD, d: '全臺首學:1666 年依陳永華建議興建' },
-  { n: '艋舺龍山寺', p: [121.500, 25.037], c: C_BUD, z: 1, d: '臺北萬華:主祀觀音,泉州三邑人所建(1738)' },
+  { n: '艋舺龍山寺', alt: '龍山寺', p: [121.500, 25.037], c: C_BUD, z: 1, d: '臺北萬華:主祀觀音,泉州三邑人所建(1738)' },
   { n: '鹿港龍山寺', p: [120.433, 24.053], c: C_BUD, z: 1, d: '彰化鹿港:國定古蹟;鹿港「三步一小廟、五步一大廟」' },
   { n: '佛光山', p: [120.443, 22.750], c: C_BUD, d: '高雄大樹:佛教道場' },
   { n: '中台禪寺', p: [120.951, 23.993], c: C_BUD, z: 1, d: '南投埔里:佛教道場' },
@@ -361,6 +422,10 @@ const NAME_MK = [
   { n: '苓雅', p: [120.312, 22.622], c: N_LAND, z: 1, d: '高雄苓雅:舊稱苓仔寮,區名由來和漁業有關' }
 ];
 const TG_LEG = {
+  np: '<div class="tg-lg"><span><b style="background:' + C_NP + '"></b>國家公園</span><span><b style="background:' + C_NNP + '"></b>國家自然公園</span></div><div class="twm-nt">東沙、金門在左側小框;點地圖上的點看成立年與特色</div>',
+  nsa: '<div class="tg-lg"><span><b style="background:' + C_NSA + '"></b>國家風景區(交通部觀光署 13 處)</span></div><div class="twm-nt">參山有獅頭山、梨山、八卦山三區;馬祖在左上小框;點地圖上的點看範圍與特色</div>',
+  heri: '<div class="tg-lg"><span><b style="background:' + E_DH + '"></b>荷西</span><span><b style="background:' + E_MZ + '"></b>明鄭</span><span><b style="background:' + E_QG + '"></b>清領</span><span><b style="background:' + E_JP + '"></b>日治</span></div><div class="twm-nt">顏色＝興建時期;臺南、臺北古蹟密集,切到分區圖會標出億載金城、臺南州廳、艋舺龍山寺、臺北府城、臺灣總督府</div>',
+  clim: '<div class="tg-lg"><span><b style="background:' + C_NE + '"></b>冬季東北季風相關</span><span><b style="background:' + C_RAIN + '"></b>迎風坡多雨</span><span><b style="background:' + C_FOEHN + '"></b>焚風</span></div>',
   coast: '<div class="tg-lg"><span><i style="background:#7c3aed"></i>岬灣海岸</span><span><i style="background:#d97706"></i>沙岸</span><span><i style="background:#dc2626"></i>斷層海岸</span><span><i style="background:#db2777"></i>珊瑚礁海岸</span></div>',
   rock: '<div class="tg-lg"><span><b style="background:' + IGN + '"></b>火成岩</span><span><b style="background:' + SED + '"></b>沉積岩</span><span><b style="background:' + MET + '"></b>變質岩</span></div>',
   rel: '<div class="tg-lg"><span><b style="background:' + C_MAZU + '"></b>媽祖</span><span><b style="background:' + C_WANG + '"></b>王爺</span><span><b style="background:' + C_FOLK + '"></b>其他民間信仰</span><span><b style="background:' + C_BUD + '"></b>儒學 · 佛教</span><span><b style="background:' + C_WEST + '"></b>基督教 · 天主教 · 伊斯蘭教</span><span><b style="background:' + C_PINGPU + '"></b>平埔族</span></div><div class="twm-nt">切到分區圖會多標臺南府城、臺北各廟等密集的點</div>',
@@ -371,45 +436,53 @@ const TGCFG = {
   geo: { layers: { cty: 1, rv: 1, mt: 1, pt: 0, pole: 1 } },
   river: { layers: { cty: 1, rv: 1, mt: 0, pt: 0 }, hint: '👆 點河川看流經縣市、長度與考點;切到分區圖,每條河都會標名稱' },
   poles: { layers: { cty: 1, pole: 1, mk: 1, rv: 0, mt: 0 }, marks: POLE_MK, mkName: '臺灣之最' },
-  coast: { layers: { coast: 1, mk: 1, cty: 0, rv: 0 }, marks: COAST_MK, mkName: '海岸地形', legend: TG_LEG.coast },
-  rock: { layers: { mk: 1, cty: 0, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
-  land: { layers: { mk: 1, cty: 0, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
-  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, legend: TG_LEG.mt },
+  coast: { layers: { coast: 1, mk: 1, cty: 1, rv: 0 }, marks: COAST_MK, mkName: '海岸地形', legend: TG_LEG.coast },
+  rock: { layers: { mk: 1, cty: 1, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
+  land: { layers: { mk: 1, cty: 1, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
+  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0, mk: 1 }, pkAll: true, rgPr: 0.9, marks: MT_MK, mkName: '阿里山', legend: TG_LEG.mt },
   rel: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: REL_MK, mkName: '廟宇', legend: TG_LEG.rel },
-  name: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NAME_MK, mkName: '地名', legend: TG_LEG.name }
+  name: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NAME_MK, mkName: '地名', legend: TG_LEG.name },
+  np: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NP_MK, mkName: '國家公園', legend: TG_LEG.np },
+  nsa: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NSA_MK, mkName: '風景區', legend: TG_LEG.nsa },
+  heri: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: HERI_MK, mkName: '古蹟', legend: TG_LEG.heri },
+  clim: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: CLIM_MK, mkName: '季風與地方風', legend: TG_LEG.clim }
 };
 function mapFor(sec, idx){
-  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]);
-  if (sec.id === 'heri') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: HERI_MARKS, labels: true, title: '常考古蹟的位置' }) + TWMAP.note + '<div class="twm-nt">四座龍山寺、王得祿墓、各地眷村沒有標在圖上;安平與臺南府城相距很近,標籤分開寫</div></figure>' : '';
-  if (sec.id === 'clim') return window.TWMAP ? '<figure class="amap nomask">' + TWMAP.svg({ marks: CLIM_MARKS, labels: true, title: '臺灣的季風與地方風' }) + TWMAP.note + '<div class="twm-nt">東北季風(約 10 月到隔年 3 月)由東北方吹來,北部、東北部迎風多雨;西南季風(約 5–9 月)由西南方吹來,中南部夏雨集中</div></figure>' : '';
+  /* 臺灣各區:同一張縣市底圖(twgeo.js)+ 該區標示;氣候區另附東亞季風洋流、世界常考洋流兩張圖 */
+  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]) + (sec.id === 'clim' ? climFlows() : '');
   if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
-  /* 臺灣史年表:各時期長度長條圖(ana.js);山脈:五大山脈走向 + 常考高峰 */
+  /* 臺灣史年表:各時期長度長條圖(ana.js)*/
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
   if (sec.id === 'whist') return '<figure class="amap nomask"><div class="wera">' + ERA_W.map(e => '<span style="--c:' + e.c + '"><b>' + e.n + '</b>' + e.y + '</span>').join('') + '</div><div class="twm-nt">每列左邊的色條＝所屬時期(分期採常見劃分,各書略有不同)</div></figure>';
   if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
-  if (!window.TWMAP || (sec.id !== 'np' && sec.id !== 'nsa')) return '';
-  const marks = [], leg = [];
-  idx.forEach(i => {
-    const r = sec.rows[i];
-    const name = plain(r.c[0]), keys = MAPKEYS[name] || [name], row = 'r-' + sec.id + '-' + i;
-    keys.forEach(k => { if (TWMAP.get(k)) marks.push({ k, n: i + 1, c: sec.id, row }); });
-    leg.push({ k: keys[0], n: i + 1, c: sec.id, row, label: name.replace(/(國家風景區|國家公園|國家自然公園)$/, '') });
-  });
-  return '<figure class="amap nomask">' + TWMAP.svg({ marks, title: sec.t + '分布圖' }) + TWMAP.legend(leg) + TWMAP.note + '</figure>';
+  return '';
+}
+/* 氣候與季風:洋流、季風示意(worldmap.js 的 flows)*/
+const FLOW_LEG = '<div class="wm-lg"><span><i style="background:#dc2626"></i>暖流</span><span><i style="background:#2563eb"></i>寒流</span><span><i style="background:#7c3aed;opacity:.6"></i>冬季季風(約 10–3 月)</span><span><i style="background:#ea580c;opacity:.6"></i>夏季西南季風(約 5–9 月)</span></div>';
+function climFlows(){
+  if (!window.WMAP) return '';
+  return '<figure class="amap nomask">' + WMAP.svg({ view: [100, 8, 160, 52], flows: ['冬季季風(日本)', '冬季季風(臺灣)@0.75', '夏季西南季風@0.35', '黑潮@0.3', '親潮', '對馬暖流', '中國沿岸流@0.3'], marks: [{ k: '臺北', label: '臺灣' }, { k: '金澤', label: '金澤(冬季多雪)' }], seas: ['東海', '南海', '日本海', '黃海'], title: '東亞的季風與洋流' }) + FLOW_LEG +
+    '<div class="twm-nt">冬季西伯利亞冷高壓吹出的季風:到日本是<b>西北風</b>(越過日本海,日本海側多雪,如金澤),到臺灣轉為<b>東北風</b>(北部、東北部多雨);夏季吹<b>西南季風</b>。<b>黑潮</b>(暖流)沿臺灣東部北上,<b>親潮</b>(寒流)由北南下,在日本東北外海交會;<b>中國沿岸流</b>冬季沿大陸沿岸南下,烏魚隨冷水洄游到臺灣西南沿海</div></figure>' +
+    '<figure class="amap nomask">' + WMAP.svg({ view: 'world', flows: ['北大西洋暖流@0.55', '巴西暖流', '福克蘭寒流', '本吉拉寒流', '祕魯寒流', '黑潮', '親潮'], marks: [{ k: '特羅姆瑟', label: '北歐(港口不凍)' }, { k: '福克蘭群島', label: '阿根廷外海漁場' }, { k: '納米比沙漠', label: '納米比沙漠' }, { k: '阿他加馬', label: '阿他加馬沙漠' }], title: '世界常考洋流' }) + FLOW_LEG +
+    '<div class="twm-nt">暖流讓沿岸冬溫較高(<b>北大西洋暖流</b> → 北歐港口不凍);寒流讓大氣穩定少雨(<b>本吉拉</b>、<b>祕魯寒流</b> → 沿海沙漠);<b>福克蘭寒流</b>與<b>巴西暖流</b>在阿根廷外海交會成漁場。示意走向,不作測量用途</div></figure>';
 }
 function qaCount(sec){ return sec.rows.reduce((n,r)=>n+(r.qa||[]).length,0); }
 function render(){
-  $('secRow').innerHTML = [['all','全部']].concat(D.sections.map(s=>[s.id, s.icon+' '+s.t])).map(([v,l])=>
-    `<button class="chip${SEC===v?' on':''}" type="button" data-v="${v}">${esc(l)}</button>`).join('');
+  /* 導覽:第一列「全部 + 分組」,第二列只列目前分組的區塊(自動換行,不會被切掉) */
+  const G = grpOf(SEC);
+  $('grpRow').innerHTML = `<button type="button" data-v="all"${SEC==='all'?' class="on"':''}>全部<small>${D.sections.length}</small></button>` +
+    (D.groups||[]).map(g=>`<button type="button" data-v="g-${g.id}"${G===g.id?' class="on"':''}>${g.icon} ${esc(g.t)}<small>${D.sections.filter(s=>s.g===g.id).length}</small></button>`).join('');
+  $('secRow').innerHTML = G ? D.sections.filter(s=>s.g===G).map(s=>
+    `<button class="chip${SEC===s.id?' on':''}" type="button" data-v="${s.id}">${esc(s.icon+' '+s.t)}</button>`).join('') : '';
   const kw = $('q').value.trim();
   const k = kw.toLowerCase();
   let html = '';
   D.sections.forEach(sec=>{
-    if (SEC !== 'all' && sec.id !== SEC) return;
+    if (SEC !== 'all' && sec.id !== SEC && 'g-'+sec.g !== SEC) return;
     const idx = [];
     sec.rows.forEach((r,i)=>{ if (!k || r.c.map(plain).join(' ').toLowerCase().includes(k)) idx.push(i); });
     if (!idx.length) return;
-    const open = kw || SEC !== 'all' ? ' open' : '';
+    const open = kw || IDS.includes(SEC) ? ' open' : '';
     html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
       <div class="sb"><div class="note">${sec.note}</div>${mapFor(sec, idx)}${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
       <div class="qz nomask"><button type="button" data-pair="${sec.id}">🎯 配對小測 ${qaCount(sec)} 題</button><button class="o" type="button" data-quiz="${sec.id}">📝 歷屆原題 ${QUIZ_N} 題</button><button class="o" type="button" data-quiz="${sec.id}" data-all="1">全部相關原題</button></div>
@@ -418,8 +491,6 @@ function render(){
   $('app').innerHTML = html || `<div class="empty">找不到「${esc(kw)}」<br><span style="font-size:.85rem">換個關鍵字或切到「全部」</span></div>`;
   MASK.prepare($('app'));
   MASK.set($('app'), MASKON);
-  const row = $('secRow'), on = row.querySelector('.chip.on');
-  if (on) row.scrollLeft = Math.max(0, on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2);
 }
 
 /* ===== 歷屆原題:本區出處題 + 依規則篩出的相關題(排除法規已變、官方答案不適用的題)===== */
@@ -499,13 +570,14 @@ function jumpRow(rid){
   el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 1400);
 }
 
-$('secRow').addEventListener('click', e=>{
-  const b = e.target.closest('.chip'); if (!b) return;
-  SEC = b.dataset.v; try { localStorage.setItem('pref_atlas_sec', SEC); } catch(err){}
+function goSec(v){
+  SEC = v; try { localStorage.setItem('pref_atlas_sec', SEC); } catch(err){}
   history.replaceState(null, '', SEC==='all' ? location.pathname + location.search : '#'+SEC);
   render(); window.scrollTo(0,0);
-});
-window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if (IDS.includes(h) && h!==SEC){ SEC = h; render(); } });
+}
+$('grpRow').addEventListener('click', e=>{ const b = e.target.closest('button[data-v]'); if (b) goSec(b.dataset.v); });
+$('secRow').addEventListener('click', e=>{ const b = e.target.closest('.chip'); if (b) goSec(b.dataset.v); });
+window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if ((IDS.includes(h) || GIDS.includes(h)) && h!==SEC){ SEC = h; render(); } });
 $('app').addEventListener('click', e=>{
   let b;
   if ((b = e.target.closest('[data-pair]'))) return pairStart(b.dataset.pair);

@@ -1,4 +1,4 @@
-/* worldmap.js — 世界位置示意地圖(離線 SVG,單一來源)· v144
+/* worldmap.js — 世界位置示意地圖(離線 SVG,單一來源)· v147
    ------------------------------------------------------------------
    WMAP.svg(opt) → SVG 字串
      opt.marks : [{ k:'地名', label?:'自訂標籤', side?:'r'|'l'|'u'|'d', t?:'c'|'n'|'m'|'x' }]
@@ -6,10 +6,13 @@
      opt.rivers: ['尼羅河', …] 要畫出的河川(藍色)/ 東非大裂谷等線狀地形也放這裡;'幼發拉底河@0.3' = 河名優先放在河道 30% 處
      opt.view  : 'auto'(依標記自動放大,預設)/ 'world' / [西經, 南緯, 東經, 北緯]
      opt.seas  : ['鄂霍次克海', …] 要標示的海名
+     opt.flows : ['黑潮', '冬季季風(臺灣)@0.6', …] 洋流與季風箭頭(紅 = 暖流、藍 = 寒流、紫 = 冬季季風、橘 = 夏季季風);@ 後為名稱位置
    WMAP.get(k) 查地名 → { k, lat, lon }      WMAP.typeLegend = 世界遺產類型圖例(HTML)
    解析裡用法:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-seas='北海' data-view='world'>
    海岸線為手繪簡化示意(誤差約 0.5–1 度),不作測量用途;不畫國界,國家以首都或代表地點標示。
    變更履歷:
+     v147 (2026-10-14) 新增洋流與季風箭頭(opt.flows:黑潮、親潮、對馬暖流、中國沿岸流、北大西洋暖流、巴西暖流、福克蘭寒流、
+                       本吉拉寒流、祕魯寒流、冬季季風、夏季西南季風);地名庫加入納米比沙漠(圖鑑「氣候與季風」用)
      v144 (2026-10-13) 地名庫加入蘭斯、滑鐵盧、多哥、喀麥隆、懷唐伊、昌昌、努克、烏鎮、九寨溝等 26 處(領隊 111 觀光資源解析用)
      v143 (2026-10-12) 地名庫加入上海、天津、煙臺、汕頭、呂宋(導遊 113 觀光資源解析用)
      v140 (2026-10-08) 地名庫加入泉州、漳州、潮州、安溪、福州、蚶江、五虎門、鹿港、八里(導遊 114 觀光資源解析用);
@@ -224,7 +227,9 @@
     ['懷唐伊', -35.27, 174.08], ['克萊蒙', 45.78, 3.08], ['波斯波利斯', 29.93, 52.89], ['雪邦', 2.76, 101.74], ['巨港', -2.99, 104.76],
     ['福克蘭群島', -51.7, -59.5], ['德古斯加巴', 14.07, -87.19, ['宏都拉斯']], ['昌昌', -8.11, -79.07], ['努克', 64.18, -51.72], ['加那利群島', 28.29, -16.63],
     ['拿索', 25.06, -77.34, ['巴哈馬']], ['小孩堤防', 51.88, 4.64], ['百內國家公園', -51.0, -73.0], ['烏鎮', 30.75, 120.49], ['九寨溝', 33.26, 103.92],
-    ['成都', 30.66, 104.07]
+    ['成都', 30.66, 104.07],
+    /* v147 圖鑑「氣候與季風」洋流圖用 */
+    ['納米比沙漠', -24.7, 15.3]
   ].forEach(function (a) { add(a[0], a[1], a[2], a[3]); });
 
   /* 海名(依需要標示,斜體藍字) */
@@ -233,6 +238,22 @@
     '波斯灣': [27.2, 51], '南海': [14, 114], '東海': [29, 125.5], '珊瑚海': [-16, 155], '泰國灣': [10.5, 101.5],
     '蘇必略湖': [47.7, -87.6], '密西根湖': [44, -86.95], '休倫湖': [44.9, -82.4], '伊利湖': [42.15, -81.3], '安大略湖': [43.62, -77.85],
     '安達曼海': [10.5, 96.3], '麻六甲海峽': [4.2, 99.9], '亞得里亞海': [43, 15.6], '愛琴海': [38.6, 25.2], '本吉拉涼流': [-25, 12.3], '貝加爾湖': [53.6, 108.1], '黑海': [43.3, 34.3], '孟加拉灣': [15.5, 88.5] };
+  /* 洋流與季風(緯度,經度;依流向排列,最後一點畫箭頭)· t:w 暖流、c 寒流、mw 冬季季風、ms 夏季季風;示意走向 */
+  var FLOWS = {
+    '黑潮': { t: 'w', n: '黑潮(暖流)', p: [[14.5, 125.6], [18, 123.7], [21, 122.7], [23, 122.25], [24.6, 122.7], [26.6, 124.9], [28.6, 127.6], [30.3, 130.3], [31.9, 132.9], [33.2, 135.9], [34.6, 139.3], [35.6, 142.6], [36.2, 146.6], [36.6, 152]] },
+    '親潮': { t: 'c', n: '親潮(寒流)', p: [[50.5, 158.5], [47.6, 154.2], [45.1, 150.3], [43.2, 147.2], [41.4, 145.2], [39.7, 143.8], [38.1, 143.2]] },
+    '對馬暖流': { t: 'w', n: '對馬暖流', p: [[30.5, 129.4], [32.6, 129.1], [34.5, 129.8], [36.4, 132.6], [38.4, 136.4], [40.8, 139.4]] },
+    '中國沿岸流': { t: 'c', n: '中國沿岸流(冬)', p: [[38, 121.9], [35.6, 121.3], [33.1, 121.5], [30.6, 122.7], [28.1, 121.8], [26.1, 120.4], [24.7, 119.45], [23.3, 118.7]] },
+    '冬季季風(日本)': { t: 'mw', n: '冬季季風(日本吹西北風)', p: [[48, 116], [45.3, 123.5], [41.5, 131.5], [38.2, 136.4]] },
+    '冬季季風(臺灣)': { t: 'mw', n: '冬季季風(臺灣吹東北風)', p: [[43, 126.5], [37.5, 127.2], [32, 127], [28, 125.2], [25.3, 122.1]] },
+    '夏季西南季風': { t: 'ms', n: '夏季西南季風', p: [[9.5, 107.5], [14.5, 112.5], [19.5, 117.2], [24.2, 121.4], [28.6, 126], [32.6, 131.2]] },
+    '北大西洋暖流': { t: 'w', n: '北大西洋暖流', p: [[26, -79.5], [33, -76], [38.2, -68], [41.5, -55], [45.5, -40], [50.5, -25], [55.5, -14], [60.5, -5], [64.5, 3], [68.5, 11], [71.3, 21]] },
+    '巴西暖流': { t: 'w', n: '巴西暖流', p: [[-12, -36.5], [-18, -38], [-24, -41.8], [-30, -46.3], [-36, -51.5]] },
+    '福克蘭寒流': { t: 'c', n: '福克蘭寒流', p: [[-56, -63.5], [-51, -61.2], [-46, -59.6], [-41, -56.8]] },
+    '本吉拉寒流': { t: 'c', n: '本吉拉寒流', p: [[-35, 17.3], [-30, 14.6], [-25, 13], [-20, 11.6], [-15, 10.6], [-10, 9.9]] },
+    '祕魯寒流': { t: 'c', n: '祕魯寒流', p: [[-42, -76.8], [-35, -74.9], [-28, -73.3], [-20, -72.7], [-12, -79.3], [-5, -83]] }
+  };
+  var FLU = 0;
   function tw(s) { var w = 2; for (var i = 0; i < s.length; i++) w += /[\u0000-ÿ]/.test(s[i]) ? 6.5 : 11; return w; }
   function get(k) { return P[String(k || '').trim()] || null; }
   var W = 360, WORLD = [-180, -58, 180, 80];
@@ -314,6 +335,27 @@
       });
       if (placed) { o += '<text class="rl' + (RIFT[n] ? ' rf' : '') + '" x="' + placed[0].toFixed(1) + '" y="' + (placed[1] + 9.5).toFixed(1) + '">' + n + '</text>'; taken.push(placed); }
     });
+    /* 洋流與季風:畫在河川之後、地點之前;名稱沿線找空位 */
+    var fls = (opt.flows || []).map(function (n0) { var rs = rsplit(n0); return FLOWS[rs[0]] ? { f: FLOWS[rs[0]], at: rs[1] } : null; }).filter(Boolean);
+    if (fls.length) {
+      var uid = 'wf' + (++FLU), used = {};
+      fls.forEach(function (x) { used[x.f.t] = 1; });
+      o += '<defs>' + Object.keys(used).map(function (t) { var sz = t.charAt(0) === 'm' ? 13 : 9; return '<marker id="' + uid + t + '" viewBox="0 0 10 10" refX="7" refY="5" markerUnits="userSpaceOnUse" markerWidth="' + sz + '" markerHeight="' + sz + '" orient="auto"><path class="ah ah-' + t + '" d="M0,0L10,5L0,10z"/></marker>'; }).join('') + '</defs>';
+      fls.forEach(function (x) { o += '<path class="fl fl-' + x.f.t + '" d="' + path(x.f.p, false) + '" marker-end="url(#' + uid + x.f.t + ')"/>'; });
+      fls.forEach(function (x) {
+        var seg0 = x.f.p, nm = x.f.n, w = tw(nm) * 0.9, placed = null;
+        var fr = [0.5, 0.35, 0.65, 0.2, 0.8]; if (x.at >= 0 && x.at <= 1) fr.unshift(x.at);
+        fr.some(function (fq) {
+          var pt = seg0[Math.min(seg0.length - 1, Math.round((seg0.length - 1) * fq))], q = xy(pt[0], pt[1]);
+          return [[q[0] + 6, q[1] - 6], [q[0] - 6 - w, q[1] - 6], [q[0] - w / 2, q[1] + 6], [q[0] - w / 2, q[1] - 18]].some(function (c) {
+            var bb = [c[0], c[1], c[0] + w, c[1] + 11];
+            if (bb[0] < 2 || bb[1] < 2 || bb[2] > W - 2 || bb[3] > H - 2 || hit(bb)) return false;
+            placed = bb; return true;
+          });
+        });
+        if (placed) { o += '<text class="fll fll-' + x.f.t + '" x="' + placed[0].toFixed(1) + '" y="' + (placed[1] + 8.6).toFixed(1) + '">' + nm + '</text>'; taken.push(placed); }
+      });
+    }
     var TC = { c: '#dc2626', n: '#16a34a', m: '#7c3aed', x: '#94a3b8' };
     marks.forEach(function (x, i) {
       var m = x.m, q = pos[i], lbl = m.label || x.p.k;
@@ -344,17 +386,21 @@
       '.wm .riv{fill:none;stroke:#2563eb;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.wm .rift{fill:none;stroke:#a16207;stroke-width:2.2;stroke-dasharray:4 3;stroke-linecap:round}' +
       '.wm .rl{font-size:9.5px;font-weight:800;fill:#1d4ed8;paint-order:stroke;stroke:#fff;stroke-width:3px}.wm .rl.rf{fill:#92400e}' +
       '.wm .sl{font-size:9px;font-style:italic;fill:#3b82f6;opacity:.85}' +
+      '.wm .fl{fill:none;stroke-linecap:round;stroke-linejoin:round}.wm .fl-w{stroke:#dc2626;stroke-width:2.2}.wm .fl-c{stroke:#2563eb;stroke-width:2.2}' +
+      '.wm .fl-mw{stroke:#7c3aed;stroke-width:5;opacity:.34}.wm .fl-ms{stroke:#ea580c;stroke-width:5;opacity:.34}.wm .ah-w{fill:#dc2626}.wm .ah-c{fill:#2563eb}.wm .ah-mw{fill:#7c3aed;opacity:.75}.wm .ah-ms{fill:#ea580c;opacity:.75}' +
+      '.wm .fll{font-size:8.6px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.wm .fll-w{fill:#b91c1c}.wm .fll-c{fill:#1d4ed8}.wm .fll-mw{fill:#6d28d9}.wm .fll-ms{fill:#c2410c}' +
       '.wm .lbl{font-size:10px;font-weight:700;fill:#1e293b;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}' +
       '.wm-nt{font-size:.74rem;color:var(--sub,#64748b);text-align:center;margin-top:2px}' +
       '.wm-lg{display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:center;font-size:.78rem;color:var(--sub,#64748b);margin-top:4px}.wm-lg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}' +
       '@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wm .sea,:root:not([data-theme="light"]) .wm .lake{fill:#0f2233}:root:not([data-theme="light"]) .wm .land{fill:#2b3326;stroke:#5b6b7c}' +
       ':root:not([data-theme="light"]) .wm .lbl{fill:#e2e8f0;stroke:#0f172a}:root:not([data-theme="light"]) .wm .rl{fill:#93c5fd;stroke:#0f172a}:root:not([data-theme="light"]) .wm .rl.rf{fill:#fbbf24}' +
-      ':root:not([data-theme="light"]) .wm .riv{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .grl{fill:#94a3b8;stroke:#0f172a}}' +
+      ':root:not([data-theme="light"]) .wm .riv{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .grl{fill:#94a3b8;stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll{stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll-w{fill:#fca5a5}:root:not([data-theme="light"]) .wm .fll-c{fill:#93c5fd}:root:not([data-theme="light"]) .wm .fll-mw{fill:#c4b5fd}:root:not([data-theme="light"]) .wm .fll-ms{fill:#fdba74}:root:not([data-theme="light"]) .wm .fl-w{stroke:#f87171}:root:not([data-theme="light"]) .wm .ah-w{fill:#f87171}:root:not([data-theme="light"]) .wm .fl-c{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .ah-c{fill:#60a5fa}}' +
+      ':root[data-theme="dark"] .wm .fll{stroke:#0f172a}:root[data-theme="dark"] .wm .fll-w{fill:#fca5a5}:root[data-theme="dark"] .wm .fll-c{fill:#93c5fd}:root[data-theme="dark"] .wm .fll-mw{fill:#c4b5fd}:root[data-theme="dark"] .wm .fll-ms{fill:#fdba74}:root[data-theme="dark"] .wm .fl-w{stroke:#f87171}:root[data-theme="dark"] .wm .ah-w{fill:#f87171}:root[data-theme="dark"] .wm .fl-c{stroke:#60a5fa}:root[data-theme="dark"] .wm .ah-c{fill:#60a5fa}' +
       ':root[data-theme="dark"] .wm .sea,:root[data-theme="dark"] .wm .lake{fill:#0f2233}:root[data-theme="dark"] .wm .land{fill:#2b3326;stroke:#5b6b7c}' +
       ':root[data-theme="dark"] .wm .lbl{fill:#e2e8f0;stroke:#0f172a}:root[data-theme="dark"] .wm .rl{fill:#93c5fd;stroke:#0f172a}:root[data-theme="dark"] .wm .rl.rf{fill:#fbbf24}:root[data-theme="dark"] .wm .riv{stroke:#60a5fa}:root[data-theme="dark"] .wm .grl{fill:#94a3b8;stroke:#0f172a}';
     (document.head || document.documentElement).appendChild(css);
   } catch (e) {}
   var NOTE = '<div class="wm-nt">示意圖 · 海岸線為簡化繪製、不畫國界(國家以首都或代表地點標示)</div>';
   var TYPELEG = '<div class="wm-lg"><span><i style="background:#dc2626"></i>文化遺產</span><span><i style="background:#16a34a"></i>自然遺產</span><span><i style="background:#7c3aed"></i>複合遺產</span><span><i style="background:#94a3b8"></i>已除名</span></div>';
-  window.WMAP = { svg: svg, get: get, note: NOTE, typeLegend: TYPELEG, rivers: Object.keys(LINES) };
+  window.WMAP = { svg: svg, get: get, note: NOTE, typeLegend: TYPELEG, rivers: Object.keys(LINES), flows: Object.keys(FLOWS) };
 })();
