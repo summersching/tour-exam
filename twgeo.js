@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v149
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型、南海諸島)· v151
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -10,9 +10,12 @@
      cfg.rgPr   : 山脈名稱的擺放順序(預設 5;山脈區設小一點,先於縣市名稱擺放)
      cfg.arrows : [{ k: 'w' 冬 / 's' 夏, p: [[經,緯], …], t: 名稱, at: 名稱位置 0~1 }] 季風等粗箭頭(只畫在全臺圖)
      cfg.texts  : [{ t: 文字, p: [經,緯] }] 區域說明文字(例:副熱帶季風氣候);cfg.tropic:不開四極圖層也畫北回歸線
-   TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱')
+   TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱' 'sc:西沙群島')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v151 (2026-10-14) 全臺圖左下加「南海諸島」小框:東沙、西沙、中沙、南沙四群島與周邊海岸(示意),綠 = 我國實際管轄
+                       (東沙島、南沙太平島)、灰 = 主張主權未實際管轄;點群島看說明、也能搜尋;東沙環礁放大圖移到下方;
+                       全臺圖下方多留一段海面放小框與圖例(原有縣市、地名位置都不變)
      v149 (2026-10-14) 圖說:釣魚臺列嶼、南海諸島改指向圖鑑「四極與臺灣之最」的位置圖
      v148 (2026-10-14) 阿里山加進山脈圖層(地理總圖也標出);東沙小框放大、礁盤環留兩個水道缺口、東沙島放大繪示;
                        新增 cfg.arrows / cfg.texts / cfg.tropic(氣候區畫東北季風、西南季風與副熱帶 / 熱帶季風氣候)
@@ -56,7 +59,36 @@
     { n: '阿里山', p: [120.805, 23.51], z: 0, d: '嘉義縣阿里山鄉,屬<b>阿里山山脈</b>(五大山脈最西邊一條);森林遊樂區:神木、日出、雲海、櫻花;阿里山林業鐵路 1912 年由嘉義通車到二萬坪;鄒族的居住地' }
   ];
 
-  /* ---- 分區(經緯範圍);全臺圖附金門、馬祖、東沙小框 ---- */
+  /* ---- 南海諸島小框(全臺圖左下):東沙、西沙、中沙、南沙 ----
+     群島範圍與主要島礁依公開經緯度約略標示;周邊海岸線是本專案手繪簡化(經度,緯度),不畫國界;
+     臺灣、澎湖、金門用上面國土測繪中心的縣市界線。綠 = 我國實際管轄、灰 = 我國主張主權但未實際管轄 */
+  var SCS_B = [109.8, 6.8, 122.4, 25.4], SCS_BOX = [6, 384, 104, 166];
+  var SCS_COAST = [
+    /* 中國大陸東南沿海:雷州半島、廣東、福建(框外的點只為了讓陸地正確填色) */
+    '108,21.6 109.1,21.45 109.6,21.55 109.75,21.2 109.82,20.7 109.95,20.4 110.2,20.25 110.5,20.3 110.55,20.7 110.4,21 110.45,21.25 110.75,21.35 111.05,21.45 111.6,21.55 112,21.75 112.5,21.8 112.85,21.9 113.15,22.05 113.55,22.15 113.65,22.5 113.85,22.45 114.15,22.25 114.45,22.35 114.7,22.6 115,22.7 115.4,22.75 115.85,22.85 116.3,22.95 116.7,23.3 117.15,23.55 117.5,23.75 117.9,24.1 118.1,24.45 118.6,24.6 118.85,24.95 119.2,25.2 119.55,25.45 119.7,25.9 120,26.3 120,27 108,27',
+    /* 海南島 */
+    '110.3,20.08 110.7,20.15 111.05,19.65 110.65,19.2 110.5,18.8 110.1,18.45 109.6,18.2 108.95,18.4 108.65,18.6 108.62,19.1 108.85,19.55 109.2,19.75 109.5,19.95 109.9,20.05',
+    /* 菲律賓:呂宋島、民都洛島、班乃島、巴拉望島、布桑加島 */
+    '120.58,18.52 120.95,18.6 121.6,18.38 122.15,18.5 122.25,17.9 122.45,17.05 122.3,16.5 122.1,16.15 121.6,15.75 121.42,15.35 121.65,14.75 121.95,14.15 122.8,14 122.8,13.6 122.4,13.5 122.1,13.85 121.6,13.92 121.3,13.72 121.05,13.7 120.65,13.78 120.62,14.1 120.7,14.3 120.9,14.48 120.98,14.6 120.85,14.75 120.6,14.75 120.55,14.55 120.48,14.43 120.32,14.6 120.2,14.85 120.05,15 119.97,15.35 119.9,15.75 119.85,16.2 119.92,16.42 120.05,16.15 120.33,16.05 120.4,16.25 120.32,16.62 120.42,17.1 120.38,17.57 120.48,18 120.55,18.25',
+    '120.32,13.45 120.95,13.52 121.2,13.42 121.45,13 121.52,12.6 121.35,12.3 121.05,12.3 120.75,12.55 120.6,12.85 120.4,13.2',
+    '121.95,11.95 122.5,12 123.2,11.6 123,10.8 122.5,10.65 122,10.45 121.95,10.9 121.87,11.4',
+    '119.45,11.45 119.55,11.05 119.52,10.82 119.4,10.45 119.35,10.32 119,10 118.74,9.74 118.5,9.45 118.2,9.1 117.83,8.78 117.45,8.5 117.17,8.35 117.3,8.7 117.65,9 117.98,9.23 118.3,9.65 118.6,10 118.9,10.3 119.25,10.53 119.3,10.9 119.39,11.18',
+    '119.9,12.25 120.35,12.2 120.3,11.85 119.95,11.85',
+    /* 婆羅洲北端(沙巴)、邦吉島 */
+    '115.3,5 115.8,5.6 116.1,6 116.45,6.45 116.75,6.75 116.85,7 117.05,6.85 117.3,6.65 117.75,6.4 118.2,5.8 119.3,5.3 118.5,4.3 116,4.5',
+    '117,7.35 117.3,7.3 117.25,7.1 117.05,7.1'
+  ];
+  /* 小框裡可點的項目(鍵 sc:名稱);p = 代表位置 */
+  var SCS = [
+    { n: '南海諸島', p: [114.5, 15], d: '<b>南海諸島</b> 東沙、西沙、中沙、南沙 4 大群島。我國實際管轄<b>東沙島</b>與南沙<b>太平島</b>、中洲礁(行政上屬<b>高雄市旗津區</b>);西沙、中沙我國主張主權,但未實際管轄。民國 104 年我國提出<b>南海和平倡議</b>(擱置主權爭議、共同開發資源)' },
+    { n: '東沙群島', p: [116.83, 20.71], d: '<b>東沙群島</b> 南海北部,在高雄西南方約 440 公里;圓形的珊瑚<b>環礁</b>(東沙環礁)加上主島<b>東沙島</b>。我國實際管轄,行政上屬<b>高雄市旗津區</b>;<b>東沙環礁國家公園</b>(民國 96 年)是我國第一座海洋型國家公園(考題:我國第一個設立的海洋保護區)' },
+    { n: '西沙群島', p: [112, 16.4], d: '<b>西沙群島</b> 南海西北部,在海南島東南方;我國主張主權,但未實際管轄' },
+    { n: '中沙群島', p: [114.3, 15.85], d: '<b>中沙群島</b> 南海中部、西沙群島東方;主體是大多沒露出海面的暗沙、暗礁(中沙大環礁);我國主張主權,但未實際管轄' },
+    { n: '南沙群島', p: [114.4, 9.6], d: '<b>南沙群島</b> 南海南部,範圍最廣、島礁最多;我國實際管轄<b>太平島</b>與中洲礁(行政上屬高雄市旗津區),其他島礁我國主張主權,但未實際管轄' },
+    { n: '太平島', p: [114.37, 10.38], d: '<b>太平島</b> 南沙群島中最大的自然島;我國實際管轄(高雄市旗津區),島上有機場、醫院、燈塔,由海巡駐守' }
+  ];
+
+  /* ---- 分區(經緯範圍);全臺圖附金門、馬祖、東沙、南海諸島小框 ---- */
   var VIEWS = [
     ['all', '全臺', [119.25, 21.85, 122.10, 25.35]],
     ['n', '北部', [120.78, 24.28, 122.06, 25.36]],
@@ -73,7 +105,7 @@
   var INSETS = [
     { g: 'z', t: '馬祖(連江縣)', box: [6, 6, 112, 84], b: [119.88, 25.93, 120.54, 26.40] },
     { g: 'k', t: '金門縣', box: [6, 96, 112, 66], b: [118.13, 24.37, 118.50, 24.55] },
-    { g: 'd', t: '東沙環礁(高雄市)', box: [6, 384, 90, 82], b: [116.665, 20.575, 116.995, 20.845] }
+    { g: 'd', t: '東沙環礁(高雄市)', box: [114, 468, 90, 82], b: [116.665, 20.575, 116.995, 20.845] }
   ];
   var W = 360, PAD = 8;
   function proj(b, box) {
@@ -152,6 +184,7 @@
     if (k === 'ld') { var l = D.LD.filter(function (x) { return x.n === n; })[0]; return l ? '<b>' + esc(l.n) + '</b> ' + esc(l.d) : ''; }
     if (k === 'pt') { var q = D.PT.filter(function (x) { return x.n === n; })[0]; return q ? '<b>' + esc(q.n) + '</b> ' + esc(q.d) : ''; }
     if (k === 'mk') { var m = (cfg.marks || []).filter(function (x) { return x.n === n; })[0]; return m ? '<b>' + esc(m.n) + '</b> ' + (m.d || '') : ''; }
+    if (k === 'sc') { var sc = SCS.filter(function (x) { return x.n === n; })[0]; return sc ? sc.d : ''; }
     if (k === 'tr') return '<b>北回歸線</b> 北緯約 23.5 度,太陽在北半球能直射的最北界;臺灣設有標誌的地方:嘉義水上、花蓮瑞穗(舞鶴台地)、花蓮豐濱(靜浦)';
     return '';
   }
@@ -159,6 +192,8 @@
   /* ---- 畫一張圖 ---- */
   function render(id) {
     var st = ST[id], cfg = st.cfg, L = st.on, v = VB[st.v] || VB.all, f = proj(v[2]), H = f.H;
+    if (st.v === 'all') H = Math.max(H, SCS_BOX[1] + SCS_BOX[3] + 6);   /* 全臺圖下方多留海面放南海諸島小框、東沙放大圖與圖例 */
+    var fsc = null;
     var zmax = st.v === 'all' ? 0 : (v[0] === 'p' || v[0] === 'k' || v[0] === 'z') ? 2 : 1;
     var minD = st.v === 'all' ? 1.1 : 0.6;
     var PA = arcsFor(f, minD);
@@ -182,7 +217,7 @@
     if (st.v === 'all') {
       INSETS.forEach(function (ins) {
         var b = ins.box, fi = proj(ins.b, b);
-        o += '<rect class="ib" x="' + b[0] + '" y="' + b[1] + '" width="' + b[2] + '" height="' + b[3] + '" rx="6" data-tgv="' + (ins.g === 'd' ? '' : ins.g) + '"/>';
+        o += '<rect class="ib" x="' + b[0] + '" y="' + b[1] + '" width="' + b[2] + '" height="' + b[3] + '" rx="6" ' + (ins.g === 'd' ? 'data-f="sc:東沙群島"' : 'data-tgv="' + ins.g + '"') + '/>';
         o += '<text class="cap" x="' + (b[0] + 5) + '" y="' + (b[1] + 11) + '">' + ins.t + '</text>';
         var PAi = arcsFor(fi, 0.3);
         if (ins.g === 'd') {
@@ -197,10 +232,43 @@
           PAi = PAi.map(function (a, i) { return used[i] ? a.map(function (q) { return [ic[0] + (q[0] - ic[0]) * 3, ic[1] + (q[1] - ic[1]) * 3]; }) : a; });
         }
         o += landGroup(fi, PAi, ins.g);
-        if (ins.g === 'd') labels.push({ pr: 6, t: '東沙島', fs: 8, cls: 'tgl isl', at: fi([116.722, 20.703]), ins: true, key: '' });
-        taken.push([b[0], b[1], b[0] + b[2], b[1] + b[3], 'ins']);
-        ins.f = fi;
+        if (ins.g === 'd') labels.push({ pr: 6, t: '東沙島', fs: 8, cls: 'tgl isl', at: fi([116.722, 20.703]), ins: 'd', key: '' });
+        taken.push([b[0], b[1], b[0] + b[2], b[1] + b[3], 'ins', ins.g]);
+        fi.iid = ins.g; ins.f = fi;
       });
+      /* 南海諸島小框:周邊陸地(手繪簡化)+ 臺灣、澎湖、金門(綠)+ 四群島;陸地放在內層 svg 裡,超出小框的部分自動裁掉 */
+      var sb = SCS_BOX, hlS = st.hl === 'sc:南海諸島';
+      fsc = proj(SCS_B, sb); fsc.iid = 'scs';
+      var c0 = fsc([SCS_B[0], SCS_B[3]]), c1 = fsc([SCS_B[2], SCS_B[1]]), vw = n1(c1[0] - c0[0]), vh = n1(c1[1] - c0[1]);
+      var sP = function (p) { var q = fsc(p); return n1(q[0]) + ',' + n1(q[1]); };
+      var sPoly = function (s) { return s.split(' ').map(function (t) { return sP(t.split(',').map(Number)); }).join(' '); };
+      var sDot = function (p, r, cls) { var q = fsc(p); return '<circle class="' + cls + '" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="' + r + '"/>'; };
+      var sTxt = function (t, p, dx, dy, anc, cls) { var q = fsc(p); return '<text class="scl' + (cls || '') + '" x="' + n1(q[0] + dx) + '" y="' + n1(q[1] + dy) + '" text-anchor="' + anc + '">' + t + '</text>'; };
+      var sHit = function (b) { var q0 = fsc([b[0], b[3]]), q1 = fsc([b[2], b[1]]); return '<rect class="sch" x="' + n1(q0[0]) + '" y="' + n1(q0[1]) + '" width="' + n1(q1[0] - q0[0]) + '" height="' + n1(q1[1] - q0[1]) + '"/>'; };
+      var sG = function (n, body) { return '<g data-f="sc:' + n + '"' + (st.hl === 'sc:' + n || (hlS && n !== '太平島') ? ' class="hi"' : '') + '>' + body + '</g>'; };
+      var sDots = function (a) { return a.map(function (p) { return sDot(p, 0.9, 'scd'); }).join(''); };
+      var sLand = '', PAs = arcsFor(fsc, 0.9), twd = '';
+      SCS_COAST.forEach(function (s) { sLand += '<polygon class="sland" points="' + sPoly(s) + '"/>'; });
+      D.C.forEach(function (c) { c.R.forEach(function (r, i) { if (c.G[i] === 'm' || c.G[i] === 'k') twd += ringPath(r, PAs); }); });
+      var dsq = fsc([116.83, 20.71]), msq = fsc([114.3, 15.85]), seaq = fsc([117.6, 17.9]);
+      o += '<rect class="ib" x="' + sb[0] + '" y="' + sb[1] + '" width="' + sb[2] + '" height="' + sb[3] + '" rx="6" data-f="sc:南海諸島"/>' +
+        '<text class="cap" x="' + (sb[0] + 5) + '" y="' + (sb[1] + 11) + '">南海諸島</text>' +
+        '<svg class="scs-in" x="' + n1(c0[0]) + '" y="' + n1(c0[1]) + '" width="' + vw + '" height="' + vh + '" viewBox="' + n1(c0[0]) + ' ' + n1(c0[1]) + ' ' + vw + ' ' + vh + '">' + sLand + '<path class="tland" d="' + twd + '"/></svg>' +
+        '<text class="scs-sea" x="' + n1(seaq[0]) + '" y="' + n1(seaq[1] + 3) + '" text-anchor="middle">南海</text>' +
+        sG('東沙群島', sHit([113, 19.9, 117.6, 21.4]) + '<circle class="scr" cx="' + n1(dsq[0]) + '" cy="' + n1(dsq[1]) + '" r="3.3"/>' + sDot([116.72, 20.7], 1.1, 'sco') + sTxt('東沙群島', [116.83, 20.71], -5.5, 2.8, 'end')) +
+        sG('西沙群島', sHit([110.9, 15.5, 114.3, 18.4]) + '<polygon class="scg" points="' + sPoly('111.3,17.25 112.45,17.15 112.95,16.75 112.75,15.9 111.05,15.6 111,16.3') + '"/>' +
+          sDots([[111.48, 17.08], [112.33, 16.83], [112.73, 16.67], [111.65, 16.5], [111.2, 15.78], [112.52, 16.03]]) + sTxt('西沙群島', [113, 17.25], 0, -3.5, 'middle')) +
+        sG('中沙群島', sHit([113.5, 15.1, 118.8, 16.6]) + '<ellipse class="scg" cx="' + n1(msq[0]) + '" cy="' + n1(msq[1]) + '" rx="5.6" ry="3.3" transform="rotate(-28 ' + n1(msq[0]) + ' ' + n1(msq[1]) + ')"/>' + sTxt('中沙群島', [114.3, 15.85], 7.5, 2, 'start')) +
+        sG('南沙群島', sHit([111.3, 6.95, 117.6, 13]) + '<polygon class="scg" points="' + sPoly('111.6,8.3 111.75,9.9 113,11.2 114.1,11.75 115.5,11.85 116.9,11.75 117.35,10.6 116.5,8.8 114.7,7.2 113.4,7.05 112.3,7.6') + '"/>' +
+          sDots([[114.28, 11.05], [111.92, 8.64], [112.89, 9.55], [115.53, 9.9], [113.84, 7.37], [112.9, 7.88]]) + sTxt('南沙群島', [114.3, 11.85], 0, -3.5, 'middle')) +
+        sG('太平島', sHit([113.95, 9.95, 117.6, 11]) + sDot([114.37, 10.38], 2.3, 'sco') + sTxt('太平島', [114.37, 10.38], 3.6, -1.6, 'start', ' own'));
+      taken.push([sb[0], sb[1], sb[0] + sb[2], sb[1] + sb[3], 'ins', 'scs']);
+      /* 南海諸島圖例:放在全臺圖下方多留的海面 */
+      var lgx = 214, lgy = 497;
+      o += '<g class="scs-lg" data-f="sc:南海諸島"><circle class="lgo" cx="' + (lgx + 4) + '" cy="' + (lgy - 3) + '" r="3.6"/><text x="' + (lgx + 11) + '" y="' + lgy + '">我國實際管轄</text>' +
+        '<text class="sub" x="' + (lgx + 11) + '" y="' + (lgy + 12) + '">臺澎金馬、東沙島、南沙太平島</text>' +
+        '<circle class="lgc" cx="' + (lgx + 4) + '" cy="' + (lgy + 25) + '" r="3.6"/><text x="' + (lgx + 11) + '" y="' + (lgy + 28) + '">我國主張主權、未實際管轄</text></g>';
+      taken.push([lgx, lgy - 10, W - 2, lgy + 32]);
     }
     /* 海岸類型 */
     if (L.coast && gmain === 'm') {
@@ -279,14 +347,15 @@
       else s = '<circle class="tgk" fill="' + col + '" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="3.6"/>';
       var g = '<g data-f="' + key + '"' + (st.hl === key ? ' class="hi"' : '') + '>' + s + '</g>', box = [q[0] - 5, q[1] - 5, q[0] + 5, q[1] + 5];
       if (alt === lab) alt = null;
-      if (lab && pr >= 5 && st.hl !== key) { labels.push({ pr: pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f, dot: g, dbox: box }); return; }
+      if (lab && pr >= 5 && st.hl !== key) { labels.push({ pr: pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null, dot: g, dbox: box }); return; }
       o += g; taken.push(box);
-      if (lab) labels.push({ pr: st.hl === key ? 0 : pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f });
+      if (lab) labels.push({ pr: st.hl === key ? 0 : pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null });
     }
     function where(p) {
       if (gmain !== 'm') return f.inb(p) ? f : null;
       if (f.inb(p)) return f;
       if (st.v === 'all') for (var i = 0; i < INSETS.length; i++) if (INSETS[i].f && INSETS[i].f.inb(p)) return INSETS[i].f;
+      if (fsc && fsc.inb(p)) return fsc;   /* 南海諸島範圍 */
       return null;
     }
     D.PT.forEach(function (p) {
@@ -341,7 +410,7 @@
     var drawnT = [];   /* 已畫出的標籤文字(離島名稱判斷要不要省略) */
     labels.forEach(function (l) {
       if (l.isl && drawnT.some(function (t) { return t.indexOf(l.isl) >= 0; })) return;
-      function hit(bb) { return taken.some(function (t) { return !(l.ins && t[4] === 'ins') && !(bb[2] < t[0] || t[2] < bb[0] || bb[3] < t[1] || t[3] < bb[1]); }); }
+      function hit(bb) { return taken.some(function (t) { return !(l.ins && t[4] === 'ins' && t[5] === l.ins) && !(bb[2] < t[0] || t[2] < bb[0] || bb[3] < t[1] || t[3] < bb[1]); }); }
       if (l.dbox && hit(l.dbox)) return;
       /* 候選位置:右、左、上、下(上下與點框、山峰三角形留間距,不會壓到自己),再試四個斜角 */
       function candsOf(t) {
@@ -389,6 +458,7 @@
     D.C.forEach(function (c) { a.push(c.n); }); D.C.forEach(function (c) { if (a.indexOf(c.seat[0]) < 0 && c.seat[0] !== c.n.slice(0, -1)) a.push(c.seat[0]); });
     D.RV.forEach(function (r) { a.push(r.n); }); D.PK.forEach(function (p) { a.push(p.n); }); MA.forEach(function (m) { a.push(m.n); });
     D.RG.forEach(function (g) { a.push(g.n); }); D.LD.forEach(function (l) { a.push(l.n); }); D.PT.forEach(function (p) { a.push(p.n); });
+    SCS.forEach(function (s) { if (a.indexOf(s.n) < 0) a.push(s.n); });
     (cfg.marks || []).forEach(function (m) { if (a.indexOf(m.n) < 0) a.push(m.n); });
     return a;
   }
@@ -396,7 +466,7 @@
     name = String(name || '').trim(); if (!name) return null;
     var hit = function (arr, k, fn) { for (var i = 0; i < arr.length; i++) if (fn(arr[i])) return k + ':' + (k === 'rv' ? arr[i].id : arr[i].n); return null; };
     var eq = function (x) { var m = x.n.match(/^(.*)\((.*)\)$/); return x.n === name || (m && (m[1] === name || m[2] === name)); }, pre = function (x) { return x.n.indexOf(name) === 0; };
-    var sets = [[D.C, 'cty'], [D.RV, 'rv'], [D.PK, 'pk'], [MA, 'ma'], [D.RG, 'rg'], [D.PT, 'pt'], [D.LD, 'ld'], [cfg.marks || [], 'mk']];
+    var sets = [[D.C, 'cty'], [D.RV, 'rv'], [D.PK, 'pk'], [MA, 'ma'], [D.RG, 'rg'], [D.PT, 'pt'], [D.LD, 'ld'], [cfg.marks || [], 'mk'], [SCS, 'sc']];
     for (var i = 0; i < sets.length; i++) { var k = hit(sets[i][0], sets[i][1], eq); if (k) return k; }
     for (var c = 0; c < D.C.length; c++) if (D.C[c].seat[0] === name) return 'cty:' + D.C[c].n;   /* 縣市政府所在地(竹北、太保、斗六…) */
     if (name.length >= 2) for (var j = 0; j < sets.length; j++) { var k2 = hit(sets[j][0], sets[j][1], pre); if (k2) return k2; }
@@ -406,7 +476,7 @@
     var t = key.split(':'), k = t[0], n = t.slice(1).join(':');
     if (k === 'cty') { var c = CBY[n]; return c ? c.lp : null; }
     if (k === 'rv') { var r = D.RV.filter(function (x) { return x.id === n; })[0]; return r ? r.lp : null; }
-    var arr = { pk: D.PK, ma: MA, pt: D.PT, ld: D.LD, mk: cfg.marks || [] }[k];
+    var arr = { pk: D.PK, ma: MA, pt: D.PT, ld: D.LD, mk: cfg.marks || [], sc: SCS }[k];
     if (arr) { var x = arr.filter(function (y) { return y.n === n; })[0]; return x ? x.p : null; }
     if (k === 'rg') { var g = D.RG.filter(function (y) { return y.n === n; })[0]; return g ? g.segs[0][Math.floor(g.segs[0].length / 2)] : null; }
     return null;
@@ -414,6 +484,7 @@
   /* 讓項目看得見:必要時開圖層、換分區 */
   function reveal(st, key) {
     var k = key.split(':')[0], n = key.split(':').slice(1).join(':');
+    if (k === 'sc') { st.v = 'all'; return; }   /* 南海諸島只畫在全臺圖 */
     var layer = { cty: 'cty', rv: 'rv', pk: 'mt', ma: 'mt', rg: 'mt', ld: 'pt', mk: 'mk', tr: 'pole' }[k];
     if (k === 'pt') { var p = D.PT.filter(function (x) { return x.n === n; })[0]; layer = p && (p.t === 'pole' || p.t === 'tropic') ? 'pole' : 'pt'; }
     if (layer && st.on[layer] === 0) st.on[layer] = 1;
@@ -452,7 +523,7 @@
       '</div></div><div class="tg-ls">' + Object.keys(st.on).map(function (k) { return '<button type="button" data-tgl="' + k + '"' + (st.on[k] ? ' class="on"' : '') + '>' + (k === 'mk' && cfg.mkName ? cfg.mkName : LAYER_T[k]) + '</button>'; }).join('') +
       '<input class="tg-q" type="search" list="tgdl-' + id + '" placeholder="🔎 找:玉山、濁水溪、太保…" aria-label="在地圖上找地名"><datalist id="tgdl-' + id + '">' + names(cfg).map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist></div>' +
       '<div class="tg-map" data-lazy="1"><div class="tg-ph"></div></div><div class="tg-info">' + (cfg.hint || '👆 點地圖上的縣市、河川、山或地名看說明;也可以在右上搜尋') + '</div>' +
-      (cfg.legend || '') + '<figcaption class="tg-cap">縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版);河川長度與流域:經濟部水利署;河川、山脈為示意走向。釣魚臺列嶼、南海諸島(西沙、中沙、南沙太平島)見圖鑑「四極與臺灣之最」的位置圖;彭佳嶼等外海小島因版面未繪。</figcaption></figure>';
+      (cfg.legend || '') + '<figcaption class="tg-cap">縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版);河川長度與流域:經濟部水利署;河川、山脈為示意走向。南海諸島在全臺圖左下小框(周邊海岸線為簡化示意,不畫國界);釣魚臺列嶼見圖鑑「四極與臺灣之最」的位置圖;彭佳嶼等外海小島因版面未繪。</figcaption></figure>';
     return html;
   }
   function focus(id, key) {
@@ -509,12 +580,19 @@
         '.tg-vs button.on{background:var(--sel,#15803d);border-color:var(--sel,#15803d);color:var(--onsel,#fff)}' +
         '.tg-ls{margin-top:5px;flex-wrap:wrap}.tg-ls button{font-size:.74rem;padding:2px 9px;color:var(--sub,#64748b)}.tg-ls button.on{border-color:var(--sel,#15803d);color:var(--sel,#15803d);background:var(--soft,#e9f6ee)}' +
         '.tg-q{flex:1 1 140px;min-width:120px;border:1.5px solid var(--line,#d8dee9);background:var(--card,#fff);color:var(--ink,#1c2330);border-radius:999px;padding:3px 10px;font-size:.78rem;font-family:inherit}' +
-        '.tg-map{margin-top:6px}.tg-ph{aspect-ratio:360/477;max-width:520px;margin:0 auto;border-radius:10px;background:var(--soft,#e6f2fb)}.tgm{width:100%;max-width:520px;height:auto;display:block;margin:0 auto;-webkit-user-select:none;user-select:none}' +
+        '.tg-map{margin-top:6px}.tg-ph{aspect-ratio:360/556;max-width:520px;margin:0 auto;border-radius:10px;background:var(--soft,#e6f2fb)}.tgm{width:100%;max-width:520px;height:auto;display:block;margin:0 auto;-webkit-user-select:none;user-select:none}' +
         '.tgm .sea{fill:#e6f2fb}.tgm .land{fill:#f4f1e4;stroke:#94a3b8;stroke-width:.7}.tgm .cty{stroke:#94a3b8;stroke-width:.7;cursor:pointer}' +
         '.tgm .r1{fill:#fef3c7}.tgm .r2{fill:#dcfce7}.tgm .r3{fill:#ffe4e6}.tgm .r4{fill:#ede9fe}.tgm .r5{fill:#ffedd5}' +
         '.tgm .lagoon{fill:#d4ecfb}.tgm .reef{fill:none;stroke:#f9a8a8;stroke-width:4.2;stroke-linecap:round;opacity:.95}.tgm .isl{fill:#475569;font-weight:600;font-style:italic}.tgm .rgl{fill:#92400e}' +
         '.tgm .cty.hi,.tgm .land.hi{fill:#fde047;stroke:#a16207;stroke-width:1.4}' +
         '.tgm .ib{fill:#eef6fc;stroke:#9aa8b8;stroke-dasharray:3 2;cursor:pointer}.tgm .cap{font-size:8.5px;fill:#64748b;pointer-events:none}' +
+        '.tgm .scs-in{pointer-events:none}.tgm .sland{fill:#e9e4d4;stroke:#a8b3c0;stroke-width:.45}.tgm .tland{fill:#4ade80}' +
+        '.tgm .scg{fill:#94a3b8;fill-opacity:.22;stroke:#64748b;stroke-width:.8;stroke-dasharray:2 1.4}.tgm .scd{fill:#64748b}' +
+        '.tgm .scr{fill:#dcfce7;stroke:#16a34a;stroke-width:1.5}.tgm .sco{fill:#16a34a;stroke:#fff;stroke-width:.7}.tgm .sch{fill:transparent;cursor:pointer}' +
+        '.tgm .scl{font-size:8px;font-weight:700;fill:#334155;paint-order:stroke;stroke:#eef6fc;stroke-width:2.4px;stroke-linejoin:round;cursor:pointer}.tgm .scl.own{fill:#15803d}' +
+        '.tgm .scs-sea{font-size:8.5px;font-style:italic;fill:#64748b;pointer-events:none}' +
+        '.tgm .hi .scg{fill:#fecdd3;fill-opacity:.8;stroke:#e11d48;stroke-width:1.2;stroke-dasharray:none}.tgm .hi .scr{stroke:#e11d48}.tgm .hi .sco{fill:#e11d48}.tgm .hi .scl{fill:#e11d48}' +
+        '.tgm .scs-lg{cursor:pointer}.tgm .scs-lg text{font-size:8.5px;font-weight:700;fill:#334155}.tgm .scs-lg .sub{font-size:8px;font-weight:600;fill:#64748b}.tgm .lgo{fill:#16a34a}.tgm .lgc{fill:#94a3b8}' +
         '.tgm .ct{fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;opacity:.9;pointer-events:none}' +
         '.tgm .tgr{fill:none;stroke:#2563eb;stroke-linejoin:round;stroke-linecap:round}.tgm .tgr.c1{stroke-width:1.7}.tgm .tgr.c2{stroke-width:1.2}.tgm .tgr.c3{stroke-width:.9;opacity:.85}' +
         '.tgm .tgr.hi{stroke:#e11d48;stroke-width:3.2}' +
@@ -546,14 +624,14 @@
         ':root:not([data-theme="light"]) .tgm .pkl{fill:#fdba74}:root:not([data-theme="light"]) .tgm .ldl{fill:#94a3b8}:root:not([data-theme="light"]) .tgm .stl{fill:#cbd5e1}' +
         ':root:not([data-theme="light"]) .tgm .seat{fill:#0f172a;stroke:#cbd5e1}:root:not([data-theme="light"]) .tgm .cty.hi{fill:#854d0e}' +
         ':root:not([data-theme="light"]) .tgm .lagoon{fill:#163a55}:root:not([data-theme="light"]) .tgm .reef{stroke:#be4b5c}:root:not([data-theme="light"]) .tgm .isl{fill:#cbd5e1}:root:not([data-theme="light"]) .tgm .rgl{fill:#fbbf24}' +
-        ':root:not([data-theme="light"]) .tgm .mal{fill:#86efac}:root:not([data-theme="light"]) .tgm .tgal-w{fill:#93c5fd}:root:not([data-theme="light"]) .tgm .tgal-s{fill:#fdba74}:root:not([data-theme="light"]) .tgm .tgz{fill:#86efac}:root:not([data-theme="light"]) .tgm .tga-w .tgab{stroke:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-w .tgah{fill:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-s .tgab{stroke:#fb923c}:root:not([data-theme="light"]) .tgm .tga-s .tgah{fill:#fb923c}}' +
+        ':root:not([data-theme="light"]) .tgm .sland{fill:#3a4034;stroke:#5b6b7c}:root:not([data-theme="light"]) .tgm .tland{fill:#15803d}:root:not([data-theme="light"]) .tgm .scg{fill:#94a3b8;stroke:#94a3b8}:root:not([data-theme="light"]) .tgm .scd{fill:#94a3b8}:root:not([data-theme="light"]) .tgm .scr{fill:#14532d}:root:not([data-theme="light"]) .tgm .scl{fill:#e2e8f0;stroke:#132a3d}:root:not([data-theme="light"]) .tgm .scl.own{fill:#86efac}:root:not([data-theme="light"]) .tgm .scs-sea{fill:#94a3b8}:root:not([data-theme="light"]) .tgm .scs-lg text{fill:#e2e8f0}:root:not([data-theme="light"]) .tgm .scs-lg .sub{fill:#94a3b8}:root:not([data-theme="light"]) .tgm .hi .scg{fill:#7f1d1d;stroke:#fb7185}:root:not([data-theme="light"]) .tgm .hi .scl{fill:#fda4af}:root:not([data-theme="light"]) .tgm .hi .scr{stroke:#fb7185}:root:not([data-theme="light"]) .tgm .mal{fill:#86efac}:root:not([data-theme="light"]) .tgm .tgal-w{fill:#93c5fd}:root:not([data-theme="light"]) .tgm .tgal-s{fill:#fdba74}:root:not([data-theme="light"]) .tgm .tgz{fill:#86efac}:root:not([data-theme="light"]) .tgm .tga-w .tgab{stroke:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-w .tgah{fill:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-s .tgab{stroke:#fb923c}:root:not([data-theme="light"]) .tgm .tga-s .tgah{fill:#fb923c}}' +
         ':root[data-theme="dark"] .tgm .sea{fill:#0f2233}:root[data-theme="dark"] .tgm .land{fill:#2b3326;stroke:#5b6b7c}' +
         ':root[data-theme="dark"] .tgm .cty{stroke:#5b6b7c}:root[data-theme="dark"] .tgm .r1{fill:#3b3315}:root[data-theme="dark"] .tgm .r2{fill:#16301f}' +
         ':root[data-theme="dark"] .tgm .r3{fill:#3a1f24}:root[data-theme="dark"] .tgm .r4{fill:#2a2340}:root[data-theme="dark"] .tgm .r5{fill:#3b2a17}' +
         ':root[data-theme="dark"] .tgm .ib{fill:#132a3d;stroke:#5b6b7c}:root[data-theme="dark"] .tgm .tgl{fill:#e2e8f0;stroke:#0f172a}' +
         ':root[data-theme="dark"] .tgm .tgr{stroke:#60a5fa}:root[data-theme="dark"] .tgm .rvl{fill:#93c5fd}:root[data-theme="dark"] .tgm .ctl{fill:#e2e8f0}' +
         ':root[data-theme="dark"] .tgm .pkl{fill:#fdba74}:root[data-theme="dark"] .tgm .ldl{fill:#94a3b8}:root[data-theme="dark"] .tgm .stl{fill:#cbd5e1}' +
-        ':root[data-theme="dark"] .tgm .mal{fill:#86efac}:root[data-theme="dark"] .tgm .tgal-w{fill:#93c5fd}:root[data-theme="dark"] .tgm .tgal-s{fill:#fdba74}:root[data-theme="dark"] .tgm .tgz{fill:#86efac}:root[data-theme="dark"] .tgm .tga-w .tgab{stroke:#60a5fa}:root[data-theme="dark"] .tgm .tga-w .tgah{fill:#60a5fa}:root[data-theme="dark"] .tgm .tga-s .tgab{stroke:#fb923c}:root[data-theme="dark"] .tgm .tga-s .tgah{fill:#fb923c}' +
+        ':root[data-theme="dark"] .tgm .sland{fill:#3a4034;stroke:#5b6b7c}:root[data-theme="dark"] .tgm .tland{fill:#15803d}:root[data-theme="dark"] .tgm .scg{fill:#94a3b8;stroke:#94a3b8}:root[data-theme="dark"] .tgm .scd{fill:#94a3b8}:root[data-theme="dark"] .tgm .scr{fill:#14532d}:root[data-theme="dark"] .tgm .scl{fill:#e2e8f0;stroke:#132a3d}:root[data-theme="dark"] .tgm .scl.own{fill:#86efac}:root[data-theme="dark"] .tgm .scs-sea{fill:#94a3b8}:root[data-theme="dark"] .tgm .scs-lg text{fill:#e2e8f0}:root[data-theme="dark"] .tgm .scs-lg .sub{fill:#94a3b8}:root[data-theme="dark"] .tgm .hi .scg{fill:#7f1d1d;stroke:#fb7185}:root[data-theme="dark"] .tgm .hi .scl{fill:#fda4af}:root[data-theme="dark"] .tgm .hi .scr{stroke:#fb7185}:root[data-theme="dark"] .tgm .mal{fill:#86efac}:root[data-theme="dark"] .tgm .tgal-w{fill:#93c5fd}:root[data-theme="dark"] .tgm .tgal-s{fill:#fdba74}:root[data-theme="dark"] .tgm .tgz{fill:#86efac}:root[data-theme="dark"] .tgm .tga-w .tgab{stroke:#60a5fa}:root[data-theme="dark"] .tgm .tga-w .tgah{fill:#60a5fa}:root[data-theme="dark"] .tgm .tga-s .tgab{stroke:#fb923c}:root[data-theme="dark"] .tgm .tga-s .tgah{fill:#fb923c}' +
         ':root[data-theme="dark"] .tgm .seat{fill:#0f172a;stroke:#cbd5e1}:root[data-theme="dark"] .tgm .cty.hi{fill:#854d0e}' +
         ':root[data-theme="dark"] .tgm .lagoon{fill:#163a55}:root[data-theme="dark"] .tgm .reef{stroke:#be4b5c}:root[data-theme="dark"] .tgm .isl{fill:#cbd5e1}:root[data-theme="dark"] .tgm .rgl{fill:#fbbf24}';
       (document.head || document.documentElement).appendChild(css);

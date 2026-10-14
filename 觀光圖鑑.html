@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v150(2026-10-14)
+<!-- 觀光資源圖鑑 · v151(2026-10-14)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
      宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v151 臺灣地圖(全臺圖)左下加「南海諸島」小框:東沙、西沙、中沙、南沙,點群島看說明;東沙環礁放大圖移到下方
        v150 導覽改「目錄格 → 單區頁」:目錄依分組一行三格;單區頁上方黏住「‹ 目錄 | 區名 | 上一區 / 下一區」,頁尾也有上一區 / 下一區;
             一次只顯示一區,區塊再多頁面也不會越來越長;搜尋跨區列出;目錄上方「繼續看」上次的區
        v149 四極與臺灣之最加南海諸島、東沙、南沙(太平島)、釣魚臺 4 列與「臺灣周邊島嶼與南海諸島」位置圖;出處題號可連到執業實務、執業法規的歷屆題
@@ -143,7 +144,7 @@
 <script src="scoring.js"></script>
 <script src="worldmap.js?v=149"></script>
 <script src="twgeo_data.js"></script>
-<script src="twgeo.js?v=149"></script>
+<script src="twgeo.js?v=151"></script>
 <script src="lfig.js?v=148"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
@@ -152,7 +153,7 @@
 <script src="practice.js"></script>
 <script src="miniquiz.js"></script>
 <script src="mask.js"></script>
-<script src="atlas_data.js?v=149"></script>
+<script src="atlas_data.js?v=151"></script>
 </head>
 <body>
 <header><div class="wrap">
@@ -448,7 +449,7 @@ const NAME_MK = [
   { n: '苓雅', p: [120.312, 22.622], c: N_LAND, z: 1, d: '高雄苓雅:舊稱苓仔寮,區名由來和漁業有關' }
 ];
 const TG_LEG = {
-  np: '<div class="tg-lg"><span><b style="background:' + C_NP + '"></b>國家公園</span><span><b style="background:' + C_NNP + '"></b>國家自然公園</span></div><div class="twm-nt">東沙、金門在左側小框;點地圖上的點看成立年與特色</div>',
+  np: '<div class="tg-lg"><span><b style="background:' + C_NP + '"></b>國家公園</span><span><b style="background:' + C_NNP + '"></b>國家自然公園</span></div><div class="twm-nt">金門在左上小框、東沙在下方小框;點地圖上的點看成立年與特色</div>',
   nsa: '<div class="tg-lg"><span><b style="background:' + C_NSA + '"></b>國家風景區(交通部觀光署 13 處)</span></div><div class="twm-nt">參山有獅頭山、梨山、八卦山三區;馬祖在左上小框;點地圖上的點看範圍與特色</div>',
   heri: '<div class="tg-lg"><span><b style="background:' + E_DH + '"></b>荷西</span><span><b style="background:' + E_MZ + '"></b>明鄭</span><span><b style="background:' + E_QG + '"></b>清領</span><span><b style="background:' + E_JP + '"></b>日治</span></div><div class="twm-nt">顏色＝興建時期;臺南、臺北古蹟密集,切到分區圖會標出億載金城、臺南州廳、艋舺龍山寺、臺北府城、臺灣總督府</div>',
   clim: '<div class="tg-lg"><span><i style="background:#2563eb"></i>冬季東北季風</span><span><i style="background:#ea580c"></i>夏季西南季風</span><span><b style="background:' + C_NE + '"></b>冬季東北季風相關</span><span><b style="background:' + C_RAIN + '"></b>迎風坡多雨</span><span><b style="background:' + C_FOEHN + '"></b>焚風</span></div>' +
