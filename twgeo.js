@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v147
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型)· v148
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -8,9 +8,13 @@
      cfg.view   : 預設分區(all / n / c / s / k …,可省略)
      cfg.pkAll  : true = 全臺圖也標出所有高峰;cfg.mkName:「標示」圖層按鈕名稱;cfg.hint:點選前的提示
      cfg.rgPr   : 山脈名稱的擺放順序(預設 5;山脈區設小一點,先於縣市名稱擺放)
+     cfg.arrows : [{ k: 'w' 冬 / 's' 夏, p: [[經,緯], …], t: 名稱, at: 名稱位置 0~1 }] 季風等粗箭頭(只畫在全臺圖)
+     cfg.texts  : [{ t: 文字, p: [經,緯] }] 區域說明文字(例:副熱帶季風氣候);cfg.tropic:不開四極圖層也畫北回歸線
    TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v148 (2026-10-14) 阿里山加進山脈圖層(地理總圖也標出);東沙小框放大、礁盤環留兩個水道缺口、東沙島放大繪示;
+                       新增 cfg.arrows / cfg.texts / cfg.tropic(氣候區畫東北季風、西南季風與副熱帶 / 熱帶季風氣候)
      v147 (2026-10-14) 東沙改畫成環礁(礁盤環、潟湖、東沙島);小島在全臺圖不再被抽稀到看不見;
                        縣市圖層開著時標出龜山島、綠島、蘭嶼、小琉球;五大山脈旁標出山脈名稱;
                        標籤避讓修正:點的正上方 / 正下方原本會壓到自己的點而永遠放不下,改留間距並加斜角位置;
@@ -46,6 +50,10 @@
   var PTN = {};
   D.PT.forEach(function (p) { PTN[p.n] = p; });
   var ISL = ['龜山島', '綠島', '蘭嶼', '小琉球'];   /* 縣市圖層開著時也標名稱的常考離島 */
+  /* 名山景點:不是高峰、但常考的山區(山脈圖層開著時標出,綠色圓點) */
+  var MA = [
+    { n: '阿里山', p: [120.805, 23.51], z: 0, d: '嘉義縣阿里山鄉,屬<b>阿里山山脈</b>(五大山脈最西邊一條);森林遊樂區:神木、日出、雲海、櫻花;阿里山林業鐵路 1912 年由嘉義通車到二萬坪;鄒族的居住地' }
+  ];
 
   /* ---- 分區(經緯範圍);全臺圖附金門、馬祖、東沙小框 ---- */
   var VIEWS = [
@@ -64,7 +72,7 @@
   var INSETS = [
     { g: 'z', t: '馬祖(連江縣)', box: [6, 6, 112, 84], b: [119.88, 25.93, 120.54, 26.40] },
     { g: 'k', t: '金門縣', box: [6, 96, 112, 66], b: [118.13, 24.37, 118.50, 24.55] },
-    { g: 'd', t: '東沙環礁(高雄市)', box: [6, 384, 90, 82], b: [116.62, 20.55, 117.04, 20.87] }
+    { g: 'd', t: '東沙環礁(高雄市)', box: [6, 384, 90, 82], b: [116.665, 20.575, 116.995, 20.845] }
   ];
   var W = 360, PAD = 8;
   function proj(b, box) {
@@ -138,6 +146,7 @@
     }
     if (k === 'rv') { var r = D.RV.filter(function (x) { return x.id === n; })[0]; return r ? '<b>' + esc(r.n) + '</b> <span class="tg-k">流經</span>' + esc(r.cty) + '<br>' + esc(r.d) : ''; }
     if (k === 'pk') { var p = D.PK.filter(function (x) { return x.n === n; })[0]; return p ? '<b>▲ ' + esc(p.n) + '</b> ' + p.h.toLocaleString('en-US') + ' 公尺 · ' + esc(p.d) : ''; }
+    if (k === 'ma') { var ma = MA.filter(function (x) { return x.n === n; })[0]; return ma ? '<b>' + esc(ma.n) + '</b> ' + ma.d : ''; }
     if (k === 'rg') { var g = D.RG.filter(function (x) { return x.n === n; })[0]; return g ? rangeInfo(g) : ''; }
     if (k === 'ld') { var l = D.LD.filter(function (x) { return x.n === n; })[0]; return l ? '<b>' + esc(l.n) + '</b> ' + esc(l.d) : ''; }
     if (k === 'pt') { var q = D.PT.filter(function (x) { return x.n === n; })[0]; return q ? '<b>' + esc(q.n) + '</b> ' + esc(q.d) : ''; }
@@ -174,11 +183,19 @@
         var b = ins.box, fi = proj(ins.b, b);
         o += '<rect class="ib" x="' + b[0] + '" y="' + b[1] + '" width="' + b[2] + '" height="' + b[3] + '" rx="6" data-tgv="' + (ins.g === 'd' ? '' : ins.g) + '"/>';
         o += '<text class="cap" x="' + (b[0] + 5) + '" y="' + (b[1] + 11) + '">' + ins.t + '</text>';
-        if (ins.g === 'd') {   /* 東沙環礁:直徑約 25 公里的圓形礁盤環,東沙島在西側 */
-          var rc = fi([116.83, 20.71]), rr = n1(0.115 * fi.k);
-          o += '<circle class="lagoon" cx="' + n1(rc[0]) + '" cy="' + n1(rc[1]) + '" r="' + rr + '"/><circle class="reef" cx="' + n1(rc[0]) + '" cy="' + n1(rc[1]) + '" r="' + rr + '"/>';
+        var PAi = arcsFor(fi, 0.3);
+        if (ins.g === 'd') {
+          /* 東沙環礁:直徑約 25 公里的圓形礁盤環,中間是潟湖;西側有南、北兩個水道,東沙島在兩水道之間 */
+          var rc = fi([116.83, 20.71]), rr = 0.115 * fi.k, gap = 26 * Math.PI / 180;
+          var ap = function (t) { return n1(rc[0] + rr * Math.cos(t)) + ',' + n1(rc[1] + rr * Math.sin(t)); };
+          o += '<circle class="lagoon" cx="' + n1(rc[0]) + '" cy="' + n1(rc[1]) + '" r="' + n1(rr) + '"/>' +
+            '<path class="reef" d="M' + ap(Math.PI + gap) + 'A' + n1(rr) + ',' + n1(rr) + ' 0 1 1 ' + ap(Math.PI - gap) + '"/>';
+          /* 東沙島實際約 2.6 × 1.3 公里,小框裡放大 3 倍才看得到形狀 */
+          var ic = fi([116.7225, 20.7035]), used = {};
+          D.C.forEach(function (c) { c.R.forEach(function (r, i) { if (c.G[i] === 'd') r.forEach(function (a) { used[a >= 0 ? a : ~a] = 1; }); }); });
+          PAi = PAi.map(function (a, i) { return used[i] ? a.map(function (q) { return [ic[0] + (q[0] - ic[0]) * 3, ic[1] + (q[1] - ic[1]) * 3]; }) : a; });
         }
-        o += landGroup(fi, arcsFor(fi, 0.3), ins.g);
+        o += landGroup(fi, PAi, ins.g);
         if (ins.g === 'd') labels.push({ pr: 6, t: '東沙島', fs: 8, cls: 'tgl isl', at: fi([116.722, 20.703]), ins: true, key: '' });
         taken.push([b[0], b[1], b[0] + b[2], b[1] + b[3], 'ins']);
         ins.f = fi;
@@ -188,8 +205,19 @@
     if (L.coast && gmain === 'm') {
       D.CT.forEach(function (t) { o += '<polyline class="ct" stroke="' + CTC[t.k] + '" points="' + pts2(thin(t.pts, f, minD)) + '"/>'; });
     }
+    /* 粗箭頭(季風等):只畫在全臺圖;名稱參與標籤避讓 */
+    if (cfg.arrows && st.v === 'all') cfg.arrows.forEach(function (ar) {
+      var q = ar.p.map(f), n = q.length, e = q[n - 1], b0 = q[n - 2], ang = Math.atan2(e[1] - b0[1], e[0] - b0[0]), hl = 15, hw = 10;
+      var bx = e[0] - Math.cos(ang) * hl, by = e[1] - Math.sin(ang) * hl;
+      o += '<g class="tga tga-' + ar.k + '"><polyline class="tgab" points="' + pts2(q.slice(0, n - 1).concat([[bx, by]])) + '"/>' +
+        '<path class="tgah" d="M' + n1(e[0]) + ',' + n1(e[1]) + 'L' + n1(bx + Math.sin(ang) * hw) + ',' + n1(by - Math.cos(ang) * hw) + 'L' + n1(bx - Math.sin(ang) * hw) + ',' + n1(by + Math.cos(ang) * hw) + 'Z"/></g>';
+      if (ar.t) labels.push({ pr: 2, t: ar.t, fs: 9.5, cls: 'tgl tgal tgal-' + ar.k, at: q[Math.round((ar.at || 0) * (n - 1))], key: '' });
+    });
+    if (cfg.texts && st.v === 'all') cfg.texts.forEach(function (tx) {
+      labels.push({ pr: 3, t: tx.t, fs: 9, cls: 'tgl tgz', at: f(tx.p), center: true, cand: [[0, 0], [0, -10], [0, 10], [-12, 0], [-12, -10], [-12, 10]], key: '' });
+    });
     /* 北回歸線 */
-    if (L.pole && gmain === 'm' && TROPIC > v[2][1] && TROPIC < v[2][3]) {
+    if ((L.pole || cfg.tropic) && gmain === 'm' && TROPIC > v[2][1] && TROPIC < v[2][3]) {
       var a = f([v[2][0], TROPIC]), bb = f([v[2][2], TROPIC]);
       o += '<g data-f="tr:"><line class="trp" x1="' + n1(a[0]) + '" y1="' + n1(a[1]) + '" x2="' + n1(bb[0]) + '" y2="' + n1(bb[1]) + '"/><line class="tgh" x1="' + n1(a[0]) + '" y1="' + n1(a[1]) + '" x2="' + n1(bb[0]) + '" y2="' + n1(bb[1]) + '"/></g>';
       labels.push({ pr: 3, t: '北回歸線', fs: 8.5, cls: 'tgl trl', at: [W - 4, a[1]], cand: [[-1, -11], [-1, 3]], anchorRight: true, key: 'tr:' });
@@ -209,7 +237,7 @@
           var P = pts2(thin(s, f, minD));
           o += '<g data-f="rg:' + g.n + '"><polyline class="rg' + (i ? ' rgs' : '') + (st.hl === 'rg:' + g.n ? ' hi' : '') + '" points="' + P + '"/><polyline class="tgh" points="' + P + '"/></g>';
         });
-        var mid = g.segs[0][Math.floor(g.segs[0].length * ({ 1: 0.4, 2: 0.25, 4: 0.85 }[g.no] || 0.5))];   /* 阿里山山脈編號放南段,避開玉山、阿里山一帶 */
+        var mid = g.segs[0][Math.floor(g.segs[0].length * ({ 1: 0.4, 2: 0.25, 3: 0.15, 4: 0.85 }[g.no] || 0.5))];   /* 玉山山脈編號放北段、阿里山山脈編號放南段,避開玉山、阿里山一帶 */
         if (f.inb(mid, -0.03)) {
           var q = f(mid);
           o += '<g data-f="rg:' + g.n + '"><circle class="rgb" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="6"/><text class="num" x="' + n1(q[0]) + '" y="' + n1(q[1] + 3) + '" text-anchor="middle">' + g.no + '</text></g>';
@@ -225,6 +253,13 @@
         o += '<g data-f="pk:' + p.n + '"><path class="pk' + (st.hl === 'pk:' + p.n ? ' hi' : '') + '" d="M' + n1(q[0]) + ',' + n1(q[1] - 5) + 'l4.5,8h-9z"/></g>';
         taken.push([q[0] - 5, q[1] - 6, q[0] + 5, q[1] + 4]);
         labels.push({ pr: st.hl === 'pk:' + p.n ? 0 : p.z ? 2 : 1, t: p.n + (zmax ? ' ' + p.h.toLocaleString('en-US') : ''), fs: 9.5, cls: 'tgl pkl', at: q, key: 'pk:' + p.n });
+      });
+      MA.forEach(function (m) {
+        if ((m.z > zmax && st.hl !== 'ma:' + m.n) || !f.inb(m.p)) return;
+        var q = f(m.p);
+        o += '<g data-f="ma:' + m.n + '"' + (st.hl === 'ma:' + m.n ? ' class="hi"' : '') + '><circle class="ma" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="3.8"/></g>';
+        taken.push([q[0] - 5, q[1] - 5, q[0] + 5, q[1] + 5]);
+        labels.push({ pr: st.hl === 'ma:' + m.n ? 0 : 1, t: m.n, fs: 9.5, cls: 'tgl mal', at: q, key: 'ma:' + m.n });
       });
     }
     /* 地形區、地名 */
@@ -351,7 +386,7 @@
   function names(cfg) {
     var a = [];
     D.C.forEach(function (c) { a.push(c.n); }); D.C.forEach(function (c) { if (a.indexOf(c.seat[0]) < 0 && c.seat[0] !== c.n.slice(0, -1)) a.push(c.seat[0]); });
-    D.RV.forEach(function (r) { a.push(r.n); }); D.PK.forEach(function (p) { a.push(p.n); });
+    D.RV.forEach(function (r) { a.push(r.n); }); D.PK.forEach(function (p) { a.push(p.n); }); MA.forEach(function (m) { a.push(m.n); });
     D.RG.forEach(function (g) { a.push(g.n); }); D.LD.forEach(function (l) { a.push(l.n); }); D.PT.forEach(function (p) { a.push(p.n); });
     (cfg.marks || []).forEach(function (m) { if (a.indexOf(m.n) < 0) a.push(m.n); });
     return a;
@@ -360,7 +395,7 @@
     name = String(name || '').trim(); if (!name) return null;
     var hit = function (arr, k, fn) { for (var i = 0; i < arr.length; i++) if (fn(arr[i])) return k + ':' + (k === 'rv' ? arr[i].id : arr[i].n); return null; };
     var eq = function (x) { var m = x.n.match(/^(.*)\((.*)\)$/); return x.n === name || (m && (m[1] === name || m[2] === name)); }, pre = function (x) { return x.n.indexOf(name) === 0; };
-    var sets = [[D.C, 'cty'], [D.RV, 'rv'], [D.PK, 'pk'], [D.RG, 'rg'], [D.PT, 'pt'], [D.LD, 'ld'], [cfg.marks || [], 'mk']];
+    var sets = [[D.C, 'cty'], [D.RV, 'rv'], [D.PK, 'pk'], [MA, 'ma'], [D.RG, 'rg'], [D.PT, 'pt'], [D.LD, 'ld'], [cfg.marks || [], 'mk']];
     for (var i = 0; i < sets.length; i++) { var k = hit(sets[i][0], sets[i][1], eq); if (k) return k; }
     for (var c = 0; c < D.C.length; c++) if (D.C[c].seat[0] === name) return 'cty:' + D.C[c].n;   /* 縣市政府所在地(竹北、太保、斗六…) */
     if (name.length >= 2) for (var j = 0; j < sets.length; j++) { var k2 = hit(sets[j][0], sets[j][1], pre); if (k2) return k2; }
@@ -370,7 +405,7 @@
     var t = key.split(':'), k = t[0], n = t.slice(1).join(':');
     if (k === 'cty') { var c = CBY[n]; return c ? c.lp : null; }
     if (k === 'rv') { var r = D.RV.filter(function (x) { return x.id === n; })[0]; return r ? r.lp : null; }
-    var arr = { pk: D.PK, pt: D.PT, ld: D.LD, mk: cfg.marks || [] }[k];
+    var arr = { pk: D.PK, ma: MA, pt: D.PT, ld: D.LD, mk: cfg.marks || [] }[k];
     if (arr) { var x = arr.filter(function (y) { return y.n === n; })[0]; return x ? x.p : null; }
     if (k === 'rg') { var g = D.RG.filter(function (y) { return y.n === n; })[0]; return g ? g.segs[0][Math.floor(g.segs[0].length / 2)] : null; }
     return null;
@@ -378,7 +413,7 @@
   /* 讓項目看得見:必要時開圖層、換分區 */
   function reveal(st, key) {
     var k = key.split(':')[0], n = key.split(':').slice(1).join(':');
-    var layer = { cty: 'cty', rv: 'rv', pk: 'mt', rg: 'mt', ld: 'pt', mk: 'mk', tr: 'pole' }[k];
+    var layer = { cty: 'cty', rv: 'rv', pk: 'mt', ma: 'mt', rg: 'mt', ld: 'pt', mk: 'mk', tr: 'pole' }[k];
     if (k === 'pt') { var p = D.PT.filter(function (x) { return x.n === n; })[0]; layer = p && (p.t === 'pole' || p.t === 'tropic') ? 'pole' : 'pt'; }
     if (layer && st.on[layer] === 0) st.on[layer] = 1;
     if (layer && !(layer in st.on)) st.on[layer] = 1;
@@ -476,7 +511,7 @@
         '.tg-map{margin-top:6px}.tg-ph{aspect-ratio:360/477;max-width:520px;margin:0 auto;border-radius:10px;background:var(--soft,#e6f2fb)}.tgm{width:100%;max-width:520px;height:auto;display:block;margin:0 auto;-webkit-user-select:none;user-select:none}' +
         '.tgm .sea{fill:#e6f2fb}.tgm .land{fill:#f4f1e4;stroke:#94a3b8;stroke-width:.7}.tgm .cty{stroke:#94a3b8;stroke-width:.7;cursor:pointer}' +
         '.tgm .r1{fill:#fef3c7}.tgm .r2{fill:#dcfce7}.tgm .r3{fill:#ffe4e6}.tgm .r4{fill:#ede9fe}.tgm .r5{fill:#ffedd5}' +
-        '.tgm .lagoon{fill:#d4ecfb}.tgm .reef{fill:none;stroke:#f9a8a8;stroke-width:3.4;opacity:.95}.tgm .isl{fill:#475569;font-weight:600;font-style:italic}.tgm .rgl{fill:#92400e}' +
+        '.tgm .lagoon{fill:#d4ecfb}.tgm .reef{fill:none;stroke:#f9a8a8;stroke-width:4.2;stroke-linecap:round;opacity:.95}.tgm .isl{fill:#475569;font-weight:600;font-style:italic}.tgm .rgl{fill:#92400e}' +
         '.tgm .cty.hi,.tgm .land.hi{fill:#fde047;stroke:#a16207;stroke-width:1.4}' +
         '.tgm .ib{fill:#eef6fc;stroke:#9aa8b8;stroke-dasharray:3 2;cursor:pointer}.tgm .cap{font-size:8.5px;fill:#64748b;pointer-events:none}' +
         '.tgm .ct{fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;opacity:.9;pointer-events:none}' +
@@ -486,6 +521,10 @@
         '.tgm .rg{fill:none;stroke:#a16207;stroke-width:2.2;stroke-dasharray:5 3;stroke-linecap:round;opacity:.8}.tgm .rgs{stroke-width:1.5}.tgm .rg.hi{stroke:#e11d48;opacity:1;stroke-width:3}' +
         '.tgm .rgb{fill:#a16207;stroke:#fff;stroke-width:1.2;cursor:pointer}.tgm .num{font-size:8.5px;font-weight:800;fill:#fff;pointer-events:none}' +
         '.tgm .pk{fill:#7c2d12;stroke:#fff;stroke-width:1;cursor:pointer}.tgm .pk.hi{fill:#e11d48}' +
+        '.tgm .ma{fill:#15803d;stroke:#fff;stroke-width:1.2;cursor:pointer}.tgm .hi .ma{fill:#e11d48}.tgm .mal{fill:#166534}' +
+        '.tgm .tga{pointer-events:none}.tgm .tgab{fill:none;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;opacity:.42}.tgm .tgah{opacity:.8}' +
+        '.tgm .tga-w .tgab{stroke:#2563eb}.tgm .tga-w .tgah{fill:#2563eb}.tgm .tga-s .tgab{stroke:#ea580c}.tgm .tga-s .tgah{fill:#ea580c}' +
+        '.tgm .tgal{cursor:default}.tgm .tgal-w{fill:#1d4ed8}.tgm .tgal-s{fill:#c2410c}.tgm .tgz{fill:#15803d;font-style:italic;cursor:default}' +
         '.tgm .tgk{stroke:#fff;stroke-width:1.2;cursor:pointer}.tgm .hi .tgk{stroke:#e11d48;stroke-width:2.2}' +
         '.tgm .seat{fill:#fff;stroke:#334155;stroke-width:1.3;cursor:pointer}' +
         '.tgm .trp{stroke:#16a34a;stroke-width:1.2;stroke-dasharray:6 3}' +
@@ -505,13 +544,15 @@
         ':root:not([data-theme="light"]) .tgm .tgr{stroke:#60a5fa}:root:not([data-theme="light"]) .tgm .rvl{fill:#93c5fd}:root:not([data-theme="light"]) .tgm .ctl{fill:#e2e8f0}' +
         ':root:not([data-theme="light"]) .tgm .pkl{fill:#fdba74}:root:not([data-theme="light"]) .tgm .ldl{fill:#94a3b8}:root:not([data-theme="light"]) .tgm .stl{fill:#cbd5e1}' +
         ':root:not([data-theme="light"]) .tgm .seat{fill:#0f172a;stroke:#cbd5e1}:root:not([data-theme="light"]) .tgm .cty.hi{fill:#854d0e}' +
-        ':root:not([data-theme="light"]) .tgm .lagoon{fill:#163a55}:root:not([data-theme="light"]) .tgm .reef{stroke:#be4b5c}:root:not([data-theme="light"]) .tgm .isl{fill:#cbd5e1}:root:not([data-theme="light"]) .tgm .rgl{fill:#fbbf24}}' +
+        ':root:not([data-theme="light"]) .tgm .lagoon{fill:#163a55}:root:not([data-theme="light"]) .tgm .reef{stroke:#be4b5c}:root:not([data-theme="light"]) .tgm .isl{fill:#cbd5e1}:root:not([data-theme="light"]) .tgm .rgl{fill:#fbbf24}' +
+        ':root:not([data-theme="light"]) .tgm .mal{fill:#86efac}:root:not([data-theme="light"]) .tgm .tgal-w{fill:#93c5fd}:root:not([data-theme="light"]) .tgm .tgal-s{fill:#fdba74}:root:not([data-theme="light"]) .tgm .tgz{fill:#86efac}:root:not([data-theme="light"]) .tgm .tga-w .tgab{stroke:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-w .tgah{fill:#60a5fa}:root:not([data-theme="light"]) .tgm .tga-s .tgab{stroke:#fb923c}:root:not([data-theme="light"]) .tgm .tga-s .tgah{fill:#fb923c}}' +
         ':root[data-theme="dark"] .tgm .sea{fill:#0f2233}:root[data-theme="dark"] .tgm .land{fill:#2b3326;stroke:#5b6b7c}' +
         ':root[data-theme="dark"] .tgm .cty{stroke:#5b6b7c}:root[data-theme="dark"] .tgm .r1{fill:#3b3315}:root[data-theme="dark"] .tgm .r2{fill:#16301f}' +
         ':root[data-theme="dark"] .tgm .r3{fill:#3a1f24}:root[data-theme="dark"] .tgm .r4{fill:#2a2340}:root[data-theme="dark"] .tgm .r5{fill:#3b2a17}' +
         ':root[data-theme="dark"] .tgm .ib{fill:#132a3d;stroke:#5b6b7c}:root[data-theme="dark"] .tgm .tgl{fill:#e2e8f0;stroke:#0f172a}' +
         ':root[data-theme="dark"] .tgm .tgr{stroke:#60a5fa}:root[data-theme="dark"] .tgm .rvl{fill:#93c5fd}:root[data-theme="dark"] .tgm .ctl{fill:#e2e8f0}' +
         ':root[data-theme="dark"] .tgm .pkl{fill:#fdba74}:root[data-theme="dark"] .tgm .ldl{fill:#94a3b8}:root[data-theme="dark"] .tgm .stl{fill:#cbd5e1}' +
+        ':root[data-theme="dark"] .tgm .mal{fill:#86efac}:root[data-theme="dark"] .tgm .tgal-w{fill:#93c5fd}:root[data-theme="dark"] .tgm .tgal-s{fill:#fdba74}:root[data-theme="dark"] .tgm .tgz{fill:#86efac}:root[data-theme="dark"] .tgm .tga-w .tgab{stroke:#60a5fa}:root[data-theme="dark"] .tgm .tga-w .tgah{fill:#60a5fa}:root[data-theme="dark"] .tgm .tga-s .tgab{stroke:#fb923c}:root[data-theme="dark"] .tgm .tga-s .tgah{fill:#fb923c}' +
         ':root[data-theme="dark"] .tgm .seat{fill:#0f172a;stroke:#cbd5e1}:root[data-theme="dark"] .tgm .cty.hi{fill:#854d0e}' +
         ':root[data-theme="dark"] .tgm .lagoon{fill:#163a55}:root[data-theme="dark"] .tgm .reef{stroke:#be4b5c}:root[data-theme="dark"] .tgm .isl{fill:#cbd5e1}:root[data-theme="dark"] .tgm .rgl{fill:#fbbf24}';
       (document.head || document.documentElement).appendChild(css);

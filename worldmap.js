@@ -1,4 +1,4 @@
-/* worldmap.js — 世界位置示意地圖(離線 SVG,單一來源)· v147
+/* worldmap.js — 世界位置示意地圖(離線 SVG,單一來源)· v148
    ------------------------------------------------------------------
    WMAP.svg(opt) → SVG 字串
      opt.marks : [{ k:'地名', label?:'自訂標籤', side?:'r'|'l'|'u'|'d', t?:'c'|'n'|'m'|'x' }]
@@ -7,10 +7,13 @@
      opt.view  : 'auto'(依標記自動放大,預設)/ 'world' / [西經, 南緯, 東經, 北緯]
      opt.seas  : ['鄂霍次克海', …] 要標示的海名
      opt.flows : ['黑潮', '冬季季風(臺灣)@0.6', …] 洋流與季風箭頭(紅 = 暖流、藍 = 寒流、紫 = 冬季季風、橘 = 夏季季風);@ 後為名稱位置
+     opt.centers: [{ t: 'H' | 'L', p: [緯度, 經度], n: '冷高壓' }] 氣壓中心;opt.notes:[{ p: [緯度, 經度], t: '乾冷', c: 'w' | 's' }] 圖上註記
    WMAP.get(k) 查地名 → { k, lat, lon }      WMAP.typeLegend = 世界遺產類型圖例(HTML)
    解析裡用法:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-seas='北海' data-view='world'>
    海岸線為手繪簡化示意(誤差約 0.5–1 度),不作測量用途;不畫國界,國家以首都或代表地點標示。
    變更履歷:
+     v148 (2026-10-14) 季風圖改版:氣壓中心(冬季冷高壓、夏季熱低壓)、圖上註記(乾冷、經海面變濕)、冬夏季風分開畫
+                       (西北季風到日本、東北季風到臺灣與東南亞;西南季風到印度西岸、阿薩姆、臺灣);地名庫加阿薩姆
      v147 (2026-10-14) 新增洋流與季風箭頭(opt.flows:黑潮、親潮、對馬暖流、中國沿岸流、北大西洋暖流、巴西暖流、福克蘭寒流、
                        本吉拉寒流、祕魯寒流、冬季季風、夏季西南季風);地名庫加入納米比沙漠(圖鑑「氣候與季風」用)
      v144 (2026-10-13) 地名庫加入蘭斯、滑鐵盧、多哥、喀麥隆、懷唐伊、昌昌、努克、烏鎮、九寨溝等 26 處(領隊 111 觀光資源解析用)
@@ -161,7 +164,7 @@
     /* 大洋洲 */
     ['坎培拉', -35.28, 149.13], ['雪梨', -33.87, 151.21], ['大堡礁', -18.3, 147.7], ['威靈頓', -41.29, 174.78], ['奧克蘭', -36.85, 174.76],
     /* v136 領隊 115 觀光資源用 */
-    ['名古屋', 35.18, 136.91], ['朴茨茅斯', 50.8, -1.09], ['喀土穆', 15.6, 32.53], ['摩加迪休', 2.04, 45.34], ['阿克蘇姆', 14.13, 38.72],
+    ['名古屋', 35.18, 136.91], ['阿薩姆', 26.2, 92.9], ['朴茨茅斯', 50.8, -1.09], ['喀土穆', 15.6, 32.53], ['摩加迪休', 2.04, 45.34], ['阿克蘇姆', 14.13, 38.72],
     ['拉利貝拉', 12.03, 39.04], ['阿卡普爾科', 16.86, -99.88], ['提卡爾', 17.22, -89.62], ['盧森堡', 49.61, 6.13], ['但尼丁', -45.87, 170.5],
     ['采爾馬特', 46.02, 7.75], ['北九州', 33.88, 130.88], ['凱恩斯', -16.92, 145.77], ['瓦勒他', 35.9, 14.51],
     /* v136 觀光圖鑑世界遺產分布圖用 */
@@ -244,8 +247,12 @@
     '親潮': { t: 'c', n: '親潮(寒流)', p: [[50.5, 158.5], [47.6, 154.2], [45.1, 150.3], [43.2, 147.2], [41.4, 145.2], [39.7, 143.8], [38.1, 143.2]] },
     '對馬暖流': { t: 'w', n: '對馬暖流', p: [[30.5, 129.4], [32.6, 129.1], [34.5, 129.8], [36.4, 132.6], [38.4, 136.4], [40.8, 139.4]] },
     '中國沿岸流': { t: 'c', n: '中國沿岸流(冬)', p: [[38, 121.9], [35.6, 121.3], [33.1, 121.5], [30.6, 122.7], [28.1, 121.8], [26.1, 120.4], [24.7, 119.45], [23.3, 118.7]] },
-    '冬季季風(日本)': { t: 'mw', n: '冬季季風(日本吹西北風)', p: [[48, 116], [45.3, 123.5], [41.5, 131.5], [38.2, 136.4]] },
-    '冬季季風(臺灣)': { t: 'mw', n: '冬季季風(臺灣吹東北風)', p: [[43, 126.5], [37.5, 127.2], [32, 127], [28, 125.2], [25.3, 122.1]] },
+    '冬季季風(日本)': { t: 'mw', n: '西北季風(日本)', p: [[49, 106], [47.5, 116], [45, 125], [41.5, 132], [37.8, 137.2]] },
+    '冬季季風(臺灣)': { t: 'mw', n: '東北季風(臺灣)', p: [[46.5, 109], [42.5, 117], [38, 122.5], [33.5, 125.5], [28.5, 124.6], [25.2, 122.2]] },
+    '冬季季風(南海)': { t: 'mw', n: '東北季風(東南亞)', p: [[44, 103], [37, 108.5], [30, 112.5], [23, 115.5], [16.5, 113.5], [10.5, 109.5]] },
+    '西南季風(臺灣)': { t: 'ms', n: '西南季風', p: [[3, 103], [8, 108.5], [13, 113], [18, 117], [22.2, 119.9]] },
+    '西南季風(阿拉伯海)': { t: 'ms', n: '西南季風', p: [[3, 60], [6.5, 64.5], [10.5, 69], [14.5, 73]] },
+    '西南季風(孟加拉灣)': { t: 'ms', n: '', p: [[2, 83], [8, 86.5], [14, 89], [20, 90.5], [25.4, 92.3]] },
     '夏季西南季風': { t: 'ms', n: '夏季西南季風', p: [[9.5, 107.5], [14.5, 112.5], [19.5, 117.2], [24.2, 121.4], [28.6, 126], [32.6, 131.2]] },
     '北大西洋暖流': { t: 'w', n: '北大西洋暖流', p: [[26, -79.5], [33, -76], [38.2, -68], [41.5, -55], [45.5, -40], [50.5, -25], [55.5, -14], [60.5, -5], [64.5, 3], [68.5, 11], [71.3, 21]] },
     '巴西暖流': { t: 'w', n: '巴西暖流', p: [[-12, -36.5], [-18, -38], [-24, -41.8], [-30, -46.3], [-36, -51.5]] },
@@ -335,15 +342,28 @@
       });
       if (placed) { o += '<text class="rl' + (RIFT[n] ? ' rf' : '') + '" x="' + placed[0].toFixed(1) + '" y="' + (placed[1] + 9.5).toFixed(1) + '">' + n + '</text>'; taken.push(placed); }
     });
+    /* 氣壓中心(H 高壓、L 低壓)與圖上註記:先佔位置,箭頭名稱會避開 */
+    (opt.centers || []).forEach(function (c) {
+      var q = xy(c.p[0], c.p[1]), w = tw(c.n || '') * 0.9;
+      o += '<circle class="pc pc-' + c.t + '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="11"/><text class="pcc" x="' + q[0].toFixed(1) + '" y="' + (q[1] + 4.5).toFixed(1) + '" text-anchor="middle">' + c.t + '</text>';
+      taken.push([q[0] - 12, q[1] - 12, q[0] + 12, q[1] + 12]);
+      if (c.n) { var lx = Math.min(Math.max(2, q[0] - w / 2), W - 2 - w); o += '<text class="pcl pcl-' + c.t + '" x="' + lx.toFixed(1) + '" y="' + (q[1] + 23).toFixed(1) + '">' + c.n + '</text>'; taken.push([lx, q[1] + 14, lx + w, q[1] + 25]); }
+    });
+    (opt.notes || []).forEach(function (nt) {
+      var q = xy(nt.p[0], nt.p[1]), w = tw(nt.t) * 0.85;
+      o += '<text class="wn wn-' + (nt.c || 'w') + '" x="' + (q[0] - w / 2).toFixed(1) + '" y="' + (q[1] + 3).toFixed(1) + '">' + nt.t + '</text>';
+      taken.push([q[0] - w / 2, q[1] - 7, q[0] + w / 2, q[1] + 4]);
+    });
     /* 洋流與季風:畫在河川之後、地點之前;名稱沿線找空位 */
     var fls = (opt.flows || []).map(function (n0) { var rs = rsplit(n0); return FLOWS[rs[0]] ? { f: FLOWS[rs[0]], at: rs[1] } : null; }).filter(Boolean);
     if (fls.length) {
       var uid = 'wf' + (++FLU), used = {};
       fls.forEach(function (x) { used[x.f.t] = 1; });
-      o += '<defs>' + Object.keys(used).map(function (t) { var sz = t.charAt(0) === 'm' ? 13 : 9; return '<marker id="' + uid + t + '" viewBox="0 0 10 10" refX="7" refY="5" markerUnits="userSpaceOnUse" markerWidth="' + sz + '" markerHeight="' + sz + '" orient="auto"><path class="ah ah-' + t + '" d="M0,0L10,5L0,10z"/></marker>'; }).join('') + '</defs>';
+      o += '<defs>' + Object.keys(used).map(function (t) { var sz = t.charAt(0) === 'm' ? 15 : 9; return '<marker id="' + uid + t + '" viewBox="0 0 10 10" refX="7" refY="5" markerUnits="userSpaceOnUse" markerWidth="' + sz + '" markerHeight="' + sz + '" orient="auto"><path class="ah ah-' + t + '" d="M0,0L10,5L0,10z"/></marker>'; }).join('') + '</defs>';
       fls.forEach(function (x) { o += '<path class="fl fl-' + x.f.t + '" d="' + path(x.f.p, false) + '" marker-end="url(#' + uid + x.f.t + ')"/>'; });
       fls.forEach(function (x) {
         var seg0 = x.f.p, nm = x.f.n, w = tw(nm) * 0.9, placed = null;
+        if (!nm) return;   /* 同一圖有好幾條同名季風時,只標其中幾條 */
         var fr = [0.5, 0.35, 0.65, 0.2, 0.8]; if (x.at >= 0 && x.at <= 1) fr.unshift(x.at);
         fr.some(function (fq) {
           var pt = seg0[Math.min(seg0.length - 1, Math.round((seg0.length - 1) * fq))], q = xy(pt[0], pt[1]);
@@ -387,14 +407,18 @@
       '.wm .rl{font-size:9.5px;font-weight:800;fill:#1d4ed8;paint-order:stroke;stroke:#fff;stroke-width:3px}.wm .rl.rf{fill:#92400e}' +
       '.wm .sl{font-size:9px;font-style:italic;fill:#3b82f6;opacity:.85}' +
       '.wm .fl{fill:none;stroke-linecap:round;stroke-linejoin:round}.wm .fl-w{stroke:#dc2626;stroke-width:2.2}.wm .fl-c{stroke:#2563eb;stroke-width:2.2}' +
-      '.wm .fl-mw{stroke:#7c3aed;stroke-width:5;opacity:.34}.wm .fl-ms{stroke:#ea580c;stroke-width:5;opacity:.34}.wm .ah-w{fill:#dc2626}.wm .ah-c{fill:#2563eb}.wm .ah-mw{fill:#7c3aed;opacity:.75}.wm .ah-ms{fill:#ea580c;opacity:.75}' +
+      '.wm .fl-mw{stroke:#7c3aed;stroke-width:7;opacity:.36}.wm .fl-ms{stroke:#ea580c;stroke-width:7;opacity:.36}.wm .ah-w{fill:#dc2626}.wm .ah-c{fill:#2563eb}.wm .ah-mw{fill:#7c3aed;opacity:.75}.wm .ah-ms{fill:#ea580c;opacity:.75}' +
       '.wm .fll{font-size:8.6px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.wm .fll-w{fill:#b91c1c}.wm .fll-c{fill:#1d4ed8}.wm .fll-mw{fill:#6d28d9}.wm .fll-ms{fill:#c2410c}' +
       '.wm .lbl{font-size:10px;font-weight:700;fill:#1e293b;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}' +
+      '.wm .pc{stroke:#fff;stroke-width:1.6}.wm .pc-H{fill:#1e40af}.wm .pc-L{fill:#b91c1c}.wm .pcc{font-size:12.5px;font-weight:900;fill:#fff}' +
+      '.wm .pcl{font-size:8.6px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.wm .pcl-H{fill:#1e40af}.wm .pcl-L{fill:#b91c1c}' +
+      '.wm .wn{font-size:8.2px;font-weight:700;font-style:italic;paint-order:stroke;stroke:#fff;stroke-width:2.6px;stroke-linejoin:round}.wm .wn-w{fill:#6d28d9}.wm .wn-s{fill:#c2410c}' +
       '.wm-nt{font-size:.74rem;color:var(--sub,#64748b);text-align:center;margin-top:2px}' +
       '.wm-lg{display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:center;font-size:.78rem;color:var(--sub,#64748b);margin-top:4px}.wm-lg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}' +
       '@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wm .sea,:root:not([data-theme="light"]) .wm .lake{fill:#0f2233}:root:not([data-theme="light"]) .wm .land{fill:#2b3326;stroke:#5b6b7c}' +
       ':root:not([data-theme="light"]) .wm .lbl{fill:#e2e8f0;stroke:#0f172a}:root:not([data-theme="light"]) .wm .rl{fill:#93c5fd;stroke:#0f172a}:root:not([data-theme="light"]) .wm .rl.rf{fill:#fbbf24}' +
-      ':root:not([data-theme="light"]) .wm .riv{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .grl{fill:#94a3b8;stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll{stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll-w{fill:#fca5a5}:root:not([data-theme="light"]) .wm .fll-c{fill:#93c5fd}:root:not([data-theme="light"]) .wm .fll-mw{fill:#c4b5fd}:root:not([data-theme="light"]) .wm .fll-ms{fill:#fdba74}:root:not([data-theme="light"]) .wm .fl-w{stroke:#f87171}:root:not([data-theme="light"]) .wm .ah-w{fill:#f87171}:root:not([data-theme="light"]) .wm .fl-c{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .ah-c{fill:#60a5fa}}' +
+      ':root:not([data-theme="light"]) .wm .riv{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .grl{fill:#94a3b8;stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll{stroke:#0f172a}:root:not([data-theme="light"]) .wm .fll-w{fill:#fca5a5}:root:not([data-theme="light"]) .wm .fll-c{fill:#93c5fd}:root:not([data-theme="light"]) .wm .fll-mw{fill:#c4b5fd}:root:not([data-theme="light"]) .wm .fll-ms{fill:#fdba74}:root:not([data-theme="light"]) .wm .fl-w{stroke:#f87171}:root:not([data-theme="light"]) .wm .ah-w{fill:#f87171}:root:not([data-theme="light"]) .wm .fl-c{stroke:#60a5fa}:root:not([data-theme="light"]) .wm .ah-c{fill:#60a5fa}:root:not([data-theme="light"]) .wm .pcl{stroke:#0f172a}:root:not([data-theme="light"]) .wm .pcl-H{fill:#93c5fd}:root:not([data-theme="light"]) .wm .pcl-L{fill:#fca5a5}:root:not([data-theme="light"]) .wm .pc{stroke:#0f172a}:root:not([data-theme="light"]) .wm .wn{stroke:#0f172a}:root:not([data-theme="light"]) .wm .wn-w{fill:#c4b5fd}:root:not([data-theme="light"]) .wm .wn-s{fill:#fdba74}}' +
+      ':root[data-theme="dark"] .wm .pcl{stroke:#0f172a}:root[data-theme="dark"] .wm .pcl-H{fill:#93c5fd}:root[data-theme="dark"] .wm .pcl-L{fill:#fca5a5}:root[data-theme="dark"] .wm .pc{stroke:#0f172a}:root[data-theme="dark"] .wm .wn{stroke:#0f172a}:root[data-theme="dark"] .wm .wn-w{fill:#c4b5fd}:root[data-theme="dark"] .wm .wn-s{fill:#fdba74}' +
       ':root[data-theme="dark"] .wm .fll{stroke:#0f172a}:root[data-theme="dark"] .wm .fll-w{fill:#fca5a5}:root[data-theme="dark"] .wm .fll-c{fill:#93c5fd}:root[data-theme="dark"] .wm .fll-mw{fill:#c4b5fd}:root[data-theme="dark"] .wm .fll-ms{fill:#fdba74}:root[data-theme="dark"] .wm .fl-w{stroke:#f87171}:root[data-theme="dark"] .wm .ah-w{fill:#f87171}:root[data-theme="dark"] .wm .fl-c{stroke:#60a5fa}:root[data-theme="dark"] .wm .ah-c{fill:#60a5fa}' +
       ':root[data-theme="dark"] .wm .sea,:root[data-theme="dark"] .wm .lake{fill:#0f2233}:root[data-theme="dark"] .wm .land{fill:#2b3326;stroke:#5b6b7c}' +
       ':root[data-theme="dark"] .wm .lbl{fill:#e2e8f0;stroke:#0f172a}:root[data-theme="dark"] .wm .rl{fill:#93c5fd;stroke:#0f172a}:root[data-theme="dark"] .wm .rl.rf{fill:#fbbf24}:root[data-theme="dark"] .wm .riv{stroke:#60a5fa}:root[data-theme="dark"] .wm .grl{fill:#94a3b8;stroke:#0f172a}';

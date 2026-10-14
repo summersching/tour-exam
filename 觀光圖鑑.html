@@ -7,11 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#15803d">
 <title>觀光資源圖鑑</title>
-<!-- 觀光資源圖鑑 · v147(2026-10-14)
+<!-- 觀光資源圖鑑 · v148(2026-10-14)
      觀光資源概要最常考的各大類(地理總圖、河川、四極之最、國家公園、國家風景區、原住民族、節慶、地形、海岸、岩石、
      宗教信仰、臺灣地名由來、山脈、世界遺產、臺灣史、古蹟、世界史、世界地理、氣候),一表整理 + 每列出處題號(可點看原題)+ 遮住重點自測
      + 配對小測(即時出題)+ 歷屆原題測驗(miniquiz.js)。資料在 atlas_data.js(官方來源與資料日期見檔頭)。
      變更履歷:
+       v148 導覽改一排分頁(全部 / 臺灣地理 / 臺灣人文 / 世界),點分組直接列出該組各區卡片;海岸、地形每列附圖解(lfig.js);
+            阿里山改由山脈圖層標出(地理總圖也看得到);氣候區臺灣圖加冬季東北季風、夏季西南季風箭頭與副熱帶 / 熱帶季風氣候;
+            季風洋流圖改成分頁(冬季季風 · 夏季季風 · 東亞洋流 · 世界洋流);改過的程式網址加 ?v=,避免新版頁面配到舊版快取程式
        v147 導覽分組(臺灣地理 / 臺灣人文 / 世界);國家公園、風景區、古蹟、氣候改用同一張縣市底圖;地形、海岸、岩石顯示縣市名稱;
             山脈標阿里山與五大山脈名稱;四極之最、廟宇等標籤擠不下時改用短名或改到分區圖;東沙畫成環礁;
             氣候加東亞季風洋流、世界常考洋流圖;不再載入 twmap.js(解析需要時由 ana.js 自動載入)
@@ -47,20 +50,26 @@
   .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
     text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
   .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
-  .row{display:flex;gap:7px;padding:9px 0 0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-  .row::-webkit-scrollbar{display:none}
-  .row.wrap{flex-wrap:wrap;overflow:visible;padding-top:8px} .row.wrap:empty{display:none}
-  .grp{display:flex;gap:5px;padding:10px 0 0;flex-wrap:wrap}
-  .grp button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);padding:7px 6px;border-radius:12px;font-size:.84rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
-  .grp button small{font-weight:600;font-size:.72rem;color:var(--sub);margin-left:2px} .grp button.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)} .grp button.on small{color:var(--onsel);opacity:.85}
-  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;
-    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
-  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
+  .seg{display:flex;gap:4px;margin-top:10px;background:var(--soft);border-radius:14px;padding:4px}
+  .seg button{flex:1 1 0;min-width:0;border:0;background:transparent;color:var(--sub);border-radius:11px;padding:6px 2px 5px;cursor:pointer;font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.2}
+  .seg .gi{font-size:1.1rem;line-height:1.15} .seg .gt{font-size:.84rem;font-weight:800;color:var(--ink);white-space:nowrap} .seg small{font-size:.68rem;font-weight:600}
+  .seg button.on{background:var(--card);box-shadow:0 1px 4px rgba(16,24,40,.16)} .seg button.on .gt{color:var(--sel)}
+  .gh{display:flex;align-items:center;gap:8px;margin:20px 2px 0;font-size:.98rem;font-weight:900;color:var(--sel)}
+  .gh small{font-size:.74rem;font-weight:600;color:var(--sub)} .gh::after{content:'';flex:1;height:1px;background:var(--line)}
+  .crumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0 0;font-size:.86rem}
+  .crumb button{border:1.5px solid var(--line);background:var(--card);color:var(--sel);font-weight:800;border-radius:999px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:.82rem}
+  .crumb span{color:var(--sub)}
+  .mtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+  .mtabs button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 8px;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .mtabs button.on{background:var(--sel);border-color:var(--sel);color:var(--onsel)}
+  .pcx{display:inline-block;width:14px;height:14px;border-radius:50%;color:#fff;font-size:.62rem;font-weight:900;text-align:center;line-height:14px;margin-right:4px;vertical-align:-2px;font-style:normal}
   .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
   #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
   .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.85rem;white-space:nowrap}
   .tbtn.on{background:var(--sel);color:var(--onsel)}
-  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:8px 12px;margin:14px 0 4px}
+  .tip summary{cursor:pointer;font-weight:800;color:var(--ink);list-style:none} .tip summary::-webkit-details-marker{display:none} .tip[open] summary{margin-bottom:4px}
   .tip strong{color:var(--ink)}
   .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:14px 0;box-shadow:var(--shadow);overflow:hidden}
   .sec>summary{cursor:pointer;padding:14px 16px;list-style:none;display:flex;align-items:center;gap:10px}
@@ -104,6 +113,7 @@
   mark{background:#fde68a;color:inherit;border-radius:3px}
   @media print{.bar,.home,.qz,.tip,.gq,.tgb,.tg-vs,.tg-ls{display:none!important}.sec{break-inside:avoid;box-shadow:none}}
   .amap{margin:10px 0 14px}
+  .twm-nt{font-size:.74rem;color:var(--sub);text-align:center;margin-top:3px;line-height:1.6} .twm-nt b{color:var(--ink)}
   .wera{display:flex;flex-wrap:wrap;gap:6px}
   .wera span{flex:1 1 28%;min-width:92px;border-left:6px solid var(--c);background:var(--soft);border-radius:8px;padding:5px 8px;font-size:.78rem;color:var(--sub);line-height:1.35}
   .wera b{display:block;color:var(--c);font-size:.92rem}
@@ -116,9 +126,10 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="scoring.js"></script>
-<script src="worldmap.js"></script>
+<script src="worldmap.js?v=148"></script>
 <script src="twgeo_data.js"></script>
-<script src="twgeo.js"></script>
+<script src="twgeo.js?v=148"></script>
+<script src="lfig.js?v=148"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
 <script src="srs.js"></script>
@@ -126,18 +137,17 @@
 <script src="practice.js"></script>
 <script src="miniquiz.js"></script>
 <script src="mask.js"></script>
-<script src="atlas_data.js"></script>
+<script src="atlas_data.js?v=148"></script>
 </head>
 <body>
 <header><div class="wrap">
   <a class="home" href="index.html">← 首頁</a>
   <h1>🗺️ 觀光資源圖鑑</h1>
-  <p>臺灣地理總圖(縣市 · 河川 · 山脈 · 四極)· 國家公園 · 國家風景區 · 原住民族 · 節慶 · 地形 · 海岸 · 岩石 · 世界遺產 · 歷史 — 一表看懂 + 出處題號 + 配對小測 + 歷屆原題測驗</p>
+  <p>臺灣地理 · 臺灣人文 · 世界三組常考點:一表整理 + 地圖與圖解 + 出處題號 + 配對小測 + 歷屆原題</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
-  <div class="grp" id="grpRow"></div>
-  <div class="row wrap" id="secRow"></div>
+  <div class="seg" id="grpRow" role="tablist" aria-label="分組"></div>
   <div class="tools">
     <input id="q" placeholder="搜尋…(如 布農、潟湖、元宵、玄武岩)" aria-label="搜尋">
     <button class="tbtn" id="maskBtn" type="button">🙈 遮住重點</button>
@@ -146,7 +156,7 @@
 </div></div>
 
 <div class="wrap">
-  <div class="tip">💡 <strong>怎麼用</strong>:地圖可切換分區、點縣市河川山岳看說明,表上每列按「📍 圖上看」直接在地圖標出來。先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。</div>
+  <details class="tip"><summary>💡 怎麼用(點開)</summary>地圖可切換分區、點縣市河川山岳看說明,表上每列按「📍 圖上看」直接在地圖標出來。先整區看過,再按「遮住重點」把粗體與數字蓋起來,看著名稱回想特色(點一下看答案)。每區最下面:<strong>配對小測</strong>是用表上內容即時出題;<strong>歷屆原題</strong>從觀光資源概要考古題抽,答錯會收進觀光錯題本。後面的「導 / 領 年-題號」可點,看原題詳解。海岸、地形每列附自繪圖解。</details>
   <div id="app"></div>
   <div class="basis" id="basis"></div>
 </div>
@@ -197,7 +207,13 @@ function renderRow(sec, r, i, kw){
   const src = (r.src||[]).length ? r.src.map(srcLink).join('') : '<span class="nos">官方資料整理(歷屆未直接考)</span>';
   const tgb = r.f && TGCFG[sec.id] && window.TWGEO ? `<button type="button" class="tgb" data-tgf="${esc(r.f)}" data-tgt="${sec.id}">📍 圖上看</button>` : '';
   return `<div class="r" id="r-${sec.id}-${i}"${eraStyle(sec, r)}><div class="rk nomask">${hl(esc(plain(r.c[0])),kw)}</div><div class="rf">${fields}</div>
-    <div class="meta nomask">${tgb}${src}</div></div>`;
+    ${figOf(r)}<div class="meta nomask">${tgb}${src}</div></div>`;
+}
+/* 海岸、地形各列的自繪圖解(lfig.js);r.fig = '鍵' 或 '鍵:強調部分' */
+function figOf(r){
+  if (!r.fig || !window.LFIG) return '';
+  const [k, h] = r.fig.split(':');
+  return LFIG.fig(k, h ? { hl: h } : null);
 }
 /* 世界遺產:常考地點分布(worldmap.js),點的顏色＝遺產類型 */
 const WH_MARKS = [
@@ -282,10 +298,6 @@ const CLIM_MK = [
   { n: '菜宅擋風', p: [119.58, 23.57], c: C_NE, d: '澎湖:冬季東北季風強,菜宅用咾咕石(珊瑚礁岩)砌牆擋風' },
   { n: '風獅爺', p: [118.37, 24.45], c: C_NE, d: '金門:鎮風避煞(冬季東北季風強)' },
   { n: '玉山', p: [120.957, 23.47], c: '#64748b', s: 'tri', lab: '玉山(氣溫直減率)', d: '海拔每升高 1,000 公尺約降 6℃:嘉義市 36℃ 時,玉山主峰約 10℃' }
-];
-/* 山脈:常考的阿里山(五大山脈之一的阿里山山脈) */
-const MT_MK = [
-  { n: '阿里山', p: [120.805, 23.51], c: '#15803d', pr: 1, d: '嘉義阿里山鄉:屬<b>阿里山山脈</b>;森林遊樂區(神木、日出、雲海)、阿里山林業鐵路(1912 年由嘉義通車到二萬坪);鄒族的居住地' }
 ];
 /* 臺灣地理總圖(twgeo.js):各區的圖層、標示與圖例;標示點顏色同各區說明 */
 const IGN = '#dc2626', SED = '#b45309', MET = '#7c3aed';
@@ -425,31 +437,34 @@ const TG_LEG = {
   np: '<div class="tg-lg"><span><b style="background:' + C_NP + '"></b>國家公園</span><span><b style="background:' + C_NNP + '"></b>國家自然公園</span></div><div class="twm-nt">東沙、金門在左側小框;點地圖上的點看成立年與特色</div>',
   nsa: '<div class="tg-lg"><span><b style="background:' + C_NSA + '"></b>國家風景區(交通部觀光署 13 處)</span></div><div class="twm-nt">參山有獅頭山、梨山、八卦山三區;馬祖在左上小框;點地圖上的點看範圍與特色</div>',
   heri: '<div class="tg-lg"><span><b style="background:' + E_DH + '"></b>荷西</span><span><b style="background:' + E_MZ + '"></b>明鄭</span><span><b style="background:' + E_QG + '"></b>清領</span><span><b style="background:' + E_JP + '"></b>日治</span></div><div class="twm-nt">顏色＝興建時期;臺南、臺北古蹟密集,切到分區圖會標出億載金城、臺南州廳、艋舺龍山寺、臺北府城、臺灣總督府</div>',
-  clim: '<div class="tg-lg"><span><b style="background:' + C_NE + '"></b>冬季東北季風相關</span><span><b style="background:' + C_RAIN + '"></b>迎風坡多雨</span><span><b style="background:' + C_FOEHN + '"></b>焚風</span></div>',
+  clim: '<div class="tg-lg"><span><i style="background:#2563eb"></i>冬季東北季風</span><span><i style="background:#ea580c"></i>夏季西南季風</span><span><b style="background:' + C_NE + '"></b>冬季東北季風相關</span><span><b style="background:' + C_RAIN + '"></b>迎風坡多雨</span><span><b style="background:' + C_FOEHN + '"></b>焚風</span></div>' +
+    '<div class="twm-nt">北回歸線以北屬副熱帶季風氣候、以南屬熱帶季風氣候;冬季東北季風吹向北部、東北部(迎風多雨,宜蘭「竹風蘭雨」),夏季西南季風吹向中南部(南部夏雨冬乾)</div>',
   coast: '<div class="tg-lg"><span><i style="background:#7c3aed"></i>岬灣海岸</span><span><i style="background:#d97706"></i>沙岸</span><span><i style="background:#dc2626"></i>斷層海岸</span><span><i style="background:#db2777"></i>珊瑚礁海岸</span></div>',
   rock: '<div class="tg-lg"><span><b style="background:' + IGN + '"></b>火成岩</span><span><b style="background:' + SED + '"></b>沉積岩</span><span><b style="background:' + MET + '"></b>變質岩</span></div>',
   rel: '<div class="tg-lg"><span><b style="background:' + C_MAZU + '"></b>媽祖</span><span><b style="background:' + C_WANG + '"></b>王爺</span><span><b style="background:' + C_FOLK + '"></b>其他民間信仰</span><span><b style="background:' + C_BUD + '"></b>儒學 · 佛教</span><span><b style="background:' + C_WEST + '"></b>基督教 · 天主教 · 伊斯蘭教</span><span><b style="background:' + C_PINGPU + '"></b>平埔族</span></div><div class="twm-nt">切到分區圖會多標臺南府城、臺北各廟等密集的點</div>',
   name: '<div class="tg-lg"><span><b style="background:' + N_MZ + '"></b>明鄭</span><span><b style="background:' + N_QING + '"></b>清代設縣改名</span><span><b style="background:' + N_JP + '"></b>日治改名 · 移民村</span><span><b style="background:' + N_LAND + '"></b>拓墾 · 地形 · 產業</span></div><div class="twm-nt">標籤寫「今名(舊稱)」;切到分區圖會多標竹山、玉井、苗栗等點,點地圖上的圓點看舊稱與由來</div>',
-  mt: '<div class="tg-lg"><span>1 中央山脈</span><span>2 雪山山脈</span><span>3 玉山山脈</span><span>4 阿里山山脈</span><span>5 海岸山脈</span></div><div class="twm-nt">咖啡色虛線＝山脈大致走向;由西到東:阿里山 → 玉山 → 雪山 → 中央 → 海岸</div>'
+  mt: '<div class="tg-lg"><span>1 中央山脈</span><span>2 雪山山脈</span><span>3 玉山山脈</span><span>4 阿里山山脈</span><span>5 海岸山脈</span><span><b style="background:#15803d"></b>阿里山(森林遊樂區)</span></div><div class="twm-nt">咖啡色虛線＝山脈大致走向;由西到東:阿里山 → 玉山 → 雪山 → 中央 → 海岸</div>'
 };
 const TGCFG = {
-  geo: { layers: { cty: 1, rv: 1, mt: 1, pt: 0, pole: 1 } },
+  geo: { layers: { cty: 1, rv: 1, mt: 1, pt: 0, pole: 1 }, legend: TG_LEG.mt },
   river: { layers: { cty: 1, rv: 1, mt: 0, pt: 0 }, hint: '👆 點河川看流經縣市、長度與考點;切到分區圖,每條河都會標名稱' },
   poles: { layers: { cty: 1, pole: 1, mk: 1, rv: 0, mt: 0 }, marks: POLE_MK, mkName: '臺灣之最' },
   coast: { layers: { coast: 1, mk: 1, cty: 1, rv: 0 }, marks: COAST_MK, mkName: '海岸地形', legend: TG_LEG.coast },
   rock: { layers: { mk: 1, cty: 1, rv: 0 }, marks: ROCK_MK, mkName: '岩石', legend: TG_LEG.rock },
   land: { layers: { mk: 1, cty: 1, mt: 0, rv: 0 }, marks: LAND_MK, mkName: '地形' },
-  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0, mk: 1 }, pkAll: true, rgPr: 0.9, marks: MT_MK, mkName: '阿里山', legend: TG_LEG.mt },
+  mt: { layers: { mt: 1, cty: 1, rv: 0, pt: 0 }, pkAll: true, rgPr: 0.9, legend: TG_LEG.mt },
   rel: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: REL_MK, mkName: '廟宇', legend: TG_LEG.rel },
   name: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NAME_MK, mkName: '地名', legend: TG_LEG.name },
   np: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NP_MK, mkName: '國家公園', legend: TG_LEG.np },
   nsa: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: NSA_MK, mkName: '風景區', legend: TG_LEG.nsa },
   heri: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: HERI_MK, mkName: '古蹟', legend: TG_LEG.heri },
-  clim: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: CLIM_MK, mkName: '季風與地方風', legend: TG_LEG.clim }
+  clim: { layers: { mk: 1, cty: 1, rv: 0, mt: 0 }, marks: CLIM_MK, mkName: '季風與地方風', tropic: true,
+    arrows: [{ k: 'w', p: [[122.09, 25.33], [121.88, 24.84]], t: '冬季 東北季風' }, { k: 's', p: [[119.52, 22.55], [120.12, 22.86]], t: '夏季 西南季風' }],
+    texts: [{ t: '副熱帶季風氣候', p: [121.86, 23.78] }, { t: '熱帶季風氣候', p: [121.86, 23.12] }], legend: TG_LEG.clim }
 };
 function mapFor(sec, idx){
   /* 臺灣各區:同一張縣市底圖(twgeo.js)+ 該區標示;氣候區另附東亞季風洋流、世界常考洋流兩張圖 */
-  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]) + (sec.id === 'clim' ? climFlows() : '');
+  if (window.TWGEO && TGCFG[sec.id]) return TWGEO.widget(sec.id, TGCFG[sec.id]) + (sec.id === 'clim' ? climMaps() : '');
   if (sec.id === 'wgeo') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WGEO_MARKS, rivers: ['尼羅河', '亞馬遜河', '東非大裂谷'], seas: ['蘇必略湖'], title: '世界自然地理之最' }) + WMAP.note + '<div class="twm-nt">藍線＝尼羅河、亞馬遜河;咖啡色虛線＝東非大裂谷</div></figure>' : '';
   /* 臺灣史年表:各時期長度長條圖(ana.js)*/
   if (sec.id === 'hist') return window.ANAUI ? '<figure class="amap nomask">' + ANAUI.eraBar() + '<div class="twm-nt">長條長度＝該時期的年數(戰後算到今年)</div></figure>' : '';
@@ -457,31 +472,46 @@ function mapFor(sec, idx){
   if (sec.id === 'wh') return window.WMAP ? '<figure class="amap nomask">' + WMAP.svg({ view: 'world', marks: WH_MARKS, title: '常考世界遺產分布' }) + WMAP.typeLegend + WMAP.note + '</figure>' : '';
   return '';
 }
-/* 氣候與季風:洋流、季風示意(worldmap.js 的 flows)*/
-const FLOW_LEG = '<div class="wm-lg"><span><i style="background:#dc2626"></i>暖流</span><span><i style="background:#2563eb"></i>寒流</span><span><i style="background:#7c3aed;opacity:.6"></i>冬季季風(約 10–3 月)</span><span><i style="background:#ea580c;opacity:.6"></i>夏季西南季風(約 5–9 月)</span></div>';
-function climFlows(){
+/* 氣候與季風:季風、洋流示意(worldmap.js 的 flows、centers、notes);分頁切換 */
+const MON_VIEW = [62, 0, 150, 55];
+const MON_LEG = '<div class="wm-lg"><span><i style="background:#7c3aed;opacity:.6"></i>冬季季風(約 10–3 月)</span><span><i style="background:#ea580c;opacity:.6"></i>夏季季風(約 5–9 月)</span><span><b class="pcx" style="background:#1e40af">H</b>高壓</span><span><b class="pcx" style="background:#b91c1c">L</b>低壓</span></div>';
+const CUR_LEG = '<div class="wm-lg"><span><i style="background:#dc2626"></i>暖流</span><span><i style="background:#2563eb"></i>寒流</span></div>';
+function climMaps(){
   if (!window.WMAP) return '';
-  return '<figure class="amap nomask">' + WMAP.svg({ view: [100, 8, 160, 52], flows: ['冬季季風(日本)', '冬季季風(臺灣)@0.75', '夏季西南季風@0.35', '黑潮@0.3', '親潮', '對馬暖流', '中國沿岸流@0.3'], marks: [{ k: '臺北', label: '臺灣' }, { k: '金澤', label: '金澤(冬季多雪)' }], seas: ['東海', '南海', '日本海', '黃海'], title: '東亞的季風與洋流' }) + FLOW_LEG +
-    '<div class="twm-nt">冬季西伯利亞冷高壓吹出的季風:到日本是<b>西北風</b>(越過日本海,日本海側多雪,如金澤),到臺灣轉為<b>東北風</b>(北部、東北部多雨);夏季吹<b>西南季風</b>。<b>黑潮</b>(暖流)沿臺灣東部北上,<b>親潮</b>(寒流)由北南下,在日本東北外海交會;<b>中國沿岸流</b>冬季沿大陸沿岸南下,烏魚隨冷水洄游到臺灣西南沿海</div></figure>' +
-    '<figure class="amap nomask">' + WMAP.svg({ view: 'world', flows: ['北大西洋暖流@0.55', '巴西暖流', '福克蘭寒流', '本吉拉寒流', '祕魯寒流', '黑潮', '親潮'], marks: [{ k: '特羅姆瑟', label: '北歐(港口不凍)' }, { k: '福克蘭群島', label: '阿根廷外海漁場' }, { k: '納米比沙漠', label: '納米比沙漠' }, { k: '阿他加馬', label: '阿他加馬沙漠' }], title: '世界常考洋流' }) + FLOW_LEG +
-    '<div class="twm-nt">暖流讓沿岸冬溫較高(<b>北大西洋暖流</b> → 北歐港口不凍);寒流讓大氣穩定少雨(<b>本吉拉</b>、<b>祕魯寒流</b> → 沿海沙漠);<b>福克蘭寒流</b>與<b>巴西暖流</b>在阿根廷外海交會成漁場。示意走向,不作測量用途</div></figure>';
+  const T = [
+    ['win', '❄️ 冬季季風', WMAP.svg({ view: MON_VIEW, centers: [{ t: 'H', p: [49, 101], n: '冷高壓(蒙古、西伯利亞)' }], flows: ['冬季季風(日本)@0.55', '冬季季風(臺灣)@0.7', '冬季季風(南海)@0.55'], notes: [{ p: [40.5, 112], t: '乾冷', c: 'w' }, { p: [30.5, 128.6], t: '經過海面變濕', c: 'w' }], marks: [{ k: '臺北', label: '臺灣' }, { k: '金澤', label: '金澤(冬季多雪)' }], seas: ['日本海', '東海', '南海'], title: '冬季季風' }) + MON_LEG,
+      '冬季亞洲大陸冷卻,蒙古、西伯利亞形成<b>冷高壓</b>,風由高壓往外吹:到日本是<b>西北季風</b>(越過日本海帶來水氣,日本海側的金澤多雪);到臺灣轉為<b>東北季風</b>(經過海面變濕,北部、東北部冬季多雨);再往南吹向東南亞(古代中國商船乘東北季風南下)'],
+    ['sum', '☀️ 夏季季風', WMAP.svg({ view: MON_VIEW, centers: [{ t: 'L', p: [28, 72], n: '熱低壓(亞洲大陸)' }], flows: ['西南季風(阿拉伯海)@0.5', '西南季風(孟加拉灣)@0.55', '西南季風(臺灣)@0.5'], notes: [{ p: [6.5, 96], t: '溫暖潮濕', c: 's' }], marks: [{ k: '臺北', label: '臺灣' }, { k: '阿薩姆', label: '阿薩姆(紅茶)' }], seas: ['阿拉伯海', '孟加拉灣', '南海'], title: '夏季季風' }) + MON_LEG,
+      '夏季亞洲大陸受熱形成<b>熱低壓</b>,海上溫暖潮濕的空氣吹向陸地:南亞、東南亞、臺灣吹<b>西南季風</b>(印度阿薩姆紅茶產區雨量豐沛;臺灣中南部夏季多雨;古代阿拉伯、印度商船乘西南季風東來)'],
+    ['cur', '🌊 東亞洋流', WMAP.svg({ view: [100, 8, 160, 52], flows: ['黑潮@0.3', '親潮', '對馬暖流', '中國沿岸流@0.3'], marks: [{ k: '臺北', label: '臺灣' }], seas: ['東海', '南海', '日本海', '黃海'], title: '東亞的洋流' }) + CUR_LEG,
+      '<b>黑潮</b>(暖流)從菲律賓東方北上,流經臺灣東部到日本南岸;<b>親潮</b>(寒流)由北南下,兩者在日本東北外海交會成漁場;<b>對馬暖流</b>是黑潮的分支,流進日本海;<b>中國沿岸流</b>冬季沿大陸沿岸南下,烏魚隨冷水洄游到臺灣西南沿海'],
+    ['wcur', '🌍 世界洋流', WMAP.svg({ view: 'world', flows: ['北大西洋暖流@0.55', '巴西暖流', '福克蘭寒流', '本吉拉寒流', '祕魯寒流', '黑潮', '親潮'], marks: [{ k: '特羅姆瑟', label: '北歐(港口不凍)' }, { k: '福克蘭群島', label: '阿根廷外海漁場' }, { k: '納米比沙漠', label: '納米比沙漠' }, { k: '阿他加馬', label: '阿他加馬沙漠' }], title: '世界常考洋流' }) + CUR_LEG,
+      '暖流讓沿岸冬溫較高(<b>北大西洋暖流</b> → 北歐港口不凍);寒流讓大氣穩定少雨(<b>本吉拉</b>、<b>祕魯寒流</b> → 沿海沙漠);<b>福克蘭寒流</b>與<b>巴西暖流</b>在阿根廷外海交會成漁場']
+  ];
+  return '<figure class="amap nomask mtab"><div class="mtabs" role="tablist">' + T.map((t, i) => '<button type="button" role="tab" data-mtab="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</button>').join('') + '</div>' +
+    T.map((t, i) => '<div class="mtp" data-mtp="' + t[0] + '"' + (i ? ' hidden' : '') + '>' + t[2] + '<div class="twm-nt">' + t[3] + '</div></div>').join('') +
+    '<div class="twm-nt">示意走向與位置,不作測量用途</div></figure>';
 }
 function qaCount(sec){ return sec.rows.reduce((n,r)=>n+(r.qa||[]).length,0); }
 function render(){
-  /* 導覽:第一列「全部 + 分組」,第二列只列目前分組的區塊(自動換行,不會被切掉) */
-  const G = grpOf(SEC);
-  $('grpRow').innerHTML = `<button type="button" data-v="all"${SEC==='all'?' class="on"':''}>全部<small>${D.sections.length}</small></button>` +
-    (D.groups||[]).map(g=>`<button type="button" data-v="g-${g.id}"${G===g.id?' class="on"':''}>${g.icon} ${esc(g.t)}<small>${D.sections.filter(s=>s.g===g.id).length}</small></button>`).join('');
-  $('secRow').innerHTML = G ? D.sections.filter(s=>s.g===G).map(s=>
-    `<button class="chip${SEC===s.id?' on':''}" type="button" data-v="${s.id}">${esc(s.icon+' '+s.t)}</button>`).join('') : '';
+  /* 導覽:一排分頁(全部 / 臺灣地理 / 臺灣人文 / 世界);內容依分組列出各區卡片,點卡片展開;單一區時上方有返回分組的路徑 */
+  const GR = D.groups || [], G = grpOf(SEC), cnt = gid => D.sections.filter(s=>s.g===gid).length;
+  const tabs = [{ v:'all', icon:'📚', t:'全部', n:D.sections.length, on:SEC==='all' }].concat(GR.map(g=>({ v:'g-'+g.id, icon:g.icon, t:g.t, n:cnt(g.id), on:G===g.id })));
+  $('grpRow').hidden = !GR.length;
+  $('grpRow').innerHTML = tabs.map(x=>`<button type="button" role="tab" aria-selected="${x.on}" data-v="${x.v}"${x.on?' class="on"':''}><span class="gi">${x.icon}</span><span class="gt">${esc(x.t)}</span><small>${x.n} 區</small></button>`).join('');
   const kw = $('q').value.trim();
   const k = kw.toLowerCase();
-  let html = '';
-  D.sections.forEach(sec=>{
+  let html = '', lastG = null;
+  if (IDS.includes(SEC) && !kw) {
+    const s0 = D.sections.find(s=>s.id===SEC), g0 = GR.find(g=>g.id===s0.g);
+    html += `<div class="crumb nomask">${g0 ? `<button type="button" data-v="g-${g0.id}">‹ ${g0.icon} ${esc(g0.t)} ${cnt(g0.id)} 區</button>` : `<button type="button" data-v="all">‹ 全部</button>`}<span>›</span><b>${esc(s0.icon+' '+s0.t)}</b></div>`;
+  }
+  (GR.length ? GR.flatMap(g=>D.sections.filter(s=>s.g===g.id)) : D.sections).forEach(sec=>{
     if (SEC !== 'all' && sec.id !== SEC && 'g-'+sec.g !== SEC) return;
     const idx = [];
     sec.rows.forEach((r,i)=>{ if (!k || r.c.map(plain).join(' ').toLowerCase().includes(k)) idx.push(i); });
     if (!idx.length) return;
+    if (SEC === 'all' && GR.length && sec.g !== lastG) { const g = GR.find(x=>x.id===sec.g); html += `<h2 class="gh nomask">${g.icon} ${esc(g.t)}<small>${cnt(g.id)} 區</small></h2>`; lastG = sec.g; }
     const open = kw || IDS.includes(SEC) ? ' open' : '';
     html += `<details class="sec" id="s-${sec.id}"${open}><summary class="nomask"><span class="si">${sec.icon}</span><span><span class="st">${esc(sec.t)}</span><span class="sd">${esc(sec.desc)} · ${sec.rows.length} 列</span></span></summary>
       <div class="sb"><div class="note">${sec.note}</div>${mapFor(sec, idx)}${idx.map(i=>renderRow(sec, sec.rows[i], i, kw)).join('')}
@@ -576,10 +606,16 @@ function goSec(v){
   render(); window.scrollTo(0,0);
 }
 $('grpRow').addEventListener('click', e=>{ const b = e.target.closest('button[data-v]'); if (b) goSec(b.dataset.v); });
-$('secRow').addEventListener('click', e=>{ const b = e.target.closest('.chip'); if (b) goSec(b.dataset.v); });
 window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if ((IDS.includes(h) || GIDS.includes(h)) && h!==SEC){ SEC = h; render(); } });
 $('app').addEventListener('click', e=>{
   let b;
+  if ((b = e.target.closest('.crumb [data-v]'))) return goSec(b.dataset.v);
+  if ((b = e.target.closest('[data-mtab]'))) {
+    const fg = b.closest('.mtab');
+    fg.querySelectorAll('[data-mtab]').forEach(x=>x.classList.toggle('on', x===b));
+    fg.querySelectorAll('[data-mtp]').forEach(x=>{ x.hidden = x.dataset.mtp !== b.dataset.mtab; });
+    return;
+  }
   if ((b = e.target.closest('[data-pair]'))) return pairStart(b.dataset.pair);
   if ((b = e.target.closest('.gq .op'))) return pairAnswer(b.closest('.gq').id.slice(3), +b.dataset.i);
   if ((b = e.target.closest('[data-next]'))) { PQ[b.dataset.next].i++; return pairShow(b.dataset.next); }
