@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v140
+/* ana.js — 詳解排版(單一來源)· v161
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -17,12 +17,13 @@
    (名稱用 ANAUI:執業實務 / 法規複習頁自己有一個叫 ANA 的解析資料變數,避免同名)
    解析內地圖:<figure class='xm' data-twmap='地名|地名=標籤|地名=標籤@l' data-ranges='1'>,自動載入 twmap.js 畫出
      標籤結尾 @r / @l / @u / @d = 優先放在右 / 左 / 上 / 下(避免壓到山脈線)
-   世界地圖:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-view='world'>,自動載入 worldmap.js
-     data-view 省略 = 依標記自動放大;'world' = 全世界;也可給「西經,南緯,東經,北緯」
+   世界地圖:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-seas='北海' data-flows='北大西洋暖流' data-view='world'>,自動載入 worldmap.js
+     data-view 省略 = 依標記自動放大;'world' = 全世界;也可給「西經,南緯,東經,北緯」;data-flows = 洋流、季風箭頭(名稱見 WMAP.flows)
    時間軸:<figure class='xm' data-tline='1624=荷蘭人占領大員|1652=*郭懷一事件' data-era='tw'>
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v161 (2026-10-19) 解析內世界地圖支援洋流、季風箭頭(data-flows)
      v140 (2026-10-08) 時間軸年份「史前」一律排在最前面(原本當成 0,會排到西元前之後)
      v136 (2026-10-07) 解析內世界地圖(worldmap.js,用到才載入)
      v135 (2026-10-07) 時間軸、臺灣歷史分期圖、逐項判斷與歷屆同考點樣式
@@ -163,8 +164,8 @@
         f.setAttribute('data-done', '1');
         var vw = f.getAttribute('data-view') || 'auto', rv = f.getAttribute('data-rivers');
         if (/^-?[\d.]+(,-?[\d.]+){3}$/.test(vw)) vw = vw.split(',').map(Number);
-        var se = f.getAttribute('data-seas');
-        f.insertAdjacentHTML('afterbegin', window.WMAP.svg({ marks: parseMarks(f.getAttribute('data-wmap')), rivers: rv ? rv.split('|') : [], seas: se ? se.split('|') : [], view: vw }) + window.WMAP.note);
+        var se = f.getAttribute('data-seas'), fl = f.getAttribute('data-flows');
+        f.insertAdjacentHTML('afterbegin', window.WMAP.svg({ marks: parseMarks(f.getAttribute('data-wmap')), rivers: rv ? rv.split('|') : [], seas: se ? se.split('|') : [], flows: fl ? fl.split('|') : [], view: vw }) + window.WMAP.note);
       });
     });
     var figs = document.querySelectorAll('figure.xm[data-twmap]:not([data-done])');

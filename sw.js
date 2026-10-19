@@ -2,11 +2,11 @@
    更新內容後把 CACHE 版本號 +1(例 v1 -> v2),重新整理即自動汰換舊快取
    程式網址帶 ?v=版本(例 twgeo.js?v=148):改版時頁面直接要新網址,不會在舊 Service Worker 交棒前配到快取裡的舊版程式;
    ASSETS 也寫同樣的網址(改程式時兩邊一起改);離線時找不到完全相同的網址,會改找不看 ?v= 的快取 */
-const CACHE = 'ylenpass-v160';
+const CACHE = 'ylenpass-v161';
 const ASSETS = [
   './', 'index.html', 'manifest.json', 'pwa.js', 'lock_config.js', 'lock.js', 'examsel.js', '搜尋.html', '收藏.html', '歷屆試題.html', '英語詳解.html', '日文詳解.html',
   '學習中心.html', '日語學習中心.html', '考前衝刺.html', '法規速查.html', '考點速記.html', '口試練習.html', '模擬測驗.html', '儀表板.html', '資料備份.html', '錯題本.html', '日文錯題本.html', '觀光複習.html', '觀光錯題本.html', '執業實務複習.html', '執業實務錯題本.html', '執業法規複習.html', '執業法規錯題本.html', '是非快問.html', '數字速記.html', '兩岸入出境.html', '實務工具箱.html', '觀光圖鑑.html', '出題趨勢.html',
-  'subjects.js', 'prefs.js', 'fav.js', 'notes.js', 'srs.js', 'backlink.js', 'practice.js', 'miniquiz.js', 'mask.js', 'tf.js', 'cs_data.js', 'toolbox_data.js', 'atlas_data.js?v=152', 'atlaslink.js', 'must100.js', 'learn_en.js', 'learn_jp.js', 'scoring.js', 'stale.js', 'enread.js', 'optimg.js', 'ana.js', 'twmap.js', 'worldmap.js?v=150', 'twgeo.js?v=152', 'lfig.js?v=148', 'twgeo_data.js?v=152',
+  'subjects.js', 'prefs.js', 'fav.js', 'notes.js', 'srs.js', 'backlink.js', 'practice.js', 'miniquiz.js', 'mask.js', 'tf.js', 'cs_data.js', 'toolbox_data.js', 'atlas_data.js?v=152', 'atlaslink.js', 'must100.js', 'learn_en.js', 'learn_jp.js', 'scoring.js', 'stale.js', 'enread.js', 'optimg.js', 'ana.js', 'twmap.js', 'worldmap.js?v=151', 'twgeo.js?v=152', 'lfig.js?v=148', 'twgeo_data.js?v=152',
   'glossary.js', 'dict.json', 'bank.js', 'sprint.js', 'sprint_cn.js', 'oral.js', 'oral_jp.js', 'oral_mock.js', 'gh.js', 'gh_ana.js', 'en_review.js', 'pr.js', 'pr_ana.js', 'pr2.js', 'pr2_ana.js', 'jp.js', 'jp_ana.js', 'jp_psg.js', 'jplook.js',
   'kuromoji/kuromoji.js',
   'dict/base.dat.gz', 'dict/cc.dat.gz', 'dict/check.dat.gz', 'dict/tid.dat.gz', 'dict/tid_map.dat.gz', 'dict/tid_pos.dat.gz',
