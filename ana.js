@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v161
+/* ana.js — 詳解排版(單一來源)· v162
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -15,14 +15,17 @@
    這支負責樣式(各頁共用,含深色模式)、快問收合、解析內地圖與時間軸;內容寫在 gh_ana.js / pr_ana.js / pr2_ana.js。
    ANAUI.compact(html)  快問、小測驗彈窗用:詳細內容收進「📖 看完整解析」,作答節奏不被長文打斷
    (名稱用 ANAUI:執業實務 / 法規複習頁自己有一個叫 ANA 的解析資料變數,避免同名)
-   解析內地圖:<figure class='xm' data-twmap='地名|地名=標籤|地名=標籤@l' data-ranges='1'>,自動載入 twmap.js 畫出
+   解析內地圖:<figure class='xm' data-twmap='地名|地名=標籤|地名=標籤@l' data-ranges='1'>,自動載入 twmap.js(地名庫)
+     與 twgeo.js(縣市底圖)畫出;縣市底圖載入失敗時退回 twmap.js 的臺灣輪廓圖
      標籤結尾 @r / @l / @u / @d = 優先放在右 / 左 / 上 / 下(避免壓到山脈線)
    世界地圖:<figure class='xm' data-wmap='北角=挪威北角|羅瓦涅米' data-rivers='萊茵河' data-seas='北海' data-flows='北大西洋暖流' data-view='world'>,自動載入 worldmap.js
      data-view 省略 = 依標記自動放大;'world' = 全世界;也可給「西經,南緯,東經,北緯」;data-flows = 洋流、季風箭頭(名稱見 WMAP.flows)
+     圖上自動標出國家名稱(全世界圖標洲名),放大的圖在角落加世界位置小圖
    時間軸:<figure class='xm' data-tline='1624=荷蘭人占領大員|1652=*郭懷一事件' data-era='tw'>
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v162 (2026-10-19) 臺灣位置圖改用圖鑑那張縣市底圖(看得出在哪個縣市);世界地圖加國家名稱與世界位置小圖
      v161 (2026-10-19) 解析內世界地圖支援洋流、季風箭頭(data-flows)
      v140 (2026-10-08) 時間軸年份「史前」一律排在最前面(原本當成 0,會排到西元前之後)
      v136 (2026-10-07) 解析內世界地圖(worldmap.js,用到才載入)
@@ -52,6 +55,7 @@
       '.xa .xl{border-left:3px solid var(--accent,#2563eb);background:rgba(127,127,127,.08);padding:7px 10px;border-radius:0 8px 8px 0;font-size:.86rem;margin:6px 0}' +
       '.xa figure.xm{margin:8px 0;text-align:center}.xa figure.xm img,.xa figure.xm svg{max-width:100%;height:auto}' +
       '.xa figure.xm figcaption{font-size:.78rem;color:var(--sub,#5a6b82);margin-top:2px}' +
+      '.xa figure.xm .tgm{max-width:420px}.xm-nt{font-size:.74rem;color:var(--sub,#64748b);text-align:center;margin-top:2px;line-height:1.45}' +
       /* 時間軸 */
       '.tl{max-width:460px;margin:4px auto 2px;text-align:left;font-size:.84rem;line-height:1.5}' +
       '.tl-e{margin:8px 0 2px;padding:1px 8px;border-left:4px solid var(--c);color:var(--c);font-weight:800;font-size:.78rem}' +
@@ -134,20 +138,45 @@
 
   /* ---- 解析裡的地圖:用到才載入 twmap.js(臺灣)/ worldmap.js(世界) ---- */
   var LIBS = {};
-  function need(file, ready, cb) {
+  function need(file, ready, cb, bad) {
     if (ready()) return cb();
     var L = LIBS[file] || (LIBS[file] = { wait: [], loading: false });
-    L.wait.push(cb);
+    L.wait.push([cb, bad]);
     if (L.loading) return;
     L.loading = true;
     var sc = document.createElement('script');
     sc.src = file;
-    sc.onload = function () { var q = L.wait; L.wait = []; q.forEach(function (f) { try { f(); } catch (e) {} }); };
-    sc.onerror = function () { L.loading = false; L.wait = []; };
+    function done(ok) { var q = L.wait; L.wait = []; L.loading = false; q.forEach(function (w) { var f = ok && ready() ? w[0] : w[1]; if (f) try { f(); } catch (e) {} }); }
+    sc.onload = function () { done(true); };
+    sc.onerror = function () { done(false); };
     document.head.appendChild(sc);
   }
   function needMap(cb) { need('twmap.js', function () { return !!window.TWMAP; }, cb); }
-  function needWorld(cb) { need('worldmap.js', function () { return !!window.WMAP; }, cb); }
+  function needWorld(cb) { need('worldmap.js?v=162', function () { return !!(window.WMAP && window.WMAP.noteAna); }, cb); }
+  /* 縣市底圖(twgeo_data.js → twgeo.js);cb(true) = 可用,cb(false) = 載入失敗,改畫輪廓圖 */
+  function needGeo(cb) {
+    need('twgeo_data.js?v=152', function () { return !!window.TWGEO_DATA; }, function () {
+      need('twgeo.js?v=162', function () { return !!(window.TWGEO && window.TWGEO.svg); }, function () { cb(true); }, function () { cb(false); });
+    }, function () { cb(false); });
+  }
+  var TWCOL = { np: '#16a34a', nsa: '#ea580c', pt: '#dc2626' };
+  function geoSvg(marks, ranges) {
+    try {
+      var mk = [];
+      marks.forEach(function (m) {
+        var p = window.TWMAP.get(m.k); if (!p) return;
+        mk.push({ n: p.k, p: [p.lon, p.lat], lab: m.label || p.k.replace(/(國家風景區|國家公園|國家自然公園)$/, ''), c: TWCOL[m.c || p.c] || TWCOL.pt, side: m.side || '' });
+      });
+      return mk.length ? window.TWGEO.svg({ marks: mk, mt: ranges ? 1 : 0 }) : '';
+    } catch (e) { return ''; }
+  }
+  function geoNote(sv) {
+    var m = String(sv).match(/aria-label="臺灣位置示意圖 · ([^"]+)"/), v = m ? m[1] : '全臺', a = ['示意圖'];
+    if (v === '全臺') a.push('金門、馬祖在左上小框' + (sv.indexOf('東沙環礁') >= 0 ? ',東沙在下方小框' : ''));
+    else a.push('放大到' + v);
+    a.push('縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版)');
+    return '<div class="xm-nt">' + a.join(' · ') + '</div>';
+  }
   function parseMarks(s) {
     return String(s || '').split('|').filter(Boolean).map(function (x) { var kv = x.split('='), lb = kv[1] || '', at = lb.lastIndexOf('@'), side = ''; if (at > 0 && /^[rlud]$/.test(lb.slice(at + 1))) { side = lb.slice(at + 1); lb = lb.slice(0, at); } return { k: kv[0], label: lb || undefined, side: side }; });
   }
@@ -165,18 +194,23 @@
         var vw = f.getAttribute('data-view') || 'auto', rv = f.getAttribute('data-rivers');
         if (/^-?[\d.]+(,-?[\d.]+){3}$/.test(vw)) vw = vw.split(',').map(Number);
         var se = f.getAttribute('data-seas'), fl = f.getAttribute('data-flows');
-        f.insertAdjacentHTML('afterbegin', window.WMAP.svg({ marks: parseMarks(f.getAttribute('data-wmap')), rivers: rv ? rv.split('|') : [], seas: se ? se.split('|') : [], flows: fl ? fl.split('|') : [], view: vw }) + window.WMAP.note);
+        var ws = window.WMAP.svg({ marks: parseMarks(f.getAttribute('data-wmap')), rivers: rv ? rv.split('|') : [], seas: se ? se.split('|') : [], flows: fl ? fl.split('|') : [], view: vw, countries: true, locator: true });
+        f.insertAdjacentHTML('afterbegin', ws + window.WMAP.noteAna(ws));
       });
     });
     var figs = document.querySelectorAll('figure.xm[data-twmap]:not([data-done])');
     if (!figs.length) return;
     needMap(function () {
-      Array.prototype.forEach.call(figs, function (f) {
-        if (f.getAttribute('data-done')) return;
-        f.setAttribute('data-done', '1');
-        var marks = parseMarks(f.getAttribute('data-twmap'));
-        var ranges = f.getAttribute('data-ranges') === '1';
-        f.insertAdjacentHTML('afterbegin', window.TWMAP.svg({ marks: marks, labels: true, ranges: ranges }) + (ranges ? window.TWMAP.rangeLegend : '') + window.TWMAP.note);
+      needGeo(function (geo) {
+        Array.prototype.forEach.call(figs, function (f) {
+          if (f.getAttribute('data-done')) return;
+          f.setAttribute('data-done', '1');
+          var marks = parseMarks(f.getAttribute('data-twmap'));
+          var ranges = f.getAttribute('data-ranges') === '1';
+          var gs = geo ? geoSvg(marks, ranges) : '';
+          if (gs) f.insertAdjacentHTML('afterbegin', gs + (ranges ? window.TWMAP.rangeLegend : '') + geoNote(gs));
+          else f.insertAdjacentHTML('afterbegin', window.TWMAP.svg({ marks: marks, labels: true, ranges: ranges }) + (ranges ? window.TWMAP.rangeLegend : '') + window.TWMAP.note);
+        });
       });
     });
   }

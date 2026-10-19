@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型、南海諸島)· v152
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型、南海諸島)· v162
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -10,9 +10,13 @@
      cfg.rgPr   : 山脈名稱的擺放順序(預設 5;山脈區設小一點,先於縣市名稱擺放)
      cfg.arrows : [{ k: 'w' 冬 / 's' 夏, p: [[經,緯], …], t: 名稱, at: 名稱位置 0~1 }] 季風等粗箭頭(只畫在全臺圖)
      cfg.texts  : [{ t: 文字, p: [經,緯] }] 區域說明文字(例:副熱帶季風氣候);cfg.tropic:不開四極圖層也畫北回歸線
+   TWGEO.svg({ marks:[{ n 名稱, p:[經度,緯度], lab 標籤, c 顏色, side 'r'|'l'|'u'|'d' 標籤優先方向 }], mt 1 = 加畫山脈, view 分區(省略 = 自動) })
+     → 解析用靜態圖 SVG 字串:縣市底色與名稱 + 標示,沒有切換按鈕;不畫南海諸島小框與縣市政府,東沙小框只在有標示時才畫;
+       3 個以上標示都擠在同一分區時自動放大到該分區
    TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱' 'sc:西沙群島')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v162 (2026-10-19) 新增 TWGEO.svg 解析用靜態圖(觀光複習解析裡的臺灣位置圖改用縣市底圖,看得出在哪個縣市);標示可指定標籤優先方向
      v152 (2026-10-14) 東沙、太平島說明加「南海屏障」「南疆鎖鑰」國碑、太平島是實際管轄最南與最西;北回歸線說明列出 5 座標誌與設立順序;
                        分區圖的北回歸線標誌依設立先後標 ①水上 ②瑞穗 ③靜浦 ④東石 ⑤虎井,且優先畫出
      v151 (2026-10-14) 全臺圖左下加「南海諸島」小框:東沙、西沙、中沙、南沙四群島與周邊海岸(示意),綠 = 我國實際管轄
@@ -195,7 +199,8 @@
   /* ---- 畫一張圖 ---- */
   function render(id) {
     var st = ST[id], cfg = st.cfg, L = st.on, v = VB[st.v] || VB.all, f = proj(v[2]), H = f.H;
-    if (st.v === 'all') H = Math.max(H, SCS_BOX[1] + SCS_BOX[3] + 6);   /* 全臺圖下方多留海面放南海諸島小框、東沙放大圖與圖例 */
+    var stc = st.stat || null;   /* 解析用靜態圖(TWGEO.svg):不畫南海諸島小框與縣市政府,東沙小框只在有標示時才畫 */
+    if (st.v === 'all') H = Math.max(H, stc ? (stc.dongsha ? INSETS[2].box[1] + INSETS[2].box[3] + 6 : H) : SCS_BOX[1] + SCS_BOX[3] + 6);   /* 全臺圖下方多留海面放南海諸島小框、東沙放大圖與圖例 */
     var fsc = null;
     var zmax = st.v === 'all' ? 0 : (v[0] === 'p' || v[0] === 'k' || v[0] === 'z') ? 2 : 1;
     var minD = st.v === 'all' ? 1.1 : 0.6;
@@ -219,6 +224,7 @@
     /* 全臺圖:離島小框 */
     if (st.v === 'all') {
       INSETS.forEach(function (ins) {
+        if (stc && ins.g === 'd' && !stc.dongsha) { ins.f = null; return; }
         var b = ins.box, fi = proj(ins.b, b);
         o += '<rect class="ib" x="' + b[0] + '" y="' + b[1] + '" width="' + b[2] + '" height="' + b[3] + '" rx="6" ' + (ins.g === 'd' ? 'data-f="sc:東沙群島"' : 'data-tgv="' + ins.g + '"') + '/>';
         o += '<text class="cap" x="' + (b[0] + 5) + '" y="' + (b[1] + 11) + '">' + ins.t + '</text>';
@@ -239,6 +245,7 @@
         taken.push([b[0], b[1], b[0] + b[2], b[1] + b[3], 'ins', ins.g]);
         fi.iid = ins.g; ins.f = fi;
       });
+      if (!stc) {
       /* 南海諸島小框:周邊陸地(手繪簡化)+ 臺灣、澎湖、金門(綠)+ 四群島;陸地放在內層 svg 裡,超出小框的部分自動裁掉 */
       var sb = SCS_BOX, hlS = st.hl === 'sc:南海諸島';
       fsc = proj(SCS_B, sb); fsc.iid = 'scs';
@@ -272,6 +279,7 @@
         '<text class="sub" x="' + (lgx + 11) + '" y="' + (lgy + 12) + '">臺澎金馬、東沙島、南沙太平島</text>' +
         '<circle class="lgc" cx="' + (lgx + 4) + '" cy="' + (lgy + 25) + '" r="3.6"/><text x="' + (lgx + 11) + '" y="' + (lgy + 28) + '">我國主張主權、未實際管轄</text></g>';
       taken.push([lgx, lgy - 10, W - 2, lgy + 32]);
+      }
     }
     /* 海岸類型 */
     if (L.coast && gmain === 'm') {
@@ -341,7 +349,7 @@
         labels.push({ pr: 6, t: l.n, fs: 9.5, cls: 'tgl ldl', at: f(l.p), cand: [[0, 0]], center: true, key: 'ld:' + l.n });
       });
     }
-    function ptDraw(p, f2, key, col, sym, lab, pr, fs, alt) {
+    function ptDraw(p, f2, key, col, sym, lab, pr, fs, alt, side) {
       var q = f2(p), s = '';
       if (sym === 'star') s = '<path class="tgk" fill="' + col + '" d="' + star(q[0], q[1], 6.2) + '"/>';
       else if (sym === 'tri') s = '<path class="tgk" fill="' + col + '" d="M' + n1(q[0]) + ',' + n1(q[1] - 5) + 'l4.5,8h-9z"/>';
@@ -350,9 +358,9 @@
       else s = '<circle class="tgk" fill="' + col + '" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="3.6"/>';
       var g = '<g data-f="' + key + '"' + (st.hl === key ? ' class="hi"' : '') + '>' + s + '</g>', box = [q[0] - 5, q[1] - 5, q[0] + 5, q[1] + 5];
       if (alt === lab) alt = null;
-      if (lab && pr >= 5 && st.hl !== key) { labels.push({ pr: pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null, dot: g, dbox: box }); return; }
+      if (lab && pr >= 5 && st.hl !== key) { labels.push({ pr: pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null, dot: g, dbox: box, side: side }); return; }
       o += g; taken.push(box);
-      if (lab) labels.push({ pr: st.hl === key ? 0 : pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null });
+      if (lab) labels.push({ pr: st.hl === key ? 0 : pr, t: lab, alt: alt, fs: fs || 8.5, cls: 'tgl ptl', at: q, key: key, ins: f2 !== f ? f2.iid : null, side: side });
     }
     function where(p) {
       if (gmain !== 'm') return f.inb(p) ? f : null;
@@ -385,8 +393,8 @@
         var lp = f2.inb(c.lp, 0.005) ? c.lp : f2.inb(c.seat.slice(1)) ? c.seat.slice(1) : null;
         if (!lp) return;
         var at = f2(lp), small = c.n === '臺北市' || c.n === '基隆市' || c.n === '新竹市' || c.n === '嘉義市';
-        labels.push({ pr: st.hl === 'cty:' + c.n ? 0 : 1, t: c.n, fs: zmax === 0 ? (small ? 8.5 : 10.5) : 11.5, cls: 'tgl ctl', at: at, cand: [[0, 0], [0, -11], [0, 11], [16, 0], [-16, 0], [0, -20], [0, 20], [24, 8], [-24, 8], [24, -8], [-24, -8]], center: true, key: 'cty:' + c.n });
-        if (zmax > 0 && f2.inb(c.seat.slice(1))) {
+        labels.push({ pr: st.hl === 'cty:' + c.n ? 0 : 1, t: c.n, fs: stc ? (zmax === 0 ? (small ? 8 : 9) : 10) : zmax === 0 ? (small ? 8.5 : 10.5) : 11.5, cls: 'tgl ctl', at: at, cand: [[0, 0], [0, -11], [0, 11], [16, 0], [-16, 0], [0, -20], [0, 20], [24, 8], [-24, 8], [24, -8], [-24, -8]], center: true, key: 'cty:' + c.n });
+        if (zmax > 0 && !stc && f2.inb(c.seat.slice(1))) {
           var q = f2(c.seat.slice(1));
           o += '<g data-f="cty:' + c.n + '"><circle class="seat" cx="' + n1(q[0]) + '" cy="' + n1(q[1]) + '" r="2.6"/></g>';
           taken.push([q[0] - 3, q[1] - 3, q[0] + 3, q[1] + 3]);
@@ -407,7 +415,7 @@
       var f2 = where(m.p); if (!f2) return;
       var lab0 = m.lab === '' ? '' : (m.lab || m.n);
       var pr0 = zmax === 0 && m.prAll != null ? m.prAll : m.pr != null ? m.pr : 2;   /* prAll:只在全臺圖用的擺放順序 */
-      ptDraw(m.p, f2, 'mk:' + m.n, m.c || '#dc2626', m.s || 'dot', lab0, pr0, 9.5, m.alt || (lab0 && String(m.n).length < lab0.length ? m.n : null));
+      ptDraw(m.p, f2, 'mk:' + m.n, m.c || '#dc2626', m.s || 'dot', lab0, pr0, stc ? 10.5 : 9.5, m.alt || (lab0 && String(m.n).length < lab0.length ? m.n : null), m.side);
     });
     /* 標籤避讓 */
     labels.sort(function (a, b) { return a.pr - b.pr; });
@@ -424,6 +432,9 @@
         else c = [[q[0] + 6, q[1] - h / 2], [q[0] - 6 - w, q[1] - h / 2], [q[0] - w / 2, q[1] - h - 7], [q[0] - w / 2, q[1] + 6],
           [q[0] + 6, q[1] - h], [q[0] + 6, q[1]], [q[0] - 6 - w, q[1] - h], [q[0] - 6 - w, q[1]],
           [q[0] - w + 2, q[1] + 6], [q[0] - w + 2, q[1] - h - 7], [q[0] - 2, q[1] + 6], [q[0] - 2, q[1] - h - 7]];
+        /* 指定標籤優先方向(解析用):r 右、l 左、u 上、d 下,其餘候選位置排在後面 */
+        var SD = l.side && !l.center && !l.anchorRight ? { r: [0, 4, 5], l: [1, 6, 7], u: [2, 9, 11], d: [3, 8, 10] }[l.side] : null;
+        if (SD) c = SD.map(function (j) { return c[j]; }).concat(c.filter(function (x, j) { return SD.indexOf(j) < 0; }));
         return { w: w, h: h, c: c };
       }
       function place(t) {
@@ -612,6 +623,8 @@
         '.tgm .seat{fill:#fff;stroke:#334155;stroke-width:1.3;cursor:pointer}' +
         '.tgm .trp{stroke:#16a34a;stroke-width:1.2;stroke-dasharray:6 3}' +
         '.tgm .tgl{font-weight:700;fill:#1e293b;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;cursor:pointer}' +
+        '.tgs .cty,.tgs .ib,.tgs .tgl,.tgs .tgk,.tgs .tgh,.tgs .rgb,.tgs .pk,.tgs .ma{cursor:default}.tgm.tgs .ctl{fill:#64748b;font-weight:700}.tgm.tgs .ptl{fill:#0f172a;font-weight:800}.tgm.tgs .tgk{stroke-width:1.4}' +
+        '@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tgm.tgs .ctl{fill:#94a3b8}:root:not([data-theme="light"]) .tgm.tgs .ptl{fill:#f8fafc}}:root[data-theme="dark"] .tgm.tgs .ctl{fill:#94a3b8}:root[data-theme="dark"] .tgm.tgs .ptl{fill:#f8fafc}' +
         '.tgm .ctl{fill:#334155;font-weight:800}.tgm .rvl{fill:#1d4ed8;font-style:italic}.tgm .pkl{fill:#7c2d12}.tgm .ldl{fill:#64748b;font-style:italic;font-weight:600}' +
         '.tgm .stl{fill:#475569;font-weight:600}.tgm .trl{fill:#15803d}.tgm .tgl.hi{fill:#e11d48}' +
         '.tg-info{font-size:.82rem;line-height:1.7;background:var(--soft,#f1f5f9);border-radius:10px;padding:7px 11px;margin-top:6px;color:var(--sub,#64748b)}' +
@@ -641,5 +654,33 @@
       (document.head || document.documentElement).appendChild(css);
     } catch (e) {}
   }
-  root.TWGEO = { widget: widget, focus: focus, draw: draw, _render: render, keyOf: function (n, cfg) { return keyOf(n, cfg || {}); }, info: function (k, cfg) { return infoOf(k, cfg || {}); }, VIEWS: VIEWS, data: D };
+  /* ---- 解析用靜態圖:TWGEO.svg(cfg) → SVG 字串 ---- */
+  var SSEQ = 0;
+  function autoView(mk) {
+    /* 3 個以上標示、彼此相距不到 0.6 度,而且都在同一分區裡 → 放大到最小的那個分區;否則全臺圖 */
+    if (mk.length < 3) return 'all';
+    var lo = mk.map(function (m) { return m.p[0]; }), la = mk.map(function (m) { return m.p[1]; });
+    var b = [Math.min.apply(null, lo), Math.min.apply(null, la), Math.max.apply(null, lo), Math.max.apply(null, la)];
+    if (b[2] - b[0] > 0.6 || b[3] - b[1] > 0.6) return 'all';
+    var best = 'all', bestA = 1e9;
+    VIEWS.forEach(function (v) {
+      var vb = v[2], mg = 0.03;
+      if (v[0] === 'all' || !(b[0] >= vb[0] + mg && b[2] <= vb[2] - mg && b[1] >= vb[1] + mg && b[3] <= vb[3] - mg)) return;
+      var a = (vb[2] - vb[0]) * (vb[3] - vb[1]);
+      if (a < bestA) { bestA = a; best = v[0]; }
+    });
+    return best;
+  }
+  function svgStatic(cfg) {
+    cfg = cfg || {};
+    var mk = (cfg.marks || []).filter(function (m) { return m && m.p; }).map(function (m, i) {
+      var lab = m.lab == null ? m.n : m.lab, alt = String(lab).replace(/[((].*$/, '');
+      return { n: (m.n || '標示') + '#' + i, p: m.p, lab: lab, alt: alt || lab, c: m.c, s: m.s || 'dot', pr: 0, z: 0, side: m.side || '' };
+    });
+    var id = '__tgs' + (++SSEQ), d = INSETS[2].b;
+    ST[id] = { cfg: { marks: mk }, v: cfg.view || autoView(mk), on: cfg.mt ? { cty: 1, mt: 1, mk: 1 } : { cty: 1, mk: 1 }, hl: null,
+      stat: { dongsha: mk.some(function (m) { return m.p[0] >= d[0] && m.p[0] <= d[2] && m.p[1] >= d[1] && m.p[1] <= d[3]; }) } };
+    try { return render(id).replace('<svg class="tgm"', '<svg class="tgm tgs"').replace('aria-label="臺灣地理總圖', 'aria-label="臺灣位置示意圖'); } finally { delete ST[id]; }
+  }
+  root.TWGEO = { svg: svgStatic, widget: widget, focus: focus, draw: draw, _render: render, keyOf: function (n, cfg) { return keyOf(n, cfg || {}); }, info: function (k, cfg) { return infoOf(k, cfg || {}); }, VIEWS: VIEWS, data: D };
 })(typeof window !== 'undefined' ? window : this);
