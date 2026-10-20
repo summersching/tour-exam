@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v163
+/* ana.js — 詳解排版(單一來源)· v164
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -25,6 +25,7 @@
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v164 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=164(地名庫加入領隊 107 觀光資源解析用的地名與黃河、恆河、布拉馬普特拉河)
      v163 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=163(地名庫加入領隊 108 觀光資源解析用的地名與三江並流)
      v162 (2026-10-19) 臺灣位置圖改用圖鑑那張縣市底圖(看得出在哪個縣市);世界地圖加國家名稱與世界位置小圖
      v161 (2026-10-19) 解析內世界地圖支援洋流、季風箭頭(data-flows)
@@ -153,7 +154,7 @@
     document.head.appendChild(sc);
   }
   function needMap(cb) { need('twmap.js', function () { return !!window.TWMAP; }, cb); }
-  function needWorld(cb) { need('worldmap.js?v=163', function () { return !!(window.WMAP && window.WMAP.noteAna); }, cb); }
+  function needWorld(cb) { need('worldmap.js?v=164', function () { return !!(window.WMAP && window.WMAP.noteAna); }, cb); }
   /* 縣市底圖(twgeo_data.js → twgeo.js);cb(true) = 可用,cb(false) = 載入失敗,改畫輪廓圖 */
   function needGeo(cb) {
     need('twgeo_data.js?v=152', function () { return !!window.TWGEO_DATA; }, function () {
