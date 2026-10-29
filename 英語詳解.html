@@ -177,16 +177,69 @@ const TYPES=[['all','全部'],['字彙','字彙'],['對話','對話'],['文法',
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function splitOpt(o){const m=o.match(/^(.*?)([（(]?[一-鿿].*)$/);return m?'<span class="oen">'+m[1].trim()+'</span><span class="ozh">'+esc(m[2])+'</span>':esc(o);}
 function enPhrase(o){var m=String(o).match(/^[^一-鿿（(]+/);return m?m[0].trim():'';}
-function hlAna(ana,opts,ans){
+function hlAna(ana,opts,ans,stem){
   if(!ana||!opts)return ana||'';
   var A=Array.isArray(ans)?ans:[ans];if(!A.length||A[0]<0)return ana;
+  var out=ana;
   var marks=[];for(var i=0;i<opts.length;i++){var ph=enPhrase(opts[i]);if(ph&&ph.length>=3)marks.push({ph:ph,cls:(A.indexOf(i)>=0?'ac':'wr')});}
-  if(!marks.length)return ana;
-  marks.sort(function(a,b){return b.ph.length-a.ph.length;});
-  var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
-  var alt=marks.map(function(m){return m.ph.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|');
-  var re;try{re=new RegExp('('+alt+')','g');}catch(e){return ana;}
-  return ana.replace(re,function(mt){return '<b class="'+(map[mt]||'ac')+'">'+mt+'</b>';});
+  if(marks.length){
+    marks.sort(function(a,b){return b.ph.length-a.ph.length;});
+    var map={};marks.forEach(function(m){if(!(m.ph in map))map[m.ph]=m.cls;});
+    var alt=marks.map(function(m){return m.ph.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|');
+    var re=null;try{re=new RegExp('('+alt+')','g');}catch(e){}
+    if(re)out=ana.replace(re,function(mt){return '<b class="'+(map[mt]||'ac')+'">'+mt+'</b>';});
+  }
+  /* 第二輪:補標正解(只比對完整單字,不和干擾選項的字面重複)
+     ① 正解的其他字形:district ↔ districts、look ↔ looking、adds up to ↔ add up to
+     ② 選項中的「…」可對應中間的幾個字:replacing ... with ↔ replacing groundwater with
+     ③ 正解句子裡、干擾選項沒有的連續字詞(至少 2 個字、8 個字母):Can we take photos
+     ④ 解析自己加粗、而且屬於正解的字詞:a quarter <b>to</b> seven、<b>Cheer up</b>
+     反向題(NOT / EXCEPT / FALSE…)的正解字眼常出現在「原文有提到」的說明裡,不做第二輪,以免誤導 */
+  if(stem&&(/\b(NOT|EXCEPT|LEAST|FALSE)\b/.test(stem)||/\bnot true\b|\bfalse\b|\bincorrect\b/i.test(stem)))return out;
+  var E=function(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');};
+  function forms(w,inPh){
+    var lw=w.toLowerCase(),res={},bases=[lw],V='aeiou',add=function(b,n){if(b.length>=(inPh?3:n))bases.push(b);};
+    if(/ies$|ied$/.test(lw))add(lw.slice(0,-3)+'y',4);
+    else if(/ing$/.test(lw)){add(lw.slice(0,-3),4);add(lw.slice(0,-3)+'e',4);if(/(.)\1ing$/.test(lw))add(lw.slice(0,-4),3);}
+    else if(/ed$/.test(lw)){add(lw.slice(0,-2),4);add(lw.slice(0,-1),4);if(/(.)\1ed$/.test(lw))add(lw.slice(0,-3),3);}
+    else if(/es$/.test(lw)){add(lw.slice(0,-2),4);add(lw.slice(0,-1),4);}
+    else if(/[^s]s$/.test(lw))add(lw.slice(0,-1),4);
+    bases.forEach(function(b){var L=b.slice(-1);
+      [b,b+'s',b+'es',b+'ed',b+'d',b+'ing'].forEach(function(f){res[f]=1;});
+      if(L==='e')res[b.slice(0,-1)+'ing']=1;
+      if(L==='y'&&V.indexOf(b.charAt(b.length-2))<0){res[b.slice(0,-1)+'ies']=1;res[b.slice(0,-1)+'ied']=1;}
+      if(V.indexOf(L)<0&&V.indexOf(b.charAt(b.length-2))>=0&&V.indexOf(b.charAt(b.length-3))<0){res[b+L+'ing']=1;res[b+L+'ed']=1;}});
+    return Object.keys(res).sort(function(a,b){return b.length-a.length;});
+  }
+  function words(ph){return ph.split(/\s+/).map(function(w){return /^(\.\.\.|…)$/.test(w)?'…':w.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g,'');}).filter(function(w){return w;});}
+  function key(ph){return ' '+words(ph.replace(/\.\.\.|…/g,' ')).join(' ').toLowerCase()+' ';}
+  var cor=[],dis=[],other={};
+  for(var j=0;j<opts.length;j++){var p=enPhrase(opts[j]);if(!p)continue;
+    if(A.indexOf(j)>=0)cor.push({ph:p,key:key(p)});else{dis.push(key(p));other[p.toLowerCase()]=1;}}
+  if(!cor.length)return out;
+  out=out.replace(/<b>([^<]{1,60})<\/b>/g,function(all,x){var k=key(x);
+    if(k.length>2&&cor.some(function(c){return c.key.indexOf(k)>=0;})&&!dis.some(function(d){return d.indexOf(k)>=0;}))return '<b class="ac">'+x+'</b>';return all;});
+  var SEP='[\\s,.;:!?]+',srcs=[];
+  cor.forEach(function(c){
+    var ws=words(c.ph);if(!ws.length)return;var multi=ws.length>1,dots=ws.indexOf('…')>=0;
+    if(dots||ws.some(function(w){return /^[A-Za-z]{4,}$/.test(w);}))
+      srcs.push({n:c.ph.length,s:ws.map(function(w){return w==='…'?'[^。;<>]{1,40}?':(/^[A-Za-z]{4,}$/.test(w)?'(?:'+forms(w,multi).map(E).join('|')+')':E(w));}).join(SEP)});
+    else if(ws.length===1&&ws[0].length>=3&&/[^A-Za-z]/.test(ws[0]))srcs.push({n:ws[0].length,s:E(ws[0])});
+    if(dots)return;
+    for(var n=ws.length;n>=2;n--)for(var st=0;st+n<=ws.length;st++){var g=ws.slice(st,st+n);
+      if(g.join('').replace(/[^A-Za-z]/g,'').length<8)continue;
+      if(dis.some(function(d){return d.indexOf(' '+g.join(' ').toLowerCase()+' ')>=0;}))continue;
+      srcs.push({n:g.join(' ').length,s:g.map(E).join(SEP)});}
+  });
+  if(!srcs.length)return out;
+  srcs.sort(function(a,b){return b.n-a.n;});
+  var re2;try{re2=new RegExp('\\b(?:'+srcs.map(function(x){return x.s;}).join('|')+')(?![A-Za-z0-9])','gi');}catch(e){return out;}
+  var inMark=false;
+  return out.split(/(<[^>]*>)/).map(function(part){
+    if(part.charAt(0)==='<'){if(/^<b class="(ac|wr)">$/.test(part))inMark=true;else if(part==='</b>'&&inMark)inMark=false;return part;}
+    if(inMark)return part;
+    return part.replace(re2,function(mt){return other[mt.toLowerCase()]?mt:'<b class="ac">'+mt+'</b>';});
+  }).join('');
 }
 const stars=n=>[0,1,2].map(i=>i<n?'★':'<span class="dim">☆</span>').join('');
 const sayBtn=t=>`<span class="say" data-say="${String(t).replace(/"/g,'&quot;')}" title="點我朗讀">🔊</span>`;
@@ -248,7 +301,7 @@ function qCard(item){
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
       ${SCORE.banner(item)}${SCORE.free(item)?'':`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${SCORE.acc(item).map(k=>"ABCD"[k]+". "+item.opts[k]).join('<br>')}</b></div>`}
-      <div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,SCORE.acc(item))}</div>
+      <div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,SCORE.acc(item),item.stem)}</div>
       ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
       ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
       ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
