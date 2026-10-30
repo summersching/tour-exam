@@ -54,6 +54,10 @@
   .chip{font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:600}
   .c-r{background:var(--c-r);color:var(--c-rk)} .c-t{background:var(--c-t);color:var(--c-tk)}
   .wrongn{font-size:.72rem;background:var(--nobg);color:var(--no);border-radius:20px;padding:2px 9px;font-weight:700}
+  .oldtag{font-size:.72rem;background:var(--nobg);color:var(--no);border-radius:20px;padding:2px 9px;font-weight:700}
+  .oldbar{background:var(--nobg);border:1px solid var(--no);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.86rem;line-height:1.7}
+  .oldbar b{color:var(--no)}
+  .oldbar button{margin-left:6px;border:1.5px solid var(--no);background:var(--card);color:var(--no);border-radius:10px;padding:3px 10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.82rem}
   .src{font-size:.72rem;border-radius:6px;padding:1px 7px;font-weight:700}
   .src.leader{background:var(--chipv);color:var(--chipvk)} .src.guide{background:var(--okbg);color:var(--ok)}
   .del{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:14px;padding:3px 10px;font-size:.74rem;cursor:pointer;font-family:inherit}
@@ -142,6 +146,11 @@ function ghData(q){return (typeof PR2ANA!=='undefined'&&PR2ANA[q.c+'-'+q.y+'-'+q
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function findQ(id){return PR2BANK.find(x=>(x.c+'-'+x.y+'-'+x.no)===id)||null;}
 function qid(q){return q.c+'-'+q.y+'-'+q.no;}
+/* 法規已修正、官方答案已不適用的題目(stale.js 的 old):卡片標示 + 頂端提示可一鍵移出(按兩次確認) */
+function isOld(q){const n=window.STALE&&STALE.note('pr2',q);return !!(n&&n.k==='old');}
+let oldArm=false;
+function oldBar(){const n=allEntries().filter(e=>isOld(e.q)).length;if(!n)return '';
+  return `<div class="oldbar">⚠ 錯題本裡有 <b>${n} 題</b>的規定已修正,官方答案已不適用,一直複習容易記成舊規定。可到「新制與法規異動」看現行規定。<button type="button" id="oldRm">${oldArm?'⚠ 再按一次確認移出':'移出這 '+n+' 題'}</button></div>`;}
 function ansOk(q,p){return SCORE.ok(q,p);}
 
 const QPD=new URLSearchParams(location.search).get('due')==='1';   // 從首頁「今日複習」進來:只看今日到期 + 直接自測
@@ -217,20 +226,20 @@ function render(){
     document.getElementById('list').innerHTML='<div class="empty"><b>🎉 目前沒有錯題!</b>到「模擬測驗」選執業法規練習,答錯的題目會自動收錄到這裡。</div>';
     updScore(arr);return;
   }
-  document.getElementById('list').innerHTML=arr.map(e=>{
+  document.getElementById('list').innerHTML=oldBar()+(arr.map(e=>{
     const q=e.q,d=ghData(q);
     const tags=d?`<span class="chip c-r">${d.t}</span><span class="chip c-t">${d.tt}</span>`:`<span class="chip c-r">執業法規</span>`;
     const show=(MODE==='review')||(picks[e.id]!=null);
     return `<div class="card" data-id="${e.id}">
       <div class="qhead"><span class="qno">第 ${q.no} 題</span>${tags}
-        ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}${SRS.badge(e.raw)}
+        ${e.wrong>1?`<span class="wrongn">答錯 ${e.wrong} 次</span>`:''}${SRS.badge(e.raw)}${isOld(q)?'<span class="oldtag">⚠ 法規已修正</span>':''}
         <span class="src ${q.c}">${CNAME[q.c]}${q.y}</span>
         <button class="del" data-del="${e.id}">✕ 移除</button></div>
       <div class="stem">${esc(q.stem)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>optHtml(e,i,o)).join('')}</div>
       <div class="fb" data-fb="${e.id}"></div>
       <div class="reveal">${show?revealHtml(q):''}</div></div>`;
-  }).join('')||(fd==='due'?'<div class="empty"><b>🎉 今天到期的都複習完了!</b>其他錯題依間隔排在之後的日子,明天再回來。</div>':'<div class="empty">找不到符合的錯題</div>');
+  }).join('')||(fd==='due'?'<div class="empty"><b>🎉 今天到期的都複習完了!</b>其他錯題依間隔排在之後的日子,明天再回來。</div>':'<div class="empty">找不到符合的錯題</div>'));
   updScore(arr);
 }
 function updScore(arr){
@@ -256,6 +265,12 @@ document.querySelector('.tools2').addEventListener('click',e=>{
   render();window.scrollTo(0,0);
 });
 document.getElementById('list').addEventListener('click',e=>{
+  // 一鍵移出法規已修正題(按兩次確認)
+  if(e.target.closest('#oldRm')){
+    if(!oldArm){oldArm=true;render();setTimeout(()=>{if(oldArm){oldArm=false;render();}},2600);return;}
+    const o=wbLoad();allEntries().filter(x=>isOld(x.q)).forEach(x=>{delete o[x.id];delete picks[x.id];});wbSave(o);
+    oldArm=false;buildFilters();render();return;
+  }
   // 移除單題
   const del=e.target.closest('[data-del]');
   if(del){const o=wbLoad();delete o[del.dataset.del];wbSave(o);delete picks[del.dataset.del];

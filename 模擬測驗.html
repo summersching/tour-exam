@@ -163,6 +163,7 @@
     <div class="row"><div class="lb">證照</div><div class="chips" id="sCert"></div></div>
     <div class="row" id="rowType"><div class="lb">題型</div><div class="chips" id="sType"></div></div>
     <div class="row hidden" id="rowTopic"><div class="lb">考點</div><div class="chips" id="sTopic"></div></div>
+    <div class="row hidden" id="rowStale"><div class="lb">已修正題</div><div class="chips" id="sStale"></div></div>
     <div class="row"><div class="lb">年份</div><div class="chips" id="sYear"></div></div>
     <div class="row"><div class="lb">題數</div><div class="chips" id="sNum"></div></div>
     <div class="row"><div class="lb">限時</div><div class="chips" id="sTime"></div></div>
@@ -320,7 +321,7 @@ const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').joi
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ===== 設定狀態 ===== */
-let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0,mode:'random'};
+let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0,mode:'random',stale:'skip'};
 function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:cfg.subj==='jp'?JPBANK:enBank();}
 function enBank(){return BANK.concat(ENREAD.list());}   // 英語:第 1–70 題(bank.js)+ 閱讀第 71–80 題(enread.js,附文章)
 function isGh(){return cfg.subj==='gh';}
@@ -400,6 +401,7 @@ function updateModeUI(){
   numRow.classList.toggle('hidden',whole);
   document.getElementById('rowType').classList.toggle('hidden',whole||isCn()||isJp());
   document.getElementById('rowTopic').classList.toggle('hidden',whole||cfg.subj!=='gh');
+  document.getElementById('rowStale').classList.toggle('hidden',whole||!isCn());   // 隨機組卷才能排除法規已修正題;整卷維持原卷
   const YEARS=[...new Set(curBank().map(q=>q.y))].sort();
   if(whole){
     if(cfg.cert==='all')cfg.cert='leader';
@@ -434,13 +436,20 @@ function buildSetup(){
   mkChips('sCert',[{v:'all',t:'全部'},{v:'leader',t:'領隊'},{v:'guide',t:'導遊'}],'cert');
   mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'},{v:'閱讀',t:'閱讀'}],'type');
   mkChips('sTopic',[{v:'all',t:'全部'},{v:'史',t:'🏛 歷史'},{v:'地',t:'🗺 地理'},{v:'維護',t:'🛡 資源維護'}],'gtopic');
+  mkChips('sStale',[{v:'skip',t:'排除(建議)'},{v:'keep',t:'照樣出題'}],'stale');
   mkChips('sNum',[{v:10,t:'10 題'},{v:20,t:'20 題'},{v:30,t:'30 題'},{v:50,t:'50 題'}],'num');
   mkChips('sTime',[{v:0,t:'不限時'},{v:-1,t:'官方時間'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
   syncSubjectUI();
   updateModeUI();
   updAvail();
 }
+/* 法規已修正、官方答案已不適用的題目(stale.js 的 old);隨機組卷預設排除,整卷模擬維持原卷 */
+function isOld(q){const n=isCn()&&window.STALE&&STALE.note(cfg.subj,q);return !!(n&&n.k==='old');}
 function pool(){
+  const p=poolBase();
+  return (isCn()&&cfg.mode!=='whole'&&cfg.stale!=='keep')?p.filter(q=>!isOld(q)):p;
+}
+function poolBase(){
   if(isCn()||isJp())return curBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.year==='all'||q.y===cfg.year)
     &&(cfg.gtopic==='all'||(ghData(q)&&ghData(q).t===cfg.gtopic)));
   return enBank().filter(q=>(cfg.cert==='all'||q.c===cfg.cert)&&(cfg.type==='all'||q.type===cfg.type)&&(cfg.year==='all'||q.y===cfg.year));
@@ -451,11 +460,14 @@ function isLang(){return cfg.subj==='en'||cfg.subj==='jp';}
 function officialMin(n){if(cfg.mode==='whole')return isLang()?80:60;return Math.max(1,Math.ceil(n*(isLang()?1:1.2)));}
 function timeMin(n){return cfg.time===-1?officialMin(n):cfg.time;}
 function updAvail(){const n=pool().length, m=cfg.mode==='whole'?n:Math.min(cfg.num,n);
+  const nOld=isCn()?poolBase().filter(isOld).length:0;
+  const oldTxt=!nOld?'':cfg.mode==='whole'?' · 本卷有 '+nOld+' 題法規已修正(依當年答案計分,作答後附提醒)'
+    :cfg.stale==='keep'?'(含法規已修正 '+nOld+' 題,作答後附提醒)':'(已排除法規已修正 '+nOld+' 題)';
   const oc=document.querySelector('#sTime [data-v="-1"]');if(oc)oc.textContent='官方時間 '+officialMin(m)+' 分';
   const lim=cfg.time===-1?' · 限時 '+officialMin(m)+' 分(官方)':'';
   document.getElementById('avail').textContent = (cfg.mode==='whole'
     ? '整卷:'+CNAME[cfg.cert]+' '+cfg.year+' 年共 '+n+' 題 · 依題號順序作答 · 交卷後看及格判定(60%)'
-    : '符合條件題數:'+n+' 題,將隨機抽 '+m+' 題')+lim;}
+    : '符合條件題數:'+n+' 題'+oldTxt+',將隨機抽 '+m+' 題')+(cfg.mode==='whole'?oldTxt:'')+lim;}
 
 /* ===== 作答 ===== */
 let paper=[],picks={},timerId=null,remain=0,warned5=false;
