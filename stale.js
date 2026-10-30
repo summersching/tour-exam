@@ -1,5 +1,5 @@
 /* stale.js — 時效提醒單一來源(依現行法規核對歷屆試題)
- * 版本:v196(2026-10-30 補旅遊警示燈號現行名稱 9 題;v193 同日補導遊 106 法規第 33 題、113 法規第 4 題;v192 2026-10-29 更正:未滿 14 歲遺失補發護照仍以 3 年為限,刪除 2 則誤植提醒;v191 同日複查:10/21 後無新修正;v183 2026-10-28 補充;v170 全面核對 2026-10-21;v120 起 2026-10-01)
+ * 版本:v199(2026-10-30 新增 STALE.all() 供「新制與法規異動」頁列出全部提醒;v196 同日補旅遊警示燈號現行名稱 9 題;v193 同日補導遊 106 法規第 33 題、113 法規第 4 題;v192 2026-10-29 更正:未滿 14 歲遺失補發護照仍以 3 年為限,刪除 2 則誤植提醒;v191 同日複查:10/21 後無新修正;v183 2026-10-28 補充;v170 全面核對 2026-10-21;v120 起 2026-10-01)
  * NOTES  :key = 題庫:證照-年-題號(題庫 gh 觀光資源 / pr 執業實務 / pr2 執業法規)
  *          k='old'  → 法規已修正,依現行規定本題答案不同或已無正確選項(官方答案仍照原公告)
  *          k='info' → 法規有更新或屬時空背景題,本題答案不受影響
@@ -134,5 +134,12 @@
       '.box.stale .ren{margin-top:4px;font-size:.84rem;color:var(--sub)}';
     var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
   } catch (e) {}
-  window.STALE = { note: note, renames: renames, box: box, count: function () { return Object.keys(NOTES).length; } };
+  /* 全部提醒(「新制與法規異動」頁列表用):[{bank, c, y, no, k, t}] */
+  function all() {
+    return Object.keys(NOTES).map(function (id) {
+      var m = id.match(/^([a-z0-9]+):([a-z]+)-(\d+)-(\d+)$/);
+      return { bank: m[1], c: m[2], y: m[3], no: +m[4], k: NOTES[id].k, t: NOTES[id].t };
+    });
+  }
+  window.STALE = { note: note, renames: renames, box: box, all: all, count: function () { return Object.keys(NOTES).length; } };
 })();

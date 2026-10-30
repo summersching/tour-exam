@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>新制與法規異動</title>
+<!-- 新制與法規異動 · v199(2026-10-30)
+     一、異動總覽:stale.js 全部時效提醒,依主題分組;「答案已不同」= 依現行規定答案改變或已無正確選項,「答案不受影響」= 規定有更新但該題答案不變
+     二、新制必背:newlaw.js 的現行規定卡,遮住答案自測
+     三、新制測驗:同一批卡片出四選一,選項含舊規定的數字;答錯的記在 newlaw_wrong,可只練答錯的
+     變更履歷:v199 初版 -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
+    --sel:#0f766e;--accent:#0f766e;--hd1:#115e59;--hd2:#14b8a6;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .tab.on{color:#05211d}}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .tab.on{color:#05211d}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .tabs{display:flex;gap:6px;padding:10px 0 2px}
+  .tab{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 6px;border-radius:12px;
+    font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit}
+  .tab.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .tab .n{font-weight:600;font-size:.72rem;opacity:.85;margin-left:3px}
+  .row{display:flex;flex-wrap:wrap;gap:7px;padding:8px 0 0}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .chip .n{font-weight:600;font-size:.72rem;opacity:.8;margin-left:3px}
+  .scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .scroll::-webkit-scrollbar{display:none} .scroll .chip{flex:0 0 auto}
+  .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.86rem;white-space:nowrap}
+  .tbtn.fill{background:var(--sel);color:#fff} .tbtn:disabled{opacity:.45;cursor:default}
+  .cnt{font-size:.78rem;color:var(--sub);padding:2px 2px 8px}
+  .tip{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip b{color:var(--ink)}
+  .grp{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+  .grp>summary{cursor:pointer;font-weight:800;font-size:1rem;padding:13px 16px;list-style:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .grp>summary::-webkit-details-marker{display:none}
+  .grp>summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  .grp[open]>summary::after{transform:rotate(90deg)}
+  .gn{font-size:.74rem;color:var(--sub);font-weight:600}
+  .gold{font-size:.7rem;font-weight:700;color:var(--warn);background:var(--warnbg);border-radius:8px;padding:0 7px}
+  .gbody{padding:0 16px 12px}
+  .it{border-top:1px solid var(--line);padding:10px 0}
+  .it:first-of-type{border-top:0}
+  .hd{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .tag{font-size:.7rem;font-weight:800;border-radius:8px;padding:1px 8px}
+  .tag.old{background:var(--warnbg);color:var(--warn)} .tag.info{background:var(--infobg);color:var(--info)}
+  .sbj{font-size:.68rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px}
+  a.qs{font-size:.72rem;font-weight:700;text-decoration:none;padding:0 7px;border-radius:6px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  .st{font-size:.86rem;color:var(--sub);margin-top:4px}
+  .nt{font-size:.86rem;border-radius:8px;padding:7px 10px;margin-top:6px;line-height:1.65}
+  .nt.old{background:var(--warnbg);color:var(--warn)} .nt.info{background:var(--infobg);color:var(--info)}
+  .card{border-top:1px solid var(--line);padding:11px 0}
+  .card:first-of-type{border-top:0}
+  .cq{font-size:.92rem;font-weight:700}
+  .ans{display:inline-block;margin-top:6px;border-radius:9px;padding:3px 11px;font-weight:800;font-size:.92rem;background:var(--okbg);color:var(--ok);cursor:pointer;border:0;font-family:inherit;text-align:left;line-height:1.6}
+  .ans.mask{background:var(--line);color:transparent;text-shadow:0 0 9px rgba(90,107,130,.55);user-select:none;position:relative;min-width:8em}
+  .ans.mask::after{content:'點我看答案';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.74rem;text-shadow:none;white-space:nowrap}
+  .cx{font-size:.82rem;color:var(--sub);margin-top:6px;line-height:1.65}
+  .card.hide .cx{display:none}
+  .refs{margin-top:5px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .qz{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px;margin:14px 0}
+  .qp{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--sub)}
+  .qq{font-size:1rem;font-weight:800;margin:10px 0 12px;line-height:1.65}
+  .opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;
+    padding:10px 12px;margin:7px 0;font-size:.92rem;cursor:pointer;font-family:inherit;line-height:1.55}
+  .opt:hover:not(:disabled){border-color:var(--sel)}
+  .opt:disabled{cursor:default}
+  .opt.right{border-color:var(--ok);background:var(--okbg);color:var(--ok);font-weight:800}
+  .opt.wrong{border-color:var(--no);background:var(--nobg);color:var(--no)}
+  .fb{font-weight:800;margin-top:10px} .fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+  .qbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .score{font-size:1.6rem;font-weight:900;color:var(--sel)}
+  .wl{margin-top:10px}
+  .wl .it{padding:8px 0}
+  .empty{text-align:center;color:var(--sub);padding:50px 10px}
+  @media print{.bar,.home,.tip,#quizPane{display:none!important}.grp{break-inside:avoid;box-shadow:none}
+    .ans.mask{color:inherit;text-shadow:none;background:none}.ans.mask::after{content:none}.card.hide .cx{display:block}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="stale.js"></script>
+<script src="practice.js"></script>
+<script src="newlaw.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>🆕 新制與法規異動</h1>
+  <p>修法後答案改變的歷屆題 · 現行新制必背 · 新制測驗</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="tabs" id="tabs"></div>
+  <div id="listBar">
+    <div class="row scroll" id="subjRow"></div>
+    <div class="row scroll" id="kindRow"></div>
+  </div>
+  <div class="tools" id="toolRow">
+    <input id="q" placeholder="搜尋…(如 履約保證保險、酒、機場服務費)" aria-label="搜尋">
+    <button class="tbtn" id="maskBtn" type="button"></button>
+  </div>
+  <div class="cnt" id="cnt">載入中…</div>
+</div></div>
+
+<div class="wrap">
+  <div class="tip" id="tip"></div>
+  <div id="app"></div>
+  <div id="quizPane"></div>
+</div>
+
+<script>
+'use strict';
+const TABS = [['list','📋 異動總覽'],['cards','🃏 新制必背'],['quiz','📝 新制測驗']];
+const SUBJS = [['all','全部科目'],['pr2','⚖️ 執業法規'],['pr','🚩 執業實務'],['gh','🗺️ 觀光']];
+const KINDS = [['all','全部'],['old','⚠ 答案已不同'],['info','ℹ️ 答案不受影響']];
+const QUIZ_N = 10, WRONG_KEY = 'newlaw_wrong';
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'').replace(/\s+/g,' ').trim();}
+function cut(s,n){s=clean(s);return s.length>n?s.slice(0,n)+'…':s;}
+const cfg = Object.assign({ tab:'list', subj:'all', kind:'all', mask:true }, PRACTICE.LSget('pref_newlaw', {}));
+function saveCfg(){ PRACTICE.LSset('pref_newlaw', cfg); }
+(function(){ const p = new URLSearchParams(location.search), s = p.get('subj'), t = p.get('tab');   // 首頁帶來的科目 / 指定分頁
+  if (['gh','pr','pr2'].includes(s)) cfg.subj = s;
+  if (TABS.some(x=>x[0]===t)) cfg.tab = t;
+  saveCfg(); })();
+
+const CATS = NEWLAW.cats.map(c=>c[0]);
+function cls(t){ for (const [n,re] of NEWLAW.cats) if (re.test(t)) return n; return CATS[CATS.length-1]; }
+const ALL = STALE.all().map(n=>Object.assign(n, { g: cls(n.t), id: n.bank+':'+n.c+'-'+n.y+'-'+n.no }));
+const BANK = {};   // s → {'c-y-no': 題目}
+function loadBanks(){
+  return Promise.all(['gh','pr','pr2'].map(s=>{
+    const S = PRACTICE.SUBJ[s];
+    const pre = PRACTICE.gv(S.B) ? Promise.resolve() : PRACTICE.loadJs(S.bank);
+    return pre.then(()=>{ const m = {}; (PRACTICE.gv(S.B)||[]).forEach(q=>{ m[PRACTICE.key(q)] = q; }); BANK[s] = m; }).catch(()=>{ BANK[s] = {}; });
+  }));
+}
+function qOf(n){ return (BANK[n.bank]||{})[n.c+'-'+n.y+'-'+n.no] || null; }
+function refLink(id){
+  const m = id.match(/^([a-z0-9]+):([a-z]+)-(\d+)-(\d+)$/); if (!m) return '';
+  const q = { c:m[2], y:m[3], no:+m[4] };
+  return `<a class="qs" href="${esc(PRACTICE.href(m[1],q))}" title="${esc(PRACTICE.label(m[1],q))}">${esc(PRACTICE.SUBJ[m[1]].short)} ${esc(PRACTICE.short(q))}</a>`;
+}
+function wrongSet(){ return PRACTICE.LSget(WRONG_KEY, {}); }
+
+function chips(id, items, cur, key){
+  $(id).innerHTML = items.map(([v,l,n])=>`<button class="chip${String(v)===String(cur)?' on':''}" type="button" data-k="${key}" data-v="${esc(v)}">${l}${n!=null?`<span class="n">${n}</span>`:''}</button>`).join('');
+}
+function renderBar(){
+  $('tabs').innerHTML = TABS.map(([v,l])=>{
+    const n = v==='list' ? ALL.length : NEWLAW.cards.length;
+    return `<button class="tab${cfg.tab===v?' on':''}" type="button" data-tab="${v}">${l}<span class="n">${n}</span></button>`;
+  }).join('');
+  const isList = cfg.tab === 'list', isQuiz = cfg.tab === 'quiz';
+  $('listBar').style.display = isList ? '' : 'none';
+  $('toolRow').style.display = isQuiz ? 'none' : '';
+  $('maskBtn').style.display = cfg.tab === 'cards' ? '' : 'none';
+  $('maskBtn').textContent = cfg.mask ? '👀 顯示答案' : '🙈 遮住答案';
+  if (isList){
+    const base = ALL.filter(n=>cfg.kind==='all'||n.k===cfg.kind);
+    chips('subjRow', SUBJS.map(([k,l])=>[k,l,base.filter(n=>k==='all'||n.bank===k).length]), cfg.subj, 'subj');
+    const sb = ALL.filter(n=>cfg.subj==='all'||n.bank===cfg.subj);
+    chips('kindRow', KINDS.map(([k,l])=>[k,l,sb.filter(n=>k==='all'||n.k===k).length]), cfg.kind, 'kind');
+  }
+  $('tip').innerHTML = isList
+    ? '💡 考試以<b>考試當時的現行法規</b>為準;歷屆題的官方答案是出題當年的規定。<b>⚠ 答案已不同</b> = 依現行規定答案已改變或已無正確選項;<b>ℹ️ 答案不受影響</b> = 規定有更新,但該題答案不變。點題號可回到原題看完整詳解。'
+    : cfg.tab === 'cards'
+      ? '💡 把現行規定整理成問答卡:先遮住答案自己想,再點一下看答案與說明。說明裡會寫舊題的答案,方便對照「改了什麼」。'
+      : '💡 四選一,選項刻意放進<b>舊規定的數字</b>(例如舊的 500 元、1 公升),這是考場最常見的陷阱。答錯的會記下來,可以只練答錯的。';
+  $('tip').innerHTML += `<br>資料截至 ${esc(NEWLAW.ver)}(民國 ${(+NEWLAW.ver.slice(0,4))-1911} 年 ${+NEWLAW.ver.slice(5,7)} 月 ${+NEWLAW.ver.slice(8,10)} 日)。`;
+}
+
+function kw(){ return $('q').value.trim().toLowerCase(); }
+function renderList(){
+  const k = kw();
+  let arr = ALL.filter(n=>(cfg.subj==='all'||n.bank===cfg.subj)&&(cfg.kind==='all'||n.k===cfg.kind));
+  if (k) arr = arr.filter(n=>{ const q = qOf(n); return ((q?clean(q.stem):'')+' '+n.t+' '+n.g+' '+PRACTICE.label(n.bank,n)).toLowerCase().includes(k); });
+  $('cnt').textContent = `符合 ${arr.length} 題(⚠ 答案已不同 ${arr.filter(n=>n.k==='old').length} 題)`;
+  if (!arr.length){ $('app').innerHTML = '<div class="empty">沒有符合的題目,換個條件試試</div>'; return; }
+  const groups = {}; arr.forEach(n=>{ (groups[n.g] = groups[n.g] || []).push(n); });
+  const order = CATS.filter(g=>groups[g]);
+  $('app').innerHTML = order.map((g,gi)=>{
+    const items = groups[g].sort((a,b)=>(a.k===b.k?0:(a.k==='old'?-1:1)) || (+b.y)-(+a.y) || a.no-b.no);
+    const nOld = items.filter(n=>n.k==='old').length;
+    const body = items.map(n=>{
+      const q = qOf(n), old = n.k === 'old';
+      return `<div class="it" data-id="${esc(n.id)}"><div class="hd"><span class="tag ${n.k}">${old?'⚠ 答案已不同':'ℹ️ 答案不受影響'}</span>`
+        + `<a class="qs" href="${esc(PRACTICE.href(n.bank,n))}">${esc(PRACTICE.label(n.bank,n))} →</a></div>`
+        + (q ? `<div class="st">${esc(cut(q.stem,90))}</div>` : '')
+        + `<div class="nt ${n.k}">${esc(n.t)}</div></div>`;
+    }).join('');
+    return `<details class="grp"${(k||gi===0||order.length<=2)?' open':''}><summary>${esc(g)}<span class="gn">${items.length} 題</span>${nOld?`<span class="gold">⚠ ${nOld}</span>`:''}</summary><div class="gbody">${body}</div></details>`;
+  }).join('');
+}
+
+function cardHtml(c){
+  return `<div class="card${cfg.mask?' hide':''}" data-id="${c.id}"><div class="cq">${esc(c.q)}</div>`
+    + `<button class="ans${cfg.mask?' mask':''}" type="button">${esc(c.o[0])}</button>`
+    + `<div class="cx">${esc(c.x)}<div class="refs">相關考題:${c.r.map(refLink).join('')}</div></div></div>`;
+}
+function renderCards(){
+  const k = kw();
+  let arr = NEWLAW.cards;
+  if (k) arr = arr.filter(c=>(c.q+' '+c.o[0]+' '+c.x+' '+c.g).toLowerCase().includes(k));
+  $('cnt').textContent = `共 ${arr.length} 張新制卡`;
+  if (!arr.length){ $('app').innerHTML = '<div class="empty">沒有符合的卡片,換個關鍵字試試</div>'; return; }
+  const groups = {}; arr.forEach(c=>{ (groups[c.g] = groups[c.g] || []).push(c); });
+  const order = CATS.filter(g=>groups[g]);
+  $('app').innerHTML = order.map((g,gi)=>`<details class="grp"${(k||gi<2||order.length<=2)?' open':''}><summary>${esc(g)}<span class="gn">${groups[g].length} 張</span></summary><div class="gbody">${groups[g].map(cardHtml).join('')}</div></details>`).join('');
+}
+
+/* ===== 新制測驗 ===== */
+const QZ = { list:null, i:0, right:0, wrongIds:[], picked:null, order:null };
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function cardById(id){ return NEWLAW.cards.find(c=>c.id===id); }
+function startQuiz(mode){
+  let ids = NEWLAW.cards.map(c=>c.id);
+  if (mode === 'wrong') ids = Object.keys(wrongSet()).filter(cardById);
+  ids = shuffle(ids);
+  if (mode === 'q10') ids = ids.slice(0, QUIZ_N);
+  if (!ids.length) return;
+  Object.assign(QZ, { list:ids, i:0, right:0, wrongIds:[], picked:null, order:shuffle([0,1,2,3]) });
+  renderQuiz(); window.scrollTo(0,0);
+}
+function renderQuiz(){
+  const pane = $('quizPane'), w = Object.keys(wrongSet()).filter(cardById).length;
+  $('cnt').textContent = `題庫 ${NEWLAW.cards.length} 張卡 · 記錄中的答錯 ${w} 題`;
+  if (!QZ.list){
+    pane.innerHTML = `<div class="qz"><div class="qq">📝 新制測驗</div>
+      <div class="cx">從 ${NEWLAW.cards.length} 張新制卡出四選一題目,選項包含舊規定的數字。</div>
+      <div class="qbtns"><button class="tbtn fill" type="button" data-act="q10">📝 隨機 ${QUIZ_N} 題</button>
+      <button class="tbtn" type="button" data-act="wrong"${w?'':' disabled'}>🔁 只練答錯的(${w})</button>
+      <button class="tbtn" type="button" data-act="all">📚 全部 ${NEWLAW.cards.length} 題</button></div></div>`;
+    return;
+  }
+  if (QZ.i >= QZ.list.length){
+    const wl = QZ.wrongIds.map(id=>{ const c = cardById(id); return `<div class="it"><div class="cq">${esc(c.q)}</div><div class="nt info">正解:${esc(c.o[0])}</div></div>`; }).join('');
+    pane.innerHTML = `<div class="qz"><div class="qp">測驗結束</div><div class="score">答對 ${QZ.right} / ${QZ.list.length}</div>
+      ${QZ.wrongIds.length?`<div class="wl"><b>答錯的題目</b>${wl}</div>`:'<div class="cx">全部答對,太棒了!</div>'}
+      <div class="qbtns"><button class="tbtn fill" type="button" data-act="q10">📝 再測 ${QUIZ_N} 題</button>
+      <button class="tbtn" type="button" data-act="wrong"${w?'':' disabled'}>🔁 只練答錯的(${w})</button>
+      <button class="tbtn" type="button" data-act="back">回到開始</button></div></div>`;
+    return;
+  }
+  const c = cardById(QZ.list[QZ.i]), done = QZ.picked != null;
+  const opts = QZ.order.map((oi,j)=>{
+    let k = ''; if (done){ if (oi === 0) k = ' right'; else if (oi === QZ.picked) k = ' wrong'; }
+    return `<button class="opt${k}" type="button" data-oi="${oi}"${done?' disabled':''}>${'ABCD'[j]}. ${esc(c.o[oi])}</button>`;
+  }).join('');
+  const last = QZ.i === QZ.list.length - 1;
+  pane.innerHTML = `<div class="qz"><div class="qp"><span>第 ${QZ.i+1} / ${QZ.list.length} 題</span><span class="sbj">${esc(c.g)}</span><span>答對 ${QZ.right}</span></div>
+    <div class="qq">${esc(c.q)}</div>${opts}
+    ${done ? `<div class="fb ${QZ.picked===0?'ok':'no'}">${QZ.picked===0?'✅ 答對了':'❌ 答錯了,正解是:'+esc(c.o[0])}</div>
+      <div class="cx">${esc(c.x)}<div class="refs">相關考題:${c.r.map(refLink).join('')}</div></div>
+      <div class="qbtns"><button class="tbtn fill" type="button" data-act="next">${last?'看結果':'下一題 →'}</button></div>` : ''}</div>`;
+}
+function pick(oi){
+  if (QZ.picked != null) return;
+  const id = QZ.list[QZ.i], w = wrongSet();
+  QZ.picked = oi;
+  if (oi === 0){ QZ.right++; delete w[id]; }
+  else { QZ.wrongIds.push(id); w[id] = (w[id] || 0) + 1; }
+  PRACTICE.LSset(WRONG_KEY, w);
+  PRACTICE.addDaily(1);
+  renderQuiz();
+}
+
+function render(){
+  renderBar();
+  const isQuiz = cfg.tab === 'quiz';
+  $('app').style.display = isQuiz ? 'none' : '';
+  $('quizPane').style.display = isQuiz ? '' : 'none';
+  if (cfg.tab === 'list') renderList();
+  else if (cfg.tab === 'cards') renderCards();
+  else renderQuiz();
+}
+
+document.querySelector('.bar').addEventListener('click', e=>{
+  const t = e.target.closest('.tab');
+  if (t){ if (cfg.tab !== t.dataset.tab){ cfg.tab = t.dataset.tab; saveCfg(); render(); window.scrollTo(0,0); } return; }
+  const b = e.target.closest('.chip'); if (!b) return;
+  const k = b.dataset.k, v = b.dataset.v;
+  if (cfg[k] === v) return;
+  cfg[k] = v; saveCfg(); render();
+});
+$('app').addEventListener('click', e=>{
+  const a = e.target.closest('.ans'); if (!a) return;
+  a.classList.toggle('mask'); a.closest('.card').classList.toggle('hide', a.classList.contains('mask'));
+});
+$('quizPane').addEventListener('click', e=>{
+  const o = e.target.closest('.opt'); if (o){ pick(+o.dataset.oi); return; }
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === 'next'){ QZ.i++; QZ.picked = null; QZ.order = shuffle([0,1,2,3]); renderQuiz(); window.scrollTo(0,0); }
+  else if (act === 'back'){ QZ.list = null; renderQuiz(); }
+  else startQuiz(act);
+});
+$('maskBtn').addEventListener('click', ()=>{ cfg.mask = !cfg.mask; saveCfg(); render(); });
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(render, 200); });
+window.addEventListener('beforeprint', ()=>document.querySelectorAll('details.grp').forEach(d=>d.open=true));
+
+render();
+loadBanks().then(()=>{ if (cfg.tab === 'list') renderList(); });   // 題幹要等三科題庫載入後才顯示
+</script>
+</body>
+</html>
