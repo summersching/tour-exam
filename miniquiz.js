@@ -7,7 +7,10 @@
    作答:點選項或按 1–4 / A–D;判分、標正解一律用 scoring.js(送分 / 一題多解照官方公告)
    答完顯示解析(題庫解析檔)、時效提醒(stale.js)、原題連結與收藏;答錯收進該科錯題本、每題計入首頁「今日已練」(practice.js)
    需要:scoring.js、practice.js;選用:stale.js、fav.js;optimg.js(圖片題用)沒載入時開測驗前自動載入
+   選用 onResult(答對題數, 總題數, { redo, partial }):每次看到結果時呼叫(講義章末測驗用來記錄成績)
+     redo = 這輪是「只練錯的」;partial = 中途關閉、只結算已作答的題目(這兩種不該算成整章成績)
    變更履歷:
+     v201 (2026-11-02) 新增 onResult 回呼(附 redo / partial 旗標)
      v129 (2026-10-05) 題幹附圖(OPTIMG.fig);沒載入 optimg.js 的頁面自動補載
      v127 (2026-10-05) 初版
 */
@@ -53,12 +56,12 @@
     Promise.all(Object.keys(subs).map(function (s) { return PRACTICE.load(s).then(function (d) { return [s, d.ana]; }); }).concat([img])).then(function (rs) {
       rs = rs.slice(0, Object.keys(subs).length);
       var ana = {}; rs.forEach(function (r) { ana[r[0]] = r[1]; });
-      ST = { title: opt.title || '小測驗', pool: list, n: opt.n || 0, ana: ana };
+      ST = { title: opt.title || '小測驗', pool: list, n: opt.n || 0, ana: ana, onResult: opt.onResult };
       run(pick(list, ST.n));
     });
   }
-  function run(items) {
-    ST.items = items; ST.i = 0; ST.ok = 0; ST.wrong = []; ST.done = false;
+  function run(items, redo) {
+    ST.items = items; ST.redo = !!redo; ST.partial = false; ST.i = 0; ST.ok = 0; ST.wrong = []; ST.done = false;
     var ov = document.querySelector('.mq-ov');
     if (!ov) {
       ov = document.createElement('div'); ov.className = 'mq-ov';
@@ -117,6 +120,7 @@
   function result() {
     ST.done = true;
     var n = ST.items.length, pct = Math.round(ST.ok / n * 100);
+    if (typeof ST.onResult === 'function') { try { ST.onResult(ST.ok, n, { redo: ST.redo, partial: ST.partial }); } catch (e) {} }
     var wl = ST.wrong.map(function (it) {
       var st = clean(it.q.stem);
       return '<li>' + esc(st.length > 80 ? st.slice(0, 80) + '…' : st) + ' <b>→ ' + esc(SCORE.letters(it.q).map(function (l) { return l + ' ' + clean(it.q.opts[L.indexOf(l)]); }).join(' / ')) + '</b><a href="' + PRACTICE.href(it.s, it.q) + '">原題 →</a></li>';
@@ -130,7 +134,7 @@
     document.querySelector('.mq-ov .mq-prog').textContent = '結果';
     var wrongs = ST.wrong.slice();
     bd().querySelector('.mq-again').onclick = function () { run(pick(ST.pool, ST.n)); };
-    bd().querySelector('.mq-redo').onclick = function () { run(shuffle(wrongs)); };
+    bd().querySelector('.mq-redo').onclick = function () { run(shuffle(wrongs), true); };
     bd().querySelector('.mq-close').onclick = close;
     bd().querySelector('.mq-wbck').onchange = function (e) { try { localStorage.setItem('pref_mq_wb', e.target.checked ? '1' : '0'); } catch (err) {} };
   }
@@ -138,7 +142,7 @@
     var ov = document.querySelector('.mq-ov');
     if (!ov) return;
     /* 中途關閉:已作答的題目先結算,再按一次才真正關掉 */
-    if (ST && !ST.done && (ST.i > 0 || ST.answered)) { ST.items = ST.items.slice(0, ST.answered ? ST.i + 1 : ST.i); if (ST.items.length) return result(); }
+    if (ST && !ST.done && (ST.i > 0 || ST.answered)) { ST.items = ST.items.slice(0, ST.answered ? ST.i + 1 : ST.i); ST.partial = true; if (ST.items.length) return result(); }
     ov.remove(); document.body.classList.remove('mq-lock');
     if (ST && typeof ST.onClose === 'function') ST.onClose();
     ST = null;

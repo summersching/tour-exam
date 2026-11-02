@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>講義</title>
+<!-- 講義 · v201(2026-11-02)試閱版
+     五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
+     內容檔:jy_pr2.js(執業法規)、jy_gh.js(觀光資源);其他科製作中
+     本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
+     變更履歷:v201 初版(試閱:執業法規第 1 章、觀光資源第 1 章) -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
+    --sel:#0f766e;--accent:#0f766e;--hd1:#115e59;--hd2:#14b8a6;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;--selbg:#e6f4f1;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .tab.on{color:#05211d}}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .tab.on{color:#05211d}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .row{display:flex;gap:7px;padding:10px 0 2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip.on{background:var(--sel);border-color:var(--sel);color:#fff} .chip .n{font-weight:600;font-size:.72rem;opacity:.85;margin-left:3px}
+  .tabs{display:flex;gap:6px;padding:8px 0 10px;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:1 0 auto;white-space:nowrap;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:7px 4px;border-radius:12px;font-size:.84rem;font-weight:800;cursor:pointer;font-family:inherit}
+  .tab.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.86rem;white-space:nowrap}
+  .tbtn.fill{background:var(--sel);color:#fff} .tbtn:disabled{opacity:.45;cursor:default}
+  .tip0{font-size:.78rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px}
+  .tip0 b{color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;margin:12px 0}
+  a.chcard{display:block;text-decoration:none;color:inherit}
+  .chno{font-size:.74rem;font-weight:800;color:var(--sel)}
+  .cht{font-size:1.05rem;font-weight:900;margin:2px 0}
+  .chs{font-size:.8rem;color:var(--sub)}
+  .chm{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pill{font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--soft);color:var(--sel)}
+  .pill.ok{background:var(--okbg);color:var(--ok)} .pill.w{background:var(--warnbg);color:var(--warn)}
+  .empty{text-align:center;color:var(--sub);padding:40px 10px}
+  /* 章節 */
+  .chhead .cht{font-size:1.2rem}
+  .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .seg{display:inline-flex;border:1.5px solid var(--sel);border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:var(--card);color:var(--sel);font-weight:800;padding:7px 12px;font-family:inherit;font-size:.86rem;cursor:pointer}
+  .seg button.on{background:var(--sel);color:#fff}
+  :root[data-theme="dark"] .seg button.on{color:#05211d}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button.on{color:#05211d}}
+  .exam{background:var(--soft);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.86rem}
+  .exam b{color:var(--sel)}
+  .jh{font-size:1.06rem;margin:22px 0 6px;padding-left:10px;border-left:4px solid var(--sel)}
+  .jp{margin:8px 0;font-size:.96rem}
+  .jkey{margin:6px 0;padding-left:1.2em}
+  .jfig{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+  .jfig figcaption{font-weight:800;font-size:.88rem;margin:0 2px 8px}
+  .jfig svg{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;font-family:inherit}
+  .jfig .bx{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+  .jfig .b1{fill:var(--soft);stroke:var(--sel);stroke-width:1.5}
+  .jfig .b2{fill:var(--warnbg);stroke:var(--warn);stroke-width:1.5}
+  .jfig .b3{fill:var(--infobg);stroke:var(--info);stroke-width:1.5}
+  .jfig .tx{fill:var(--ink);font-size:13px}
+  .jfig .ts{fill:var(--sub);font-size:11.5px}
+  .jfig .tb{fill:var(--ink);font-size:14px;font-weight:800}
+  .jfig .ar{stroke:var(--sub);stroke-width:2;marker-end:url(#jyArrow)}
+  .jfig .ln{stroke:var(--line);stroke-width:3}
+  .jfig .d1{fill:var(--sel)} .jfig .d2{fill:var(--warn)}
+  .jfig .bar{fill:var(--sel)} .jfig .bar.r{fill:var(--warn)}
+  #jyArrow path{fill:var(--sub)}
+  .jtbl{margin:12px 0}
+  .jtbl .th,.mh{font-weight:800;font-size:.9rem;margin:0 0 6px}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;line-height:1.6}
+  th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:var(--soft);color:var(--ink);white-space:nowrap}
+  th.w{white-space:normal;min-width:5em}
+  @media screen and (max-width:560px){
+    table.stk thead{display:none}
+    table.stk,table.stk tbody,table.stk tr,table.stk td{display:block;width:auto}
+    table.stk tr{border-bottom:1px solid var(--line);padding:4px 0 8px}
+    table.stk tr:last-child{border-bottom:0}
+    table.stk td{border:0;padding:2px 12px}
+    table.stk td:first-child{font-size:.98rem;padding-top:8px;color:var(--sel)}
+    table.stk td+td::before{content:attr(data-l) ':';color:var(--sub);font-weight:800;margin-right:2px}
+  }
+  td:first-child{font-weight:700}
+  table.nw td:first-child{white-space:nowrap}
+  table.wr td:first-child{min-width:7em}
+  tr:last-child td{border-bottom:0}
+  .tn{font-size:.8rem;color:var(--sub);margin-top:6px}
+  .jmn{background:var(--warnbg);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .jmn .mt{font-weight:900;font-size:1rem;color:var(--warn)}
+  .jmn .mx{font-size:.84rem;color:var(--ink);margin-top:4px}
+  .jtip,.jtrap,.jcmp,.jlaw,.jself{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .jtip{border-color:var(--sel)} .jtrap{border-color:var(--no)} .jtrap .mh{color:var(--no)} .jtip .mh{color:var(--sel)}
+  .jtip ul,.jtrap ul{margin:4px 0;padding-left:1.2em;font-size:.9rem}
+  .jstale{background:var(--nobg);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.86rem}
+  .jstale a,.jlink{color:var(--sel);font-weight:800;text-decoration:none}
+  .jlink{display:inline-block;margin:6px 0;font-size:.9rem}
+  .jlaw dt{font-weight:800;font-size:.86rem;margin-top:8px} .jlaw dd{margin:2px 0 0;font-size:.86rem;color:var(--sub)}
+  .jex{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .jex .src{font-size:.74rem;color:var(--sub);font-weight:700}
+  .jex .stem{font-weight:700;margin:4px 0}
+  .jex .op{font-size:.88rem;padding:2px 0} .jex .op.ok{color:var(--ok);font-weight:800}
+  .jex ol{margin:6px 0;padding-left:1.3em;font-size:.88rem}
+  .jex a{color:var(--sel);font-weight:700;font-size:.84rem;text-decoration:none}
+  .jself ol{margin:4px 0;padding-left:1.3em;font-size:.9rem} .jself li{margin:6px 0}
+  .ans{display:inline-block;margin-left:4px;border-radius:9px;padding:1px 10px;font-weight:800;font-size:.88rem;background:var(--okbg);color:var(--ok);cursor:pointer;border:0;font-family:inherit;text-align:left;line-height:1.6}
+  .ans.mask{background:var(--line);color:transparent;text-shadow:0 0 9px rgba(90,107,130,.55);user-select:none;position:relative;min-width:7em}
+  .ans.mask::after{content:'點我看答案';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.72rem;text-shadow:none;white-space:nowrap}
+  .end{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+  .gl{font-size:.74rem;color:var(--sub);font-weight:700;margin-top:4px}
+  .agg .jmn,.agg .jfig,.agg .jcmp{margin-top:6px}
+  .agg .it{margin:14px 0}
+  .jmn.hide .mt,.jmn.hide .mx{filter:blur(6px);user-select:none;cursor:pointer}
+  @media print{.bar,.home,.tools,.end,.tip0,header p{display:none!important}
+    body{background:#fff}.card,.jfig,.jtip,.jtrap,.jcmp,.jlaw,.jself,.jex{box-shadow:none;break-inside:avoid}
+    .ans.mask{color:inherit;text-shadow:none;background:none}.ans.mask::after{content:none}.jmn.hide .mt,.jmn.hide .mx{filter:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="scoring.js"></script>
+<script src="ana.js"></script>
+<script src="stale.js"></script>
+<script src="srs.js"></script>
+<script src="fav.js"></script>
+<script src="practice.js"></script>
+<script src="miniquiz.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="jyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs></svg>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📘 講義</h1>
+  <p>本章考情 · 觀念講解 · 圖解 · 口訣 · 解題技巧 · 歷屆範例 · 章末測驗(試閱中)</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row" id="subjRow"></div>
+  <div class="tabs" id="tabs"></div>
+</div></div>
+
+<main class="wrap" id="app"></main>
+
+<script>
+'use strict';
+const SUBJS = [
+  { k:'pr2', name:'⚖️ 執業法規', file:'jy_pr2.js', v:'JY_PR2' },
+  { k:'pr',  name:'🚩 執業實務', file:null, v:null },
+  { k:'gh',  name:'🗺️ 觀光資源', file:'jy_gh.js', v:'JY_GH' },
+  { k:'en',  name:'🔤 外語英語', file:null, v:null },
+  { k:'jp',  name:'🎌 外語日語', file:null, v:null }];
+const VIEWS = [['toc','📑 章節'],['mn','🎵 口訣總表'],['fig','🖼 圖解總覽'],['cmp','⚖️ 易混比較']];
+const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1 };   // 快速複習顯示的區塊
+const QUIZ_N = 10, PROG_KEY = 'jy_prog';
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'');}
+const cfg = Object.assign({ subj:'pr2', view:'toc', mode:'full', ch:null, mask:true }, PRACTICE.LSget('pref_jy', {}));
+(function(){ const p = new URLSearchParams(location.search);
+  const s = p.get('subj'), ch = p.get('ch'), m = p.get('mode');
+  if (SUBJS.some(x=>x.k===s)) { cfg.subj = s; cfg.view = 'toc'; cfg.ch = null; }
+  if (ch) { cfg.ch = ch; cfg.view = 'ch'; const k = ch.split('-')[0]; if (SUBJS.some(x=>x.k===k)) cfg.subj = k; }
+  if (m === 'quick' || m === 'full') cfg.mode = m; })();
+function saveCfg(){ PRACTICE.LSset('pref_jy', cfg); }
+function prog(){ return PRACTICE.LSget(PROG_KEY, {}); }
+function setProg(id, patch){ const p = prog(); p[id] = Object.assign(p[id] || {}, patch); PRACTICE.LSset(PROG_KEY, p); }
+
+/* ===== 資料載入 ===== */
+const JY = {}, JYLOAD = {};   // JYLOAD:載入中的 Promise(同一科只插入一次 script,避免重複宣告)
+function loadSubj(k){
+  const S = SUBJS.find(x=>x.k===k);
+  if (!S || !S.file) return Promise.resolve(null);
+  if (JY[k]) return Promise.resolve(JY[k]);
+  if (JYLOAD[k]) return JYLOAD[k];
+  const pre = PRACTICE.gv(S.v) ? Promise.resolve() : PRACTICE.loadJs(S.file);
+  JYLOAD[k] = pre.then(()=>{ JY[k] = PRACTICE.gv(S.v) || null; return JY[k]; }).catch(()=>{ delete JYLOAD[k]; return null; });
+  return JYLOAD[k];
+}
+function bankOf(k){ return PRACTICE.SUBJ[k] ? PRACTICE.load(k).catch(()=>null) : Promise.resolve(null); }
+function chapterQs(ch, d){
+  if (!d) return [];
+  const m = ch.match || {};
+  return d.bank.filter(q=>{
+    if (m.kw) return m.kw.test(q.stem + ' ' + (q.opts||[]).join(' '));
+    const a = d.ana[PRACTICE.key(q)] || {};
+    return (m.t||[]).includes(a.t) && (m.tt||[]).includes(a.tt);
+  });
+}
+function isOld(k, q){ const n = window.STALE && STALE.note(k, q); return !!(n && n.k === 'old'); }
+function stats(k, ch, d){
+  const qs = chapterQs(ch, d); if (!d) return null;
+  const years = [...new Set(d.bank.map(q=>+q.y))].sort((a,b)=>a-b);
+  const by = {}; years.forEach(y=>by[y]=0); qs.forEach(q=>by[+q.y]++);
+  const recent = years.slice(-3);
+  return { n: qs.length, guide: qs.filter(q=>q.c==='guide').length, leader: qs.filter(q=>q.c==='leader').length,
+    years, by, recent: qs.filter(q=>recent.includes(+q.y)).length, quiz: qs.filter(q=>!isOld(k,q)) };
+}
+function chartSvg(st){
+  const ys = st.years, max = Math.max(1, ...ys.map(y=>st.by[y])), w = 360, bw = Math.floor((w - 20) / ys.length), recent = ys.slice(-3);
+  let h = '';
+  ys.forEach((y,i)=>{
+    const v = st.by[y], bh = Math.round(v / max * 64), x = 10 + i*bw + 4, top = 84 - bh;
+    h += `<rect class="bar${recent.includes(y)?' r':''}" x="${x}" y="${top}" width="${bw-8}" height="${Math.max(bh,1)}" rx="3"/>`
+       + `<text class="ts" x="${x + (bw-8)/2}" y="${top-4}" text-anchor="middle">${v}</text>`
+       + `<text class="ts" x="${x + (bw-8)/2}" y="100" text-anchor="middle">${y}</text>`;
+  });
+  return `<figure class="jfig"><figcaption>📊 各年度題數(黃色 = 近 3 年)</figcaption><svg viewBox="0 0 ${w} 106" role="img" aria-label="各年度題數">${h}</svg></figure>`;
+}
+
+/* ===== 區塊 ===== */
+function tableHtml(head, rows, stack){
+  // 第一欄都很短(≤ 6 字)才整欄不換行;長文字的第一欄改成保底寬度,避免整張表被撐到要左右捲
+  // stack:欄位多、文字長的表,手機上改成一列一張小卡(欄名放在每格前面),電腦與列印仍是表格
+  const plain = x => String(x).replace(/<[^>]*>/g, '').replace(/&[a-z]+;/g, '·');
+  const nw = rows.every(r => plain(r[0]).length <= 6);
+  return `<div class="tw"><table class="${nw ? 'nw' : 'wr'}${stack ? ' stk' : ''}"><thead><tr>${head.map(x=>`<th${plain(x).length > 6 ? ' class="w"' : ''}>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td data-l="${head[i] || ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function exHtml(k, b, d){
+  const q = d && d.map[b.key]; if (!q) return '';
+  const acc = SCORE.acc(q);
+  return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>
+    <div class="stem">${esc(clean(q.stem))}</div>
+    ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}">${'ABCD'[i]}. ${esc(clean(o))}${acc.includes(i)?' ✔':''}</div>`).join('')}
+    <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+    <a href="${esc(PRACTICE.href(k,q))}">看原題完整詳解 →</a></div>`;
+}
+function selfHtml(b){
+  return `<div class="jself"><div class="mh">⏱ 一分鐘自我檢測</div><ol>${b.items.map(([q,a])=>`<li>${esc(q)}<button class="ans mask" type="button">${esc(a)}</button></li>`).join('')}</ol></div>`;
+}
+function mnHtml(b, hide){
+  return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div></div>`;
+}
+function figHtml(b){ return `<figure class="jfig"><figcaption>🖼 ${esc(b.h)}</figcaption>${b.svg}</figure>`; }
+function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(esc)))}</div>`; }
+function blockHtml(k, b, d){
+  if (cfg.mode === 'quick' && !QUICK[b.t]) return '';
+  switch (b.t){
+    case 'h': return `<h3 class="jh">${esc(b.text)}</h3>`;
+    case 'p': return `<p class="jp">${b.html}</p>`;
+    case 'key': return `<ul class="jkey">${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'fig': return figHtml(b);
+    case 'link': return `<a class="jlink" href="${esc(b.href)}">${esc(b.text)}</a>`;
+    case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(esc)), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
+    case 'mn': return mnHtml(b, false);
+    case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    case 'cmp': return cmpHtml(b);
+    case 'stale': return `<div class="jstale">⏱ <b>時效提醒</b>:${esc(b.text)} <a href="法規異動.html">看「新制與法規異動」→</a></div>`;
+    case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
+    case 'ex': return exHtml(k, b, d);
+    case 'self': return selfHtml(b);
+    default: return '';
+  }
+}
+
+/* ===== 畫面 ===== */
+let CUR = null;   // 目前章節 { k, ch, d, st }
+function renderBar(){
+  const S = SUBJS;
+  $('subjRow').innerHTML = S.map(s=>{ const n = !s.file ? '製作中' : JY[s.k] ? JY[s.k].chapters.length + ' 章' : '';
+    return `<button class="chip${cfg.subj===s.k?' on':''}" type="button" data-subj="${s.k}">${s.name}<span class="n">${n}</span></button>`; }).join('');
+  $('tabs').style.display = cfg.view === 'ch' ? 'none' : '';
+  $('tabs').innerHTML = VIEWS.map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
+}
+function noData(){
+  return `<div class="card empty">📌 本科講義製作中。<br>試閱階段先完成「執業法規」與「觀光資源」各 1 章,版型確認後依英語 → 日語 → 中文三科的順序陸續補上。</div>`;
+}
+function renderToc(J){
+  const p = prog();
+  const intro = `<div class="tip0">💡 每章都可以切換 <b>📖 完整閱讀</b>(觀念、條文、歷屆範例逐步解題)與 <b>⚡ 快速複習</b>(只看圖解、重點表、口訣、技巧、易錯)。章末測驗會排除法規已修正的題目;讀完記得按「標記已讀」。</div>`;
+  $('app').innerHTML = intro + J.chapters.map(ch=>{
+    const s = p[ch.id] || {};
+    return `<a class="card chcard" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}"><div class="chno">第 ${ch.no} 章</div><div class="cht">${esc(ch.t)}</div><div class="chs">${esc(ch.sub)}</div>
+      <div class="chm"><span class="pill" data-stat="${esc(ch.id)}">計算考情中…</span>${s.read?'<span class="pill ok">✅ 已讀</span>':''}${s.best!=null?`<span class="pill w">📝 章末測驗最佳 ${s.best}%</span>`:''}</div></a>`;
+  }).join('');
+  bankOf(J.subj).then(d=>{ J.chapters.forEach(ch=>{ const st = stats(J.subj, ch, d), el = document.querySelector(`[data-stat="${ch.id}"]`);
+    if (el) el.textContent = st ? `10 年 ${st.n} 題 · 近 3 年 ${st.recent} 題` : '題庫載入失敗'; }); });
+}
+function renderAgg(J, type){
+  const items = [];
+  J.chapters.forEach(ch=>ch.blocks.forEach(b=>{ if (b.t === type) items.push({ ch, b }); }));
+  const tip = type === 'mn' ? '🎵 全科口訣集中在這裡。預設遮住口訣內容,先看主題自己想一想,再點一下對答案。'
+    : type === 'fig' ? '🖼 全科圖解集中在這裡,適合考前快速翻一遍。' : '⚖️ 容易搞混的概念並排比較;點章名可以回到該章。';
+  const tools = type === 'mn' ? `<div class="tools"><button class="tbtn" type="button" id="maskAll">${cfg.mask?'👀 全部顯示':'🙈 全部遮住'}</button></div>` : '';
+  $('app').innerHTML = `<div class="tip0">${tip}</div>${tools}<div class="agg">` + (items.length ? items.map(({ch,b})=>`<div class="it"><div class="gl"><a class="jlink" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)} →</a></div>${type==='mn'?mnHtml(b, cfg.mask):type==='fig'?figHtml(b):cmpHtml(b)}</div>`).join('') : '<div class="empty">本科目前還沒有內容</div>') + '</div>';
+}
+function renderChapter(){
+  const { k, ch, d, st } = CUR, J = JY[k], i = J.chapters.indexOf(ch), p = prog()[ch.id] || {};
+  const prev = J.chapters[i-1], next = J.chapters[i+1];
+  const exam = st ? `<div class="exam">📊 <b>本章考情</b>:歷屆(${st.years[0]}~${st.years[st.years.length-1]} 年)共 <b>${st.n}</b> 題(導遊 ${st.guide}、領隊 ${st.leader}),近 3 年 <b>${st.recent}</b> 題;章末測驗可出 ${st.quiz.length} 題(已排除法規已修正題)。</div>${chartSvg(st)}` : '';
+  $('app').innerHTML = `<div class="card chhead"><div class="chno">${esc(J.name)} · 第 ${ch.no} 章</div><div class="cht">${esc(ch.t)}</div><div class="chs">${esc(ch.sub)}</div>
+    <div class="chs">資料截至 ${esc(ch.ver)}</div>
+    <div class="tools"><span class="seg"><button type="button" data-mode="full" class="${cfg.mode==='full'?'on':''}">📖 完整閱讀</button><button type="button" data-mode="quick" class="${cfg.mode==='quick'?'on':''}">⚡ 快速複習</button></span>
+    <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button><button class="tbtn" type="button" data-act="print">🖨 列印</button><button class="tbtn" type="button" data-act="toc">← 目錄</button></div></div>`
+    + exam + ch.blocks.map(b=>blockHtml(k, b, d)).join('')
+    + `<div class="end"><button class="tbtn fill" type="button" data-act="quiz"${st&&st.quiz.length?'':' disabled'}>📝 章末測驗 ${QUIZ_N} 題</button><button class="tbtn" type="button" data-act="quizall"${st&&st.quiz.length?'':' disabled'}>📚 本章全部 ${st?st.quiz.length:0} 題</button>
+      <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button>
+      ${prev?`<button class="tbtn" type="button" data-go="${esc(prev.id)}">← 上一章</button>`:''}${next?`<button class="tbtn" type="button" data-go="${esc(next.id)}">下一章 →</button>`:''}</div>`
+    + (p.best!=null?`<div class="tip0">📝 章末測驗:最佳 ${p.best}%,上次 ${p.last}%</div>`:'');
+}
+function openChapter(id){
+  const k = id.split('-')[0];
+  cfg.subj = k; cfg.view = 'ch'; cfg.ch = id; saveCfg();
+  history.replaceState(null, '', '?ch=' + encodeURIComponent(id) + (cfg.mode==='quick'?'&mode=quick':''));
+  renderBar(); $('app').innerHTML = '<div class="empty">載入中…</div>';
+  Promise.all([loadSubj(k), bankOf(k)]).then(([J, d])=>{
+    const ch = J && J.chapters.find(c=>c.id===id);
+    if (!ch){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); return; }
+    CUR = { k, ch, d, st: stats(k, ch, d) };
+    renderBar(); renderChapter(); window.scrollTo(0,0);
+  });
+}
+function render(){
+  if (cfg.view === 'ch' && cfg.ch) return openChapter(cfg.ch);
+  history.replaceState(null, '', location.pathname);
+  renderBar();
+  const S = SUBJS.find(x=>x.k===cfg.subj);
+  if (!S.file){ $('app').innerHTML = noData(); return; }
+  $('app').innerHTML = '<div class="empty">載入中…</div>';
+  loadSubj(cfg.subj).then(J=>{
+    renderBar();
+    if (!J){ $('app').innerHTML = noData(); return; }
+    if (cfg.view === 'toc') renderToc(J); else renderAgg(J, cfg.view);
+  });
+}
+function startQuiz(all){
+  const { k, ch, st } = CUR; if (!st || !st.quiz.length) return;
+  MINIQUIZ.start({ title: '📝 第 ' + ch.no + ' 章 章末測驗', list: st.quiz.map(q=>({ s:k, q })), n: all ? 0 : QUIZ_N,
+    onResult: (ok, n, info)=>{ if (info && (info.redo || info.partial)) return;   // 「只練錯的」與中途關閉不算整章成績
+      const pct = Math.round(ok / n * 100), p = prog()[ch.id] || {};
+      setProg(ch.id, { last: pct, best: Math.max(pct, p.best == null ? 0 : p.best) }); if (cfg.view === 'ch' && CUR && CUR.ch === ch) renderChapter(); } });
+}
+
+document.querySelector('.bar').addEventListener('click', e=>{
+  const s = e.target.closest('[data-subj]');
+  if (s){ cfg.subj = s.dataset.subj; cfg.view = cfg.view === 'ch' ? 'toc' : cfg.view; cfg.ch = null; saveCfg(); render(); return; }
+  const v = e.target.closest('[data-view]');
+  if (v){ cfg.view = v.dataset.view; cfg.ch = null; saveCfg(); render(); }
+});
+$('app').addEventListener('click', e=>{
+  const ans = e.target.closest('.ans'); if (ans){ ans.classList.toggle('mask'); return; }
+  const mn = e.target.closest('.jmn.hide'); if (mn){ mn.classList.remove('hide'); return; }
+  const a = e.target.closest('[data-ch]'); if (a){ e.preventDefault(); openChapter(a.dataset.ch); return; }
+  const g = e.target.closest('[data-go]'); if (g){ openChapter(g.dataset.go); return; }
+  const m = e.target.closest('[data-mode]');
+  if (m){ cfg.mode = m.dataset.mode; saveCfg(); history.replaceState(null, '', '?ch=' + encodeURIComponent(CUR.ch.id) + (cfg.mode==='quick'?'&mode=quick':'')); renderChapter(); return; }
+  if (e.target.id === 'maskAll'){ cfg.mask = !cfg.mask; saveCfg(); render(); return; }
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === 'toc'){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); window.scrollTo(0,0); }
+  else if (act === 'read'){ const p = prog()[CUR.ch.id] || {}; setProg(CUR.ch.id, { read: p.read ? null : Date.now() }); renderChapter(); }
+  else if (act === 'print') window.print();
+  else if (act === 'quiz') startQuiz(false);
+  else if (act === 'quizall') startQuiz(true);
+});
+
+Promise.all(SUBJS.filter(s=>s.file).map(s=>loadSubj(s.k))).then(()=>renderBar());   // 先載入有內容的科目,顯示章數
+render();
+</script>
+</body>
+</html>
