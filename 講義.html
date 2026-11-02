@@ -11,7 +11,8 @@
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_gh.js(觀光資源);其他科製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v206 條文原文旁加「🔎 考過 N 題」連到條文反查(law_ref.js 延遲載入)
+     變更履歷:v210 🔊 朗讀:依畫面區塊順序唸本章(表格逐列、口訣、範例、自我檢測),底部播放列、語速、點區塊跳讀
+              v206 條文原文旁加「🔎 考過 N 題」連到條文反查(law_ref.js 延遲載入)
               v201 初版(試閱:執業法規第 1 章、觀光資源第 1 章) -->
 <style>
   :root{
@@ -26,14 +27,14 @@
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
     --shadow:0 1px 6px rgba(0,0,0,.3);
   }
-  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .tab.on{color:#05211d}}
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .tab.on,:root:not([data-theme="light"]) .ttsbar button.pri{color:#05211d}}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
     --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
     --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
     --shadow:0 1px 6px rgba(0,0,0,.3);
   }
-  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .tab.on{color:#05211d}
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .tab.on,:root[data-theme="dark"] .ttsbar button.pri{color:#05211d}
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;padding:0 0 70px;
     font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
@@ -142,6 +143,19 @@
   .agg .jmn,.agg .jfig,.agg .jcmp{margin-top:6px}
   .agg .it{margin:14px 0}
   .jmn.hide .mt,.jmn.hide .mx{filter:blur(6px);user-select:none;cursor:pointer}
+  /* v210 🔊 朗讀:底部播放列 + 目前段落外框 */
+  .ttsbar{position:fixed;left:12px;right:72px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;max-width:620px;margin:0 auto;
+    display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:8px 10px}
+  .ttsbar[hidden]{display:none}
+  .ttsbar button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;min-width:40px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit;padding:0 8px}
+  .ttsbar button.pri{background:var(--sel);border-color:var(--sel);color:#fff}
+  .ttsbar .tr{font-size:.8rem;font-weight:800}
+  .ttsbar .tp{font-size:.74rem;color:var(--sub);font-weight:700;margin-left:auto;white-space:nowrap}
+  .reading{outline:3px solid var(--accent);outline-offset:4px;border-radius:10px}
+  body.tts-on{padding-bottom:96px}
+  .tflash{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:41;background:var(--ink);color:var(--card);
+    font-size:.84rem;font-weight:700;border-radius:10px;padding:8px 14px;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:90vw;text-align:center}
+  @media print{.ttsbar,.tflash{display:none!important}.reading{outline:none}}
   @media print{.bar,.home,.tools,.end,.tip0,header p{display:none!important}
     body{background:#fff}.card,.jfig,.jtip,.jtrap,.jcmp,.jlaw,.jself,.jex{box-shadow:none;break-inside:avoid}
     .ans.mask{color:inherit;text-shadow:none;background:none}.ans.mask::after{content:none}.jmn.hide .mt,.jmn.hide .mx{filter:none}}
@@ -173,6 +187,9 @@
 </div></div>
 
 <main class="wrap" id="app"></main>
+<div class="ttsbar" id="ttsBar" hidden role="region" aria-label="朗讀控制">
+  <button type="button" data-tts="prev" aria-label="上一段">⏮</button><button type="button" class="pri" data-tts="toggle" aria-label="暫停">⏸</button><button type="button" data-tts="next" aria-label="下一段">⏭</button><button type="button" class="tr" data-tts="rate" aria-label="語速">1×</button><button type="button" data-tts="stop" aria-label="停止">⏹</button><span class="tp" id="ttsPos"></span>
+</div>
 
 <script>
 'use strict';
@@ -305,6 +322,104 @@ function hydrateLawRef(){
       if (r){ a.textContent = '🔎 考過 ' + r[1].length + ' 題'; a.hidden = false; } });
   }).catch(()=>{ lawRefP = null; });
 }
+/* ---------- v210 🔊 講義朗讀(speechSynthesis:用裝置內建語音,離線也能用)----------
+   照畫面上的區塊順序唸(完整閱讀 / 快速複習看到什麼就唸什麼):標題、本章考情、內文、重點、表格逐列「欄名:內容」、口訣、
+   技巧與陷阱、易混比較、條文原文、歷屆範例(題目 + 正解 + 步驟)、自我檢測(題目 + 答案);圖只唸標題;表情符號不唸。
+   長段切成短句再唸(部分瀏覽器長句會中斷);朗讀中點任一區塊 → 從那裡開始;語速記在 pref_jy_rate */
+const TTS = (() => {
+  const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
+  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself';
+  let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null;
+  let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
+  const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null; };
+  if (SS && SS.getVoices) { pickVoice(); if (SS.addEventListener) SS.addEventListener('voiceschanged', pickVoice); }
+  const T = el => el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
+  const tidy = t => String(t || '').replace(/[\u2192\u21D2\u279C]/g, '\uFF0C')
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2934}\u{2935}\u{3030}\u{303D}\u{3297}\u{3299}\u{FE0F}\u{200D}\u{20E3}]/gu, '')   // 表情符號與圖示符號不唸
+    .replace(/\s*[\u00B7\u30FB]\s*/g, '\u3001').replace(/(\d)\s*[~\uFF5E\u2013\u2014]\s*(\d)/g, '$1到$2').replace(/[|\u2502]/g, '\uFF0C').replace(/\s+/g, ' ').trim();
+  const lis = el => [...el.querySelectorAll('li')].map(T).join('。');
+  function textOf(el) {
+    if (el.matches('.chhead')) return [T(el.querySelector('.chno')), T(el.querySelector('.cht')), T(el.querySelector('.chs'))].filter(Boolean).join('。');
+    if (el.matches('.jfig')) return '圖解：' + T(el.querySelector('figcaption'));
+    if (el.matches('.jtbl, .jcmp')) {
+      const th = [...el.querySelectorAll('thead th')].map(T);
+      const rows = [...el.querySelectorAll('tbody tr')].map(tr => [...tr.children].map((td, i) => (i && th[i] ? th[i] + '：' : '') + T(td)).join(',')).join('。');
+      return [T(el.querySelector('.th, .mh')), rows, T(el.querySelector('.tn'))].filter(Boolean).join('。');
+    }
+    if (el.matches('.jkey')) return '重點。' + lis(el);
+    if (el.matches('.jtip, .jtrap')) return T(el.querySelector('.mh')) + '。' + lis(el);
+    if (el.matches('.jmn')) return [T(el.querySelector('.mh')), T(el.querySelector('.mt')), T(el.querySelector('.mx'))].filter(Boolean).join('。');
+    if (el.matches('.jlaw')) return '條文原文。' + [...el.querySelectorAll('dt')].map(dt => { const a = dt.querySelector('a'); return T(dt).replace(a ? T(a) : '', '').trim() + '。' + T(dt.nextElementSibling); }).join('。');
+    if (el.matches('.jex')) {
+      const ok = [...el.querySelectorAll('.op.ok')].map(o => T(o).replace(/✔/g, '').trim()).join(',或 ');
+      return ['歷屆範例：' + T(el.querySelector('.stem')), ok && '正確答案 ' + ok, lis(el)].filter(Boolean).join('。');
+    }
+    if (el.matches('.jself')) return T(el.querySelector('.mh')) + '。' + [...el.querySelectorAll('li')].map(li => { const a = li.querySelector('.ans'); return T(li).replace(T(a), '').trim() + '。答案：' + T(a); }).join('。');
+    return T(el);
+  }
+  function split(t) {
+    const out = [];
+    t.split(/(?<=[。！？；!?;])/).forEach(x => {   // 句號、驚嘆號、問號、分號(全形 / 半形)
+      x = x.trim();
+      while (x.length > 80) { let k = Math.max(x.lastIndexOf('，', 80), x.lastIndexOf(',', 80), x.lastIndexOf('、', 80)); if (k < 20) k = 79; out.push(x.slice(0, k + 1)); x = x.slice(k + 1).trim(); }   // 太長再從逗號、頓號切
+      if (x) out.push(x);
+    });
+    return out.filter(x => /[\p{L}\p{N}]/u.test(x));
+  }
+  function flash(msg) {
+    const d = document.createElement('div'); d.className = 'tflash'; d.textContent = msg; document.body.appendChild(d);
+    setTimeout(() => d.remove(), 2600);
+  }
+  function mark() {
+    document.querySelectorAll('.reading').forEach(x => x.classList.remove('reading'));
+    const q = Q[bi]; if (q) { q.el.classList.add('reading'); q.el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+  }
+  function ui() {
+    const bar = $('ttsBar'); bar.hidden = !on; document.body.classList.toggle('tts-on', on);
+    const tg = bar.querySelector('[data-tts="toggle"]'); tg.textContent = paused ? '▶' : '⏸'; tg.setAttribute('aria-label', paused ? '繼續' : '暫停');
+    bar.querySelector('[data-tts="rate"]').textContent = rate + '×';
+    $('ttsPos').textContent = Q.length ? '第 ' + Math.min(bi + 1, Q.length) + '/' + Q.length + ' 段' : '';
+  }
+  function speak() {
+    if (!on || paused) return;
+    if (bi >= Q.length) { stop(); flash('🔊 本章朗讀完畢'); return; }
+    const q = Q[bi];
+    if (si >= q.parts.length) { bi++; si = 0; speak(); return; }
+    if (si === 0) mark();
+    ui();
+    const my = ++tok, u = new SpeechSynthesisUtterance(q.parts[si]);
+    u.lang = 'zh-TW'; if (voice) u.voice = voice; u.rate = rate;
+    u.onend = () => { if (my !== tok) return; si++; speak(); };
+    u.onerror = e => { if (my !== tok || (e && (e.error === 'interrupted' || e.error === 'canceled'))) return; si++; speak(); };
+    SS.speak(u);
+  }
+  function restart() { tok++; SS.cancel(); speak(); }
+  function start(i) {
+    if (!SS || typeof SpeechSynthesisUtterance === 'undefined') { flash('這個瀏覽器不支援朗讀,可改用 Chrome、Edge 或 Safari'); return; }
+    Q = [...$('app').querySelectorAll(SEL)].map(el => ({ el, parts: split(tidy(textOf(el))) })).filter(x => x.parts.length);
+    if (!Q.length) return;
+    on = true; paused = false; bi = Math.max(0, Math.min(i || 0, Q.length - 1)); si = 0; ui(); restart();
+  }
+  function stop(quiet) {
+    if (!on && quiet) return;
+    on = false; paused = false; tok++; if (SS) SS.cancel();
+    document.querySelectorAll('.reading').forEach(x => x.classList.remove('reading')); ui();
+  }
+  function act(a) {
+    if (!on) return;
+    if (a === 'toggle') { paused = !paused; if (paused) { tok++; SS.cancel(); ui(); } else restart(); }
+    else if (a === 'next') { if (bi < Q.length - 1) { bi++; si = 0; } paused = false; restart(); }
+    else if (a === 'prev') { if (si > 0) si = 0; else bi = Math.max(0, bi - 1); paused = false; restart(); }   // 這段唸到一半 → 從這段開頭
+    else if (a === 'rate') { rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; PRACTICE.LSset('pref_jy_rate', rate); ui(); if (!paused) restart(); }
+    else if (a === 'stop') stop();
+  }
+  function jump(target) {
+    if (!on) return false;
+    const i = Q.findIndex(q => q.el === target || q.el.contains(target)); if (i < 0) return false;
+    bi = i; si = 0; paused = false; restart(); return true;
+  }
+  return { start, stop, act, jump, get on() { return on; }, get queue() { return Q; }, get pos() { return [bi, si]; }, split, tidy };
+})();
 function renderBar(){
   const S = SUBJS;
   $('subjRow').innerHTML = S.map(s=>{ const n = !s.file ? '製作中' : JY[s.k] ? JY[s.k].chapters.length + ' 章' : '';
@@ -335,13 +450,14 @@ function renderAgg(J, type){
   $('app').innerHTML = `<div class="tip0">${tip}</div>${tools}<div class="agg">` + (items.length ? items.map(({ch,b})=>`<div class="it"><div class="gl"><a class="jlink" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)} →</a></div>${type==='mn'?mnHtml(b, cfg.mask):type==='fig'?figHtml(b):cmpHtml(b)}</div>`).join('') : '<div class="empty">本科目前還沒有內容</div>') + '</div>';
 }
 function renderChapter(){
+  TTS.stop(true);
   const { k, ch, d, st } = CUR, J = JY[k], i = J.chapters.indexOf(ch), p = prog()[ch.id] || {};
   const prev = J.chapters[i-1], next = J.chapters[i+1];
   const exam = st ? `<div class="exam">📊 <b>本章考情</b>:歷屆(${st.years[0]}~${st.years[st.years.length-1]} 年)共 <b>${st.n}</b> 題(導遊 ${st.guide}、領隊 ${st.leader}),近 3 年 <b>${st.recent}</b> 題;章末測驗可出 ${st.quiz.length} 題(已排除法規已修正題)。</div>${chartSvg(st)}` : '';
   $('app').innerHTML = `<div class="card chhead"><div class="chno">${esc(J.name)} · 第 ${ch.no} 章</div><div class="cht">${esc(ch.t)}</div><div class="chs">${esc(ch.sub)}</div>
     <div class="chs">資料截至 ${esc(ch.ver)}</div>
     <div class="tools"><span class="seg"><button type="button" data-mode="full" class="${cfg.mode==='full'?'on':''}">📖 完整閱讀</button><button type="button" data-mode="quick" class="${cfg.mode==='quick'?'on':''}">⚡ 快速複習</button></span>
-    <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button><button class="tbtn" type="button" data-act="print">🖨 列印</button><button class="tbtn" type="button" data-act="toc">← 目錄</button></div></div>`
+    <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button><button class="tbtn" type="button" data-act="tts">🔊 朗讀</button><button class="tbtn" type="button" data-act="print">🖨 列印</button><button class="tbtn" type="button" data-act="toc">← 目錄</button></div></div>`
     + exam + ch.blocks.map(b=>blockHtml(k, b, d)).join('')
     + `<div class="end"><button class="tbtn fill" type="button" data-act="quiz"${st&&st.quiz.length?'':' disabled'}>📝 章末測驗 ${QUIZ_N} 題</button><button class="tbtn" type="button" data-act="quizall"${st&&st.quiz.length?'':' disabled'}>📚 本章全部 ${st?st.quiz.length:0} 題</button>
       <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button>
@@ -362,6 +478,7 @@ function openChapter(id){
   });
 }
 function render(){
+  TTS.stop(true);
   if (cfg.view === 'ch' && cfg.ch) return openChapter(cfg.ch);
   history.replaceState(null, '', location.pathname);
   renderBar();
@@ -389,6 +506,7 @@ document.querySelector('.bar').addEventListener('click', e=>{
   if (v){ cfg.view = v.dataset.view; cfg.ch = null; saveCfg(); render(); }
 });
 $('app').addEventListener('click', e=>{
+  if (TTS.on && !e.target.closest('button, a, input')) TTS.jump(e.target);   // 朗讀中點區塊 → 從那裡開始
   const ans = e.target.closest('.ans'); if (ans){ ans.classList.toggle('mask'); return; }
   const mn = e.target.closest('.jmn.hide'); if (mn){ mn.classList.remove('hide'); return; }
   const a = e.target.closest('[data-ch]'); if (a){ e.preventDefault(); openChapter(a.dataset.ch); return; }
@@ -401,10 +519,13 @@ $('app').addEventListener('click', e=>{
   if (act === 'toc'){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); window.scrollTo(0,0); }
   else if (act === 'read'){ const p = prog()[CUR.ch.id] || {}; setProg(CUR.ch.id, { read: p.read ? null : Date.now() }); renderChapter(); }
   else if (act === 'print') window.print();
+  else if (act === 'tts') TTS.start(0);
   else if (act === 'quiz') startQuiz(false);
   else if (act === 'quizall') startQuiz(true);
 });
 
+$('ttsBar').addEventListener('click', e=>{ const b = e.target.closest('[data-tts]'); if (b) TTS.act(b.dataset.tts); });
+window.addEventListener('pagehide', ()=>TTS.stop(true));
 Promise.all(SUBJS.filter(s=>s.file).map(s=>loadSubj(s.k))).then(()=>renderBar());   // 先載入有內容的科目,顯示章數
 render();
 </script>
