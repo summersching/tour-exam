@@ -72,6 +72,7 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
 <script src="subjects.js"></script>
+<script src="why.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>
@@ -113,6 +114,20 @@ function wbPanel(counts,total){
   </div>`;
 }
 
+/* v209 錯因分析(why.js):中文三科在錯題本 / 模擬測驗結果標記的「為什麼錯」 */
+function whyPanel(){
+  if(!window.WHY)return '';
+  const subs=[['pr2','執業法規','執業法規錯題本.html'],['pr','執業實務','執業實務錯題本.html'],['gh','觀光','觀光錯題本.html']].filter(([k])=>subjFilter==='all'||subjFilter===k);
+  if(!subs.length)return '';
+  const rows=subs.map(([k,n,page])=>{const st=WHY.stats(k),tot=Object.values(st).reduce((a,b)=>a+b,0);return {k,n,page,st,tot};}).filter(r=>r.tot);
+  if(!rows.length)return `<div class="panel"><h2>🧩 錯因分析</h2><p class="hint">在中文三科的錯題本或模擬測驗結果,答錯的題目下方點「為什麼錯?」(數字記錯、搞混、看錯題目…),這裡會統計你最常犯的錯並給練習建議。</p></div>`;
+  return `<div class="panel"><h2>🧩 錯因分析</h2><p class="hint">依你標記的「為什麼錯」統計(題目移出錯題本後仍保留)</p>`+rows.map(r=>{
+    const max=Math.max(1,...Object.values(r.st));
+    return `<h3 style="font-size:.9rem;margin:12px 0 4px">${esc(r.n)} · 已標 ${r.tot} 題 <a class="mini" href="${r.page}">錯題本›</a></h3>`
+      +WHY.C.filter(c=>r.st[c[0]]).map(c=>`<div class="barrow"><span class="name">${c[1]} ${c[2]}</span><div class="bartrack"><div class="barfill lv-warn" style="width:${Math.round(r.st[c[0]]/max*100)}%"></div></div><span class="pct">${r.st[c[0]]} 題</span></div>`).join('')
+      +WHY.tipHtml(r.k,r.st);
+  }).join('')+`</div>`;
+}
 function render(){
   const allHist=hLoad();
   const hist = subjFilter==='all' ? allHist : allHist.filter(h=>h.subj===subjFilter);
@@ -124,7 +139,7 @@ function render(){
     app.innerHTML=tabs+`<div class="empty"><div class="ic">📈</div>
       <h2>${subjFilter==='all'?'還沒有測驗記錄':'這一科還沒有測驗記錄'}</h2>
       <p>到<b>模擬測驗</b>${subjFilter==='all'?'':'選「'+subjName(subjFilter)+'」'}做幾組,這裡就會出現成績趨勢、弱點分析和及格評估。</p>
-      <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`+wbPanel(wbCounts,wbTotal);
+      <a href="模擬測驗.html">📝 去做模擬測驗</a></div>`+wbPanel(wbCounts,wbTotal)+whyPanel();
     bindTabs();return;
   }
   const totalQ=hist.reduce((s,h)=>s+h.total,0);
@@ -185,6 +200,8 @@ function render(){
     </div>
 
     ${wbPanel(wbCounts,wbTotal)}
+
+    ${whyPanel()}
 
     <div class="acts"><a class="btn pri" href="模擬測驗.html">📝 再測一組</a>
       <a class="btn" href="資料備份.html">💾 備份 / 還原</a>

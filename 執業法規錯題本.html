@@ -39,6 +39,7 @@
   header h1{margin:0 0 5px;font-size:1.28rem} header p{margin:2px 0;opacity:.92;font-size:.82rem}
   .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
   .bar{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  @media (max-width:600px){.bar{position:static}}   /* v209 手機上篩選列有 6 行,不黏頂以免擋住題目 */
   .bar .wrap{padding:9px 16px}
   .rowf{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:3px 0}
   .rowf .lb{font-size:.76rem;color:var(--sub);font-weight:700;margin-right:2px;min-width:30px}
@@ -102,6 +103,7 @@
 <script src="srs.js"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
+<script src="why.js"></script>
 <script src="optimg.js"></script>
 <script src="pwa.js" defer></script>
 <script src="pr2.js"></script>
@@ -119,6 +121,7 @@
   <div class="rowf"><span class="lb">證照</span><span id="fCert"></span></div>
   <div class="rowf"><span class="lb">年份</span><span id="fYear"></span></div>
   <div class="rowf"><span class="lb">考點</span><span id="fTopic"></span></div>
+  <div class="rowf"><span class="lb">錯因</span><span id="fWhy"></span></div>
   <input id="q" placeholder="搜尋題幹 / 選項 / 解析關鍵字…">
   <div class="cnt" id="cnt"></div>
 </div></div>
@@ -133,6 +136,7 @@
   </div>
 </div>
 
+<div class="wrap" id="whyTip"></div>
 <main class="wrap" id="list"></main>
 
 <script>
@@ -140,6 +144,7 @@ const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
 const GT={};
 const WBGH_KEY='wrongbook_pr2';
+const WS=WBGH_KEY.replace('wrongbook_','');   // v209 錯因標記用的科目代碼(why.js)
 function wbLoad(){try{return JSON.parse(localStorage.getItem(WBGH_KEY)||'{}');}catch(e){return{};}}
 function wbSave(o){try{localStorage.setItem(WBGH_KEY,JSON.stringify(o));}catch(e){}}
 function ghData(q){return (typeof PR2ANA!=='undefined'&&PR2ANA[q.c+'-'+q.y+'-'+q.no])||null;}
@@ -157,6 +162,7 @@ const QPD=new URLSearchParams(location.search).get('due')==='1';   // 從首頁�
 let fd=QPD?'due':'all';
 let MODE=QPD?'test':'review', fc='all', fy='all', ft='all', clearArm=false;
 const picks={};   // 自測作答:id → 選項index(僅本次 session)
+let fw='all';     // v209 錯因篩選:all / untag / 錯因代碼
 
 /* 取出目前錯題(補齊題目與解析);略過題庫已不存在的 id */
 function allEntries(){
@@ -169,6 +175,7 @@ function entries(){
     return (fc==='all'||e.q.c===fc)&&(fy==='all'||String(e.q.y)===fy)&&(ft==='all'||(d&&d.t===ft));
   });
   if(fd==='due')arr=arr.filter(e=>SRS.isDue(e.raw));
+  if(fw!=='all')arr=arr.filter(e=>{const w=WHY.get(WS,e.q);return fw==='untag'?!w:w===fw;});
   const kw=document.getElementById('q').value.trim().toLowerCase();
   if(kw)arr=arr.filter(e=>{const d=ghData(e.q);const hay=(e.q.stem+' '+e.q.opts.join(' ')+' '+(d?d.a+' '+d.s+' '+(d.n||''):'')).toLowerCase();return hay.includes(kw);});
   arr.sort((a,b)=>(a.q.c<b.q.c?-1:a.q.c>b.q.c?1:0)||(a.q.y-b.q.y)||(a.q.no-b.q.no));
@@ -191,7 +198,11 @@ function buildFilters(){
     chip('all','全部',fy==='all','fy')+years.map(y=>chip(y,y+'年 ('+scoped.filter(e=>String(e.q.y)===y).length+')',fy===y,'fy')).join('');
   const tps=[...new Set(scoped.map(e=>{const d=ghData(e.q);return d&&d.t;}).filter(Boolean))];
   document.getElementById('fTopic').innerHTML =
-    chip('all','全部',ft==='all','ft')+tps.map(t=>chip(t,GT[t]+' ('+scoped.filter(e=>{const d=ghData(e.q);return d&&d.t===t;}).length+')',ft===t,'ft')).join('');
+    chip('all','全部',ft==='all','ft')+tps.map(t=>chip(t,(GT[t]||t)+' ('+scoped.filter(e=>{const d=ghData(e.q);return d&&d.t===t;}).length+')',ft===t,'ft')).join('');
+  /* v209 錯因:篩選列 + 最常見錯因的建議 */
+  const wst=WHY.stats(WS,allD.map(e=>WS+':'+e.id)),untag=allD.filter(e=>!WHY.get(WS,e.q)).length;
+  document.getElementById('fWhy').innerHTML=chip('all','全部',fw==='all','fw')+chip('untag','未標 ('+untag+')',fw==='untag','fw')+WHY.C.filter(c=>wst[c[0]]||fw===c[0]).map(c=>chip(c[0],c[1]+' '+c[2]+' ('+wst[c[0]]+')',fw===c[0],'fw')).join('');
+  document.getElementById('whyTip').innerHTML=allD.length?WHY.tipHtml(WS,wst):'';
 }
 
 function optMarkReview(q,i,picked){
@@ -238,7 +249,7 @@ function render(){
       <div class="stem">${esc(q.stem)}</div>${OPTIMG.fig(q)}
       <div class="opts">${q.opts.map((o,i)=>optHtml(e,i,o)).join('')}</div>
       <div class="fb" data-fb="${e.id}"></div>
-      <div class="reveal">${show?revealHtml(q):''}</div></div>`;
+      <div class="reveal">${show?revealHtml(q):''}</div>${WHY.chips(WS,q)}</div>`;
   }).join('')||(fd==='due'?'<div class="empty"><b>🎉 今天到期的都複習完了!</b>其他錯題依間隔排在之後的日子,明天再回來。</div>':'<div class="empty">找不到符合的錯題</div>'));
   updScore(arr);
 }
@@ -255,6 +266,7 @@ document.querySelector('.bar').addEventListener('click',e=>{
   else if(b.dataset.fc!=null){fc=b.dataset.fc;fy='all';ft='all';}
   else if(b.dataset.fy!=null)fy=b.dataset.fy;
   else if(b.dataset.ft!=null)ft=b.dataset.ft;
+  else if(b.dataset.fw!=null)fw=b.dataset.fw;
   buildFilters();render();window.scrollTo(0,0);
 });
 document.getElementById('q').addEventListener('input',render);
@@ -303,12 +315,13 @@ document.getElementById('clearBtn').onclick=function(){
   if(!allEntries().length)return;
   if(!clearArm){clearArm=true;this.textContent='⚠ 再按一次清空';setTimeout(()=>{clearArm=false;this.textContent='🗑 清空';},2600);return;}
   localStorage.removeItem(WBGH_KEY);for(const k in picks)delete picks[k];clearArm=false;this.textContent='🗑 清空';
-  fc='all';fy='all';ft='all';buildFilters();render();
+  fc='all';fy='all';ft='all';fw='all';buildFilters();render();
 };
 SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBGH_KEY,id=>findQ(id)));
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 buildFilters();render();
 NOTE.onClick(document.getElementById('list'));   // C9 個人筆記
+WHY.bind(document.getElementById('list'),()=>buildFilters());   // v209 錯因標記:點了更新篩選列與建議
 </script>
 </body>
 </html>

@@ -132,6 +132,7 @@
 <script src="notes.js"></script>
 <script src="ana.js"></script>
 <script src="stale.js"></script>
+<script src="why.js"></script>
 <script src="optimg.js"></script>
 <script src="pwa.js" defer></script>
 <script src="bank.js"></script>
@@ -653,7 +654,7 @@ function renderResult(mode,wrong){
       <div class="reveal">
         ${p==null?'<div class="lbl" style="color:var(--no)">⚠️ 這題未作答</div>':''}
         ${revealHtml(q)}${NOTE.box(cfg.subj,q)}
-      </div></div>`;
+      </div>${isCn()&&p!=null&&!ansOk(q,p)?WHY.chips(cfg.subj,q):''}</div>`;
   }).join('')||'<p style="text-align:center;color:var(--sub);padding:30px">🎉 這組全對,沒有答錯的題!</p>';
 }
 
@@ -706,6 +707,7 @@ function applyQueryPreset(){
   const pick=qp.get('pick'); if(pick==='trend'||pick==='rand')cfg.pick=pick;   // v208 出題趨勢頁「依趨勢組卷」
   return qp.get('auto')==='1';
 }
+WHY.bind(document.getElementById('rlist'));   // v209 中文三科答錯可標錯因
 buildSetup();
 const _auto=applyQueryPreset();
 buildSetup();   // 依帶入的 cfg 重建晶片選取狀態
