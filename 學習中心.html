@@ -102,8 +102,38 @@
   .kcard h4{margin:11px 0 4px;font-size:.92rem;color:var(--grp)} .kcard h4:first-child{margin-top:2px}
   .kcard ul,.kcard ol{margin:4px 0;padding-left:22px} .kcard li{margin:3px 0}
   .lzmore{text-align:center;color:var(--sub);font-size:.8rem;padding:16px 0}
+  /* 文法:依章節詳解(gram_en.js) */
+  .gseg{display:flex;gap:4px;flex:0 0 auto}
+  .kbar .cnt{white-space:nowrap}
+  .kbar input{min-width:0}
+  .gseg .btn{padding:6px 9px;white-space:nowrap}
+  .gtoc{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+  .gtoc::-webkit-scrollbar{display:none}
+  .gtoc .tchip{flex:0 0 auto;text-decoration:none;white-space:nowrap}
+  .gch{scroll-margin-top:110px;margin-top:6px}
+  .gct{margin:20px 0 4px;font-size:1.05rem;color:var(--gc);line-height:1.5}
+  .gci{font-size:.84rem;color:var(--sub);line-height:1.7}
+  .gcm{background:var(--yrbg);color:var(--yrc);border-radius:10px;padding:7px 11px;margin:8px 0 2px;font-size:.84rem;font-weight:700}
+  .gp{scroll-margin-top:110px}
+  .gpt{font-weight:800;font-size:1rem;line-height:1.55;color:var(--ink)}
+  .gpn{display:inline-block;background:var(--gc);color:#fff;border-radius:7px;font-size:.72rem;padding:0 7px;margin-right:6px;vertical-align:2px}
+  .gpt .kfq{font-size:.68rem;margin-left:6px;vertical-align:2px;white-space:nowrap}
+  .gsay{margin:7px 0 2px;line-height:1.75}
+  .gl{font-weight:800;font-size:.82rem;color:var(--grp);margin:10px 0 4px}
+  .gpat{font-family:Consolas,"Courier New",monospace,"Microsoft JhengHei";font-size:.86rem;background:var(--chip);color:var(--chipk);border-radius:8px;padding:5px 9px;margin:4px 0;word-break:break-word}
+  .gex{margin:2px 0;padding-left:22px} .gex li{margin:6px 0}
+  .gen{font-weight:700;color:var(--accent)}
+  .gex .say{font-size:.74rem;vertical-align:1px}
+  .gzh{color:var(--sub);font-size:.86rem}
+  .gvs{border-collapse:collapse;width:100%;font-size:.84rem;line-height:1.6}
+  .gvs td{border-top:1px solid var(--line);padding:5px 6px;vertical-align:top}
+  .gvs tr:first-child td{border-top:0}
+  .gvs td:first-child{font-weight:700;width:42%;color:var(--ink)}
+  .gmn{background:var(--yrbg);color:var(--yrc);border-radius:9px;padding:6px 10px;margin:10px 0 2px;font-weight:700;font-size:.86rem}
+  .gq{margin:2px 0;padding-left:20px;font-size:.86rem} .gq li{margin:5px 0}
+  .gq .hit{margin-left:3px}
   @media print{
-    .tabs,.toolbar,.kbar{display:none} #flash,#quiz{display:none!important} .say{display:none}
+    .tabs,.toolbar,.kbar{display:none} #flash,#quiz{display:none!important} .say{display:none} .gtoc{display:none}
     header{background:#0d9488!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .home{display:none} .lzmore{display:none} .ktab{display:block!important} #list{display:block!important} .word,.kcard{break-inside:avoid} body{background:#fff}
   }
@@ -197,8 +227,8 @@
 
 <!-- ===== 文法 ===== -->
 <div id="tab-gram" class="ktab">
-  <div class="kbar"><div class="wrap"><input id="gram-q" placeholder="搜尋文法重點…"><span class="cnt" id="gram-cnt"></span></div></div>
-  <main class="wrap"><div class="kintro">📝 <b>常考文法句型</b> — 跨領隊 + 導遊 20 份逐題彙整。<b>紅色「× N 屆」= 重複出現越多屆,越常考,優先熟記。</b></div><div id="gram-list"></div></main>
+  <div class="kbar"><div class="wrap"><input id="gram-q" placeholder="搜尋文法、例句…"><span class="gseg"><button class="btn" type="button" data-gv="ch">📚 章節</button><button class="btn" type="button" data-gv="list">📋 清單</button></span><span class="cnt" id="gram-cnt"></span></div></div>
+  <main class="wrap"><div class="kintro" id="gram-intro"></div><div class="gtoc" id="gram-toc"></div><div id="gram-list"></div></main>
 </div>
 
 <!-- ===== 技巧 ===== -->
@@ -214,6 +244,7 @@
 </div>
 
 <script src="learn_en.js"></script>
+<script src="gram_en.js"></script>
 <script>
 /* 資料 WORDS / GRAM / SKILL / NOTE / STRAT 在 learn_en.js */
 
@@ -362,7 +393,45 @@ function kRender(id,data,cls,pre){
   KL[id].set((pre||[]).concat(arr.map(x=>kCard(x,cls))),'<p class="tip" style="padding:16px 0">找不到符合的內容</p>');
   KDONE[id]=true;
 }
-function renderGram(){kRender('gram',scopedKB(GRAM),'g');}
+/* 文法:📚 章節 = gram_en.js 的 8 章詳解(白話說明、句型、旅遊例句、易混比較、考過的原題);📋 清單 = 原本逐題彙整的考點 */
+let GVIEW=(function(){try{return localStorage.getItem('pref_gram_view')==='list'?'list':'ch';}catch(e){return 'ch';}})();
+const GINTRO={ch:'📚 <b>依章節詳解</b> — 83 則考點整理成 8 章、56 個文法點:白話說明 → 句型 → 旅遊例句(🔊 可聽)→ 易混比較 → 考過這樣考(點出處回原題)。',
+  list:'📝 <b>常考文法句型</b> — 跨領隊 + 導遊 20 份逐題彙整。<b>紅色「× N 屆」= 重複出現越多屆,越常考,優先熟記。</b>'};
+function gKey(g){const h=g.hits[0];return h.c+'-'+h.y+'-'+h.n;}
+function gEsc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function gText(p,notes){return [p.t,p.say,p.pat.join(' '),p.ex.map(e=>e.join(' ')).join(' '),p.vs.map(v=>v.join(' ')).join(' '),p.mn||'',notes.map(g=>kText(g.html)).join(' ')].join(' ').toLowerCase();}
+function gPoint(no,id,p,notes){
+  return '<div class="kcard g gp" id="gp-'+id+'"><div class="gpt"><span class="gpn">'+no+'</span>'+gEsc(p.t)+'<span class="kfq">考過 '+notes.length+' 題</span></div>'
+    +'<div class="gsay">💬 '+gEsc(p.say)+'</div>'
+    +'<div class="gl">🧩 句型</div>'+p.pat.map(x=>'<div class="gpat">'+gEsc(x)+'</div>').join('')
+    +'<div class="gl">🗣 旅遊例句</div><ol class="gex">'+p.ex.map(e=>'<li><span class="gen">'+gEsc(e[0])+'</span> <span class="say" data-say="'+gEsc(e[0])+'" title="唸出來">🔊</span><div class="gzh">'+gEsc(e[1])+'</div></li>').join('')+'</ol>'
+    +'<div class="gl">⚖️ 易混比較</div><table class="gvs">'+p.vs.map(v=>'<tr><td>'+gEsc(v[0])+'</td><td>'+gEsc(v[1])+'</td></tr>').join('')+'</table>'
+    +(p.mn?'<div class="gmn">🎵 口訣:'+gEsc(p.mn)+'</div>':'')
+    +'<div class="gl">📝 考過這樣考</div><ul class="gq">'+notes.map(g=>'<li>'+g.html.replace(/^📝\s*/,'')+' '+meta(g)+'</li>').join('')+'</ul></div>';
+}
+function renderGramCh(){
+  const kw=document.getElementById('gram-q').value.trim().toLowerCase();
+  const byKey={};scopedKB(GRAM).forEach(g=>{byKey[gKey(g)]=g;});   // 跟著上方「全部 / 領隊 / 導遊」範圍
+  let nP=0;const parts=[],toc=[];
+  GRAM_EN.chapters.forEach(ch=>{
+    const cards=[];
+    ch.pts.forEach((id,i)=>{const p=GRAM_EN.pts[id],notes=p.k.map(k=>byKey[k]).filter(Boolean);
+      if(!notes.length||(kw&&!gText(p,notes).includes(kw)))return;
+      cards.push(gPoint(ch.no+'-'+(i+1),id,p,notes));nP++;});
+    if(!cards.length)return;
+    toc.push('<a class="tchip" href="#gch-'+ch.no+'">'+ch.no+' '+gEsc(ch.t.split(':')[0])+'</a>');
+    parts.push('<section class="gch" id="gch-'+ch.no+'"><h3 class="gct">第 '+ch.no+' 章 '+gEsc(ch.t)+'</h3><div class="gci">'+gEsc(ch.intro)+'</div><div class="gcm">🎵 本章口訣:'+gEsc(ch.mn)+'</div>'+cards.join('')+'</section>');
+  });
+  document.getElementById('gram-cnt').textContent='共 '+nP+' 點';
+  document.getElementById('gram-toc').innerHTML=toc.join('');
+  KL.gram.set(parts,'<p class="tip" style="padding:16px 0">找不到符合的內容</p>');
+  KDONE.gram=true;
+}
+function renderGram(){
+  document.getElementById('gram-intro').innerHTML=GINTRO[GVIEW];
+  document.querySelectorAll('.gseg [data-gv]').forEach(b=>b.classList.toggle('on',b.dataset.gv===GVIEW));
+  if(GVIEW==='ch')renderGramCh();else{document.getElementById('gram-toc').innerHTML='';kRender('gram',scopedKB(GRAM),'g');}
+}
 function renderNote(){kRender('note',scopedKB(NOTE),'n');}
 function renderSkill(){
   const kw=document.getElementById('skill-q').value.trim().toLowerCase();
@@ -370,6 +439,8 @@ function renderSkill(){
   kRender('skill',scopedKB(SKILL),'s',strat.map(stratCard));
 }
 document.getElementById('gram-q').addEventListener('input',renderGram);
+document.querySelector('.gseg').addEventListener('click',function(e){const b=e.target.closest('[data-gv]');if(!b||b.dataset.gv===GVIEW)return;GVIEW=b.dataset.gv;try{localStorage.setItem('pref_gram_view',GVIEW);}catch(err){}renderGram();window.scrollTo(0,0);});
+document.getElementById('gram-list').addEventListener('click',function(e){const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
 document.getElementById('note-q').addEventListener('input',renderNote);
 document.getElementById('skill-q').addEventListener('input',renderSkill);
 const KL={gram:Lazy(document.getElementById('gram-list'),40),skill:Lazy(document.getElementById('skill-list'),40),note:Lazy(document.getElementById('note-list'),40)};
@@ -403,4 +474,12 @@ function setTab(t){
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.tabbtn').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+/* 直接連到文法章節或文法點:學習中心.html?tab=gram#gp-conc(講義等頁面用) */
+(function(){
+  const t=new URLSearchParams(location.search).get('tab'),h=location.hash,gp=/^#(gp|gch)-/.test(h);
+  if(!(t&&KRENDER[t])&&!gp)return;
+  if(gp&&GVIEW!=='ch'){GVIEW='ch';try{localStorage.setItem('pref_gram_view','ch');}catch(e){}}
+  setTab(t&&KRENDER[t]?t:'gram');
+  if(gp){KL.gram.all();const el=document.getElementById(decodeURIComponent(h.slice(1)));if(el)setTimeout(()=>el.scrollIntoView(),0);}
+})();
 </script></body></html>
