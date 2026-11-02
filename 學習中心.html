@@ -102,6 +102,19 @@
   .kcard h4{margin:11px 0 4px;font-size:.92rem;color:var(--grp)} .kcard h4:first-child{margin-top:2px}
   .kcard ul,.kcard ol{margin:4px 0;padding-left:22px} .kcard li{margin:3px 0}
   .lzmore{text-align:center;color:var(--sub);font-size:.8rem;padding:16px 0}
+  /* 手機:單字工具列不黏在畫面上方、主題改成左右滑動,避免擋住半個畫面 */
+  @media (max-width:600px){
+    .toolbar{position:static}
+    .toolbar .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .toolbar .chips::-webkit-scrollbar{display:none}
+    .toolbar .tchip{flex:0 0 auto;white-space:nowrap}
+  }
+  /* 單字用法(word_use.js + word_src.js) */
+  .wub{border:1px solid var(--grp);color:var(--grp);background:var(--card);border-radius:8px;font-size:.72rem;font-weight:800;padding:0 7px;cursor:pointer;font-family:inherit;line-height:1.7}
+  .wub.on{background:var(--grp);color:#fff}
+  .wdet{margin:8px 0 2px;border-top:1px dashed var(--line);padding-top:6px;font-size:.88rem;line-height:1.7}
+  .wdet .wk,.wdet .wx{margin:4px 0}
+  .wdet .wk b,.wdet .wx b{color:var(--grp);font-size:.8rem}
   /* 片語(phrase_use.js + phrase_src.js) */
   .pseg{display:flex;gap:4px;flex:0 0 auto}
   .pseg .btn{padding:6px 9px;white-space:nowrap}
@@ -152,7 +165,7 @@
   .gq{margin:2px 0;padding-left:20px;font-size:.86rem} .gq li{margin:5px 0}
   .gq .hit{margin-left:3px}
   @media print{
-    .tabs,.toolbar,.kbar{display:none} #flash,#quiz{display:none!important} .say{display:none} .gtoc{display:none}
+    .tabs,.toolbar,.kbar{display:none} #flash,#quiz{display:none!important} .say{display:none} .gtoc{display:none} .wub{display:none}
     header{background:#0d9488!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .home{display:none} .lzmore{display:none} .ktab{display:block!important} #list{display:block!important} .word,.kcard{break-inside:avoid} body{background:#fff}
   }
@@ -196,6 +209,8 @@
       <button class="btn on" id="sTopic">主題</button>
       <button class="btn" id="sFreq">頻率</button>
       <button class="btn" id="sAz">A-Z</button>
+      <span class="sep"></span>
+      <button class="btn" id="sUse" title="只看附用法說明的單字">💡 有用法</button>
       <span class="sep"></span>
       <button class="btn" id="printBtn">🖨 匯出 PDF</button>
       <span class="cnt" id="cnt"></span>
@@ -271,6 +286,7 @@
 
 <script src="learn_en.js"></script>
 <script src="gram_en.js"></script>
+<script src="word_use.js"></script>
 <script>
 /* 資料 WORDS / GRAM / SKILL / NOTE / STRAT 在 learn_en.js */
 
@@ -311,21 +327,43 @@ const TOPIC_ORDER=['🏛 景點・文化','🍽 餐飲','🚌 交通・票券','
 const _tset=new Set(WORDS.map(x=>x.topic));
 const TOPICS=TOPIC_ORDER.filter(t=>_tset.has(t)).concat([..._tset].filter(t=>!TOPIC_ORDER.includes(t)));
 function buildChips(){
-  const SW=scopedWords();
+  const SW=scopedWords().filter(x=>!onlyUse||hasUse(x));   // 💡 有用法:主題數量也跟著算
   let h='<span class="tchip'+(curTopic==='__ALL__'?' on':'')+'" data-t="__ALL__">全部 ('+SW.length+')</span>';
   TOPICS.forEach(t=>{const n=SW.filter(x=>x.topic===t).length;if(n)h+='<span class="tchip'+(curTopic===t?' on':'')+'" data-t="'+t+'">'+t+' ('+n+')</span>';});
   chipsEl.innerHTML=h;
 }
+let onlyUse=false;   // 💡 有用法:只看 word_use.js 有寫用法的單字
+function hasUse(x){return typeof WORD_USE!=='undefined'&&!!WORD_USE[x.w];}
 function filtered(){
   const kw=qEl.value.trim().toLowerCase();
-  return scopedWords().filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)&&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)));
+  return scopedWords().filter(x=>(curTopic==='__ALL__'||x.topic===curTopic)&&(!onlyUse||hasUse(x))&&(!kw||x.w.toLowerCase().includes(kw)||x.zh.toLowerCase().includes(kw)));
 }
 /* 出處小標:一般題「導109-37」;出自閱讀文章單字表的(p = 第幾篇)標「導109-76~80」,連到該篇文章 */
 function hitA(h){var g=h.c==='guide',base='英語詳解.html?cert='+h.c+'&year='+h.y;
   return h.p?'<a class="hit '+h.c+'" href="'+base+'#p'+h.n+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 閱讀第 '+h.p+' 篇(第 '+h.n+'–'+(h.n+4)+' 題的文章,點我跳到文章)">'+(g?'導':'領')+h.y+'-'+h.n+'~'+(h.n+4)+'</a>'
     :'<a class="hit '+h.c+'" href="'+base+'#q'+h.n+'" title="'+(g?'導遊':'領隊')+' '+h.y+'年 第 '+h.n+' 題(點我跳到該題)">'+(g?'導':'領')+h.y+'-'+h.n+'</a>';}
 function meta(x){return (x.hits||[]).map(function(h){return hitA(h);}).join('');}
-function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span><span class="zh">'+x.zh+'</span></div><div class="wsrc">'+meta(x)+'</div></div>';}
+function wordHtml(x){return '<div class="word"><div class="wtop"><span class="en">'+x.w+'</span>'+(x.kk?'<span class="kk">/'+x.kk+'/</span>':'')+'<span class="say" data-say="'+pureEn(x.w)+'">🔊</span><span class="fq">×'+x.freq+'</span>'+(hasUse(x)?'<button class="wub" type="button" data-w="'+gEsc(x.w)+'">💡 用法</button>':'')+'<span class="zh">'+x.zh+'</span></div><div class="wsrc">'+meta(x)+'</div></div>';}
+/* 展開單字用法:搭配詞、例句、易混字;考題原句(word_src.js)第一次展開才載入 */
+let WSRC_LOAD=null;
+function ensureWordSrc(){if(typeof WORD_SRC!=='undefined')return Promise.resolve();if(!WSRC_LOAD)WSRC_LOAD=loadScript('word_src.js').catch(function(){WSRC_LOAD=null;});return WSRC_LOAD;}
+function wordSrcHtml(w){
+  const src=(typeof WORD_SRC!=='undefined'&&WORD_SRC[w]||[]).filter(s=>CERT==='all'||s[0].indexOf(CERT+'-')===0);
+  return src.map(function(s){const lab=s[3]===2?'考題選項(干擾項)':s[3]===3?'考題選項(正解)':(s[3]===1||s[3]===4)?'閱讀文章':'考題原句';
+    return '<div class="pes"><span class="pl">📝 '+lab+'</span> '+markHtml(s[1])+' '+hitA(srcHit(s))+(s[2]?'<div class="pz">'+(s[3]>=2?gEsc(s[2]):markHtml(s[2]).replace(/<br>/g,' ').replace(/ (?=\S{1,12}:)/g,'<br>'))+'</div>':'')+'</div>';}).join('');
+}
+function toggleWordUse(btn){
+  const card=btn.closest('.word'),old=card.querySelector('.wdet');
+  if(old){old.remove();btn.classList.remove('on');return;}
+  const w=btn.dataset.w,u=WORD_USE[w];if(!u)return;
+  btn.classList.add('on');
+  const d=document.createElement('div');d.className='wdet';
+  d.innerHTML='<div class="wk"><b>🔗 常見搭配</b> '+gEsc(u.k)+'</div>'
+    +'<div class="pex"><span class="gen">'+gEsc(u.e)+'</span> <span class="say" data-say="'+gEsc(u.e)+'" title="唸出來">🔊</span><div class="gzh">'+gEsc(u.z)+'</div></div>'
+    +'<div class="wx"><b>⚠ 易混・詞性</b> '+gEsc(u.x)+'</div><div class="wsrcs"></div>';
+  card.querySelector('.wtop').insertAdjacentElement('afterend',d);
+  ensureWordSrc().then(function(){const box=d.querySelector('.wsrcs');if(box&&d.isConnected)box.innerHTML=wordSrcHtml(w);});
+}
 const NOWORD='<p class="tip" style="padding:20px 0">找不到符合的字</p>';
 const vocabLazy=Lazy(listEl,60);
 function renderList(){
@@ -343,11 +381,14 @@ function renderList(){
 }
 buildChips();renderList();
 qEl.addEventListener('input',function(){renderList();if(quizEl.classList.contains('on'))newQ();});
-listEl.addEventListener('click',function(e){const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
+listEl.addEventListener('click',function(e){const b=e.target.closest('.wub');if(b){toggleWordUse(b);return;}const s=e.target.closest('.say');if(s)speak(s.dataset.say);});
 chipsEl.addEventListener('click',function(e){const c=e.target.closest('.tchip');if(!c)return;curTopic=c.dataset.t;chipsEl.querySelectorAll('.tchip').forEach(x=>x.classList.toggle('on',x===c));renderList();if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}if(quizEl.classList.contains('on'))newQ();});
 function setSort(m,btn){sortMode=m;[sTopic,sFreq,sAz].forEach(b=>b.classList.toggle('on',b===btn));renderList();}
 const sTopic=document.getElementById('sTopic'),sFreq=document.getElementById('sFreq'),sAz=document.getElementById('sAz');
 sTopic.onclick=()=>setSort('topic',sTopic);sFreq.onclick=()=>setSort('freq',sFreq);sAz.onclick=()=>setSort('az',sAz);
+const sUse=document.getElementById('sUse');
+sUse.textContent='💡 有用法 ('+(typeof WORD_USE!=='undefined'?Object.keys(WORD_USE).length:0)+')';
+sUse.onclick=function(){onlyUse=!onlyUse;sUse.classList.toggle('on',onlyUse);curTopic='__ALL__';buildChips();renderList();if(flashEl.classList.contains('on')){deck=filtered();idx=0;showCard();}if(quizEl.classList.contains('on'))newQ();};
 document.getElementById('printBtn').onclick=function(){mList.click();document.querySelector('.tchip[data-t="__ALL__"]').click();renderAllForPrint();setTimeout(()=>window.print(),150);};
 window.addEventListener('beforeprint',function(){renderAllForPrint();});   // 用瀏覽器選單列印也先補齊
 
