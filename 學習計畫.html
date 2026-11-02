@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4338ca">
+<title>學習計畫</title>
+<!-- 學習計畫 · v207(2026-11-02)
+     輸入考試日期、報考證照、外語、每天可讀的時間與讀書日 → plan.js 排出「基礎 → 刷題 → 衝刺 → 考前」四階段與每天的任務
+     今日路線:錯題本到期、外語單字卡、當天任務(勾選完成;歷屆整卷交卷後自動完成)
+     每次打開都依實際進度重新排:落後的任務自動排回接下來的日子、超前就往前推;時間不夠會先省略加碼並提示每天需要的時間
+     變更履歷:v207 初版 -->
+<style>
+  :root{
+    --bg:#f4f5fb;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e6f2;--soft:#eef0fe;
+    --sel:#4338ca;--accent:#4f46e5;--hd1:#312e81;--hd2:#6366f1;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;
+    --base:#3b82f6;--drill:#14b8a6;--sprint:#f59e0b;--final:#ef4444;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12141c;--card:#1b1e29;--ink:#e8edf5;--sub:#9aa5bd;--line:#2b303f;--soft:#232647;
+    --sel:#a5b4fc;--accent:#818cf8;--hd1:#1e1b4b;--hd2:#3730a3;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .btn.fill{color:#11132b}}
+  :root[data-theme="dark"]{
+    --bg:#12141c;--card:#1b1e29;--ink:#e8edf5;--sub:#9aa5bd;--line:#2b303f;--soft:#232647;
+    --sel:#a5b4fc;--accent:#818cf8;--hd1:#1e1b4b;--hd2:#3730a3;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .btn.fill{color:#11132b}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin:14px 0}
+  .card h2{margin:0 0 8px;font-size:1.02rem}
+  .tip{font-size:.8rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0;line-height:1.7}
+  .tip b{color:var(--ink)}
+  .row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:6px 0 12px}
+  .lbl{font-size:.82rem;font-weight:800;color:var(--sub);margin-top:4px}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .chip.wd{min-width:42px;padding:6px 0;text-align:center}
+  input[type=date]{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:7px 10px;border-radius:10px;font-size:.92rem;font-family:inherit}
+  .btn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:8px 14px;cursor:pointer;font-family:inherit;font-size:.88rem;text-decoration:none;display:inline-block}
+  .btn.fill{background:var(--sel);color:#fff} .btn.sm{padding:4px 10px;font-size:.78rem;border-radius:9px}
+  .btn.ghost{border-color:var(--line);color:var(--sub)} .btn.danger{border-color:var(--no);color:var(--no)}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .err{color:var(--no);font-size:.82rem;font-weight:700;margin-top:6px}
+  .lvrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0}
+  .lvrow .sn{width:5.5em;font-size:.86rem;font-weight:700}
+  .lvrow .chip{padding:4px 10px;font-size:.78rem}
+  .pv{font-size:.84rem;color:var(--sub);margin-top:8px}
+  .pv b{color:var(--ink)}
+  /* 總覽 */
+  .big{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+  .big .n{font-size:2rem;font-weight:900;color:var(--accent);line-height:1}
+  .big small{font-size:.82rem;color:var(--sub);font-weight:700}
+  .tl{display:flex;height:12px;border-radius:999px;overflow:hidden;margin:12px 0 4px;background:var(--line);position:relative}
+  .tl i{display:block;height:100%} .tl .base{background:var(--base)} .tl .drill{background:var(--drill)} .tl .sprint{background:var(--sprint)} .tl .final{background:var(--final)}
+  .tl .now{position:absolute;top:-3px;width:3px;height:18px;background:var(--ink);border-radius:2px}
+  .lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.74rem;color:var(--sub)}
+  .lg span::before{content:'';display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px;background:var(--c)}
+  .lg b{color:var(--ink)}
+  .st{border-radius:10px;padding:8px 12px;font-size:.84rem;margin-top:8px;line-height:1.65}
+  .st.ok{background:var(--okbg);color:var(--ok)} .st.warn{background:var(--warnbg);color:var(--warn)} .st.info{background:var(--infobg);color:var(--info)}
+  .st b{color:inherit}
+  .ph{display:inline-block;font-size:.72rem;font-weight:800;border-radius:7px;padding:0 7px;color:#fff;vertical-align:1px}
+  .ph.base{background:var(--base)} .ph.drill{background:var(--drill)} .ph.sprint{background:var(--sprint)} .ph.final{background:var(--final)}
+  /* 今日路線 */
+  .rhead{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .rhead .tot{margin-left:auto;font-size:.8rem;color:var(--sub);font-weight:700}
+  .ri{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+  .ri input{width:20px;height:20px;margin-top:3px;accent-color:var(--sel);flex:0 0 auto;cursor:pointer}
+  .ri .auto{width:20px;flex:0 0 auto;text-align:center;font-size:1rem;margin-top:1px}
+  .ri .bd{flex:1;min-width:0}
+  .ri .tt{font-weight:800;font-size:.93rem}
+  .ri .sb{font-size:.78rem;color:var(--sub);line-height:1.55;margin-top:1px}
+  .ri .mn{font-size:.74rem;font-weight:800;color:var(--sub);white-space:nowrap;margin-top:3px}
+  .ri.done .tt{color:var(--sub);text-decoration:line-through;text-decoration-color:var(--sub)}
+  .ri .go{flex:0 0 auto;margin-top:1px}
+  .tag{font-size:.68rem;font-weight:800;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:1px}
+  .tag.opt{background:var(--warnbg);color:var(--warn)} .tag.ex{background:var(--infobg);color:var(--info)}
+  .yay{text-align:center;padding:10px 0 2px;font-weight:800;color:var(--ok)}
+  /* 每週 */
+  .wk{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin:10px 0;overflow:hidden}
+  .wk>summary{cursor:pointer;list-style:none;padding:11px 14px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-weight:800}
+  .wk>summary::-webkit-details-marker{display:none}
+  .wk>summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  .wk[open]>summary::after{transform:rotate(90deg)}
+  .wk .ws{font-size:.76rem;color:var(--sub);font-weight:700}
+  .wbody{padding:0 14px 8px}
+  .dy{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line)}
+  .dy .dd{flex:0 0 4.6em;font-size:.8rem;font-weight:800;color:var(--sub);line-height:1.5}
+  .dy .dd small{display:block;font-weight:700}
+  .dy ul{margin:0;padding:0;list-style:none;flex:1;min-width:0}
+  .dy li{font-size:.84rem;line-height:1.55;padding:1px 0}
+  .dy li .m{color:var(--sub);font-size:.74rem;white-space:nowrap}
+  .dy .free{font-size:.8rem;color:var(--sub)}
+  /* 各科 */
+  .sj{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;font-size:.84rem;margin:8px 0 2px}
+  .sj .nm{font-weight:800;grid-column:1/-1;margin-top:6px}
+  .sj .k{color:var(--sub);font-size:.78rem}
+  .bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+  .sj .v{font-size:.78rem;font-weight:800;white-space:nowrap}
+  details.all>summary{cursor:pointer;font-weight:800}
+  .tg{margin:10px 0 2px;font-size:.82rem;font-weight:800;color:var(--sub)}
+  .ti{display:flex;gap:8px;align-items:flex-start;font-size:.84rem;padding:5px 0;border-top:1px dashed var(--line)}
+  .ti input{margin-top:4px;accent-color:var(--sel)}
+  .ti a{color:inherit;text-decoration:none} .ti a:hover{color:var(--accent)}
+  .ti.done a{color:var(--sub);text-decoration:line-through}
+  .ti .m{margin-left:auto;color:var(--sub);font-size:.74rem;white-space:nowrap;padding-left:6px}
+  .foot{font-size:.76rem;color:var(--sub);line-height:1.8;margin:16px 2px}
+  @media print{.home,.btns,.go,.noprint{display:none!important}.card,.wk{box-shadow:none;break-inside:avoid}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="subjects.js"></script>
+<script src="srs.js"></script>
+<script src="plan.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📅 學習計畫</h1>
+  <p>輸入考試日與每天可讀的時間 → 自動排出每天要讀什麼 · 落後自動重排</p>
+</div></header>
+<main class="wrap" id="app"></main>
+
+<script>
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const WD = ['日','一','二','三','四','五','六'];
+const MINS = [30,45,60,90,120,180];
+const LVS = [[1.4,'需加強'],[1,'普通'],[0.75,'較熟']];
+const PHN = PLAN.PH, SUB = PLAN.SUB;
+function md(k){ const d = PLAN.parse(k); return (d.getMonth()+1) + '/' + d.getDate(); }
+function wd(k){ return WD[PLAN.parse(k).getDay()]; }
+function hm(m){ m = Math.round(m); const h = Math.floor(m/60), r = m % 60; return h ? h + ' 小時' + (r ? ' ' + r + ' 分' : '') : r + ' 分'; }
+let EDIT = false, F = null, ARM = 0;
+
+/* ---------- 設定表單 ---------- */
+function formInit(){
+  const c = PLAN.get(), raw = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const pc = raw('pref_cert'), pl = raw('pref_sprint_lang');
+  F = c ? { exam: raw('exam_date') || '', cert: c.cert, lang: c.lang, mins: c.mins, days: c.days.slice(), lv: Object.assign({}, c.lv) }
+        : { exam: raw('exam_date') || '', cert: pc === 'leader' ? 'leader' : 'guide', lang: pl === 'jp' ? 'jp' : 'en', mins: 60, days: [1,1,1,1,1,1,1], lv: {} };
+}
+function preview(){
+  const ex = PLAN.parse(F.exam), t = new Date(); t.setHours(0,0,0,0);
+  if (!ex) return '<span class="err">請先選考試日期</span>';
+  if (ex <= t) return '<span class="err">考試日期要在今天之後</span>';
+  let n = 0; for (let d = new Date(t); d < ex; d.setDate(d.getDate()+1)) if (F.days[d.getDay()]) n++;
+  const days = Math.round((ex - t) / 86400000);
+  return `距考試 <b>${days}</b> 天 · 讀書日 <b>${n}</b> 天 · 合計約 <b>${hm(n * F.mins)}</b>` + (n < 14 ? ' · <b>⚡ 不到兩週,會排成衝刺模式</b>' : '');
+}
+function formHtml(){
+  const subs = [['pr2','執業法規'],['pr','執業實務'],['gh','觀光資源'],['lang','外語']];
+  return `<div class="card" id="form"><h2>${PLAN.get() ? '⚙️ 調整設定' : '🎯 建立你的學習計畫'}</h2>
+    <div class="lbl">考試日期</div><div class="row"><input type="date" id="fExam" value="${esc(F.exam)}"><span class="pv" style="margin:0">請依考選部公告填寫(首頁倒數也會一起更新)</span></div>
+    <div class="lbl">報考</div><div class="row" data-f="cert">${[['guide','導遊'],['leader','領隊']].map(([v,t])=>`<button type="button" class="chip${F.cert===v?' on':''}" data-v="${v}">${t}</button>`).join('')}</div>
+    <div class="lbl">外語</div><div class="row" data-f="lang">${[['en','英語'],['jp','日語']].map(([v,t])=>`<button type="button" class="chip${F.lang===v?' on':''}" data-v="${v}">${t}</button>`).join('')}</div>
+    <div class="lbl">每個讀書日可讀</div><div class="row" data-f="mins">${MINS.map(m=>`<button type="button" class="chip${F.mins===m?' on':''}" data-v="${m}">${m < 60 ? m + ' 分' : (m/60) + ' 小時'}</button>`).join('')}</div>
+    <div class="lbl">讀書日</div><div class="row" data-f="days">${WD.map((w,i)=>`<button type="button" class="chip wd${F.days[i]?' on':''}" data-v="${i}">${w}</button>`).join('')}</div>
+    <div class="lbl">各科程度(自評,會依模擬測驗正確率自動微調)</div>
+    ${subs.map(([k,n])=>`<div class="lvrow" data-lv="${k}"><span class="sn">${n}</span>${LVS.map(([v,t])=>`<button type="button" class="chip${(+F.lv[k]||1)===v?' on':''}" data-v="${v}">${t}</button>`).join('')}</div>`).join('')}
+    <div class="pv" id="fPv">${preview()}</div>
+    <div class="btns"><button type="button" class="btn fill" id="fSave">📅 ${PLAN.get() ? '儲存並重新排' : '產生學習計畫'}</button>${PLAN.get() ? '<button type="button" class="btn ghost" id="fCancel">取消</button>' : ''}</div>
+    <div class="err" id="fErr"></div>
+  </div>`;
+}
+function bindForm(){
+  const box = $('form'); if (!box) return;
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    const f = b.closest('[data-f]'), lv = b.closest('[data-lv]');
+    if (f){ const k = f.dataset.f, v = b.dataset.v;
+      if (k === 'days'){ const i = +v; F.days[i] = F.days[i] ? 0 : 1; if (!F.days.some(Boolean)) F.days[i] = 1; b.classList.toggle('on', !!F.days[i]); }
+      else { F[k] = k === 'mins' ? +v : v; f.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x === b)); } }
+    if (lv){ F.lv[lv.dataset.lv] = +b.dataset.v; lv.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x === b)); }
+    $('fPv').innerHTML = preview();
+  });
+  $('fExam').addEventListener('input', e => { F.exam = e.target.value; $('fPv').innerHTML = preview(); });
+  $('fSave').onclick = () => {
+    const ex = PLAN.parse(F.exam), t = new Date(); t.setHours(0,0,0,0);
+    if (!ex || ex <= t){ $('fErr').textContent = !ex ? '請選考試日期' : '考試日期要在今天之後'; return; }
+    PLAN.save(F, F.exam); EDIT = false; render(); window.scrollTo(0,0);
+  };
+  if ($('fCancel')) $('fCancel').onclick = () => { EDIT = false; render(); };
+}
+
+/* ---------- 計畫 ---------- */
+function summaryHtml(P){
+  const tot = P.ranges.reduce((n,r)=>n+r.n,0) || 1;
+  const nowPos = P.N ? P.elapsed / P.N * 100 : 0;   // 今天在整個計畫的位置(已過的讀書日比例)
+  const pace = P.late.n ? `<div class="st warn">⏰ <b>落後 ${P.late.n} 項(約 ${hm(P.late.min)})</b>:已自動排進接下來的日子${P.studyLeft ? ',平均每個讀書日多約 ' + Math.ceil(P.late.min / Math.max(1, P.studyLeft)) + ' 分' : ''}。照今日路線做就會慢慢追上。</div>`
+    : P.ahead.n ? `<div class="st ok">🚀 <b>超前 ${P.ahead.n} 項</b>(約 ${hm(P.ahead.min)}),後面的任務已往前排。</div>`
+    : `<div class="st ok">👍 進度正常${P.total.done ? ',已完成 ' + P.total.done + ' 項' : ''}。</div>`;
+  const fit = P.over > 0
+    ? `<div class="st warn">⚠ <b>時間偏緊</b>:照目前的時間,核心任務還差約 <b>${hm(P.over)}</b> 排不進去。建議每個讀書日 <b>${P.need} 分鐘</b>,或增加讀書日;排不下的會列在下面「沒排進去的任務」。</div>`
+    : `<div class="st info">✅ 核心任務都排得下${P.dropped ? ';另有 ' + P.dropped + ' 項加碼任務(較舊年度、另一證照的卷)時間不夠先略過' : ',還有空檔會排加碼卷'}。</div>`;
+  const crash = P.mode === 'crash' ? `<div class="st info">⚡ <b>衝刺模式</b>:離考試不到兩週,只排最有效的任務(最近 3 年計時整卷、必背、考點速記)。</div>` : '';
+  return `<div class="card"><div class="big"><span class="n">${P.daysLeft}</span><small>天後考試(${esc(P.exam)})</small><small>· ${PLAN.CN[P.cfg.cert]} · ${SUB[P.cfg.lang].n} · 讀書日每天 ${hm(P.cfg.mins)}</small></div>
+    <div class="tl">${P.ranges.map(r=>`<i class="${r.ph}" style="width:${(r.n/tot*100).toFixed(2)}%" title="${PHN[r.ph]}期 ${md(r.from)}–${md(r.to)}"></i>`).join('')}<span class="now" style="left:calc(${nowPos.toFixed(1)}% - 1px)"></span></div>
+    <div class="lg">${P.ranges.map(r=>`<span style="--c:var(--${r.ph})"><b>${PHN[r.ph]}期</b> ${md(r.from)}–${md(r.to)} · ${r.n} 天</span>`).join('')}</div>
+    ${crash}${pace}${fit}</div>`;
+}
+function routeHtml(P){
+  const items = P.route;
+  const head = P.isStudy ? `<span class="ph ${P.ph}">${PHN[P.ph]}期</span>` : '<span class="ph" style="background:var(--sub)">休息日</span>';
+  const total = items.filter(r=>!r.done).reduce((n,r)=>n+(r.min||0),0), doneN = items.filter(r=>r.done && r.kind !== 'rev').length, allN = items.filter(r=>r.kind !== 'rev').length;
+  const row = r => {
+    const ctl = r.kind === 'rev' ? `<span class="auto" title="依錯題本自動判斷">${r.done ? '✅' : '🧠'}</span>`
+      : `<input type="checkbox" data-id="${esc(r.id)}"${r.done ? ' checked' : ''} aria-label="完成:${esc(r.t)}"${r.paper ? ' title="交卷後會自動打勾;在別處做過也可以手動勾"' : ''}>`;
+    return `<div class="ri${r.done ? ' done' : ''}">${ctl}<div class="bd"><div class="tt">${r.kind === 'rev' ? '' : esc(r.ic) + ' '}${esc(r.t)}${r.opt ? '<span class="tag opt">加碼</span>' : ''}${r.extra ? '<span class="tag ex">加做</span>' : ''}</div>${r.sub ? `<div class="sb">${esc(r.sub)}${r.paper && !r.done ? '(交卷後自動打勾)' : ''}</div>` : ''}${r.min ? `<div class="mn">約 ${r.min} 分</div>` : ''}</div>${r.href && !r.done ? `<a class="btn sm go" href="${esc(r.href)}">開始 →</a>` : ''}</div>`;
+  };
+  let body = items.length ? items.map(row).join('') : '';
+  if (!P.isStudy) body += `<div class="tip">今天不是讀書日,好好休息。${P.nextStudy ? '下一個讀書日是 <b>' + md(P.nextStudy) + '(' + wd(P.nextStudy) + ')</b>。' : ''}</div>`;
+  if (P.isStudy && allN && doneN === allN) body += `<div class="yay">🎉 今天的任務都完成了!</div>`;
+  if (P.nextUp) body += `<div class="tip">想多做一點?下一項是 <b>${esc(P.nextUp.t)}</b>(約 ${P.nextUp.min} 分)<div class="btns"><button type="button" class="btn sm" data-more="${esc(P.nextUp.id)}">＋ 加到今天</button></div></div>`;
+  if (P.isStudy && !allN && !P.nextUp) body += `<div class="tip">今天沒有排新任務:可以清錯題本、做是非快問,或用模擬測驗補弱點。</div>`;
+  return `<div class="card" id="route"><div class="rhead"><h2 style="margin:0">🧭 今日路線 · ${md(P.today)}(${wd(P.today)})</h2>${head}${total ? `<span class="tot">還有約 ${hm(total)}</span>` : ''}</div>${body}</div>`;
+}
+function weeksHtml(P){
+  const days = P.sched;
+  if (!days.length) return '';
+  const wk = []; days.forEach(d => { const dt = PLAN.parse(d.d), s = new Date(dt); s.setDate(dt.getDate() - (dt.getDay() + 6) % 7); const k = PLAN.dkey(s);
+    let w = wk[wk.length-1]; if (!w || w.k !== k){ w = { k, days: [] }; wk.push(w); } w.days.push(d); });
+  return `<h2 style="margin:20px 2px 4px;font-size:1.02rem">🗓 接下來的安排</h2><div class="pv" style="margin:0 2px">每天打開都會依實際進度重排;下面是照目前進度預估的安排。</div>` + wk.map((w,i) => {
+    const mins = w.days.reduce((n,d)=>n+d.items.reduce((m,it)=>m+it.min,0),0), phs = [...new Set(w.days.map(d=>d.ph))];
+    const last = w.days[w.days.length-1].d;
+    return `<details class="wk"${i < 2 ? ' open' : ''}><summary>${md(w.days[0].d)}–${md(last)} ${phs.map(p=>`<span class="ph ${p}">${PHN[p]}期</span>`).join(' ')}<span class="ws">${w.days.length} 天${mins ? ' · 約 ' + hm(mins) : ''}</span></summary><div class="wbody">`
+      + w.days.map(d => `<div class="dy"><div class="dd">${md(d.d)}<small>(${wd(d.d)})</small></div>${d.ph === 'final'
+          ? '<div class="free">考前:錯題本、必背快速瀏覽、新制必背卡,不再做新卷</div>'
+          : d.items.length ? `<ul>${d.items.map(it=>`<li>${esc(SUB[it.t.s].ic)} ${esc(it.t.t)}${it.cont ? '(續)' : ''}${it.t.opt ? '<span class="tag opt">加碼</span>' : ''} <span class="m">${it.min} 分${it.part ? '・未完' : ''}</span></li>`).join('')}</ul>`
+          : '<div class="free">沒有排新任務:清錯題本或自由複習</div>'}</div>`).join('') + `</div></details>`;
+  }).join('');
+}
+function restHtml(P){
+  const core = P.rest.filter(t=>!t.opt), opt = P.rest.filter(t=>t.opt);
+  const li = t => `<div class="ti"><a href="${esc(t.href)}">${esc(SUB[t.s].ic)} ${esc(t.t)}</a><span class="m">${t.min} 分</span></div>`;
+  return (core.length ? `<details class="card all"><summary>⚠ 沒排進去的核心任務(${core.length})</summary><div class="pv">時間不夠才會出現;增加每天時間或讀書日就會排進去,也可以自己挑空檔做。</div>${core.map(li).join('')}</details>` : '')
+    + (opt.length ? `<details class="card all"><summary>➕ 先略過的加碼任務(${opt.length})</summary><div class="pv">較舊年度與另一證照的歷屆卷;核心做完或有空檔可以挑來做。</div>${opt.map(li).join('')}</details>` : '');
+}
+function subjHtml(P){
+  const pct = (a) => a[1] ? Math.round(a[0] / a[1] * 100) : 0;
+  return `<div class="card"><h2>📊 各科進度</h2>${Object.keys(P.subj).map(k => { const s = P.subj[k];
+    return `<div class="sj"><div class="nm">${esc(s.ic)} ${esc(s.n)}${s.acc != null ? ` <span class="k">· 模擬測驗正確率 ${Math.round(s.acc*100)}%</span>` : ''}${s.bonus ? ` <span class="k">· 加碼完成 ${s.bonus}</span>` : ''}</div>
+      <span class="k">歷屆整卷</span><div class="bar"><i style="width:${pct(s.papers)}%"></i></div><span class="v">${s.papers[0]}/${s.papers[1]}</span>
+      <span class="k">學習任務</span><div class="bar"><i style="width:${pct(s.learn)}%"></i></div><span class="v">${s.learn[0]}/${s.learn[1]}</span></div>`; }).join('')}
+    <div class="pv">歷屆整卷在模擬測驗交卷(40 題以上)就算完成;講義讀完或做過章末測驗算完成;其他任務自己勾。</div></div>`;
+}
+function allHtml(P){
+  const groups = ['base','drill','sprint'].map(ph => [ph, P.tasks.filter(t=>t.ph===ph)]).filter(g=>g[1].length);
+  return `<details class="card all" id="allTasks"><summary>📋 全部任務(${P.total.all} 項 · 已完成 ${P.total.done})</summary><div class="pv">以前就做過的可以在這裡先勾掉,計畫會跟著重排。</div>`
+    + groups.map(([ph, ts]) => `<div class="tg"><span class="ph ${ph}">${PHN[ph]}期</span> ${ts.filter(t=>t.done).length}/${ts.length}</div>`
+      + ts.map(t => `<label class="ti${t.done ? ' done' : ''}"><input type="checkbox" data-id="${esc(t.id)}"${t.done ? ' checked' : ''}><a href="${esc(t.href)}">${esc(SUB[t.s].ic)} ${esc(t.t)}</a>${t.opt ? '<span class="tag opt">加碼</span>' : ''}<span class="m">${t.min} 分</span></label>`).join('')).join('')
+    + `</details>`;
+}
+function render(){
+  const app = $('app');
+  const P = PLAN.build();
+  if (!P.ok && P.why === 'past'){
+    if (!EDIT) formInit();
+    app.innerHTML = `<div class="card"><h2>🎓 考試日(${esc(P.exam)})已到</h2><div class="pv">祝金榜題名!要準備下一次考試,重新設定日期就會排新的計畫(已完成的紀錄會保留)。</div></div>` + formHtml(); bindForm(); return;
+  }
+  if (!P.ok || EDIT){
+    if (!F || !EDIT) formInit();
+    app.innerHTML = (P.ok ? '' : `<div class="tip">📅 <b>怎麼排的?</b>依考試日把讀書日分成 <b>基礎</b>(講義、文法、單字、考點速記)→ <b>刷題</b>(歷屆整卷由新到舊)→ <b>衝刺</b>(最近 3 年計時整卷、必背)→ <b>考前 3 天</b>(只複習)。每天的「今日路線」會先排錯題本到期與外語單字卡,再排當天任務;落後或超前都會自動重排。所有紀錄只存在這台裝置。</div>`) + formHtml();
+    bindForm(); return;
+  }
+  app.innerHTML = routeHtml(P) + summaryHtml(P) + weeksHtml(P) + restHtml(P) + subjHtml(P) + allHtml(P)
+    + `<div class="btns noprint" style="margin:14px 0"><button type="button" class="btn" id="bEdit">⚙️ 調整設定</button><button type="button" class="btn ghost" id="bPrint">🖨 列印</button><button type="button" class="btn danger" id="bReset">🗑 清除計畫</button></div>`
+    + `<div class="foot">說明:每天第一次打開時決定當天的任務,勾掉後不會一直冒出新任務;沒做完的隔天會自動排回最前面。歷屆整卷用模擬測驗的「整卷模擬」作答,交卷後自動完成。考試日期與首頁倒數共用。資料只存在這台裝置,換裝置可用「資料備份」帶過去。</div>`;
+  $('bEdit').onclick = () => { EDIT = true; formInit(); render(); window.scrollTo(0,0); };
+  $('bPrint').onclick = () => { document.querySelectorAll('details.wk').forEach(d=>d.open=true); window.print(); };
+  $('bReset').onclick = e => { const b = e.currentTarget;
+    if (Date.now() - ARM < 4000){ PLAN.reset(); ARM = 0; EDIT = false; F = null; render(); window.scrollTo(0,0); return; }
+    ARM = Date.now(); b.textContent = '再按一次確定清除'; setTimeout(()=>{ if (b.isConnected) b.textContent = '🗑 清除計畫'; }, 4000); };
+}
+$('app').addEventListener('change', e => {
+  const c = e.target.closest('input[type=checkbox][data-id]'); if (!c) return;
+  const y = window.scrollY; PLAN.mark(c.dataset.id, c.checked);
+  const open = $('allTasks') && $('allTasks').open; render(); if (open && $('allTasks')) $('allTasks').open = true; window.scrollTo(0, y);
+});
+$('app').addEventListener('click', e => {
+  const m = e.target.closest('[data-more]'); if (!m) return;
+  PLAN.more(m.dataset.more); render(); const r = $('route'); if (r) r.scrollIntoView({ block:'start' });
+});
+render();
+</script>
+</body>
+</html>

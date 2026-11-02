@@ -130,6 +130,17 @@
   .scard .tip{font-size:.78rem;color:var(--sub);margin-top:8px}
   .scard .empty{font-size:.95rem;font-weight:700}
   /* C2 智慧複習 */
+  /* v207 今日路線(學習計畫) */
+  .scard .plan{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  .scard .plan .ph{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:800}
+  .scard .plan .ph a{margin-left:auto;font-size:.78rem;color:var(--accent);text-decoration:none;white-space:nowrap}
+  .scard .plan ul{list-style:none;margin:6px 0 0;padding:0}
+  .scard .plan li{display:flex;gap:8px;align-items:baseline;font-size:.84rem;padding:3px 0;line-height:1.5}
+  .scard .plan li a{color:var(--ink);text-decoration:none;flex:1;min-width:0}
+  .scard .plan li a:hover{color:var(--accent)}
+  .scard .plan li.ok a{color:var(--sub);text-decoration:line-through}
+  .scard .plan li .m{font-size:.74rem;color:var(--sub);white-space:nowrap}
+  .scard .plan .cta{display:inline-block;margin-top:2px;font-size:.84rem;font-weight:800;color:var(--accent);text-decoration:none}
   #reviewCard{margin-top:12px}
   #examCard,#guideCard{margin-top:12px}
   .xcard ol.steps{margin:4px 0 0;padding-left:22px} .xcard ol.steps li{margin:7px 0}
@@ -165,6 +176,7 @@
 <script src="prefs.js"></script>
 <script src="subjects.js"></script>
 <script src="srs.js"></script>
+<script src="plan.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>
@@ -227,6 +239,7 @@
     <summary><span class="xh">🧭 建議使用順序</span><span class="xs">第一次用?照這個順序最有效</span></summary>
     <div class="xb">
       <ol class="steps">
+        <li><b>先排計畫</b>:到「<a href="學習計畫.html">學習計畫</a>」輸入考試日與每天可讀的時間,之後每天照首頁的「今日路線」做;落後會自動重排。</li>
         <li><b>看詳解打底</b>:到「<a href="歷屆試題.html">歷屆試題</a>」先挑最近 2–3 屆,用複習模式把題目和解析看過一輪。</li>
         <li><b>自測找弱點</b>:各科詳解切「自測模式」,或用「<a href="模擬測驗.html">模擬測驗</a>」隨機組卷;答錯的題目會自動收進錯題本。</li>
         <li><b>每天清錯題</b>:點上方「今日複習」的科目,把今天到期的錯題做完;答對會依 3、7、14 天往後排,4 關都過就移出。</li>
@@ -256,6 +269,7 @@ const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','�
 const TOOLS = [
   { id:'past',  name:'歷屆試題', icon:'📚', desc:'五科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
   { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
+  { id:'plan',  name:'學習計畫', icon:'📅', desc:'輸入考試日與每天時間 → 自動排出每天要讀什麼 · 基礎 → 刷題 → 衝刺 · 落後自動重排', file:'學習計畫.html', cat:'do', subj:'all', noSubj:true },
   { id:'search',name:'全站搜尋', icon:'🔎', desc:'跨五科搜題幹 / 關鍵字 · 直達詳解', file:'搜尋.html', cat:'do', subj:'all' },
   { id:'jy',    name:'講義', icon:'📘', desc:'試閱中:執業法規「旅行業的設立、資本與保證」· 觀光「國家公園」· 考情 · 圖解 · 口訣 · 解題技巧 · 歷屆範例 · 章末測驗', file:'講義.html', cat:'review', subj:['pr2','pr','gh','en','jp'] },
   { id:'wb',    name:'英語學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
@@ -362,6 +376,7 @@ function renderStudyCard(){
       <span class="gpct">${today}/${goal} 題</span>
     </div>
     ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗、是非快問、數字速記等的作答數計。</div>`}
+    ${planBlock()}
     <div class="setwrap" id="scForm">
       <label class="glabel">考試日期 <input type="date" id="scDate" value="${exam}"></label>
       <label class="glabel">每日目標 <input type="number" id="scGoal" min="1" max="500" value="${goal}"> 題</label>
@@ -375,6 +390,22 @@ function renderStudyCard(){
     if(dv)LSs('exam_date',dv); else {try{localStorage.removeItem('exam_date');}catch(e){}}
     LSs('daily_goal',gv); renderStudyCard();
   };
+}
+
+/* ==== v207 今日路線:有學習計畫 → 列出今天的任務;沒有 → 提示建立(plan.js)==== */
+function planBlock(){
+  if(!window.PLAN)return '';
+  let P; try{P=PLAN.build();}catch(e){return '';}
+  if(!P.ok){
+    if(P.why==='noplan')return `<div class="plan"><a class="cta" href="學習計畫.html">📅 產生學習計畫:依考試日自動排每天要讀什麼 →</a></div>`;
+    return '';
+  }
+  const items=P.route.filter(r=>r.kind!=='rev').slice(0,4);
+  const head=P.isStudy?`🧭 今日路線 · ${P.phName}期`:'🧭 今天是休息日';
+  const li=r=>`<li class="${r.done?'ok':''}"><span>${r.done?'✅':r.ic}</span><a href="${esc(r.href||'學習計畫.html')}">${esc(r.t)}</a>${r.min&&!r.done?`<span class="m">${r.min} 分</span>`:''}</li>`;
+  const body=items.length?`<ul>${items.map(li).join('')}</ul>`:`<ul><li><span>💤</span><a href="學習計畫.html">${P.isStudy?'今天沒有排新任務,看看計畫 →':'好好休息,想多做可以到計畫頁加到今天 →'}</a></li></ul>`;
+  const late=P.late.n?`<div class="tip" style="margin-top:6px">⏰ 落後 ${P.late.n} 項,已自動排進接下來的日子</div>`:'';
+  return `<div class="plan"><div class="ph">${head}<a href="學習計畫.html">完整計畫 →</a></div>${body}${late}</div>`;
 }
 
 /* ==== C2 智慧複習:彙整各科錯題本,算出「今天該複習」的題數 ==== */

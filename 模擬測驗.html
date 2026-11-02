@@ -585,7 +585,7 @@ function submit(forced){
     if(ok)correct++;else{wrong.push(qi);if(p!=null){cfg.subj==='gh'?wbghAdd(q,p):cfg.subj==='pr'?wbprAdd(q,p):cfg.subj==='pr2'?wbpr2Add(q,p):cfg.subj==='jp'?wbjpAdd(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
-    hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
+    hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,mode:cfg.mode,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
     if(hist.length>300)hist=hist.slice(-300);
     localStorage.setItem('quiz_history',JSON.stringify(hist));}catch(e){}
   showResult(correct,wrong);
@@ -672,6 +672,9 @@ function applyQueryPreset(){
   const topic=qp.get('topic'); if(topic&&cfg.subj==='gh'&&['史','地','維護'].includes(topic))cfg.gtopic=topic;
   const num=+qp.get('num'); if([10,20,30,50].indexOf(num)>=0)cfg.num=num;
   const time=+qp.get('time'); if([0,-1,15,25,40].indexOf(time)>=0)cfg.time=time;
+  /* v207 學習計畫帶入整卷:mode=whole&year=112(年份不在題庫 → 由 updateModeUI 改成最新一年) */
+  const mode=qp.get('mode'); if(mode==='whole'||mode==='random')cfg.mode=mode;
+  const year=qp.get('year'); if(/^\d{3}$/.test(year||''))cfg.year=year;
   return qp.get('auto')==='1';
 }
 buildSetup();
