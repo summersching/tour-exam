@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>條文反查</title>
+<!-- 條文反查 · v206(2026-11-02)
+     哪一條法規考過哪些題:law_ref.js 由執業法規 / 執業實務 / 觀光的詳解整理(「《法規名》第 N 條」)
+     法規列表(依考過題數)→ 點進法規看各條文 → 展開條文看歷屆題(題幹、正解、出處連結、法規已修正提醒)
+     支援 ?law=法規名&art=條號 直接開到某一條(講義條文原文會連過來)
+     變更履歷:v206 初版 -->
+<style>
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
+    --sel:#0f766e;--accent:#0f766e;--hd1:#115e59;--hd2:#14b8a6;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill{color:#05211d}}
+  :root[data-theme="dark"]{
+    --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
+    --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;
+    --shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+  :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill{color:#05211d}
+  *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 70px;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,var(--hd1),var(--hd2));color:#fff;position:relative;
+    padding:calc(20px + env(safe-area-inset-top)) 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{margin:0 0 4px;font-size:1.3rem;padding-right:70px} header p{margin:0;opacity:.9;font-size:.8rem}
+  .home{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;
+    text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}
+  .bar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .row{display:flex;flex-wrap:wrap;gap:7px;padding:8px 0 0}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;
+    font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--sub)} .chip.on{background:var(--sel);border-color:var(--sel);color:#fff}
+  .chip .n{font-weight:600;font-size:.72rem;opacity:.8;margin-left:3px}
+  .scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .scroll::-webkit-scrollbar{display:none} .scroll .chip{flex:0 0 auto}
+  .tools{display:flex;gap:8px;align-items:center;padding:8px 0 10px;flex-wrap:wrap}
+  #q{flex:1;min-width:150px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font-size:.9rem;font-family:inherit}
+  .tbtn{border:1.5px solid var(--sel);background:var(--card);color:var(--sel);font-weight:800;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:.86rem;white-space:nowrap}
+  .tbtn.fill{background:var(--sel);color:#fff}
+  .tip{font-size:.8rem;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 4px;line-height:1.7}
+  .tip b{color:var(--ink)}
+  .cnt{font-size:.78rem;color:var(--sub);padding:10px 2px 0}
+  .law{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;margin:10px 0;box-shadow:var(--shadow);padding:12px 14px;cursor:pointer;color:inherit;text-decoration:none}
+  .law:hover{border-color:var(--sel)}
+  .ln{font-weight:800;font-size:1rem}
+  .lm{font-size:.78rem;color:var(--sub);margin-top:2px}
+  .hot{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+  .ha{font-size:.74rem;font-weight:700;background:var(--soft);color:var(--sel);border-radius:8px;padding:1px 8px}
+  .ha.on{background:var(--sel);color:#fff}
+  .aka{font-size:.72rem;font-weight:600;color:var(--sub);margin-left:8px;white-space:nowrap}
+  .lhead{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;margin:14px 0 6px}
+  .lhead .ln{font-size:1.08rem}
+  .art{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:12px}
+  .art>summary{cursor:pointer;list-style:none;padding:11px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-weight:800}
+  .art>summary::-webkit-details-marker{display:none}
+  .art>summary::after{content:'▸';margin-left:auto;color:var(--sub);font-weight:400;transition:.2s}
+  .art[open]>summary::after{transform:rotate(90deg)}
+  .art.hl{border-color:var(--sel);box-shadow:0 0 0 2px var(--soft)}
+  .an{font-size:1rem}
+  .ac{font-size:.74rem;font-weight:700;color:var(--sub)}
+  .rc{font-size:.7rem;font-weight:800;color:var(--warn);background:var(--warnbg);border-radius:8px;padding:0 7px}
+  .abody{padding:0 14px 10px}
+  .q{border-top:1px solid var(--line);padding:9px 0}
+  .qh{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  a.qs{font-size:.74rem;font-weight:800;text-decoration:none;padding:1px 8px;border-radius:7px;background:var(--soft);color:var(--sel);white-space:nowrap}
+  .sbj{font-size:.68rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px}
+  .old{font-size:.7rem;font-weight:800;background:var(--warnbg);color:var(--warn);border-radius:7px;padding:0 7px}
+  .st{font-size:.9rem;margin-top:4px;line-height:1.65}
+  .sa{font-size:.84rem;color:var(--ok);font-weight:700;margin-top:3px}
+  .empty{text-align:center;color:var(--sub);padding:50px 10px}
+  @media print{.bar,.home{display:none!important}.art{break-inside:avoid;box-shadow:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="pwa.js" defer></script>
+<script src="stale.js"></script>
+<script src="practice.js"></script>
+<script src="law_ref.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="home" href="index.html">← 首頁</a>
+  <h1>📜 條文反查</h1>
+  <p>這一條法規考過哪些題 · 依條號查歷屆題 · 近 3 年熱門條文</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="row scroll" id="subjRow"></div>
+  <div class="tools"><input id="q" placeholder="搜尋法規或條號,例:旅行業管理規則 66" autocomplete="off"><span id="sortBox"></span></div>
+</div></div>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const SUBJS = [['all','全部'],['pr2','⚖️ 執業法規'],['pr','🚩 執業實務'],['gh','🗺️ 觀光']];
+const SNAME = { pr2:'法規', pr:'實務', gh:'觀光' };
+/* 常用簡稱(搜尋也認得;列表顯示在法規名旁) */
+const AKA = { '臺灣地區與大陸地區人民關係條例':'兩岸條例 兩岸人民關係條例', '臺灣地區與大陸地區人民關係條例施行細則':'兩岸條例施行細則 兩岸人民關係條例施行細則',
+  '香港澳門關係條例':'港澳條例', '入出國及移民法':'移民法', '大陸地區人民來臺從事觀光活動許可辦法':'陸客觀光許可辦法',
+  '國外旅遊定型化契約書範本':'國外旅遊契約', '試辦金門馬祖澎湖與大陸地區通航實施辦法':'小三通' };
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const cfg = Object.assign({ subj:'all', sort:'art' }, PRACTICE.LSget('pref_lawidx', {}));
+let LAW = null, OPEN = null;   // 目前打開的法規、要展開的條號
+(function(){ const p = new URLSearchParams(location.search), l = p.get('law'), a = p.get('art'), s = p.get('subj');
+  if (['pr2','pr','gh'].includes(s)) cfg.subj = s;   // 首頁帶來的科目
+  if (l) { LAW = l; OPEN = a || null; } })();
+function save(){ PRACTICE.LSset('pref_lawidx', cfg); }
+const YEARS = [...new Set(Object.keys(LAW_REF.qs).map(id=>+id.split('-')[1]))].sort((a,b)=>a-b);
+const RECENT = YEARS.slice(-3);
+const isRecent = id => RECENT.includes(+id.split('-')[1]);
+function parseId(id){ const [s, k] = id.split(':'), [c, y, no] = k.split('-'); return { s, q:{ c, y, no:+no } }; }
+function inSubj(id){ return cfg.subj === 'all' || id.indexOf(cfg.subj + ':') === 0; }
+function artLabel(a){ const [x, y] = a.split('-'); return '第 ' + x + ' 條' + (y ? '之 ' + y : ''); }
+function recentCount(L){ const rec = new Set(); L.arts.forEach(([,ids])=>ids.forEach(i=>{ if (isRecent(i)) rec.add(i); })); return rec.size; }
+/* 依目前科目過濾後的法規清單 */
+function lawsScoped(){
+  return LAW_REF.laws.map(L=>{
+    const arts = L.arts.map(([a, ids])=>[a, ids.filter(inSubj)]).filter(x=>x[1].length);
+    const set = new Set(); arts.forEach(x=>x[1].forEach(i=>set.add(i)));
+    return { n:L.n, q:set.size, arts };
+  }).filter(L=>L.q).sort((a,b)=>b.q-a.q||a.n.localeCompare(b.n));
+}
+function renderBar(){
+  $('subjRow').innerHTML = SUBJS.map(([k,n])=>`<button class="chip${cfg.subj===k?' on':''}" type="button" data-subj="${k}">${n}</button>`).join('');
+  $('sortBox').innerHTML = LAW ? `<button class="tbtn${cfg.sort==='art'?' fill':''}" type="button" data-sort="art">依條號</button> <button class="tbtn${cfg.sort==='cnt'?' fill':''}" type="button" data-sort="cnt">依題數</button>` : '';
+}
+/* 搜尋字串 → { name 法規名關鍵字, art 條號 }:「旅行業管理規則 66」「民法第514條之1」「發展觀光條例 27-1」「66」 */
+function parseQuery(){
+  const s = $('q').value.trim(); if (!s) return null;
+  const m = s.match(/^(.*?)[\s第]*(\d+)\s*(?:條\s*)?(?:(?:-|之)\s*(\d+))?\s*條?\s*$/);
+  return m ? { name:m[1].replace(/第$/,'').trim(), art:m[2] + (m[3] ? '-' + m[3] : '') } : { name:s, art:null };
+}
+function hay(L){ return L.n + ' ' + (AKA[L.n] || ''); }
+function matchLaws(laws, name){ if (!name) return laws; const ws = name.split(/\s+/).filter(Boolean); return laws.filter(L=>ws.every(w=>hay(L).includes(w))); }
+function exactLaw(laws, name){ return laws.filter(L=>L.n === name || (AKA[L.n] || '').split(' ').includes(name)); }
+/* 輸入法規名 + 條號且只對到一部法規 → 直接打開那一條 */
+function applySearch(){
+  const Q = parseQuery(); LAW = null; OPEN = null;
+  if (Q && Q.art && Q.name){
+    const c = matchLaws(lawsScoped(), Q.name), ex = exactLaw(c, Q.name), pick = ex.length === 1 ? ex[0] : c.length === 1 ? c[0] : null;
+    if (pick){ LAW = pick.n; OPEN = Q.art; }
+  }
+  render(); window.scrollTo(0, 0);
+}
+function renderList(){
+  const Q = parseQuery();
+  let laws = matchLaws(lawsScoped(), Q && Q.name);
+  if (Q && Q.art) laws = laws.filter(L=>L.arts.some(x=>x[0] === Q.art));
+  const tip = `<div class="tip">📜 詳解中寫到「《法規名》第 N 條」的題目都整理在這裡:共 <b>${LAW_REF.laws.length}</b> 部法規、<b>${LAW_REF.laws.reduce((t,L)=>t+L.arts.length,0)}</b> 條、<b>${Object.keys(LAW_REF.qs).length}</b> 題。點法規看各條文考過哪些題;<span class="rc">近 3 年</span> 是 ${RECENT[0]}~${RECENT[RECENT.length-1]} 年的題數。搜尋可直接打「旅行業管理規則 66」「兩岸條例 9」。</div>`;
+  const head = Q && Q.art ? `有「${artLabel(Q.art)}」考題的法規 ${laws.length} 部` : `共 ${laws.length} 部法規`;
+  $('app').innerHTML = tip + `<div class="cnt">${head}</div>` + (laws.length ? laws.map(L=>{
+    let hot = L.arts.slice().sort((a,b)=>b[1].length-a[1].length).slice(0,4);
+    if (Q && Q.art){ const hit = L.arts.find(x=>x[0] === Q.art); hot = [hit].concat(hot.filter(x=>x !== hit)).slice(0,4); }
+    const rc = recentCount(L), aka = AKA[L.n] ? AKA[L.n].split(' ')[0] : '';
+    return `<a class="law" href="?law=${encodeURIComponent(L.n)}${Q&&Q.art?'&art='+encodeURIComponent(Q.art):''}" data-law="${esc(L.n)}"${Q&&Q.art?` data-art="${esc(Q.art)}"`:''}><div class="ln">${esc(L.n)}${aka?`<span class="aka">簡稱 ${esc(aka)}</span>`:''}</div><div class="lm">考過 ${L.q} 題 · ${L.arts.length} 條${rc?` · <span class="rc">近 3 年 ${rc} 題</span>`:''}</div><div class="hot">${hot.map(([a,ids])=>`<span class="ha${Q&&Q.art===a?' on':''}">${artLabel(a)} · ${ids.length} 題</span>`).join('')}</div></a>`;
+  }).join('') : `<div class="empty">找不到符合的法規${cfg.subj!=='all'?'(目前只看「' + esc(SUBJS.find(x=>x[0]===cfg.subj)[1]) + '」,可切回「全部」)':''}</div>`);
+}
+function qHtml(id){
+  const { s, q } = parseId(id), d = LAW_REF.qs[id] || ['', ''];
+  const n = window.STALE && STALE.note(s, q), old = n && n.k === 'old';
+  return `<div class="q"><div class="qh"><a class="qs" href="${esc(PRACTICE.SUBJ[s] ? PRACTICE.href(s, q) : '#')}">${q.c==='guide'?'導遊':'領隊'} ${q.y} 年第 ${q.no} 題 →</a><span class="sbj">${SNAME[s]}</span>${isRecent(id)?'<span class="rc">近 3 年</span>':''}${old?'<span class="old">⚠ 法規已修正</span>':''}</div>
+    <div class="st">${esc(d[0])}</div><div class="sa">✔ ${esc(d[1])}</div></div>`;
+}
+function renderLaw(){
+  const L = lawsScoped().find(x=>x.n===LAW);
+  if (!L){
+    if (cfg.subj !== 'all' && LAW_REF.laws.some(x=>x.n===LAW)){ cfg.subj = 'all'; return render(); }   // 從別頁連過來、但目前只看單一科目 → 自動切回全部(不存設定)
+    $('app').innerHTML = `<div class="lhead"><div class="ln">${esc(LAW)}</div><div class="lm">歷屆詳解中沒有引用這部法規條號的題目</div></div><button class="tbtn" type="button" data-back="1">← 回法規列表</button>`; return;
+  }
+  const arts = cfg.sort === 'cnt' ? L.arts.slice().sort((a,b)=>b[1].length-a[1].length) : L.arts;
+  const rc = recentCount(L), miss = OPEN && !L.arts.some(x=>x[0] === OPEN);
+  $('app').innerHTML = `<div class="lhead"><div class="ln">${esc(L.n)}${AKA[L.n]?`<span class="aka">簡稱 ${esc(AKA[L.n].split(' ')[0])}</span>`:''}</div><div class="lm">考過 ${L.q} 題 · ${L.arts.length} 條${rc?` · <span class="rc">近 3 年 ${rc} 題</span>`:''} · 點條號展開歷屆題,點題號看詳解</div></div>
+    <button class="tbtn" type="button" data-back="1">← 回法規列表</button>`
+    + (miss ? `<div class="tip">「${artLabel(OPEN)}」在歷屆詳解中沒有引用紀錄(不一定沒考過,可能詳解沒寫條號)。下面是這部法規其他考過的條文。</div>` : '')
+    + arts.map(([a, ids])=>{ const r = ids.filter(isRecent).length;
+      return `<details class="art${OPEN===a?' hl':''}" id="a-${a}"${OPEN===a?' open':''}><summary><span class="an">${artLabel(a)}</span><span class="ac">${ids.length} 題</span>${r?`<span class="rc">近 3 年 ${r}</span>`:''}</summary><div class="abody">${ids.map(qHtml).join('')}</div></details>`; }).join('');
+  if (OPEN && !miss){ const el = $('a-' + OPEN); if (el) setTimeout(()=>el.scrollIntoView({ block:'start' }), 0); }
+}
+function render(){
+  renderBar();
+  if (LAW){ history.replaceState(null, '', '?law=' + encodeURIComponent(LAW) + (OPEN ? '&art=' + encodeURIComponent(OPEN) : '')); renderLaw(); }
+  else { history.replaceState(null, '', location.pathname); renderList(); }
+}
+document.querySelector('.bar').addEventListener('click', e=>{
+  const s = e.target.closest('[data-subj]'); if (s){ cfg.subj = s.dataset.subj; save(); render(); return; }
+  const o = e.target.closest('[data-sort]'); if (o){ cfg.sort = o.dataset.sort; save(); render(); }
+});
+$('app').addEventListener('click', e=>{
+  const l = e.target.closest('[data-law]'); if (l){ e.preventDefault(); LAW = l.dataset.law; OPEN = l.dataset.art || null; render(); if (!OPEN) window.scrollTo(0,0); return; }
+  if (e.target.closest('[data-back]')){ $('q').value = ''; LAW = null; OPEN = null; render(); window.scrollTo(0,0); }
+});
+let tmr; $('q').addEventListener('input', ()=>{ clearTimeout(tmr); tmr = setTimeout(applySearch, 300); });
+$('q').addEventListener('keydown', e=>{ if (e.key === 'Enter'){ clearTimeout(tmr); applySearch(); } });
+render();
+</script>
+</body>
+</html>

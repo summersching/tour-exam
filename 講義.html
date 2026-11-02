@@ -11,7 +11,8 @@
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_gh.js(觀光資源);其他科製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v201 初版(試閱:執業法規第 1 章、觀光資源第 1 章) -->
+     變更履歷:v206 條文原文旁加「🔎 考過 N 題」連到條文反查(law_ref.js 延遲載入)
+              v201 初版(試閱:執業法規第 1 章、觀光資源第 1 章) -->
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
@@ -124,6 +125,8 @@
   .jstale a,.jlink{color:var(--sel);font-weight:800;text-decoration:none}
   .jlink{display:inline-block;margin:6px 0;font-size:.9rem}
   .jlaw dt{font-weight:800;font-size:.86rem;margin-top:8px} .jlaw dd{margin:2px 0 0;font-size:.86rem;color:var(--sub)}
+  a.lref{font-size:.72rem;font-weight:800;text-decoration:none;background:var(--soft);color:var(--accent);border-radius:8px;padding:1px 8px;margin-left:4px;white-space:nowrap}
+  @media print{a.lref{display:none}}
   .jex{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
   .jex .src{font-size:.74rem;color:var(--sub);font-weight:700}
   .jex .stem{font-weight:700;margin:4px 0}
@@ -276,7 +279,7 @@ function blockHtml(k, b, d){
     case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
     case 'cmp': return cmpHtml(b);
     case 'stale': return `<div class="jstale">⏱ <b>時效提醒</b>:${esc(b.text)} <a href="法規異動.html">看「新制與法規異動」→</a></div>`;
-    case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
+    case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}${lawRefLink(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
     case 'ex': return exHtml(k, b, d);
     case 'self': return selfHtml(b);
     default: return '';
@@ -285,6 +288,23 @@ function blockHtml(k, b, d){
 
 /* ===== 畫面 ===== */
 let CUR = null;   // 目前章節 { k, ch, d, st }
+/* 條文原文 → 「🔎 考過 N 題」連到條文反查(law_ref.js 延遲載入;歷屆詳解有引用這一條才顯示) */
+const LAWDT = /^(.+?)第\s*(\d+)(?:\s*-\s*(\d+))?\s*條(?:\s*之\s*(\d+))?/;
+function lawRefLink(n){
+  const m = String(n).match(LAWDT); if (!m) return '';
+  const art = m[2] + (m[3] ? '-' + m[3] : m[4] ? '-' + m[4] : '');
+  return ` <a class="lref" hidden href="條文反查.html?law=${encodeURIComponent(m[1].trim())}&art=${encodeURIComponent(art)}" data-law="${esc(m[1].trim())}" data-art="${art}"></a>`;
+}
+let lawRefP = null;
+function hydrateLawRef(){
+  const els = [...document.querySelectorAll('a.lref[hidden]')]; if (!els.length) return;
+  lawRefP = lawRefP || (PRACTICE.gv('LAW_REF') ? Promise.resolve() : PRACTICE.loadJs('law_ref.js'));
+  lawRefP.then(()=>{
+    const R = PRACTICE.gv('LAW_REF'); if (!R) return;
+    els.forEach(a=>{ const L = R.laws.find(x=>x.n === a.dataset.law), r = L && L.arts.find(x=>x[0] === a.dataset.art);
+      if (r){ a.textContent = '🔎 考過 ' + r[1].length + ' 題'; a.hidden = false; } });
+  }).catch(()=>{ lawRefP = null; });
+}
 function renderBar(){
   const S = SUBJS;
   $('subjRow').innerHTML = S.map(s=>{ const n = !s.file ? '製作中' : JY[s.k] ? JY[s.k].chapters.length + ' 章' : '';
@@ -327,6 +347,7 @@ function renderChapter(){
       <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button>
       ${prev?`<button class="tbtn" type="button" data-go="${esc(prev.id)}">← 上一章</button>`:''}${next?`<button class="tbtn" type="button" data-go="${esc(next.id)}">下一章 →</button>`:''}</div>`
     + (p.best!=null?`<div class="tip0">📝 章末測驗:最佳 ${p.best}%,上次 ${p.last}%</div>`:'');
+  hydrateLawRef();
 }
 function openChapter(id){
   const k = id.split('-')[0];
