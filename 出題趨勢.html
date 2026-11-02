@@ -11,7 +11,8 @@
      中文三科(觀光資源概要、執業實務、執業法規)各主題 106–115 年出題熱圖:
      依「占當年題數比例」比較近 3 年與前 7 年 → 升溫 / 降溫;點主題看細項、近 3 年考題,並可直接抽題練(miniquiz.js)。
      主題分類來自各科解析檔的 t / tt 欄。
-     變更履歷:v129 初版 -->
+     變更履歷:v208 加「依這個趨勢組卷」(模擬測驗 ?pick=trend:依近 3 年占比分配各主題題數、升溫主題加權)
+              v129 初版 -->
 <style>
   :root{
     --bg:#f2f6fa;--card:#fff;--ink:#16263a;--sub:#55687f;--line:#dde6ef;--soft:#e8f3fb;
@@ -86,6 +87,8 @@
   .qbtns button{flex:1;min-width:130px;border:0;background:var(--sel);color:var(--onsel);font-weight:800;border-radius:12px;padding:9px;cursor:pointer;font-family:inherit;font-size:.86rem}
   .qbtns button.o{background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
   .qbtns button:disabled{opacity:.5;cursor:wait}
+  .qbtns a.qa{flex:1;min-width:130px;text-align:center;text-decoration:none;background:var(--sel);color:var(--onsel);font-weight:800;border-radius:12px;padding:9px;font-size:.86rem}
+  .qbtns a.qa.o{flex:0 1 auto;background:transparent;border:1.5px solid var(--sel);color:var(--sel)}
   .legend{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--sub);margin:6px 0 2px;flex-wrap:wrap}
   .legend i{display:inline-block;width:18px;height:12px;border-radius:3px}
   .empty{text-align:center;color:var(--sub);padding:40px 10px}
@@ -203,6 +206,7 @@ function render(){
   let html = `<div class="card"><h2>${esc(PRACTICE.SUBJ[S].name)} · 近 ${RECENT_N} 年(${rng})vs 前 ${M.older.length} 年(${rngOld})</h2>
     <div class="sum"><div class="col u"><h3>▲ 升溫(占比明顯變高)</h3>${ups.length?'<ul>'+ups.slice(0,8).map(li).join('')+'</ul>':'<div style="font-size:.84rem">沒有明顯升溫的主題</div>'}</div>
     <div class="col d"><h3>▼ 降溫(占比明顯變低)</h3>${downs.length?'<ul>'+downs.slice(0,8).map(li).join('')+'</ul>':'<div style="font-size:.84rem">沒有明顯降溫的主題</div>'}</div></div>
+    <div class="qbtns"><a class="qa" href="模擬測驗.html?subj=${S}&amp;cert=${CERT}&amp;pick=trend&amp;num=20">📈 依這個趨勢組卷 20 題</a><a class="qa o" href="模擬測驗.html?subj=${S}&amp;cert=${CERT}&amp;pick=trend&amp;num=50">50 題</a></div>
     <div class="note">數字是「占當期題數的比例」(106 年每份 80 題、其餘每份 50 題,所以不用題數直接比)。升溫 = 近 ${RECENT_N} 年占比至少是以前的 1.5 倍且多 1 個百分點以上;降溫反之。分類為本 App 解析的主題,僅供安排複習順序參考,不代表必考或不考。</div></div>`;
   html += `<div class="card"><h2>🔥 各主題每年出幾題</h2>
     <div class="legend">顏色越深 = 占當年題數比例越高 <i style="background:rgba(var(--heat),.15)"></i><i style="background:rgba(var(--heat),.5)"></i><i style="background:rgba(var(--heat),.9)"></i> · 點主題名稱看細項與近年考題</div>

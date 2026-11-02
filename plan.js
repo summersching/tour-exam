@@ -15,6 +15,7 @@
          各科依自評與模擬測驗正確率加權輪排;排不下時先省略「加碼」任務(較舊年度、另一證照的卷)
    今天的清單在當天第一次打開時決定(plan_today),之後勾掉不會一直冒出新任務;沒做完的隔天自動排回最前面
    變更履歷:
+     v208 (2026-11-02) 衝刺期加碼:依出題趨勢 50 題(模擬測驗 ?pick=trend)
      v207 (2026-11-02) 初版
 */
 (function () {
@@ -104,6 +105,7 @@
     ['pr2', 'pr', 'gh', L].forEach(s => SPRINT_Y.forEach(y => paper(s, c, y, 'sprint')));
     ['pr2', 'pr', 'gh', L].forEach(s => add({ id: 'sp:' + s, s, ph: 'sprint', min: 40, t: '考前衝刺:' + SUB[s].n + (s === L ? '高頻必背' : '必背 100 條'), href: '考前衝刺.html?subj=' + s }));
     add({ id: 'newlaw', s: 'pr2', ph: 'sprint', min: 30, t: '新制與法規異動:修法後答案改變的題', href: '法規異動.html' });
+    ['pr2', 'pr', 'gh'].forEach(s => add({ id: 'tr:' + s, s, ph: 'sprint', min: 60, opt: true, t: '加碼:依出題趨勢 50 題(' + SUB[s].n + ')', sub: '近 3 年考得多的主題題數多,模擬考卷的主題分布', href: '模擬測驗.html?subj=' + s + '&cert=' + c + '&pick=trend&num=50' }));
     /* 不到兩週的衝刺模式:核心只留計時整卷、必背、考點速記、數字與法規速查;其他學習與刷題都改成加碼 */
     if (crash) T.forEach(t => { if (t.ph !== 'sprint' && !t.hy) t.opt = true; });
     return T;

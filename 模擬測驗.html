@@ -164,6 +164,7 @@
     <div class="row" id="rowType"><div class="lb">題型</div><div class="chips" id="sType"></div></div>
     <div class="row hidden" id="rowTopic"><div class="lb">考點</div><div class="chips" id="sTopic"></div></div>
     <div class="row hidden" id="rowStale"><div class="lb">已修正題</div><div class="chips" id="sStale"></div></div>
+    <div class="row hidden" id="rowPick"><div class="lb">抽題</div><div class="chips" id="sPick"></div></div>
     <div class="row"><div class="lb">年份</div><div class="chips" id="sYear"></div></div>
     <div class="row"><div class="lb">題數</div><div class="chips" id="sNum"></div></div>
     <div class="row"><div class="lb">限時</div><div class="chips" id="sTime"></div></div>
@@ -321,7 +322,7 @@ const stars=n=>[0,1,2].map(i=>i<(n||0)?'★':'<span class="dim">☆</span>').joi
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ===== 設定狀態 ===== */
-let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0,mode:'random',stale:'skip'};
+let cfg={subj:'en',cert:'all',type:'all',gtopic:'all',year:'all',num:20,time:0,mode:'random',stale:'skip',pick:'rand'};
 function curBank(){return cfg.subj==='gh'?GHBANK:cfg.subj==='pr'?PRBANK:cfg.subj==='pr2'?PR2BANK:cfg.subj==='jp'?JPBANK:enBank();}
 function enBank(){return BANK.concat(ENREAD.list());}   // 英語:第 1–70 題(bank.js)+ 閱讀第 71–80 題(enread.js,附文章)
 function isGh(){return cfg.subj==='gh';}
@@ -402,6 +403,7 @@ function updateModeUI(){
   document.getElementById('rowType').classList.toggle('hidden',whole||isCn()||isJp());
   document.getElementById('rowTopic').classList.toggle('hidden',whole||cfg.subj!=='gh');
   document.getElementById('rowStale').classList.toggle('hidden',whole||!isCn());   // 隨機組卷才能排除法規已修正題;整卷維持原卷
+  document.getElementById('rowPick').classList.toggle('hidden',whole||!isCn());    // v208 依出題趨勢抽題:中文三科的隨機組卷
   const YEARS=[...new Set(curBank().map(q=>q.y))].sort();
   if(whole){
     if(cfg.cert==='all')cfg.cert='leader';
@@ -437,6 +439,7 @@ function buildSetup(){
   mkChips('sType',[{v:'all',t:'全部'},{v:'字彙',t:'字彙'},{v:'對話',t:'對話'},{v:'文法',t:'文法'},{v:'閱讀',t:'閱讀'}],'type');
   mkChips('sTopic',[{v:'all',t:'全部'},{v:'史',t:'🏛 歷史'},{v:'地',t:'🗺 地理'},{v:'維護',t:'🛡 資源維護'}],'gtopic');
   mkChips('sStale',[{v:'skip',t:'排除(建議)'},{v:'keep',t:'照樣出題'}],'stale');
+  mkChips('sPick',[{v:'rand',t:'🎲 平均隨機'},{v:'trend',t:'📈 依出題趨勢'}],'pick');
   mkChips('sNum',[{v:10,t:'10 題'},{v:20,t:'20 題'},{v:30,t:'30 題'},{v:50,t:'50 題'}],'num');
   mkChips('sTime',[{v:0,t:'不限時'},{v:-1,t:'官方時間'},{v:15,t:'15 分'},{v:25,t:'25 分'},{v:40,t:'40 分'}],'time');
   syncSubjectUI();
@@ -467,7 +470,7 @@ function updAvail(){const n=pool().length, m=cfg.mode==='whole'?n:Math.min(cfg.n
   const lim=cfg.time===-1?' · 限時 '+officialMin(m)+' 分(官方)':'';
   document.getElementById('avail').textContent = (cfg.mode==='whole'
     ? '整卷:'+CNAME[cfg.cert]+' '+cfg.year+' 年共 '+n+' 題 · 依題號順序作答 · 交卷後看及格判定(60%)'
-    : '符合條件題數:'+n+' 題'+oldTxt+',將隨機抽 '+m+' 題')+(cfg.mode==='whole'?oldTxt:'')+lim;}
+    : '符合條件題數:'+n+' 題'+oldTxt+(isCn()&&cfg.pick==='trend'?',依出題趨勢抽 '+m+' 題(近 3 年考得多的主題題數多、升溫主題加權)':',將隨機抽 '+m+' 題'))+(cfg.mode==='whole'?oldTxt:'')+lim;}
 
 /* ===== 作答 ===== */
 let paper=[],picks={},timerId=null,remain=0,warned5=false;
@@ -484,11 +487,36 @@ function loadDraft(){try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'nul
 function qtoast(msg){var t=document.createElement('div');t.className='qtoast';t.textContent=msg;
   document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('on'));
   setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),300);},2600);}
+/* v208 依出題趨勢抽題(主題與「出題趨勢」頁相同:觀光用細類 tt、執業兩科用大類 t)
+   權重 = 近 3 年占比 × 0.7 + 歷年占比 × 0.3;近 3 年升溫(占比 ≥ 以前 1.5 倍、多 1 個百分點、3 題以上)再 × 1.3
+   依權重分配各主題題數(最大餘數法,主題題目不夠就分給下一個),主題內隨機;統計範圍 = 目前科目 + 證照的全部年度 */
+function topicKey(q){const a=ghData(q)||{};return cfg.subj==='gh'?(a.tt||'其他'):(a.t||'其他');}
+function trendWeights(){
+  const all=curBank().filter(q=>cfg.cert==='all'||q.c===cfg.cert);
+  const ys=[...new Set(all.map(q=>+q.y))].sort((a,b)=>a-b),rec=ys.slice(-3),tot={n:0,r:0,o:0},c={};
+  all.forEach(q=>{const k=topicKey(q),r=rec.indexOf(+q.y)>=0,x=c[k]||(c[k]={n:0,r:0,o:0});x.n++;tot.n++;if(r){x.r++;tot.r++;}else{x.o++;tot.o++;}});
+  const w={};Object.keys(c).forEach(k=>{const x=c[k],sN=tot.r?x.r/tot.r:0,sA=tot.n?x.n/tot.n:0,sO=tot.o?x.o/tot.o:0;
+    let v=0.7*sN+0.3*sA; if(sN>=sO*1.5&&sN-sO>=0.01&&x.r>=3)v*=1.3; w[k]=v;});
+  return w;
+}
+function trendPick(p,n){
+  n=Math.min(n,p.length);
+  const W=trendWeights(),g={};p.forEach(q=>{const k=topicKey(q);(g[k]=g[k]||[]).push(q);});
+  const ks=Object.keys(g).filter(k=>(W[k]||0)>0);
+  if(!ks.length)return shuffle(p.slice()).slice(0,n);
+  const sum=ks.reduce((a,k)=>a+W[k],0),quota={};let used=0;
+  const rem=ks.map(k=>{const e=n*W[k]/sum,f=Math.min(Math.floor(e),g[k].length);quota[k]=f;used+=f;return [k,e-Math.floor(e)];}).sort((a,b)=>b[1]-a[1]);
+  for(let i=0,miss=0;used<n&&miss<rem.length;i++){const k=rem[i%rem.length][0];if(quota[k]<g[k].length){quota[k]++;used++;miss=0;}else miss++;}
+  let out=[];ks.forEach(k=>{out=out.concat(shuffle(g[k].slice()).slice(0,quota[k]));});
+  if(out.length<n){const rest=shuffle(p.filter(q=>out.indexOf(q)<0));out=out.concat(rest.slice(0,n-out.length));}
+  return shuffle(out);
+}
 function startQuiz(){
   const qz=document.getElementById('quiz');qz.removeAttribute('data-done');qz.removeAttribute('data-forced');
   let p=pool().slice();
   if(!p.length){alert('這個條件下沒有題目,換個條件試試');return;}
   if(cfg.mode==='whole'){ p.sort((a,b)=>a.no-b.no); paper=p; }        // 整卷:全份、依題號順序
+  else if(isCn()&&cfg.pick==='trend'){ paper=trendPick(p,cfg.num); }  // v208 依出題趨勢
   else { p=shuffle(p); paper=p.slice(0,Math.min(cfg.num,p.length)); }  // 隨機組卷
   picks={}; warned5=false; clearDraft();
   document.getElementById('setup').classList.add('hidden');
@@ -499,7 +527,7 @@ function startQuiz(){
 }
 /* B2 從草稿接續作答 */
 function resumeQuiz(d){
-  cfg=d.cfg||cfg; warned5=false;
+  cfg=d.cfg||cfg; if(!cfg.pick)cfg.pick='rand'; warned5=false;
   const bank=curBank();
   paper=(d.refs||[]).map(r=>bank.find(q=>q.c===r.c&&q.y===r.y&&q.no===r.no)).filter(Boolean);
   if(!paper.length||paper.length!==(d.refs||[]).length){clearDraft();document.getElementById('resumeBar').innerHTML='';alert('題庫已更新,無法接續上次測驗,已清除草稿。');return;}
@@ -585,7 +613,7 @@ function submit(forced){
     if(ok)correct++;else{wrong.push(qi);if(p!=null){cfg.subj==='gh'?wbghAdd(q,p):cfg.subj==='pr'?wbprAdd(q,p):cfg.subj==='pr2'?wbpr2Add(q,p):cfg.subj==='jp'?wbjpAdd(q,p):wbAdd(q,p);}}  // 有作答且答錯 → 進對應科目錯題本
   });
   try{let hist=JSON.parse(localStorage.getItem('quiz_history')||'[]');
-    hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,mode:cfg.mode,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
+    hist.push({ts:Date.now(),subj:cfg.subj,cert:cfg.cert,qtype:cfg.type,year:cfg.year,mode:cfg.mode,pick:cfg.pick,correct:correct,total:paper.length,byTopic:byTopic,byType:byType});
     if(hist.length>300)hist=hist.slice(-300);
     localStorage.setItem('quiz_history',JSON.stringify(hist));}catch(e){}
   showResult(correct,wrong);
@@ -675,6 +703,7 @@ function applyQueryPreset(){
   /* v207 學習計畫帶入整卷:mode=whole&year=112(年份不在題庫 → 由 updateModeUI 改成最新一年) */
   const mode=qp.get('mode'); if(mode==='whole'||mode==='random')cfg.mode=mode;
   const year=qp.get('year'); if(/^\d{3}$/.test(year||''))cfg.year=year;
+  const pick=qp.get('pick'); if(pick==='trend'||pick==='rand')cfg.pick=pick;   // v208 出題趨勢頁「依趨勢組卷」
   return qp.get('auto')==='1';
 }
 buildSetup();
