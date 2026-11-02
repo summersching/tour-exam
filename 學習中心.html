@@ -102,6 +102,25 @@
   .kcard h4{margin:11px 0 4px;font-size:.92rem;color:var(--grp)} .kcard h4:first-child{margin-top:2px}
   .kcard ul,.kcard ol{margin:4px 0;padding-left:22px} .kcard li{margin:3px 0}
   .lzmore{text-align:center;color:var(--sub);font-size:.8rem;padding:16px 0}
+  /* 片語(phrase_use.js + phrase_src.js) */
+  .pseg{display:flex;gap:4px;flex:0 0 auto}
+  .pseg .btn{padding:6px 9px;white-space:nowrap}
+  .pcard{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--grp);border-radius:10px;padding:10px 13px;margin:8px 0}
+  .ptop{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .pen{font-weight:800;color:var(--accent);font-size:1.02rem}
+  .pzh{margin-left:auto;text-align:right;color:var(--ink)}
+  .pcat{font-size:.68rem;border-radius:8px;padding:0 7px;font-weight:700;white-space:nowrap}
+  .pcat.v{background:var(--okbg);color:var(--ok)} .pcat.p{background:var(--chip);color:var(--chipk)} .pcat.t{background:var(--yrbg);color:var(--yrc)}
+  .pcat.n,.pcat.pn{background:var(--bg);color:var(--sub);border:1px solid var(--line)} .pcat.opt{background:var(--nobg);color:var(--no)}
+  .puse{margin:6px 0 2px;font-size:.88rem;line-height:1.7}
+  .pex{margin:4px 0;font-size:.9rem}
+  .pex .say{font-size:.74rem;vertical-align:1px}
+  .pes{margin:6px 0 0;font-size:.86rem;line-height:1.65;border-top:1px dashed var(--line);padding-top:6px;word-break:break-word}
+  .pes b{color:var(--accent);background:var(--chip);border-radius:4px;padding:0 2px}
+  .pes .pl{font-size:.74rem;color:var(--grp);font-weight:800;margin-right:2px}
+  .pes .pz{color:var(--sub);font-size:.82rem;margin-top:2px}
+  .pes .hit{margin-left:4px}
+  .pmore{font-size:.74rem;color:var(--sub);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
   /* 文法:依章節詳解(gram_en.js) */
   .gseg{display:flex;gap:4px;flex:0 0 auto}
   .kbar .cnt{white-space:nowrap}
@@ -159,6 +178,7 @@
 </div></div>
 <div class="tabs">
   <button class="tabbtn on" data-tab="vocab">📖 單字</button>
+  <button class="tabbtn" data-tab="phr">🧩 片語</button>
   <button class="tabbtn" data-tab="gram">📝 文法</button>
   <button class="tabbtn" data-tab="skill">💡 技巧</button>
   <button class="tabbtn" data-tab="note">⚠️ 陷阱</button>
@@ -223,6 +243,12 @@
       <div class="tip">測驗範圍 = 上面選的主題 × 分級;答對自動跳下一題,答錯可看正解再按「下一題」</div>
     </div>
   </main>
+</div>
+
+<!-- ===== 片語 ===== -->
+<div id="tab-phr" class="ktab">
+  <div class="kbar"><div class="wrap"><input id="phr-q" placeholder="搜尋片語、中文、例句…"><span class="pseg"><button class="btn" type="button" data-ps="freq">常考</button><button class="btn" type="button" data-ps="az">A-Z</button></span><span class="cnt" id="phr-cnt"></span></div></div>
+  <main class="wrap"><div class="kintro" id="phr-intro">🧩 片語資料載入中…</div><div class="gtoc" id="phr-cats"></div><div id="phr-list"></div></main>
 </div>
 
 <!-- ===== 文法 ===== -->
@@ -393,6 +419,68 @@ function kRender(id,data,cls,pre){
   KL[id].set((pre||[]).concat(arr.map(x=>kCard(x,cls))),'<p class="tip" style="padding:16px 0">找不到符合的內容</p>');
   KDONE[id]=true;
 }
+/* ============ 片語:phrase_use.js(人工用法、例句)+ phrase_src.js(考題原句、選項片語);第一次打開才載入 ============ */
+const PCAT=[['all','全部'],['v','🔗 動詞片語'],['p','🧭 介系詞片語・慣用語'],['t','💬 對話用語'],['n','🏷 旅遊名詞'],['pn','🏛 專有名詞'],['opt','🎯 選項片語']];
+const PCATN={v:'動詞片語',p:'介系詞片語・慣用語',t:'對話用語',n:'旅遊名詞',pn:'專有名詞',opt:'選項片語'};
+let PSORT=(function(){try{return localStorage.getItem('pref_phr_sort')==='az'?'az':'freq';}catch(e){return 'freq';}})(),PCUR='all',PDATA=null,PLOAD=null;
+function loadScript(src){return new Promise(function(ok,no){const t=document.createElement('script');t.src=src;t.onload=ok;t.onerror=no;document.head.appendChild(t);});}
+function phrHead(w){return w.replace(/\s*\((?:n|v|adj|adv|prep|conj|phr|pron|aux)\.[^)]*\)\s*$/i,'').trim();}
+function ensurePhr(){
+  if(PDATA)return Promise.resolve(PDATA);
+  if(PLOAD)return PLOAD;
+  PLOAD=Promise.all([typeof PHRASE_USE!=='undefined'?0:loadScript('phrase_use.js'),typeof PHRASE_SRC!=='undefined'?0:loadScript('phrase_src.js')]).then(function(){
+    const items=[];
+    WORDS.forEach(function(x){const h=phrHead(x.w);if(!/\s/.test(h))return;const u=PHRASE_USE[h];
+      const c=u?u.c:(h.split(/\s+/).filter(t=>/^[A-Z]/.test(t)).length>=2?'pn':'n');
+      items.push({h:h,zh:x.zh,hits:x.hits||[],c:c,u:u,src:PHRASE_SRC[h]||[]});});
+    PHRASE_OPT.forEach(function(o){items.push({h:o.base||o.w,orig:o.base?o.w:'',zh:o.zh,ok:o.ok,c:'opt',src:[],
+      hits:o.hits.map(function(k){const a=k.split('-');return {c:a[0],y:a[1],n:+a[2]};})});});
+    PDATA=items;return items;
+  }).catch(function(){PLOAD=null;return null;});
+  return PLOAD;
+}
+function srcHit(s){const a=s[0].split('-');const h={c:a[0],y:a[1],n:+a[2]};if(s[3]===1)h.p=1;return h;}
+function markHtml(t){return gEsc(t).replace(/\u0001/g,'<b>').replace(/\u0002/g,'</b>').replace(/ (?=[A-Z][A-Za-z]{0,20}(?: [A-Za-z]+)?: )/g,'<br>');}
+function phrScoped(it){const hits=CERT==='all'?it.hits:it.hits.filter(h=>h.c===CERT);return hits;}
+function phrText(it){return [it.h,it.orig||'',it.zh,it.u?it.u.u+' '+it.u.e+' '+it.u.z:''].join(' ').toLowerCase();}
+function phrCard(it,hits){
+  const src=it.src.filter(s=>CERT==='all'||s[0].indexOf(CERT+'-')===0),shown={};
+  src.forEach(s=>{shown[s[0]]=1;});
+  const more=hits.filter(h=>!shown[h.c+'-'+h.y+'-'+h.n]);
+  let h='<div class="pcard"><div class="ptop"><span class="pen">'+gEsc(it.h)+'</span><span class="say" data-say="'+gEsc(it.h.replace(/\.\.\.|…|\?/g,' '))+'" title="唸出來">🔊</span><span class="pcat '+it.c+'">'+PCATN[it.c]+'</span>'
+    +(hits.length>1?'<span class="fq">×'+hits.length+'</span>':'')+'<span class="pzh">'+gEsc(it.zh)+'</span></div>';
+  if(it.c==='opt')h+='<div class="pmore">'+(it.orig?'題目中是「'+gEsc(it.orig)+'」 · ':'')+(it.ok?'曾是正解':'出現在干擾選項,下次可能變答案')+'</div>';
+  if(it.u)h+='<div class="puse">💡 '+gEsc(it.u.u)+'</div><div class="pex"><span class="gen">'+gEsc(it.u.e)+'</span> <span class="say" data-say="'+gEsc(it.u.e)+'" title="唸出來">🔊</span><div class="gzh">'+gEsc(it.u.z)+'</div></div>';
+  src.forEach(function(s){
+    const lab=s[3]===2?'考題選項(干擾項)':s[3]===3?'考題選項(正解)':(s[3]===1||s[3]===4)?'閱讀文章':'考題原句';
+    h+='<div class="pes"><span class="pl">📝 '+lab+'</span> '+markHtml(s[1])+' '+hitA(srcHit(s))+(s[2]?'<div class="pz">'+(s[3]>=2?gEsc(s[2]):markHtml(s[2]).replace(/<br>/g,' ').replace(/ (?=\S{1,12}:)/g,'<br>'))+'</div>':'')+'</div>';
+  });
+  if(more.length)h+='<div class="pmore">'+(src.length?'其他出處':'出處')+' '+more.map(hitA).join('')+'</div>';
+  return h+'</div>';
+}
+function renderPhr(){
+  const intro=document.getElementById('phr-intro');
+  ensurePhr().then(function(items){
+    if(!items){intro.textContent='⚠ 片語資料載入失敗,請重新整理頁面。';return;}
+    const kw=document.getElementById('phr-q').value.trim().toLowerCase(),cnt={all:0},rows=[];
+    items.forEach(function(it){const hits=phrScoped(it);if(!hits.length)return;cnt.all++;cnt[it.c]=(cnt[it.c]||0)+1;
+      if(PCUR!=='all'&&it.c!==PCUR)return;if(kw&&phrText(it).indexOf(kw)<0)return;rows.push([it,hits]);});
+    rows.sort(PSORT==='az'?(a,b)=>a[0].h.toLowerCase().localeCompare(b[0].h.toLowerCase()):(a,b)=>b[1].length-a[1].length||(!!b[0].u-!!a[0].u)||a[0].h.toLowerCase().localeCompare(b[0].h.toLowerCase()));
+    const nU=items.filter(it=>it.u).length,nO=items.filter(it=>it.c==='opt').length;
+    intro.innerHTML='🧩 <b>片語與用法</b> — 單字庫 '+(items.length-nO)+' 個片語 + 選項裡的 '+nO+' 個:動詞片語、慣用語、對話用語等 '+nU+' 個附 💡 用法與旅遊例句(🔊 可聽);每個都附 📝 考題原句(粗體是片語)與出處。';
+    document.getElementById('phr-cats').innerHTML=PCAT.filter(c=>c[0]==='all'||cnt[c[0]]).map(c=>'<span class="tchip'+(PCUR===c[0]?' on':'')+'" data-pc="'+c[0]+'">'+c[1]+' ('+(cnt[c[0]]||0)+')</span>').join('');
+    const cats=document.getElementById('phr-cats'),on=cats.querySelector('.on');if(on)cats.scrollLeft=Math.max(0,on.offsetLeft-cats.offsetLeft-16);   // 選中的分類保持在畫面內
+    document.querySelectorAll('.pseg [data-ps]').forEach(b=>b.classList.toggle('on',b.dataset.ps===PSORT));
+    document.getElementById('phr-cnt').textContent='共 '+rows.length+' 個';
+    KL.phr.set(rows.map(r=>phrCard(r[0],r[1])),'<p class="tip" style="padding:16px 0">找不到符合的片語</p>');
+    KDONE.phr=true;
+  });
+}
+document.getElementById('phr-q').addEventListener('input',renderPhr);
+document.querySelector('.pseg').addEventListener('click',function(e){const b=e.target.closest('[data-ps]');if(!b||b.dataset.ps===PSORT)return;PSORT=b.dataset.ps;try{localStorage.setItem('pref_phr_sort',PSORT);}catch(err){}renderPhr();});
+document.getElementById('phr-cats').addEventListener('click',function(e){const c=e.target.closest('[data-pc]');if(!c||c.dataset.pc===PCUR)return;PCUR=c.dataset.pc;renderPhr();});
+document.getElementById('phr-list').addEventListener('click',function(e){const t=e.target.closest('.say');if(t)speak(t.dataset.say);});
+
 /* 文法:📚 章節 = gram_en.js 的 8 章詳解(白話說明、句型、旅遊例句、易混比較、考過的原題);📋 清單 = 原本逐題彙整的考點 */
 let GVIEW=(function(){try{return localStorage.getItem('pref_gram_view')==='list'?'list':'ch';}catch(e){return 'ch';}})();
 const GINTRO={ch:'📚 <b>依章節詳解</b> — 83 則考點整理成 8 章、56 個文法點:白話說明 → 句型 → 旅遊例句(🔊 可聽)→ 易混比較 → 考過這樣考(點出處回原題)。',
@@ -444,7 +532,8 @@ document.getElementById('gram-list').addEventListener('click',function(e){const 
 document.getElementById('note-q').addEventListener('input',renderNote);
 document.getElementById('skill-q').addEventListener('input',renderSkill);
 const KL={gram:Lazy(document.getElementById('gram-list'),40),skill:Lazy(document.getElementById('skill-list'),40),note:Lazy(document.getElementById('note-list'),40)};
-const KDONE={},KRENDER={gram:renderGram,skill:renderSkill,note:renderNote};
+const KDONE={},KRENDER={gram:renderGram,skill:renderSkill,note:renderNote,phr:renderPhr};
+KL.phr=Lazy(document.getElementById('phr-list'),40);
 function ensureTab(t){if(KRENDER[t]&&!KDONE[t])KRENDER[t]();}   // 文法 / 技巧 / 陷阱:第一次打開才畫
 function renderAllForPrint(){['gram','skill','note'].forEach(ensureTab);vocabLazy.all();KL.gram.all();KL.skill.all();KL.note.all();}
 
