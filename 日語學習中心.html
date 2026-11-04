@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#e11d48">
 <title>外語日語 學習中心</title>
-<!-- v125 (2026-10-01) B6 初版:日語單字庫(解析單字表 + 選項中譯 1,712 詞)· 單字卡 · 測驗(看日選中 / 看中選日 / 看漢字選讀音) -->
+<!-- v220 (2026-11-04) 手機版面同步英語學習中心:按鈕列、分類標籤改成一列左右滑,工具列不黏在上方
+     v125 (2026-10-01) B6 初版:日語單字庫(解析單字表 + 選項中譯 1,712 詞)· 單字卡 · 測驗(看日選中 / 看中選日 / 看漢字選讀音) -->
 <style>
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#be123c;
@@ -37,6 +38,7 @@
   .cbtn.on{background:var(--grp);color:#fff;border-color:var(--grp)}
   .toolbar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:9px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
   .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tbtns{display:contents}   /* v220 桌機照舊排成一列;手機改成可左右滑的一列 */
   #q{flex:1;min-width:130px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:.9rem;font-family:inherit}
   .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 11px;border-radius:10px;cursor:pointer;font-size:.82rem;font-family:inherit}
   .btn:hover{border-color:var(--accent)} .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -88,6 +90,19 @@
   .qopt.no{background:var(--nobg);border-color:var(--no);color:var(--no)}
   .qfb{min-height:22px;margin-top:12px;font-size:.9rem;font-weight:700}
   .qfb.ok{color:var(--ok)} .qfb.no{color:var(--no)}
+  /* v220 手機(同英語學習中心):工具列不黏在上方;搜尋 + 詞數一列,按鈕一列左右滑,分類標籤一列左右滑 */
+  @media (max-width:600px){
+    .toolbar{position:static}
+    .toolbar .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .toolbar .chips::-webkit-scrollbar{display:none}
+    .toolbar .tchip{flex:0 0 auto;white-space:nowrap}
+    #q{order:1;flex:1 1 auto;min-width:0}
+    .toolbar .cnt{order:2;margin-left:0;flex:0 0 auto}
+    .tbtns{order:3;display:flex;flex:1 1 100%;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+    .tbtns::-webkit-scrollbar{display:none}
+    .tbtns .btn{flex:0 0 auto;white-space:nowrap}
+    .tbtns .sep{flex:0 0 1px}
+  }
   @media print{
     .toolbar,.certbar{display:none} #flash,#quiz{display:none!important} .say,.lzmore,.home{display:none}
     header{background:#be123c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -117,6 +132,7 @@
 <div class="toolbar">
   <div class="wrap">
     <input id="q" placeholder="搜尋日文、讀音或中文…" autocomplete="off">
+    <div class="tbtns">
     <button class="btn on" id="mList">清單</button>
     <button class="btn" id="mFlash">單字卡</button>
     <button class="btn" id="mQuiz">測驗</button>
@@ -126,6 +142,7 @@
     <button class="btn" id="sKana">五十音</button>
     <span class="sep"></span>
     <button class="btn" id="printBtn">🖨 匯出 PDF</button>
+    </div>
     <span class="cnt" id="cnt"></span>
   </div>
   <div class="wrap"><div class="chips" id="chips"></div></div>

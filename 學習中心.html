@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d9488">
 <title>外語英語 學習中心</title>
+<!-- v220 (2026-11-04) 分頁列放進置中欄(桌機與下方內容對齊);手機工具列改成「搜尋 + 字數」一列、按鈕一列左右滑,分頁 5 格排滿 -->
 <style>
   :root{--bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--accent:#2563eb;--kk:#0e7c86;--chip:#eef2ff;--chipk:#3b4fd6;--grp:#0d9488;--yrc:#7a5b12;--yrbg:#fff4cc;--ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fbe9e9;--gc:#6b34c9;--sc:#1d4ed8;--nc:#b5560c;--star:#e8a72b;}
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--accent:#5b8cff;--kk:#57cdd8;--chip:#22284a;--chipk:#9db0ff;--grp:#5eead4;--yrc:#f2d778;--yrbg:#3d3413;--ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#331a1a;--gc:#c9adff;--sc:#9db8ff;--nc:#f4b877;--star:#f0b840;}}
@@ -18,13 +19,16 @@
   header p{margin:2px 0;opacity:.92;font-size:.82rem}
   .home{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;background:rgba(255,255,255,.18);padding:4px 11px;border-radius:16px}
   /* 頂層分頁 */
-  .tabs{position:sticky;top:0;z-index:8;background:var(--card);border-bottom:1px solid var(--line);display:flex;gap:6px;padding:8px 16px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .tabs{position:sticky;top:0;z-index:8;background:var(--card);border-bottom:1px solid var(--line);padding:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .tabs .wrap{display:flex;gap:6px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}   /* v220 分頁放進置中欄,和下方內容對齊 */
+  .tabs .wrap::-webkit-scrollbar{display:none}
   .tabbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 15px;border-radius:20px;cursor:pointer;font-size:.86rem;font-weight:700;font-family:inherit}
   .tabbtn.on{background:var(--grp);color:#fff;border-color:var(--grp)}
   .ktab{display:none} .ktab.on{display:block}
   /* 單字工具列(沿用原單字書) */
   .toolbar{position:sticky;top:45px;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:9px 0}
   .toolbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tbtns{display:contents}   /* v220 桌機照舊排成一列;手機改成可左右滑的一列 */
   #q{flex:1;min-width:130px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:.9rem;font-family:inherit}
   .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 11px;border-radius:10px;cursor:pointer;font-size:.82rem;font-family:inherit}
   .btn:hover{border-color:var(--accent)}
@@ -108,6 +112,14 @@
     .toolbar .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
     .toolbar .chips::-webkit-scrollbar{display:none}
     .toolbar .tchip{flex:0 0 auto;white-space:nowrap}
+    /* v220 手機工具列:搜尋 + 字數一列;模式、排序、有用法、匯出 PDF 一列左右滑(同主題標籤),不再擠成三列 */
+    #q{order:1;flex:1 1 auto;min-width:0}
+    .toolbar .cnt{order:2;margin-left:0;flex:0 0 auto}
+    .tbtns{order:3;display:flex;flex:1 1 100%;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+    .tbtns::-webkit-scrollbar{display:none}
+    .tbtns .btn{flex:0 0 auto;white-space:nowrap}
+    .tbtns .sep{flex:0 0 1px}
+    .tabbtn{flex:1 0 auto;padding:7px 8px;font-size:.82rem}
   }
   /* 單字用法(word_use.js + word_src.js) */
   .wub{border:1px solid var(--grp);color:var(--grp);background:var(--card);border-radius:8px;font-size:.72rem;font-weight:800;padding:0 7px;cursor:pointer;font-family:inherit;line-height:1.7}
@@ -189,19 +201,20 @@
   <button class="cbtn" data-c="leader">領隊</button>
   <button class="cbtn" data-c="guide">導遊</button>
 </div></div>
-<div class="tabs">
+<div class="tabs"><div class="wrap">
   <button class="tabbtn on" data-tab="vocab">📖 單字</button>
   <button class="tabbtn" data-tab="phr">🧩 片語</button>
   <button class="tabbtn" data-tab="gram">📝 文法</button>
   <button class="tabbtn" data-tab="skill">💡 技巧</button>
   <button class="tabbtn" data-tab="note">⚠️ 陷阱</button>
-</div>
+</div></div>
 
 <!-- ===== 單字 ===== -->
 <div id="tab-vocab" class="ktab on">
   <div class="toolbar">
     <div class="wrap">
       <input id="q" placeholder="搜尋英文或中文…">
+      <div class="tbtns">
       <button class="btn on" id="mList">清單</button>
       <button class="btn" id="mFlash">單字卡</button>
       <button class="btn" id="mQuiz">測驗</button>
@@ -213,6 +226,7 @@
       <button class="btn" id="sUse" title="只看附用法說明的單字">💡 有用法</button>
       <span class="sep"></span>
       <button class="btn" id="printBtn">🖨 匯出 PDF</button>
+      </div>
       <span class="cnt" id="cnt"></span>
     </div>
     <div class="wrap"><div class="chips" id="chips"></div></div>

@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v219(2026-11-04)
+<!-- 講義 · v220(2026-11-04)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源);其他科製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v219 執業實務講義上線:第 1、2 章(內容在 jy_pr.js)
+     變更履歷:v220 重點紅字:段落粗體關鍵詞、重點條列與表格裡的數字日期(hl())改紅字;內容檔可用 **關鍵詞** 手動標紅
+              v219 執業實務講義上線:第 1、2 章(內容在 jy_pr.js)
               v218 執業法規第 16 章上線
               v217 執業法規第 14、15 章上線
               v216 執業法規第 12、13 章上線
@@ -27,20 +28,20 @@
   :root{
     --bg:#f4f6f9;--card:#fff;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--soft:#e6f4f1;
     --sel:#0f766e;--accent:#0f766e;--hd1:#115e59;--hd2:#14b8a6;
-    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;--selbg:#e6f4f1;
+    --ok:#15904a;--okbg:#e5f6ec;--no:#c62a2a;--nobg:#fdecec;--warn:#92400e;--warnbg:#fef3c7;--info:#1d4ed8;--infobg:#e8effd;--selbg:#e6f4f1;--key:#c81e1e;
     --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05);
   }
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
     --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
-    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;--key:#ff8b8b;
     --shadow:0 1px 6px rgba(0,0,0,.3);
   }
   :root:not([data-theme="light"]) .chip.on,:root:not([data-theme="light"]) .tbtn.fill,:root:not([data-theme="light"]) .tab.on,:root:not([data-theme="light"]) .ttsbar button.pri{color:#05211d}}
   :root[data-theme="dark"]{
     --bg:#12161c;--card:#1b2029;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--soft:#16302d;
     --sel:#2dd4bf;--accent:#14b8a6;--hd1:#134e4a;--hd2:#0f766e;
-    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;
+    --ok:#5ad48a;--okbg:#173023;--no:#ff8080;--nobg:#3a1c1c;--warn:#fcd34d;--warnbg:#3a2e10;--info:#93b4ff;--infobg:#1a2440;--selbg:#16302d;--key:#ff8b8b;
     --shadow:0 1px 6px rgba(0,0,0,.3);
   }
   :root[data-theme="dark"] .chip.on,:root[data-theme="dark"] .tbtn.fill,:root[data-theme="dark"] .tab.on,:root[data-theme="dark"] .ttsbar button.pri{color:#05211d}
@@ -88,6 +89,8 @@
   .exam b{color:var(--sel)}
   .jh{font-size:1.06rem;margin:22px 0 6px;padding-left:10px;border-left:4px solid var(--sel)}
   .jp{margin:8px 0;font-size:.96rem}
+  .jp b,.kn{color:var(--key)}   /* v220 重點紅字:段落粗體關鍵詞;重點條列與表格裡的數字、日期(由 hl() 標出) */
+  .kn{font-weight:800}
   .jkey{margin:6px 0;padding-left:1.2em}
   .jfig{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
   .jfig figcaption{font-weight:800;font-size:.88rem;margin:0 2px 8px}
@@ -291,19 +294,36 @@ function mnHtml(b, hide){
   return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div></div>`;
 }
 function figHtml(b){ return `<figure class="jfig"><figcaption>🖼 ${esc(b.h)}</figcaption>${b.svg}</figure>`; }
-function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(esc)))}</div>`; }
+function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
+/* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
+   「」『』引號內(原文用語或錯誤選項)、括號內與「N 年考題」(考題出處)、「第 N 條」不自動標。
+   內容檔可用 **關鍵詞** 手動標紅(條列、表格、解題技巧、易錯陷阱都適用);解題技巧與易錯陷阱只標手動標記,不自動標數字(避免把錯誤數字標成重點) */
+const HL_SKIP = /「[^」]*」|『[^』]*』|[(（][^()（）]*[)）]|第\s*\d+\s*(?:條|項|款|章|節|屆|類)(?:\s*之\s*\d+)?/g;
+const HL_NUM = /\d{2,3}\/\d{1,2}\/\d{1,2}|(?:新臺幣\s*)?\d[\d,]*(?:\.\d+)?(?:\s*[~～至到]\s*\d[\d,]*(?:\.\d+)?)?\s*(?:萬元|億元|元|美元|歐元|公斤|公尺|公分|公里|個工作天|工作天|小時|分鐘|個月|月|週|天|日|年|歲|人|次|倍|%|％)(?!考題)/g;
+const HL_MARK = /\*\*([^*]+?)\*\*/g;
+function hlNum(s){
+  let out = '', last = 0;
+  s.replace(HL_SKIP, (m, i) => { out += s.slice(last, i).replace(HL_NUM, '<b class="kn">$&</b>') + m; last = i + m.length; return m; });
+  return out + s.slice(last).replace(HL_NUM, '<b class="kn">$&</b>');
+}
+function hl(s){   // s 已經過 esc()
+  let out = '', last = 0;
+  s.replace(HL_MARK, (m, t, i) => { out += hlNum(s.slice(last, i)) + '<b class="kn">' + t + '</b>'; last = i + m.length; return m; });
+  return out + hlNum(s.slice(last));
+}
+function mk(s){ return s.replace(HL_MARK, '<b class="kn">$1</b>'); }   // 只轉手動標記
 function blockHtml(k, b, d){
   if (cfg.mode === 'quick' && !QUICK[b.t]) return '';
   switch (b.t){
     case 'h': return `<h3 class="jh">${esc(b.text)}</h3>`;
     case 'p': return `<p class="jp">${b.html}</p>`;
-    case 'key': return `<ul class="jkey">${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'key': return `<ul class="jkey">${b.items.map(x=>`<li>${hl(esc(x))}</li>`).join('')}</ul>`;
     case 'fig': return figHtml(b);
     case 'link': return `<a class="jlink" href="${esc(b.href)}">${esc(b.text)}</a>`;
-    case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(esc)), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
+    case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
     case 'mn': return mnHtml(b, false);
-    case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
-    case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;
+    case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;
     case 'cmp': return cmpHtml(b);
     case 'stale': return `<div class="jstale">⏱ <b>時效提醒</b>:${esc(b.text)} <a href="法規異動.html">看「新制與法規異動」→</a></div>`;
     case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}${lawRefLink(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
