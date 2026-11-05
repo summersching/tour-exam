@@ -7,11 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v230(2026-11-05)
+<!-- 講義 · v231(2026-11-05)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源);其他科製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v230 執業實務第 18、19 章上線(臺灣觀光資源:國家公園、風景區與生態;原住民、文物、民俗與世界;執業實務 19 章完成)
+     變更履歷:v231 觀光資源第 2、3 章上線(臺灣的原住民族與族群;臺灣史(一):荷西、明鄭與清領);章節取題新增 match.c(只取導遊或領隊題)、
+                   match.not(排除含關鍵字的題)、match.ex(個別題目移出)
+              v230 執業實務第 18、19 章上線(臺灣觀光資源:國家公園、風景區與生態;原住民、文物、民俗與世界;執業實務 19 章完成)
               v229 執業實務第 16、17 章上線(導覽解說:解說理論、原則與媒體;解說技巧、對象與帶隊)
               v228 執業實務第 14、15 章上線(觀光心理:旅遊動機、需求與消費行為;行銷、服務品質與銷售)
               v227 執業實務第 12、13 章上線(國際禮儀:宴會、餐飲與服裝;行、住、社交與文化禁忌)
@@ -253,9 +255,13 @@ function chapterQs(ch, d){
   if (!d) return [];
   const m = ch.match || {};
   return d.bank.filter(q=>{
-    if (m.add && m.add.includes(PRACTICE.key(q))) return true;   // v211 個別題目標在其他主題,但屬於本章
-    if (m.kw) return m.kw.test(q.stem + ' ' + (q.opts||[]).join(' '));
-    const a = d.ana[PRACTICE.key(q)] || {};
+    const k = PRACTICE.key(q), text = q.stem + ' ' + (q.opts||[]).join(' ');
+    if (m.add && m.add.includes(k)) return true;   // v211 個別題目標在其他主題,但屬於本章
+    if (m.ex && m.ex.includes(k)) return false;    // v231 個別題目雖符合條件,但歸到別章
+    if (m.c && !m.c.includes(q.c)) return false;   // v231 只取導遊(guide)或領隊(leader)題
+    if (m.not && m.not.test(text)) return false;   // v231 排除含關鍵字的題(例如國家公園題屬觀光資源第 1 章)
+    if (m.kw) return m.kw.test(text);
+    const a = d.ana[k] || {};
     return (m.t||[]).includes(a.t) && (m.tt||[]).includes(a.tt);
   });
 }
