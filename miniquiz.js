@@ -2,7 +2,7 @@
    ------------------------------------------------------------------
    數字速記、兩岸與入出境(及之後的整理頁)共用:把一組歷屆單選題變成「逐題作答 + 立即詳解」的小測驗。
      MINIQUIZ.start({ title, list: [{s, q}], n })
-       s     科目代碼 gh / pr / pr2;q 題目(題庫原物件)
+       s     科目代碼 gh / pr / pr2 / en / jp;q 題目(題庫原物件)
        n     題數(0 = 全部),從 list 隨機抽
    作答:點選項或按 1–4 / A–D;判分、標正解一律用 scoring.js(送分 / 一題多解照官方公告)
    答完顯示解析(題庫解析檔)、時效提醒(stale.js)、原題連結與收藏;答錯收進該科錯題本、每題計入首頁「今日已練」(practice.js)
@@ -10,6 +10,7 @@
    選用 onResult(答對題數, 總題數, { redo, partial }):每次看到結果時呼叫(講義章末測驗用來記錄成績)
      redo = 這輪是「只練錯的」;partial = 中途關閉、只結算已作答的題目(這兩種不該算成整章成績)
    變更履歷:
+     v251 (2026-11-11) 支援外語英語、日語(講義章末測驗):題幹的 __BLANK__ 顯示成底線,錯題本提示用 PRACTICE.S 取科目名
      v201 (2026-11-02) 新增 onResult 回呼(附 redo / partial 旗標)
      v129 (2026-10-05) 題幹附圖(OPTIMG.fig);沒載入 optimg.js 的頁面自動補載
      v127 (2026-10-05) 初版
@@ -18,7 +19,7 @@
   'use strict';
   var L = 'ABCD', ST = null;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function clean(s) { return String(s == null ? '' : s).replace(/[ˉ‾¯]+/g, ''); }
+  function clean(s) { return String(s == null ? '' : s).replace(/[ˉ‾¯]+/g, '').replace(/__BLANK__/g, '＿＿＿'); }   // 英語題庫的空格寫成 __BLANK__
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function pick(list, n) { var a = shuffle(list.slice()); return n ? a.slice(0, n) : a; }
 
@@ -106,7 +107,7 @@
       '<div class="mq-verd ' + (ok ? 'ok' : 'no') + '">' + (ok ? '✅ 答對!' : '✗ 答錯,正解是 ' + SCORE.ansLabel(q)) + (rule ? ' · ' + esc(rule) : '') + '</div>' +
       (d.a ? '<div class="mq-ana">' + (window.ANAUI ? window.ANAUI.compact(d.a) : d.a) + (d.s ? '<span class="s">💡 ' + d.s + '</span>' : '') + '</div>' : '') +
       '<div class="mq-links"><a href="' + PRACTICE.href(s, q) + '">📖 看原題詳解 →</a>' + (window.FAV ? FAV.btn(s, q) : '') +
-      (!ok && wbOn() ? '<span class="mq-wbn">📌 已收進「' + PRACTICE.SUBJ[s].short + '」錯題本</span>' : '') + '</div>' +
+      (!ok && wbOn() ? '<span class="mq-wbn">📌 已收進「' + (PRACTICE.S ? PRACTICE.S(s) : PRACTICE.SUBJ[s]).short + '」錯題本</span>' : '') + '</div>' +
       '<button class="mq-btn mq-next" type="button">' + (last ? '看結果' : '下一題 →') + '</button>';
     bd().querySelector('.mq-next').onclick = next;
     document.querySelector('.mq-ov .mq-prog').textContent = (ST.i + 1) + ' / ' + ST.items.length + ' · ✓ ' + ST.ok;

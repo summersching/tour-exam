@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v250(2026-11-11)
+<!-- 講義 · v251(2026-11-11)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
-     內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源);其他科製作中
+     內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語);日語製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v250 觀光資源第 25 章上線(觀光資源維護(四):世界遺產與各國文化;領隊;觀光資源題全部歸章)
+     變更履歷:v251 外語英語講義上線(第 1 章 字彙(一):機場、航空與出入境);英語題庫由 practice.js 的 PRACTICE.S 載入,題幹 __BLANK__ 顯示成底線
+              v250 觀光資源第 25 章上線(觀光資源維護(四):世界遺產與各國文化;領隊;觀光資源題全部歸章)
               v249 觀光資源第 24 章上線(觀光資源維護(三):遊憩管理、臺灣景點與帶團實務;領隊)
               v248 觀光資源第 23 章上線(世界地理(五):美洲、大洋洲與極地;領隊的地理題全部歸章)
               v247 觀光資源第 22 章上線(世界地理(四):歐洲;領隊)
@@ -240,14 +241,14 @@ const SUBJS = [
   { k:'pr2', name:'⚖️ 執業法規', file:'jy_pr2.js', v:'JY_PR2' },
   { k:'pr',  name:'🚩 執業實務', file:'jy_pr.js', v:'JY_PR' },
   { k:'gh',  name:'🗺️ 觀光資源', file:'jy_gh.js', v:'JY_GH' },
-  { k:'en',  name:'🔤 外語英語', file:null, v:null },
+  { k:'en',  name:'🔤 外語英語', file:'jy_en.js', v:'JY_EN' },
   { k:'jp',  name:'🎌 外語日語', file:null, v:null }];
 const VIEWS = [['toc','📑 章節'],['mn','🎵 口訣總表'],['fig','🖼 圖解總覽'],['cmp','⚖️ 易混比較']];
 const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 const $ = id => document.getElementById(id);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'');}
+function clean(s){return String(s==null?'':s).replace(/[ˉ‾¯]+/g,'').replace(/__BLANK__/g,'＿＿＿');}   // 英語題庫的空格寫成 __BLANK__
 const cfg = Object.assign({ subj:'pr2', view:'toc', mode:'full', ch:null, mask:true }, PRACTICE.LSget('pref_jy', {}));
 (function(){ const p = new URLSearchParams(location.search);
   const s = p.get('subj'), ch = p.get('ch'), m = p.get('mode');
@@ -269,7 +270,7 @@ function loadSubj(k){
   JYLOAD[k] = pre.then(()=>{ JY[k] = PRACTICE.gv(S.v) || null; return JY[k]; }).catch(()=>{ delete JYLOAD[k]; return null; });
   return JYLOAD[k];
 }
-function bankOf(k){ return PRACTICE.SUBJ[k] ? PRACTICE.load(k).catch(()=>null) : Promise.resolve(null); }
+function bankOf(k){ return (PRACTICE.S ? PRACTICE.S(k) : PRACTICE.SUBJ[k]) ? PRACTICE.load(k).catch(()=>null) : Promise.resolve(null); }   // v251 外語由 PRACTICE.S 取設定
 function chapterQs(ch, d){
   if (!d) return [];
   const m = ch.match || {};
@@ -493,7 +494,7 @@ function renderBar(){
   $('tabs').innerHTML = VIEWS.map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
 }
 function noData(){
-  return `<div class="card empty">📌 本科講義製作中。<br>目前先補齊中文三科(執業法規 → 執業實務 → 觀光資源),再做英語、日語,會陸續上線。</div>`;
+  return `<div class="card empty">📌 本科講義製作中。<br>中文三科已完成,英語陸續上線中,接著製作日語。</div>`;
 }
 function renderToc(J){
   const p = prog();
