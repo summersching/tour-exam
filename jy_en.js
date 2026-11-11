@@ -1,9 +1,10 @@
-/* jy_en.js — 講義:外語英語 · v251
+/* jy_en.js — 講義:外語英語 · v252
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號:
    依題型(字彙、文法、對話)與情境主題分章,題號由分章腳本產生,e2e 檢查每題只屬一章。
    字彙說明、搭配、例句與解題技巧皆自行撰寫;歷屆題目引自考選部公開試題。
    變更履歷:
+     v252 (2026-11-11) 第 2 章 字彙(二):交通與住宿
      v251 (2026-11-11) 初版:第 1 章 字彙(一):機場、航空與出入境
 */
 const JY_EN = {
@@ -95,6 +96,93 @@ const JY_EN = {
         ['機上「免費招待的」飲料?', 'complimentary drinks'],
         ['頭頂置物櫃?', 'overhead compartment / bin'],
         ['在國外護照遺失要找哪裡?', 'embassy 或 consulate']] }
+    ]
+  }, {
+    id: 'en-02', no: 2, t: '字彙(二):交通與住宿',
+    sub: 'shuttle 與 transfer · fare 與 transportation pass · southbound 與 call at · alighting 與 belongings · congestion 與 detour · itinerary 與 en route · reconfirm 與 deposit · upgrade 與 lounge · jet lag · cruise 與 deck · accommodation 與 vacancies · twin 與 double · concierge 與 valet · amenities 與 courtesy · voucher · check out 與 booked up',
+    ver: '2026-11-11',
+    match: { add: ['guide-106-5', 'guide-106-8', 'guide-106-13', 'guide-106-31', 'guide-106-34', 'guide-106-35', 'guide-106-38', 'guide-106-46', 'guide-106-60', 'leader-106-13', 'leader-106-15', 'leader-106-26', 'leader-106-29', 'leader-106-52', 'leader-106-61', 'leader-106-66', 'leader-106-67', 'leader-106-68', 'guide-107-4', 'guide-107-7', 'guide-107-47', 'guide-107-56', 'guide-107-65', 'guide-107-67', 'guide-107-69', 'leader-107-11', 'leader-107-21', 'leader-107-24', 'leader-107-31', 'leader-107-39', 'leader-107-48', 'leader-107-64', 'guide-108-3', 'guide-108-4', 'guide-108-6', 'guide-108-7', 'guide-108-12', 'guide-108-13', 'guide-108-14', 'guide-108-25', 'guide-108-26', 'guide-108-33', 'guide-108-51', 'guide-108-56', 'guide-108-57', 'guide-108-58', 'leader-108-5', 'leader-108-6', 'leader-108-16', 'leader-108-25', 'leader-108-33', 'leader-108-35', 'leader-108-39', 'guide-109-19', 'guide-109-20', 'guide-109-21', 'guide-109-28', 'guide-109-29', 'guide-109-32', 'guide-109-33', 'guide-109-42', 'guide-109-44', 'guide-109-45', 'guide-109-62', 'leader-109-6', 'leader-109-8', 'leader-109-11', 'leader-109-20', 'leader-109-22', 'leader-109-30', 'leader-109-33', 'leader-109-38', 'leader-109-43', 'leader-109-45', 'leader-109-48', 'leader-109-57', 'leader-109-66', 'leader-109-68', 'guide-110-7', 'guide-110-10', 'guide-110-32', 'guide-110-37', 'guide-110-47', 'guide-110-49', 'guide-110-51', 'guide-110-55', 'guide-110-56', 'leader-110-8', 'leader-110-31', 'guide-111-3', 'guide-111-6', 'guide-111-7', 'guide-111-8', 'guide-111-12', 'guide-111-28', 'guide-111-38', 'guide-111-40', 'guide-111-41', 'guide-111-42', 'guide-111-45', 'leader-111-1', 'leader-111-10', 'leader-111-49', 'guide-112-6', 'guide-112-7', 'guide-112-11', 'guide-112-12', 'guide-112-25', 'guide-112-38', 'guide-112-39', 'guide-112-41', 'guide-112-42', 'guide-112-50', 'guide-112-51', 'guide-112-61', 'guide-112-69', 'leader-112-13', 'leader-112-16', 'leader-112-21', 'leader-112-39', 'leader-112-56', 'guide-113-21', 'guide-113-26', 'guide-113-27', 'guide-113-29', 'guide-113-34', 'guide-113-38', 'guide-113-40', 'guide-113-41', 'guide-113-43', 'guide-113-45', 'guide-113-55', 'guide-113-62', 'guide-113-66', 'guide-113-67', 'guide-113-68', 'leader-113-7', 'leader-113-12', 'leader-113-22', 'leader-113-28', 'leader-113-32', 'leader-113-36', 'leader-113-40', 'leader-113-58', 'leader-113-60', 'leader-113-64', 'guide-114-18', 'guide-114-25', 'guide-114-30', 'guide-114-44', 'guide-114-45', 'guide-114-49', 'guide-114-55', 'guide-114-56', 'guide-114-62', 'guide-114-63', 'guide-114-64', 'guide-114-69', 'leader-114-38', 'leader-114-41', 'leader-114-42', 'leader-114-68', 'guide-115-3', 'guide-115-5', 'guide-115-17', 'guide-115-19', 'guide-115-27', 'guide-115-39', 'guide-115-43', 'guide-115-56', 'guide-115-58', 'guide-115-60', 'leader-115-2', 'leader-115-14', 'leader-115-16', 'leader-115-35', 'leader-115-42'] },
+    blocks: [
+      { t: 'h', text: '一、陸上交通與票券' },
+      { t: 'p', html: '從機場進市區常搭 <b>shuttle</b> bus(接駁車,許多飯店提供免費的 airport shuttle 或 courtesy shuttle),也可以坐地鐵等 public <b>transportation</b>。計程車或公車的車資叫 <b>fare</b>;搭地鐵把 smart card 加值後刷卡進站,車資自動 <b>deducted</b>(扣除);一票玩到底的 <b>transportation pass</b>(交通票券)或日本的 Japan Rail Pass 適合 <b>multiple</b> stops(多次停留)的旅客,長者可以辦 <b>concessionaire</b> card(優待卡)。列車廣播常聽到:This train is bound for Nangang(開往南港),will also <b>call at</b>(停靠)Hsinchu;這個月台是 <b>southbound</b>(往南的)列車;下車叫 <b>alighting</b>,下車前帶好 personal <b>belongings</b>(隨身物品)。在中途站換車叫 make a <b>transfer</b>(轉乘)。' },
+      { t: 'fig', h: '圖解 1:搭車與轉乘常聽到的字', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="搭車與轉乘常聽到的字:shuttle bus 是機場與飯店之間的接駁車,常常免費;fare 是車資,刷卡進站時 deducted 自動扣款;transfer 是中途換車或轉機,call at 是列車停靠某一站;alighting 是下車,下車前帶好 belongings 隨身物品"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">shuttle bus</text><text class="ts" x="16" y="43">機場、飯店之間的接駁車(常免費)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">fare / deducted</text><text class="ts" x="16" y="93">車資;刷卡進站時自動扣款</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">transfer / call at</text><text class="ts" x="16" y="143">中途換車(轉乘)/ 列車停靠某站</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">alighting / belongings</text><text class="ts" x="16" y="193">下車;下車前帶好隨身物品</text></svg>' },
+      { t: 'ex', key: 'leader-106-13', steps: ['關鍵字是 between the airport and the city center:機場和市區之間往返的公車。', '固定路線來回接送的車是接駁車 → 選 B shuttle;resort、terminal、roundabout(圓環)都不是公車的種類。'] },
+      { t: 'p', html: '交通壅塞叫 traffic <b>congestion</b>(形容詞是 <b>congested</b>);捷運系統能 relieve、<b>alleviate</b>(緩解)交通壅塞。道路施工要 take a <b>detour</b>(繞道),趕時間可以抄 <b>shortcut</b>(捷徑)。開車相關的字:<b>speed limit</b>(速限)、<b>gas tank</b>(油箱)、<b>vehicle</b>(車輛)、<b>gears</b>(檔位);買到有毛病的車叫 a <b>lemon</b>(瑕疵品)。出發前先規劃 <b>itinerary</b>(行程),前往 <b>destination</b>(目的地)的路上叫 <b>en route</b>(途中),例如 stop in Istanbul en route to Nigeria。' },
+      { t: 'mn', h: '方向字', text: '「-bound 表示開往:northbound 往北、southbound 往南,bound for Nangang 開往南港」', ex: '月台與班次廣播常考;紐約地鐵用 uptown(往北邊住宅區)與 downtown(往市中心)標示方向。' },
+      { t: 'ex', key: 'leader-109-68', steps: ['後一句說 Uptown service 在鐵軌另一邊,所以這個月台是另一個方向的列車。', '描述列車方向用 -bound:southbound(往南的)→ 選 D;accessory、escalator、transparent 都不合。'] },
+      { t: 'h', text: '二、機票、轉機與郵輪' },
+      { t: 'p', html: '訂機票:便宜的機票叫 <b>bargains</b> 或 budget fares,網路上常找得到;艙等有 <b>economy</b> 與 business class,可以 <b>upgrade</b>(升等),商務艙旅客能使用機場 <b>lounges</b>(貴賓室)。出發前向航空公司 <b>reconfirm</b>(再次確認)機位,常見的是起飛前 72 小時;訂位要附上一成的 <b>deposit</b>(訂金)才算成立。轉機的旅客叫 <b>transfer</b> passenger,在中途點停留最多 24 小時;長途飛行後的時差叫 <b>jet lag</b>。在機場可以用 self-service check-in <b>kiosk</b>(自助報到機)印行李條,行李要通過 X 光 <b>inspection</b>(檢查)。郵輪(<b>cruise</b>)旅遊可以在 <b>deck</b>(甲板)上看海,船停靠的碼頭叫 <b>dock</b>;旅遊淡季叫 <b>low season</b>,價格比較便宜。' },
+      { t: 'p', html: '形近字常一起出現當陷阱:<b>transfer</b>(轉乘)、transport(運輸)、transplant(移植)、transparent(透明的);<b>depart</b> 是動詞(出發),departure 是名詞;價格類的 <b>affordable</b>(負擔得起的)、<b>economical</b>(經濟實惠的)與 <b>pricey</b>(昂貴的)意思相反。' },
+      { t: 'table', h: '重點表:交通與票券字彙', stack: true, head: ['英文', '中文與常考搭配'],
+        rows: [['**shuttle**', '接駁車:airport shuttle、free shuttle bus'],
+          ['**fare** / deducted', '車資 / 扣款:The fare is automatically deducted.'],
+          ['**transfer**', '轉乘、轉機:make a transfer at an intermediate station'],
+          ['**itinerary**', '行程表:plan your itinerary'],
+          ['**reconfirm**', '再次確認(機位):reconfirm your flight before departure'],
+          ['**congestion** / detour', '壅塞 / 繞道:take a detour'],
+          ['**southbound**', '往南的(northbound 往北的)'],
+          ['**en route**', '在途中:stop in Istanbul en route to Nigeria']] },
+      { t: 'ex', key: 'guide-112-50', steps: ['72 hours prior to departure、directly with the airline:起飛前三天直接向航空公司處理機位。', '「再次確認」是 reconfirm → 選 D;forecast(預測)、withdraw(撤回)、compensate(補償)都不合。'] },
+      { t: 'ex', key: 'guide-112-38', steps: ['乘客從一架飛機換到另一架,在中途點停留最多 24 小時,是轉機旅客。', '轉機、轉乘 = transfer → 選 B;transformed、transport、transplant 只是 trans- 開頭的形近字。'] },
+      { t: 'key', items: [
+        '機場與飯店之間的接駁車 = **shuttle**;車資 = **fare**,刷卡自動 **deducted**。',
+        '中途換車、轉機 = **transfer**;列車停靠 = **call at**;下車 = **alighting**。',
+        '往南的列車 = **southbound**;繞道 = **detour**;交通壅塞 = **congestion**。',
+        '行程表 = **itinerary**;再次確認機位 = **reconfirm**;途中 = **en route**。',
+        '時差 = **jet lag**;自助報到機 = **kiosk**;機場貴賓室 = **lounge**。'] },
+      { t: 'h', text: '三、住宿' },
+      { t: 'p', html: '住宿的總稱是 <b>accommodation</b>(美式常用複數 accommodations)或 <b>lodging</b>;熱門的住宿常提早幾週就 <b>booked up</b>(訂滿)。飯店能容納多少人,動詞用 <b>accommodate</b>,名詞用 <b>capacity</b>。房型:<b>twin</b> room 是兩張單人床,<b>double</b> room 是一張雙人床,有些房間的兩張床 <b>convertible</b>(可以轉換)成一張大床;還有空房叫 <b>vacancies</b>。訂房付了 <b>deposit</b>(訂金)才是 guaranteed reservation;櫃台叫 <b>reception</b> 或 front desk,負責辦理入住、介紹館內 <b>facilities</b>(設施);退房是 <b>check out</b>,超過時間可能要多付一晚。' },
+      { t: 'cmp', h: 'twin room vs double room', head: ['', 'twin room', 'double room'],
+        rows: [['床', '**兩張**單人床', '**一張**雙人床'],
+          ['適合', '朋友、同事分床睡', '情侶、夫妻'],
+          ['相關字', 'twin-size bed;可 convertible 成大床', 'king-size、queen-size bed'],
+          ['常考說法', 'rooms which provide two beds', 'one bed for two people']] },
+      { t: 'ex', key: 'guide-107-7', steps: ['關鍵字是 provide two beds:提供兩張床的房型。', 'twin room 是兩張單人床 → 選 D;double room 是一張雙人床,single、triple 不合。'] },
+      { t: 'p', html: '飯店人員:<b>concierge</b>(禮賓員)幫忙訂餐廳、買票、安排當地行程;<b>valet</b>(代客泊車員)幫你把車開去停;porter、bellhop 搬行李;maid 打掃房間。<b>amenities</b> 指房內備品(牙刷、洗髮精)或飯店的便利設施,有些地區為了環保不提供一次性備品。<b>complimentary</b> breakfast(免費早餐)常用 <b>voucher</b>(兌換券)兌換;<b>courtesy</b> 是免費禮遇,如 courtesy shuttle、courtesy room(提早到或晚退房時暫用的免費房間)。<b>adjacent</b> rooms 是相鄰的房間;設備故障找 <b>maintenance</b>(維修);<b>resort</b> hotel(度假飯店)著重休閒設施,例如三溫暖與泳池。' },
+      { t: 'fig', h: '圖解 2:飯店人員各做什麼', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="飯店人員各做什麼:concierge 禮賓員幫房客訂餐廳、買票、安排當地行程;reception 或 front desk 櫃台辦理入住與退房,介紹 facilities 設施;valet 代客泊車員幫房客停車;porter 行李員、bellhop 門僮、maid 房務員"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">concierge 禮賓員</text><text class="ts" x="16" y="43">訂餐廳、買票、安排當地行程</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">reception / front desk</text><text class="ts" x="16" y="93">櫃台:check in、check out、介紹 facilities</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">valet 代客泊車員</text><text class="ts" x="16" y="143">幫房客把車開去停車場</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">porter / bellhop / maid</text><text class="ts" x="16" y="193">行李員、門僮、房務員</text></svg>' },
+      { t: 'ex', key: 'guide-109-45', steps: ['這個人的工作是幫房客安排當地行程、訂餐廳、買票。', '這是飯店的禮賓員 → 選 A concierge;porter 搬行李、bellhop 是門僮、maid 打掃房間。'] },
+      { t: 'fig', h: '圖解 3:從訂房到退房', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="從訂房到退房:reservation 訂房並付 deposit 訂金,才算 guaranteed 保證訂房;到 reception 櫃台 check in 辦入住,拿房卡與 voucher 兌換券;房內有 amenities 備品,complimentary breakfast 免費早餐用兌換券兌換;最後 check out 退房,超過時間可能要多付一晚"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">reservation + deposit</text><text class="ts" x="16" y="43">訂房付訂金,才算保證訂房(guaranteed)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">check in at reception</text><text class="ts" x="16" y="93">櫃台辦入住,拿房卡與 voucher</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">amenities / complimentary</text><text class="ts" x="16" y="143">房內備品;免費早餐用兌換券</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">check out</text><text class="ts" x="16" y="193">退房;超過時間可能要多付一晚</text></svg>' },
+      { t: 'table', h: '重點表:住宿字彙', stack: true, head: ['英文', '中文與常考搭配'],
+        rows: [['**accommodation**', '住宿(美式常用複數 accommodations)'],
+          ['**vacancies**', '空房:only a few vacancies left'],
+          ['**accommodate** / capacity', '容納(動詞)/ 容納量(名詞)'],
+          ['**amenities**', '房內備品、便利設施'],
+          ['**concierge**', '禮賓員(訂位、買票、安排行程)'],
+          ['**valet**', '代客泊車員'],
+          ['**courtesy**', '免費禮遇:courtesy shuttle、courtesy room'],
+          ['**voucher**', '兌換券:a voucher for a complimentary breakfast']] },
+      { t: 'key', items: [
+        '住宿 = **accommodation / lodging**;訂滿 = **booked up**;空房 = **vacancies**。',
+        '兩張單人床 = **twin** room;一張雙人床 = **double** room。',
+        '禮賓員 = **concierge**;代客泊車 = **valet**;櫃台 = **reception**。',
+        '房內備品 = **amenities**;免費禮遇 = **courtesy**;兌換券 = **voucher**。',
+        '容納 = **accommodate**(動詞)/ **capacity**(名詞);退房 = **check out**。'] },
+      { t: 'h', text: '四、解題技巧' },
+      { t: 'p', html: '交通題先抓<b>方向與動作</b>:bound for、call at、alighting、transfer;住宿題先抓<b>房型與人員</b>:twin、concierge、valet。看到 prior to、in advance、ahead 這類字,多半和事先預訂、確認有關(reconfirm、book、deposit)。四個選項常是字首相同的形近字(trans-、con-),先看句子要的意思,再看詞性,最後代回原句確認。' },
+      { t: 'tip', items: [
+        '交通題先找方向與動作:bound for、call at、alighting、transfer;住宿題先找房型與人員:twin、concierge、valet。',
+        'trans- 開頭的選項常一起出現:transfer 轉乘、transport 運輸、transplant 移植、transparent 透明。',
+        '「免費」有不同說法:complimentary(免費招待)、courtesy(免費禮遇)、free;看搭配:courtesy shuttle、complimentary breakfast。',
+        '看到 prior to、in advance → 和事先預訂、確認有關(reconfirm、book、deposit)。'] },
+      { t: 'trap', items: [
+        '**twin** room 是兩張單人床,**double** room 才是一張雙人床。',
+        '**concierge** 是禮賓員,不是行李員(porter)或門僮(bellhop)。',
+        '**vacancy** 是空房;招牌寫 **No vacancy** 表示客滿。',
+        '**accommodate** 是動詞(容納),**accommodation** 是名詞(住宿)。',
+        '**southbound** 是往南,不是「從南方來」。',
+        '**detour** 是繞道,**shortcut** 才是捷徑。'] },
+      { t: 'stale', text: '本章依歷屆考題整理;票價、轉乘規定、飯店備品政策會因地區與年度改變,實際以業者公告為準。' },
+      { t: 'self', items: [
+        ['機場與飯店之間的接駁車?', 'shuttle (bus)'],
+        ['車資?', 'fare'],
+        ['中途換車、轉機?', 'transfer'],
+        ['往南的列車?', 'southbound train'],
+        ['再次確認機位?', 'reconfirm'],
+        ['道路施工要改走?', 'detour'],
+        ['兩張單人床的房型?', 'twin room'],
+        ['幫房客訂餐廳、買票的飯店人員?', 'concierge'],
+        ['房內的牙刷、洗髮精等備品?', 'amenities'],
+        ['飯店還有空房?', 'vacancies']] }
     ]
   }]
 };
