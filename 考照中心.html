@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script src="lock_config.js"></script>
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>領隊·導遊 考照中心</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
+    --accent:#2563eb; --accent2:#1e3a8a; --teal:#0d9488; --tealbg:#e7f6f4;
+    --gold:#8a6d1a; --goldbg:#fff4cc; --grey:#94a3b8;
+    --newbg:#e5f6ec; --newk:#15904a; --oldbg:#eef1f5; --oldk:#55647a;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 5px 16px rgba(16,24,40,.05); --shadow2:0 8px 26px rgba(16,24,40,.13);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --accent2:#31488f; --teal:#5eead4; --tealbg:#123230;
+      --gold:#f2d778; --goldbg:#3d3413; --grey:#5a6577;
+      --newbg:#173023; --newk:#5ad48a; --oldbg:#242b36; --oldk:#9fb0c6;
+      --shadow:0 2px 10px rgba(0,0,0,.3); --shadow2:0 4px 18px rgba(0,0,0,.45);
+    }}
+  :root[data-theme="dark"]{
+      --bg:#12161c; --card:#1b2029; --ink:#e8edf5; --sub:#9aa8bd; --line:#2b333f;
+      --accent:#5b8cff; --accent2:#31488f; --teal:#5eead4; --tealbg:#123230;
+      --gold:#f2d778; --goldbg:#3d3413; --grey:#5a6577;
+      --newbg:#173023; --newk:#5ad48a; --oldbg:#242b36; --oldk:#9fb0c6;
+      --shadow:0 2px 10px rgba(0,0,0,.3); --shadow2:0 4px 18px rgba(0,0,0,.45);
+    }
+  *{box-sizing:border-box}
+  html{-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    line-height:1.6;padding:0 0 40px;min-height:100vh}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;
+    padding:calc(22px + env(safe-area-inset-top)) 20px 20px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header{position:relative}
+  header h1{margin:0 0 5px;font-size:1.44rem;font-weight:800;letter-spacing:-.01em;padding-right:84px}
+  .hubl{position:absolute;top:calc(18px + env(safe-area-inset-top));right:16px;color:#fff;text-decoration:none;font-size:.8rem;
+    background:rgba(255,255,255,.2);padding:4px 11px;border-radius:16px}   /* v254 回最上層的工作站首頁(index.html) */
+  header p{margin:0;opacity:.92;font-size:.84rem;line-height:1.5}
+  .free{display:inline-flex;gap:5px;align-items:center;margin-top:11px;
+    background:rgba(255,255,255,.16);padding:5px 12px;border-radius:999px;font-size:.74rem;font-weight:600}
+
+  /* 分類 / 科目 導覽 */
+  .nav{position:sticky;top:0;z-index:6;background:var(--card);border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow)}
+  .seg{display:flex;gap:8px;padding:10px 0 4px}
+  .seg button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    padding:9px 8px;border-radius:12px;cursor:pointer;font-size:.92rem;font-weight:700;
+    font-family:inherit;display:flex;gap:6px;align-items:center;justify-content:center;transition:.15s}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .seg button:disabled{color:var(--grey);cursor:not-allowed;background:var(--bg)}
+  .seg .soon{font-size:.64rem;background:var(--grey);color:#fff;border-radius:10px;padding:1px 6px}
+  .subs{display:flex;gap:7px;padding:2px 0 10px;flex-wrap:wrap}
+  .subs button{border:1px solid var(--line);background:var(--card);color:var(--sub);
+    padding:6px 15px;border-radius:999px;cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;transition:.15s}
+  .subs button:hover{border-color:var(--sub);color:var(--ink)}
+  .subs button.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+  .subs button:disabled{color:var(--grey);cursor:not-allowed}
+
+  .sect{margin:26px 0 11px;display:flex;align-items:center;gap:9px}
+  .sect h2{margin:0;font-size:1.1rem;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .sect h2::before{content:"";width:4px;height:17px;border-radius:3px;background:var(--accent)}
+  .sect .n{font-size:.76rem;color:var(--sub)}
+
+  /* 年份卡 */
+  .years{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+  .yc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;
+    cursor:pointer;text-decoration:none;color:inherit;box-shadow:var(--shadow);
+    transition:transform .12s,box-shadow .12s,border-color .12s;position:relative;overflow:hidden}
+  .yc:hover,.yc:active{transform:translateY(-2px);box-shadow:var(--shadow2);border-color:var(--accent)}
+  .yc .yr{font-size:1.7rem;font-weight:800;color:var(--accent);line-height:1.1}
+  .yc .yr small{font-size:.8rem;font-weight:700;color:var(--sub);margin-left:2px}
+  .yc .sy{font-size:.82rem;color:var(--sub);margin:3px 0 9px}
+  .yc .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:12px}
+  .b-new{background:var(--newbg);color:var(--newk)} .b-old{background:var(--oldbg);color:var(--oldk)}
+  .code{font-size:.68rem;color:var(--sub)}
+  .yc .done{position:absolute;top:10px;right:11px;font-size:.7rem;color:var(--teal);font-weight:700}
+
+  /* 工具卡 */
+  .tools{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:560px){.tools{grid-template-columns:1fr 1fr}}
+  .tc{display:flex;gap:13px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:15px 16px;cursor:pointer;text-decoration:none;color:inherit;
+    box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s,border-color .12s}
+  .tc:hover,.tc:active{transform:translateY(-2px);box-shadow:var(--shadow2);border-color:var(--accent)}
+  .tc.dis{cursor:default;opacity:.6}
+  .tc.dis:hover{transform:none;box-shadow:var(--shadow);border-color:var(--line)}
+  .tc .ic{font-size:1.6rem;flex-shrink:0;width:46px;height:46px;border-radius:12px;
+    background:var(--bg);display:flex;align-items:center;justify-content:center}
+  .tc .tt{font-size:1.06rem;font-weight:800;letter-spacing:-.01em}
+  .tc .dd{font-size:.78rem;color:var(--sub);margin-top:2px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}   /* v253 說明最多 3 行,完整說明放在 title */
+  .tc .soon{font-size:.64rem;background:var(--gold);color:#fff;border-radius:10px;padding:1px 7px;margin-left:6px;font-weight:700}
+
+  footer{text-align:center;color:var(--sub);font-size:.74rem;margin-top:26px;line-height:1.8}
+  footer b{color:var(--teal)}
+  .subjbar{margin:14px 0 4px}
+  /* 錯題本大卡沿用工具卡 .tc,右側題數角標 */
+  .tc .wn{margin-left:auto;flex-shrink:0;background:var(--accent);color:#fff;border-radius:999px;
+    padding:2px 10px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums}
+  /* 展示型數字用等寬,對齊更穩 */
+  .scard .dd,.rcard .due,.rcard .rchip .b,.scard .gpct,.scard .streak{font-variant-numeric:tabular-nums}
+  /* C1 考試倒數 + C6 每日打卡 */
+  #studyCard{margin-top:16px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .scard .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .scard .dd{font-size:1.9rem;font-weight:800;color:var(--accent);line-height:1}
+  .scard .dd small{font-size:.8rem;font-weight:700;color:var(--sub);margin-left:3px}
+  .scard .exdate{font-size:.76rem;color:var(--sub)}
+  .scard .streak{margin-left:auto;font-size:.9rem;font-weight:800;color:var(--gold);background:var(--goldbg);
+    border-radius:20px;padding:4px 12px;white-space:nowrap}
+  .scard .goalrow{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .scard .glabel{font-size:.82rem;color:var(--sub);font-weight:700;white-space:nowrap}
+  .scard .gtrack{flex:1;background:var(--oldbg);border-radius:8px;height:16px;overflow:hidden;min-width:80px}
+  .scard .gfill{height:100%;background:var(--teal);border-radius:8px;transition:width .4s}
+  .scard .gfill.done{background:var(--newk)}
+  .scard .gpct{font-size:.82rem;font-weight:700;white-space:nowrap}
+  .scard .setbtn{border:1px solid var(--line);background:var(--card);color:var(--accent);border-radius:10px;
+    padding:6px 12px;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit}
+  .scard .setwrap{display:none;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;
+    border-top:1px dashed var(--line);padding-top:12px}
+  .scard .setwrap.on{display:flex}
+  .scard input{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;
+    padding:7px 10px;font-size:.88rem;font-family:inherit}
+  .scard input[type=number]{width:74px}
+  .scard .save{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:7px 15px;
+    cursor:pointer;font-weight:700;font-family:inherit;font-size:.86rem}
+  .scard .tip{font-size:.78rem;color:var(--sub);margin-top:8px}
+  .scard .empty{font-size:.95rem;font-weight:700}
+  /* C2 智慧複習 */
+  /* v207 今日路線(學習計畫) */
+  .scard .plan{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  .scard .plan .ph{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:800}
+  .scard .plan .ph a{margin-left:auto;font-size:.78rem;color:var(--accent);text-decoration:none;white-space:nowrap}
+  .scard .plan ul{list-style:none;margin:6px 0 0;padding:0}
+  .scard .plan li{display:flex;gap:8px;align-items:baseline;font-size:.84rem;padding:3px 0;line-height:1.5}
+  .scard .plan li a{color:var(--ink);text-decoration:none;flex:1;min-width:0}
+  .scard .plan li a:hover{color:var(--accent)}
+  .scard .plan li.ok a{color:var(--sub);text-decoration:line-through}
+  .scard .plan li .m{font-size:.74rem;color:var(--sub);white-space:nowrap}
+  .scard .plan .cta{display:inline-block;margin-top:2px;font-size:.84rem;font-weight:800;color:var(--accent);text-decoration:none}
+  #reviewCard{margin-top:12px}
+  #examCard,#guideCard{margin-top:12px}
+  .xcard ol.steps{margin:4px 0 0;padding-left:22px} .xcard ol.steps li{margin:7px 0}
+  .xcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .xcard>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;padding:14px 16px;flex-wrap:wrap}
+  .xcard>summary::-webkit-details-marker{display:none}
+  .xcard>summary::after{content:"▸";margin-left:auto;color:var(--sub);transition:.2s}
+  .xcard[open]>summary::after{transform:rotate(90deg)}
+  .xcard .xh{font-weight:800;font-size:1.02rem} .xcard .xs{font-size:.78rem;color:var(--sub)}
+  .xcard .xb{padding:0 16px 14px;font-size:.88rem;line-height:1.65}
+  .xcard h4{margin:12px 0 5px;font-size:.92rem;color:var(--accent)}
+  .xcard ul{margin:0;padding-left:20px} .xcard li{margin:3px 0}
+  .xcard table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .xcard th,.xcard td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .xcard th{background:var(--bg);font-weight:700}
+  .xcard .xn{font-size:.78rem;color:var(--sub);margin:10px 0 0}
+  .xcard a{color:var(--accent);font-weight:700}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .rcard .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .rcard h3{margin:0;font-size:1.02rem}
+  .rcard .due{margin-left:auto;font-size:.86rem;font-weight:800;color:var(--newk);background:var(--newbg);border-radius:20px;padding:3px 12px}
+  .rcard .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+  .rcard .rchip{display:inline-flex;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--line);
+    border-radius:18px;padding:7px 13px;text-decoration:none;color:inherit;font-size:.86rem;font-weight:700}
+  .rcard .rchip:hover{border-color:var(--accent)}
+  .rcard .rchip .b{background:var(--newk);color:#fff;border-radius:10px;padding:0 7px;font-size:.74rem}
+  .rcard .rchip.z{opacity:.55} .rcard .rchip.z .b{background:var(--grey)}
+  .rcard .tip{font-size:.78rem;color:var(--sub);margin-top:10px}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script src="prefs.js"></script>
+<script src="subjects.js"></script>
+<script src="srs.js"></script>
+<script src="plan.js"></script>
+<script src="pwa.js" defer></script>
+</head>
+<body>
+<header>
+  <a class="hubl" href="index.html">⌂ 工作站</a>
+  <div class="wrap">
+    <h1>🧭 領隊·導遊 考照中心</h1>
+    <p>英語 · 日語 · 觀光 · 執業實務 · 執業法規 — 歷屆詳解 + 模擬測驗 + 錯題本</p>
+    <span class="free">🔒 100% 離線免費 · 無需連網</span>
+  </div>
+</header>
+
+<div class="wrap" id="studyCard"></div>
+
+<div class="wrap" id="reviewCard"></div>
+
+<div class="wrap" id="examCard">
+  <details class="xcard" id="examInfo">
+    <summary><span class="xh">📋 考試制度速覽</span><span class="xs">依 115 年官方簡章 · 點開</span></summary>
+    <div class="xb">
+      <h4>考哪些科目</h4>
+      <table>
+        <tr><th>類科</th><th>筆試科目</th></tr>
+        <tr><td>華語導遊 / 華語領隊</td><td>執業實務、執業法規、觀光資源概要(3 科)</td></tr>
+        <tr><td>外語導遊 / 外語領隊</td><td>上面 3 科 + 外國語(導遊:英、日、韓、越、馬來語;領隊:英、日、韓語)</td></tr>
+        <tr><td>外語導遊</td><td>筆試及格後再考<b>口試</b></td></tr>
+      </table>
+      <h4>題數與時間</h4>
+      <ul>
+        <li>專業科目:每科 <b>50 題</b>、每題 2 分、<b>1 小時</b></li>
+        <li>外國語:<b>80 題</b>、每題 1.25 分、<b>1 小時 20 分</b></li>
+        <li>全部是選擇題,不能用計算機;開考 15 分鐘後不能入場、45 分鐘內不能離場</li>
+      </ul>
+      <h4>及格標準</h4>
+      <ul>
+        <li>各科<b>平均滿 60 分</b></li>
+        <li>外語類:平均滿 60,且<b>外國語滿 50 分</b>(外語科以外 3 科免測者:外國語滿 60)</li>
+        <li>缺考視為 0 分;<b>任一科 0 分不及格</b></li>
+        <li>外語導遊口試:口試委員評分平均滿 60 分</li>
+      </ul>
+      <h4>外語導遊口試</h4>
+      <ul>
+        <li>每人約 10–12 分鐘,在臺北考區舉行</li>
+        <li>三大部分:<b>自我介紹</b>、<b>本國文化與國情</b>、<b>風景、節慶與美食</b> → 可到「<a href="口試練習.html">口試練習</a>」準備</li>
+      </ul>
+      <h4>115 年時程(參考)</h4>
+      <table>
+        <tr><td>筆試報名</td><td>114/12/9 – 12/18</td></tr>
+        <tr><td>筆試</td><td>115/3/14(領隊)、3/15(導遊)</td></tr>
+        <tr><td>試題疑義</td><td>考後 3/16 – 3/18 線上提出</td></tr>
+        <tr><td>口試報名</td><td>115/4/28 – 5/4</td></tr>
+        <tr><td>口試</td><td>115/5/23(英語)、5/24(日語等其他語言)</td></tr>
+      </table>
+      <p class="xn">報名資格:高中(職)以上畢業或同等學力。另有「專用制外語導遊 / 領隊」(旅行業現職 2 年以上、由公司推薦,考「執業實務及法規」+ 外國語)。116 年簡章以交通部觀光署公告為準;往年約 11 月公告、12 月報名、隔年 3 月中筆試。報名網站:register-exam.tad.gov.tw</p>
+    </div>
+  </details>
+</div>
+
+<div class="wrap" id="guideCard">
+  <details class="xcard" id="guideInfo">
+    <summary><span class="xh">🧭 建議使用順序</span><span class="xs">第一次用?照這個順序最有效</span></summary>
+    <div class="xb">
+      <ol class="steps">
+        <li><b>先排計畫</b>:到「<a href="學習計畫.html">學習計畫</a>」輸入考試日與每天可讀的時間,之後每天照首頁的「今日路線」做;落後會自動重排。</li>
+        <li><b>看詳解打底</b>:到「<a href="歷屆試題.html">歷屆試題</a>」先挑最近 2–3 屆,用複習模式把題目和解析看過一輪。</li>
+        <li><b>自測找弱點</b>:各科詳解切「自測模式」,或用「<a href="模擬測驗.html">模擬測驗</a>」隨機組卷;答錯的題目會自動收進錯題本。</li>
+        <li><b>每天清錯題</b>:點上方「今日複習」的科目,把今天到期的錯題做完;答對會依 3、7、14 天往後排,4 關都過就移出。</li>
+        <li><b>背高頻考點</b>:先看「出題趨勢」決定先念哪些主題,再用「考前衝刺(含中文三科必背 100 條)」「考點速記」「觀光資源圖鑑」「法規速查」「英語 / 日語學習中心」,零碎時間背單字與重點。</li>
+        <li><b>考前整卷模擬</b>:最後兩週用「模擬測驗 → 整卷模擬 + 官方時間」,每週 2–3 份,目標穩定 70 分以上(及格線 60)。</li>
+        <li><b>外語導遊口試</b>:筆試後到「<a href="口試練習.html">口試練習</a>」用「口試模擬」計時練習、錄音回放。</li>
+      </ol>
+      <p class="xn">搭配「學習儀表板」看成績趨勢與弱點;「收藏與筆記」記下自己的口訣。</p>
+    </div>
+  </details>
+</div>
+
+<div class="wrap" id="main"></div>
+
+<footer>
+  全部功能離線可用,免費、無廣告、不需註冊<br>
+  外語(英語/日語)+ 觀光 + 執業實務 + 執業法規 · <b>10 屆完整詳解 + 模擬測驗 + 錯題本</b>
+  <div><button id="lockNow" type="button" hidden style="margin-top:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">🔒 立即上鎖</button></div>
+</footer>
+
+<script>
+/* ==== 首頁 = 學習工具啟動頁(科目篩選 + 分區塊)==== */
+/* 科目清單一律取自 subjects.js(SSoT);未載入時給空陣列不致崩 */
+const SUBJ = window.SUBJECTS || [];
+const SUBJFILTERS = [['all','全部']].concat(SUBJ.map(s=>[s.k, s.name]));
+const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','📌 錯題本'],['tool','⚙️ 紀錄 · 工具']];
+const TOOLS = [
+  { id:'past',  name:'歷屆試題', icon:'📚', desc:'五科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
+  { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
+  { id:'plan',  name:'學習計畫', icon:'📅', desc:'輸入考試日與每天時間 → 自動排出每天要讀什麼 · 基礎 → 刷題 → 衝刺 · 落後自動重排', file:'學習計畫.html', cat:'do', subj:'all', noSubj:true },
+  { id:'search',name:'全站搜尋', icon:'🔎', desc:'跨五科搜題幹 / 關鍵字 · 直達詳解', file:'搜尋.html', cat:'do', subj:'all' },
+  { id:'jy',    name:'講義', icon:'📘', desc:'五科講義:執業法規 17 章 · 執業實務 19 章 · 觀光資源 25 章 · 外語英語 2 章 · 考情 · 圖解 · 口訣 · 解題技巧 · 歷屆範例 · 章末測驗 · 朗讀', file:'講義.html', cat:'review', subj:['pr2','pr','gh','en','jp'] },
+  { id:'wb',    name:'英語學習中心', icon:'📖', desc:'英語單字 · 文法 · 技巧 · 陷阱', file:'學習中心.html', cat:'review', subj:['en'] },
+  { id:'wbjp',  name:'日語學習中心', icon:'🎌', desc:'日語單字庫 1,712 詞 · 單字卡 · 讀音測驗', file:'日語學習中心.html', cat:'review', subj:['jp'] },
+  { id:'sprint',name:'考前衝刺', icon:'🔥', desc:'英語 · 日語 高頻必背 · 片語 · 敬語 · 中文三科「必背 100 條」(觀光附圖鑑地圖、年表)', file:'考前衝刺.html', cat:'review', subj:['en','jp','gh','pr','pr2'] },
+  { id:'oral',  name:'口試練習', icon:'🎤', desc:'英語 · 日語 帶團實用句 · 口試主題 · 口試模擬 53 題(計時 + 錄音)', file:'口試練習.html', cat:'review', subj:['en','jp'] },
+  { id:'lawref',name:'法規速查', icon:'⚡', desc:'違約金公式 · 級距 · 期限 · 罰鍰', file:'法規速查.html', cat:'review', subj:['pr2','pr'] },
+  { id:'lawidx',name:'條文反查', icon:'📜', desc:'這一條法規考過哪些題 · 62 部法規 410 條 · 依條號查歷屆題 · 近 3 年熱門條文', file:'條文反查.html', cat:'review', subj:['pr2','pr','gh'] },
+  { id:'newlaw',name:'新制與法規異動', icon:'🆕', desc:'修法後答案改變的歷屆題總覽 · 現行新制必背卡 · 新制測驗(選項含舊規定陷阱)', file:'法規異動.html', cat:'review', subj:['pr2','pr','gh'] },
+  { id:'sprintcn',name:'考點速記', icon:'🗂️', desc:'觀光 · 執業實務 · 執業法規 高頻考點速背 · 遮住自測 · 只看近 3 年 · 觀光細類直達地圖年表', file:'考點速記.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'tf',    name:'是非快問', icon:'⭕', desc:'歷屆考題拆成 1,600+ 句對錯判斷 · 左右滑作答 · 錯的收進錯題本', file:'是非快問.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'num',   name:'數字速記', icon:'🔢', desc:'金額 · 期限 · 人數 · 年齡 數字題速記表 · 遮住自測 · 抽題測驗', file:'數字速記.html', cat:'review', subj:['pr2','pr','gh'] },
+  { id:'tb',    name:'實務工具箱', icon:'🧰', desc:'急救 SOP · 時差計算練習 · 航空代碼速查 · 國際禮儀圖解', file:'實務工具箱.html', cat:'review', subj:['pr'] },
+  { id:'atlas', name:'觀光資源圖鑑', icon:'🗺️', desc:'分三組:臺灣地理(臺灣地理總圖 · 河川 · 山脈 · 四極之最 · 國家公園 · 風景區 · 地形海岸岩石 · 氣候與季風洋流圖)· 臺灣人文(原住民族 · 節慶 · 宗教信仰與廟宇 · 臺灣地名由來 · 臺灣史 · 古蹟)· 世界(世界遺產 · 世界史 · 世界地理);臺灣各區都標在同一張縣市地圖上 + 海岸地形圖解 + 配對小測', file:'觀光圖鑑.html', cat:'review', subj:['gh'] },
+  { id:'trend', name:'出題趨勢', icon:'📈', desc:'中文三科各主題 10 年出題熱圖 · 近 3 年升溫 / 降溫 · 點主題直接練', file:'出題趨勢.html', cat:'review', subj:['gh','pr','pr2'] },
+  { id:'cs',    name:'兩岸與入出境', icon:'🛂', desc:'護照 · 簽證 · 攜帶規定 · 役男 · 兩岸 · 港澳 · 外匯 系統整理 + 分區測驗', file:'兩岸入出境.html', cat:'review', subj:['pr2'] },
+  { id:'dash',  name:'學習儀表板', icon:'📊', desc:'成績趨勢 · 弱點分析 · 及格評估', file:'儀表板.html', cat:'tool', subj:'all', noSubj:true },
+  { id:'fav',   name:'收藏與筆記', icon:'⭐', desc:'收藏的重點題 + 自己寫的筆記 · 跨科集中複習', file:'收藏.html', cat:'tool', subj:'all', noSubj:true },
+  { id:'backup',name:'資料備份', icon:'💾', desc:'錯題 · 成績 · 收藏 · 筆記 匯出還原 · 換手機不怕沒', file:'資料備份.html', cat:'tool', subj:'all', noSubj:true }
+].concat(SUBJ.map(s=>(
+  { id:'wb_'+s.k, name:s.name, icon:s.icon, file:s.page, cat:'wrong', subj:[s.k], wb:s.wb }
+)));
+
+let FILTER='all';
+try{const s=localStorage.getItem('pref_subj'); if(s&&SUBJFILTERS.some(x=>x[0]===s))FILTER=s;}catch(e){}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function wbCount(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||'{}')).length;}catch(e){return 0;}}
+function match(t){return FILTER==='all'||t.subj==='all'||(Array.isArray(t.subj)&&t.subj.indexOf(FILTER)>=0);}
+/* 首頁選了某一科時,多科工具的連結帶 ?subj=,進去直接是該科(不用再選一次) */
+function toolHref(t){
+  if(FILTER==='all'||t.noSubj)return t.file;
+  const multi=t.subj==='all'||(Array.isArray(t.subj)&&t.subj.length>1&&t.subj.indexOf(FILTER)>=0);
+  return multi?t.file+'?subj='+FILTER:t.file;
+}
+function toolCard(t){return `<a class="tc" href="${esc(toolHref(t))}"${t.desc?` title="${esc(t.desc)}"`:''}><div class="ic">${t.icon}</div>
+    <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
+/* 錯題本快捷:與工具卡同款大卡(icon 底框 + 科目 + 題數說明 + 右側題數角標)*/
+function wchip(t){let o={};try{o=JSON.parse(localStorage.getItem(t.wb)||'{}');}catch(e){}
+  const n=Object.keys(o).length,d=SRS.countDue(o);   // C9 角標 = 今天到期的題數
+  return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+    <div><div class="tt">${esc(t.name)}</div><div class="dd">${n?(d?d+' 題今天要複習 · 共 '+n+' 題':'共 '+n+' 題 · 今天已複習完'):'尚無錯題'}</div></div>
+    ${d?`<span class="wn">${d}</span>`:''}</a>`;}
+
+function render(){
+  let html=`<div class="subs subjbar">`+SUBJFILTERS.map(([k,n])=>
+    `<button class="${k===FILTER?'on':''}" data-f="${k}">${n}</button>`).join('')+`</div>`;
+  CATS.forEach(([cat,label])=>{
+    const items=TOOLS.filter(t=>t.cat===cat&&match(t));
+    if(!items.length)return;
+    html+=`<div class="sect"><h2>${label}</h2></div>`;
+    html+= `<div class="tools">${items.map(cat==='wrong'?wchip:toolCard).join('')}</div>`;
+  });
+  document.getElementById('main').innerHTML=html;
+}
+
+/* 有設定進入密碼時才顯示「立即上鎖」(清除這台裝置的記住狀態) */
+(function(){const b=document.getElementById('lockNow');if(b&&window.APPLOCK&&APPLOCK.enabled()){b.hidden=false;b.onclick=()=>APPLOCK.lock();}})();
+document.getElementById('main').addEventListener('click',e=>{
+  const b=e.target.closest('.subjbar button'); if(!b)return;
+  FILTER=b.dataset.f; try{localStorage.setItem('pref_subj',FILTER);}catch(e){}
+  render(); window.scrollTo(0,0);
+});
+
+/* ==== C1 考試倒數 + C6 每日打卡(以模擬測驗紀錄推算)==== */
+function LSg(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function LSs(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysUntil(s){const t=new Date();t.setHours(0,0,0,0);const e=new Date(s+'T00:00:00');return Math.round((e-t)/86400000);}
+function histByDay(){let h=[];try{h=JSON.parse(LSg('quiz_history')||'[]');}catch(e){}
+  const m={};h.forEach(x=>{if(!x.ts)return;m[dkey(new Date(x.ts))]=(m[dkey(new Date(x.ts))]||0)+(x.total||0);});
+  /* v127 是非快問、數字速記、分區小測驗的作答數(practice.js 寫入 practice_daily)也算進每日練習 */
+  let p={};try{p=JSON.parse(LSg('practice_daily')||'{}');}catch(e){}
+  Object.keys(p).forEach(k=>{m[k]=(m[k]||0)+(+p[k]||0);});
+  return m;}
+function streakOf(m){let s=0,d=new Date();d.setHours(0,0,0,0);
+  if(!m[dkey(d)])d.setDate(d.getDate()-1);           // 今天還沒練 → 從昨天起算(寬限一天)
+  while(m[dkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
+function renderStudyCard(){
+  const box=document.getElementById('studyCard'); if(!box)return;
+  const exam=LSg('exam_date')||'';
+  const goal=Math.max(1,+(LSg('daily_goal')||30));
+  const m=histByDay();
+  const today=m[dkey(new Date())]||0;
+  const streak=streakOf(m);
+  const pct=Math.min(100,Math.round(today/goal*100));
+  let head;
+  if(exam){
+    const dleft=daysUntil(exam);
+    head = dleft>=0
+      ? `<span class="dd">${dleft}<small>天後考試</small></span><span class="exdate">${exam}</span>`
+      : `<span class="empty">🎓 考試日(${exam})已過,祝金榜題名!可設定下次目標</span>`;
+  }else{
+    head = `<span class="empty">🎯 設定考試日期,顯示倒數與每日目標</span>`;
+  }
+  box.innerHTML=`<div class="scard">
+    <div class="top">${head}
+      ${streak?`<span class="streak">🔥 連續 ${streak} 天</span>`:''}
+      <button class="setbtn" id="scSet">${exam?'⚙️ 設定':'＋ 設定'}</button>
+    </div>
+    <div class="goalrow">
+      <span class="glabel">今日已練</span>
+      <div class="gtrack"><div class="gfill ${today>=goal?'done':''}" style="width:${pct}%"></div></div>
+      <span class="gpct">${today}/${goal} 題</span>
+    </div>
+    ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗、是非快問、數字速記等的作答數計。</div>`}
+    ${planBlock()}
+    <div class="setwrap" id="scForm">
+      <label class="glabel">考試日期 <input type="date" id="scDate" value="${exam}"></label>
+      <label class="glabel">每日目標 <input type="number" id="scGoal" min="1" max="500" value="${goal}"> 題</label>
+      <button class="save" id="scSave">儲存</button>
+    </div>
+  </div>`;
+  document.getElementById('scSet').onclick=()=>document.getElementById('scForm').classList.toggle('on');
+  document.getElementById('scSave').onclick=()=>{
+    const dv=document.getElementById('scDate').value;
+    const gv=Math.max(1,Math.min(500,+document.getElementById('scGoal').value||30));
+    if(dv)LSs('exam_date',dv); else {try{localStorage.removeItem('exam_date');}catch(e){}}
+    LSs('daily_goal',gv); renderStudyCard();
+  };
+}
+
+/* ==== v207 今日路線:有學習計畫 → 列出今天的任務;沒有 → 提示建立(plan.js)==== */
+function planBlock(){
+  if(!window.PLAN)return '';
+  let P; try{P=PLAN.build();}catch(e){return '';}
+  if(!P.ok){
+    if(P.why==='noplan')return `<div class="plan"><a class="cta" href="學習計畫.html">📅 產生學習計畫:依考試日自動排每天要讀什麼 →</a></div>`;
+    return '';
+  }
+  const items=P.route.filter(r=>r.kind!=='rev').slice(0,4);
+  const head=P.isStudy?`🧭 今日路線 · ${P.phName}期`:'🧭 今天是休息日';
+  const li=r=>`<li class="${r.done?'ok':''}"><span>${r.done?'✅':r.ic}</span><a href="${esc(r.href||'學習計畫.html')}">${esc(r.t)}</a>${r.min&&!r.done?`<span class="m">${r.min} 分</span>`:''}</li>`;
+  const body=items.length?`<ul>${items.map(li).join('')}</ul>`:`<ul><li><span>💤</span><a href="學習計畫.html">${P.isStudy?'今天沒有排新任務,看看計畫 →':'好好休息,想多做可以到計畫頁加到今天 →'}</a></li></ul>`;
+  const late=P.late.n?`<div class="tip" style="margin-top:6px">⏰ 落後 ${P.late.n} 項,已自動排進接下來的日子</div>`:'';
+  return `<div class="plan"><div class="ph">${head}<a href="學習計畫.html">完整計畫 →</a></div>${body}${late}</div>`;
+}
+
+/* ==== C2 智慧複習:彙整各科錯題本,算出「今天該複習」的題數 ==== */
+/* 規則:錯題上次接觸(ts)在今天之前 → 今天該再看一次;今天已複習(ts=今天)或答對移除者不再列入 */
+function renderReviewCard(){
+  const box=document.getElementById('reviewCard'); if(!box)return;
+  /* C9 間隔複習:到期 = 依 1、3、7、14 天排程排到今天(srs.js) */
+  let pool=0, due=0; const per={};
+  SUBJ.forEach(s=>{
+    let o={}; try{o=JSON.parse(LSg(s.wb)||'{}');}catch(e){}
+    const ids=Object.keys(o), d=ids.filter(id=>SRS.isDue(o[id])).length;
+    per[s.k]={total:ids.length,due:d}; pool+=ids.length; due+=d;
+  });
+  if(!pool){box.innerHTML=''; return; }   // 沒有任何錯題就不顯示
+  const chips=SUBJ.filter(s=>per[s.k].total>0).map(s=>{
+    const p=per[s.k];
+    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}${p.due?'?due=1':''}">${s.icon} ${s.name}<span class="b">${p.due?p.due:'✓'}</span></a>`;
+  }).join('');
+  const tip = due
+    ? `今天到期 <b>${due}</b> 題,點科目直接開始複習。答對會依 3、7、14 天往後排,4 關都答對就移出錯題本;答錯明天重來。`
+    : '🎉 今天的複習都完成了!錯題本還有 '+pool+' 題,會依間隔排在之後的日子。';
+  box.innerHTML=`<div class="rcard">
+    <div class="top"><h3>🧠 今日複習</h3>${due?`<span class="due">待複習 ${due} 題</span>`:`<span class="due" style="color:var(--teal);background:var(--tealbg)">今日已完成</span>`}</div>
+    <div class="chips">${chips}</div>
+    <div class="tip">${tip}</div>
+  </div>`;
+}
+
+render();
+renderStudyCard();
+renderReviewCard();
+/* C11 建議使用順序:還沒有任何測驗紀錄的新使用者預設展開;之後記住展開狀態 */
+(function(){const d=document.getElementById('guideInfo');if(!d)return;let v=null;
+  try{v=localStorage.getItem('pref_guide_open');if(v===null)v=JSON.parse(localStorage.getItem('quiz_history')||'[]').length?'0':'1';}catch(e){}
+  d.open=v==='1';
+  d.addEventListener('toggle',function(){try{localStorage.setItem('pref_guide_open',d.open?'1':'0');}catch(e){}});})();
+/* B7 考試制度速覽:記住展開狀態 */
+(function(){const d=document.getElementById('examInfo');if(!d)return;
+  try{if(localStorage.getItem('pref_exam_open')==='1')d.open=true;}catch(e){}
+  d.addEventListener('toggle',function(){try{localStorage.setItem('pref_exam_open',d.open?'1':'0');}catch(e){}});})();
+</script>
+</body>
+</html>

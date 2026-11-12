@@ -15,6 +15,7 @@
          各科依自評與模擬測驗正確率加權輪排;排不下時先省略「加碼」任務(較舊年度、另一證照的卷)
    今天的清單在當天第一次打開時決定(plan_today),之後勾掉不會一直冒出新任務;沒做完的隔天自動排回最前面
    變更履歷:
+     v254 (2026-11-12) 連到首頁的任務改連 考照中心.html(index.html 改成工作站首頁)
      v253 (2026-11-11) 版號同步(講義頁閱讀體驗改版;學習計畫內容不變)
      v252 (2026-11-11) 講義新增外語英語第 2 章(字彙(二):交通與住宿)
      v251 (2026-11-11) 講義新增外語英語第 1 章(字彙(一):機場、航空與出入境);外語講義只排給選考該語言的考生
@@ -295,7 +296,7 @@
     const ph = phOf[today] || (restDays[0] && phOf[restDays[0]]) || 'final';
     /* 今日路線 */
     const route = [], rv = review(cfg);
-    if (rv.total || rv.due) route.push({ id: 'rev', kind: 'rev', ic: '🧠', t: rv.due ? '錯題複習:今天到期 ' + rv.due + ' 題' : '錯題複習:今天到期的都複習完了', sub: rv.due ? rv.name + '最多,先從這科開始;答對會往後排' : '錯題本共 ' + rv.total + ' 題,依間隔排在之後', min: rv.due ? Math.min(30, Math.ceil(rv.due * 1.2)) : 0, href: rv.href || 'index.html', done: !rv.due, auto: true });
+    if (rv.total || rv.due) route.push({ id: 'rev', kind: 'rev', ic: '🧠', t: rv.due ? '錯題複習:今天到期 ' + rv.due + ' 題' : '錯題複習:今天到期的都複習完了', sub: rv.due ? rv.name + '最多,先從這科開始;答對會往後排' : '錯題本共 ' + rv.total + ' 題,依間隔排在之後', min: rv.due ? Math.min(30, Math.ceil(rv.due * 1.2)) : 0, href: rv.href || '考照中心.html', done: !rv.due, auto: true });
     if (isStudy && (ph === 'base' || ph === 'drill') && habitMin(cfg)) {
       const id = 'voc:' + today;
       route.push({ id, kind: 'habit', ic: cfg.lang === 'jp' ? '🎌' : '🔤', t: (cfg.lang === 'jp' ? '日語' : '英語') + '單字卡 ' + habitMin(cfg) + ' 分鐘', sub: '複習學過的字,每天一點不會忘', min: habitMin(cfg), href: cfg.lang === 'jp' ? '日語學習中心.html' : '學習中心.html', done: !!man[id] });
@@ -308,7 +309,7 @@
     });
     if (isStudy && ph === 'final') {
       const left = restDays.length, last = left === 1;
-      [['fin:rev', '🧠', '錯題本全部再看一次(各科)', 'index.html', 30], ['fin:must', '🔥', '考前衝刺必背:快速瀏覽', '考前衝刺.html', 30], ['fin:new', '🆕', '新制與法規異動:必背卡', '法規異動.html?tab=cards', 20]]
+      [['fin:rev', '🧠', '錯題本全部再看一次(各科)', '考照中心.html', 30], ['fin:must', '🔥', '考前衝刺必背:快速瀏覽', '考前衝刺.html', 30], ['fin:new', '🆕', '新制與法規異動:必背卡', '法規異動.html?tab=cards', 20]]
         .concat(last ? [['fin:prep', '🎒', '準備入場證件(准考證、身分證)、早點睡', '', 0]] : [])
         .forEach(([k, ic, t, href, min]) => { const id = k + ':' + today; route.push({ id, kind: 'final', ic, t, min, href, done: !!man[id] }); });
     }
