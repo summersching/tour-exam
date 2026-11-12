@@ -7,11 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v253(2026-11-11)
+<!-- 講義 · v255(2026-11-12)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語);日語製作中
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v253 閱讀體驗改版:章節選單(目錄、章內置頂列與章末都能直接跳章,章內可跳小節)、目錄分組標籤與精簡章節卡、
+     變更履歷:v255 英語講義新格式:單字表(音標 + 🔊 發音 + 遮住中文自測)、情境會話(對話泡泡、▶ 播放、點一句唸一句)、文法重點、發音提醒;
+                   整章朗讀遇到英文改用英語語音;SAY(英語發音)
+              v253 閱讀體驗改版:章節選單(目錄、章內置頂列與章末都能直接跳章,章內可跳小節)、目錄分組標籤與精簡章節卡、
                    長段落自動條列(pHtml)、各科主色與小節輪流配色、重點 / 技巧 / 陷阱 / 口訣 / 比較 / 範例各有樣式
               v252 外語英語第 2 章上線(字彙(二):交通與住宿)
               v251 外語英語講義上線(第 1 章 字彙(一):機場、航空與出入境);英語題庫由 practice.js 的 PRACTICE.S 載入,題幹 __BLANK__ 顯示成底線
@@ -281,6 +283,53 @@
   .jlaw{background:var(--paper);border:0;border-left:5px solid var(--sub)}
   .jstale{background:var(--card);border:1.5px dashed var(--warn)}
   @media print{.chnav,.tocnav,.grow,.end select{display:none!important}}
+  /* ===== v255 英語講義新格式:單字表(音標 + 發音)、情境會話、文法重點、發音提醒 ===== */
+  .spk{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:10px;width:36px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit;line-height:1;padding:0}
+  .spk:active,.saying>.spk{background:var(--acb);border-color:var(--ac)}
+  .ipa{font-family:"Segoe UI","Lucida Sans Unicode","Arial Unicode MS","Noto Sans",sans-serif;color:var(--sub);font-size:.86rem;white-space:nowrap}
+  .pos{font-size:.7rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px;white-space:nowrap}
+  .jvoc,.jdlg,.jgram,.jpron{border-radius:14px;padding:10px 12px;margin:12px 0}
+  .jvoc .mh,.jdlg .mh,.jgram .mh,.jpron .mh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .jvoc{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ac)}
+  .jvoc .mh{color:var(--ac)}
+  .vt{margin-left:auto;border:1.5px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:3px 10px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .vt.on{background:var(--sel);border-color:var(--sel);color:var(--on)}
+  .vrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .vrow:first-of-type{border-top:0}
+  .vb{flex:1;min-width:0}
+  .vm{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}
+  .vw{font-weight:900;font-size:1.06rem;color:var(--ac)}
+  .vz{color:var(--ink);font-weight:700}
+  .ve{font-size:.84rem;color:var(--sub);margin-top:1px}
+  .ve .en{color:var(--ink);cursor:pointer;border-bottom:1px dotted var(--sub)}
+  .ve .vz{font-weight:400;color:var(--sub);margin-left:6px}
+  .hidez .vz{filter:blur(6px);user-select:none}
+  /* 情境會話:對話泡泡(旅客那一方靠右) */
+  .jdlg{background:var(--c2b);border-left:5px solid var(--c2)}
+  .jdlg .mh{color:var(--c2)}
+  .dtools{display:flex;gap:6px;margin:6px 0 4px;flex-wrap:wrap}
+  .dtools .vt{margin-left:0}
+  .dl{display:flex;flex-direction:column;align-items:flex-start;margin:8px 0}
+  .dl.me{align-items:flex-end}
+  .dw{font-size:.7rem;font-weight:800;color:var(--sub);margin:0 6px 2px}
+  .db{max-width:88%;background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:7px 11px;cursor:pointer}
+  .dl.me .db{background:var(--c6b);border-color:var(--c6);border-radius:14px 14px 4px 14px}
+  .den{font-weight:700;font-size:.95rem;line-height:1.5}
+  .db .vz{font-weight:400;font-size:.8rem;color:var(--sub)}
+  .saying{outline:3px solid var(--accent);outline-offset:2px}
+  /* 文法重點、發音提醒 */
+  .jgram{background:var(--c3b);border-left:5px solid var(--c3)}
+  .jgram .mh{color:var(--c3)}
+  .gpat{background:var(--card);border-radius:10px;padding:8px 10px;margin:6px 0;font-weight:800;font-size:.9rem;line-height:1.7}
+  .gpt{margin:6px 0;padding-left:1.2em;font-size:.9rem}
+  .geg{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .geg .en{font-weight:700;font-size:.93rem}
+  .geg .vz{font-weight:400;font-size:.82rem;color:var(--sub)}
+  .jpron{background:var(--c5b);border-left:5px solid var(--c5)}
+  .jpron .mh{color:var(--c5)}
+  .prow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .prow .vw{color:var(--c5)} .pn{font-size:.84rem}
+  @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz{filter:none}.saying{outline:none}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -322,7 +371,7 @@ const SUBJS = [
   { k:'en',  name:'🔤 外語英語', file:'jy_en.js', v:'JY_EN' },
   { k:'jp',  name:'🎌 外語日語', file:null, v:null }];
 const VIEWS = [['toc','📑 章節'],['mn','🎵 口訣總表'],['fig','🖼 圖解總覽'],['cmp','⚖️ 易混比較']];
-const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1 };   // 快速複習顯示的區塊
+const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 /* v253 章節分組:[組名, 起章, 迄章](目錄的分組標籤與標題、章節選單的群組;沒列的科目不分組) */
 const GROUPS = {
@@ -424,6 +473,28 @@ function selfHtml(b){
 function mnHtml(b, hide){
   return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div></div>`;
 }
+/* v255 英語講義新格式的四種區塊:
+   vocab 單字表 items:[字, 音標, 詞性, 中文, 例子(英), 例子(中)];dlg 情境會話 who:[角色…]、lines:[[第幾個角色, 英文, 中文]…](me 那一方靠右,預設 1);
+   gram 文法重點 pat:[句型…]、points:[說明…]、egs:[[英, 中]…];pron 發音提醒 items:[字, 音標, 說明]。
+   🔊 與例句、會話泡泡都帶 data-say(要唸的英文);**字** 會標紅 */
+const sayText = s => String(s == null ? '' : s).replace(/\*\*/g, '');
+function vocabHtml(b){
+  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span><button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.items.map(([w,ipa,pos,zh,eg,egz])=>
+    `<div class="vrow"><button class="spk" type="button" data-say="${esc(w)}" aria-label="聽 ${esc(w)} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?`<span class="ipa">/${esc(ipa)}/</span>`:''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span></div>${eg?`<div class="ve"><span class="en" data-say="${esc(eg)}">${esc(eg)}</span><span class="vz">${esc(egz||'')}</span></div>`:''}</div></div>`).join('')}</div>`;
+}
+function dlgHtml(b){
+  const me = b.me == null ? 1 : b.me;
+  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.lines.map(([w,en,zh])=>
+    `<div class="dl${w===me?' me':''}"><div class="dw">${esc(b.who[w])}</div><div class="db" data-say="${esc(sayText(en))}"><div class="den">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
+}
+function gramHtml(b){
+  return `<div class="jgram"><div class="mh"><span>🧩 文法${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${esc(x)}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
+    `<div class="geg"><button class="spk" type="button" data-say="${esc(sayText(en))}" aria-label="聽例句">🔊</button><div><div class="en">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
+}
+function pronHtml(b){
+  return `<div class="jpron"><div class="mh"><span>👄 發音提醒${b.h?' · '+esc(b.h):''}</span></div>${b.items.map(([w,ipa,note])=>
+    `<div class="prow"><button class="spk" type="button" data-say="${esc(w.replace(/\s*[\u2192\/]\s*/g, ', '))}" aria-label="聽 ${esc(w)} 的發音">🔊</button><div><span class="vw">${esc(w)}</span> <span class="ipa">/${esc(ipa)}/</span><div class="pn">${esc(note)}</div></div></div>`).join('')}</div>`;
+}
 function figHtml(b){ return `<figure class="jfig"><figcaption>🖼 ${esc(b.h)}</figcaption>${b.svg}</figure>`; }
 function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
 /* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
@@ -482,6 +553,10 @@ function blockHtml(k, b, d){
     case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}${lawRefLink(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
     case 'ex': return exHtml(k, b, d);
     case 'self': return selfHtml(b);
+    case 'vocab': return vocabHtml(b);
+    case 'dlg': return dlgHtml(b);
+    case 'gram': return gramHtml(b);
+    case 'pron': return pronHtml(b);
     default: return '';
   }
 }
@@ -511,10 +586,11 @@ function hydrateLawRef(){
    長段切成短句再唸(部分瀏覽器長句會中斷);朗讀中點任一區塊 → 從那裡開始;語速記在 pref_jy_rate */
 const TTS = (() => {
   const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
-  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself';
-  let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null;
+  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
+  let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null;
   let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
-  const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null; };
+  const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
+    enVoice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; };
   if (SS && SS.getVoices) { pickVoice(); if (SS.addEventListener) SS.addEventListener('voiceschanged', pickVoice); }
   const T = el => el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
   const tidy = t => String(t || '').replace(/[\u2192\u21D2\u279C]/g, '\uFF0C')
@@ -540,6 +616,17 @@ const TTS = (() => {
     if (el.matches('.jself')) return T(el.querySelector('.mh')) + '。' + [...el.querySelectorAll('li')].map(li => { const a = li.querySelector('.ans'); return T(li).replace(T(a), '').trim() + '。答案：' + T(a); }).join('。');
     if (el.matches('ul.jp')) return lis(el);   // v253 條列段落:一條一句
     return T(el);
+  }
+  function enParts(el) {   // v255 英語區塊:英文用英語語音唸,中文說明用中文語音(langs 與 parts 一一對應)
+    const parts = [], langs = [];
+    const zh = t => split(tidy(t)).forEach(x => { parts.push(x); langs.push('zh-TW'); });
+    const en = t => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t) { parts.push(t); langs.push('en-US'); } };
+    zh(T(el.querySelector('.mh span')));
+    if (el.matches('.jvoc')) el.querySelectorAll('.vrow').forEach(r => { en(T(r.querySelector('.vw'))); zh(T(r.querySelector('.vm .vz'))); en(T(r.querySelector('.ve .en'))); });
+    else if (el.matches('.jdlg')) el.querySelectorAll('.den').forEach(d => en(T(d)));
+    else if (el.matches('.jgram')) { el.querySelectorAll('.gpt li').forEach(li => zh(T(li))); el.querySelectorAll('.geg').forEach(g => { en(T(g.querySelector('.en'))); zh(T(g.querySelector('.vz'))); }); }
+    else el.querySelectorAll('.prow').forEach(r => { en(T(r.querySelector('.vw')).replace(/\s*[\u2192\/]\s*/g, ', ')); zh(T(r.querySelector('.pn'))); });
+    return { el, parts, langs };
   }
   function split(t) {
     const out = [];
@@ -571,8 +658,8 @@ const TTS = (() => {
     if (si >= q.parts.length) { bi++; si = 0; speak(); return; }
     if (si === 0) mark();
     ui();
-    const my = ++tok, u = new SpeechSynthesisUtterance(q.parts[si]);
-    u.lang = 'zh-TW'; if (voice) u.voice = voice; u.rate = rate;
+    const my = ++tok, u = new SpeechSynthesisUtterance(q.parts[si]), lg = (q.langs && q.langs[si]) || 'zh-TW', v = lg === 'en-US' ? enVoice : voice;   // v255 英語區塊的英文用英語語音
+    u.lang = lg; if (v) u.voice = v; u.rate = rate;
     u.onend = () => { if (my !== tok) return; si++; speak(); };
     u.onerror = e => { if (my !== tok || (e && (e.error === 'interrupted' || e.error === 'canceled'))) return; si++; speak(); };
     SS.speak(u);
@@ -580,7 +667,7 @@ const TTS = (() => {
   function restart() { tok++; SS.cancel(); speak(); }
   function start(i) {
     if (!SS || typeof SpeechSynthesisUtterance === 'undefined') { flash('這個瀏覽器不支援朗讀,可改用 Chrome、Edge 或 Safari'); return; }
-    Q = [...$('app').querySelectorAll(SEL)].map(el => ({ el, parts: split(tidy(textOf(el))) })).filter(x => x.parts.length);
+    Q = [...$('app').querySelectorAll(SEL)].map(el => el.matches('.jvoc, .jdlg, .jgram, .jpron') ? enParts(el) : ({ el, parts: split(tidy(textOf(el))) })).filter(x => x.parts.length);
     if (!Q.length) return;
     on = true; paused = false; bi = Math.max(0, Math.min(i || 0, Q.length - 1)); si = 0; ui(); restart();
   }
@@ -602,7 +689,32 @@ const TTS = (() => {
     const i = Q.findIndex(q => q.el === target || q.el.contains(target)); if (i < 0) return false;
     bi = i; si = 0; paused = false; restart(); return true;
   }
-  return { start, stop, act, jump, get on() { return on; }, get queue() { return Q; }, get pos() { return [bi, si]; }, split, tidy };
+  return { start, stop, act, jump, flash, get on() { return on; }, get queue() { return Q; }, get pos() { return [bi, si]; }, split, tidy };
+})();
+/* ---------- v255 英語發音(speechSynthesis en-US,用裝置內建語音,離線也能用)----------
+   🔊 唸單字 / 例句 / 文法例句 / 發音提醒;點會話泡泡唸那一句;▶ 播放會話逐句唸完(再按一次停止)。
+   和整章朗讀(TTS)共用同一個語音引擎,互相會先停掉對方。log 記錄唸過的文字(測試用) */
+const SAY = (() => {
+  const SS = window.speechSynthesis, log = []; let voice = null, tok = 0;
+  const pick = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; };
+  if (SS && SS.getVoices) { pick(); if (SS.addEventListener) SS.addEventListener('voiceschanged', pick); }
+  const ok = () => { if (SS && typeof SpeechSynthesisUtterance !== 'undefined') return true; TTS.flash('這個瀏覽器不支援發音,可改用 Chrome、Edge 或 Safari'); return false; };
+  const unmark = () => document.querySelectorAll('.saying').forEach(x => x.classList.remove('saying'));
+  const reset = () => { unmark(); document.querySelectorAll('[data-dplay].on').forEach(x => { x.classList.remove('on'); x.textContent = '▶ 播放會話'; }); };
+  function stop() { tok++; if (SS) SS.cancel(); reset(); }
+  function one(text, done) {
+    const my = tok, u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; if (voice) u.voice = voice; u.rate = 0.9; log.push(text);
+    u.onend = () => { if (my === tok) done(); }; u.onerror = e => { if (my === tok && !(e && (e.error === 'interrupted' || e.error === 'canceled'))) done(); };
+    SS.speak(u);
+  }
+  function say(text, el) { if (!ok()) return; TTS.stop(true); stop(); if (el) el.classList.add('saying'); one(text, unmark); }
+  function play(box, btn) {
+    if (!ok()) return;
+    const was = btn.classList.contains('on'); TTS.stop(true); stop(); if (was) return;
+    const ls = [...box.querySelectorAll('.db')]; let i = 0; btn.classList.add('on'); btn.textContent = '⏹ 停止';
+    (function next() { unmark(); if (i >= ls.length) { reset(); return; } const el = ls[i++]; el.classList.add('saying'); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); one(el.dataset.say, next); })();
+  }
+  return { say, play, stop, log };
 })();
 function renderBar(){
   const S = SUBJS;
@@ -650,7 +762,7 @@ function bodyHtml(k, ch, d){   // v253 以小節標題分段,每段輪流換一�
   return out + (n ? '</section>' : '');
 }
 function renderChapter(){
-  TTS.stop(true);
+  TTS.stop(true); SAY.stop();
   const { k, ch, d, st } = CUR, J = JY[k], i = J.chapters.indexOf(ch), p = prog()[ch.id] || {};
   const prev = J.chapters[i-1], next = J.chapters[i+1];
   const secs = ch.blocks.filter(b=>b.t==='h');
@@ -685,7 +797,7 @@ function openChapter(id){
   });
 }
 function render(){
-  TTS.stop(true);
+  TTS.stop(true); SAY.stop();
   if (cfg.view === 'ch' && cfg.ch) return openChapter(cfg.ch);
   history.replaceState(null, '', location.pathname);
   renderBar();
@@ -713,6 +825,10 @@ document.querySelector('.bar').addEventListener('click', e=>{
   if (v){ cfg.view = v.dataset.view; cfg.ch = null; saveCfg(); render(); }
 });
 $('app').addEventListener('click', e=>{
+  /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
+  const dp = e.target.closest('[data-dplay]'); if (dp){ SAY.play(dp.closest('.jdlg'), dp); return; }
+  const vz = e.target.closest('[data-vz]'); if (vz){ const h = vz.closest('.jvoc, .jdlg').classList.toggle('hidez'); vz.textContent = h ? '👀 顯示中文' : '🙈 遮住中文'; vz.classList.toggle('on', h); return; }
+  const sy = e.target.closest('[data-say]'); if (sy){ SAY.say(sy.dataset.say, sy.closest('.vrow, .geg, .prow, .db') || sy); return; }
   if (TTS.on && !e.target.closest('button, a, input')) TTS.jump(e.target);   // 朗讀中點區塊 → 從那裡開始
   const ans = e.target.closest('.ans'); if (ans){ ans.classList.toggle('mask'); return; }
   const mn = e.target.closest('.jmn.hide'); if (mn){ mn.classList.remove('hide'); return; }
@@ -730,7 +846,7 @@ $('app').addEventListener('click', e=>{
   if (act === 'toc'){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); window.scrollTo(0,0); }
   else if (act === 'read'){ const p = prog()[CUR.ch.id] || {}; setProg(CUR.ch.id, { read: p.read ? null : Date.now() }); renderChapter(); }
   else if (act === 'print') window.print();
-  else if (act === 'tts') TTS.start(0);
+  else if (act === 'tts'){ SAY.stop(); TTS.start(0); }
   else if (act === 'quiz') startQuiz(false);
   else if (act === 'quizall') startQuiz(true);
 });
@@ -744,7 +860,7 @@ $('app').addEventListener('change', e=>{
   else if (s.id === 'aggJump'){ const el = v && document.querySelector('.it[data-agg="' + v + '"]'); s.value = ''; if (el) el.scrollIntoView({ block:'start', behavior:'smooth' }); }
 });
 $('ttsBar').addEventListener('click', e=>{ const b = e.target.closest('[data-tts]'); if (b) TTS.act(b.dataset.tts); });
-window.addEventListener('pagehide', ()=>TTS.stop(true));
+window.addEventListener('pagehide', ()=>{ TTS.stop(true); SAY.stop(); });
 Promise.all(SUBJS.filter(s=>s.file).map(s=>loadSubj(s.k))).then(()=>renderBar());   // 先載入有內容的科目,顯示章數
 render();
 </script>
