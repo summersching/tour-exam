@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v262(2026-11-13)
+<!-- 講義 · v263(2026-11-13)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
-     內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語);日語製作中
+     內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v262 英語講義第 8 章上線(文法總整理),英語 8 章完成(涵蓋 1,400 題);日語科提示改為「中文三科與外語英語已完成,日語陸續上線中」
+     變更履歷:v263 日語講義上線:第 1 章(讀音(一):音讀、長短音與連濁);講義頁支援日語:{漢字|かな} 注音假名、日語發音(ja-JP)、單字表與讀音提醒顯示假名讀音、🙈 遮住讀音、歷屆範例加題目中譯與選項中譯、整章朗讀的日文用日語語音
+              v262 英語講義第 8 章上線(文法總整理),英語 8 章完成(涵蓋 1,400 題);日語科提示改為「中文三科與外語英語已完成,日語陸續上線中」
               v261 英語講義第 7 章上線(生活、職場與溝通)
               v260 英語講義第 6 章上線(安全、健康與緊急狀況)
               v259 英語講義第 5 章上線(導遊帶團、行程與生態旅遊)
@@ -336,7 +337,15 @@
   .jpron .mh{color:var(--c5)}
   .prow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
   .prow .vw{color:var(--c5)} .pn{font-size:.84rem}
-  @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz{filter:none}.saying{outline:none}}
+  /* v263 日語:假名讀音、注音假名(ruby)、遮住讀音、歷屆範例的題目中譯與選項中譯 */
+  .vt+.vt{margin-left:0}
+  .yomi{color:var(--sub);font-size:.9rem;font-weight:700;white-space:nowrap}
+  ruby{ruby-position:over;ruby-align:center} rt{font-size:.5em;font-weight:700;color:var(--sub);letter-spacing:-.02em}
+  .vts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .vts .vt{margin-left:0}
+  .hidey .yomi,.hidey rt{filter:blur(5px);user-select:none}
+  .jex .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
+  @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -376,7 +385,7 @@ const SUBJS = [
   { k:'pr',  name:'🚩 執業實務', file:'jy_pr.js', v:'JY_PR' },
   { k:'gh',  name:'🗺️ 觀光資源', file:'jy_gh.js', v:'JY_GH' },
   { k:'en',  name:'🔤 外語英語', file:'jy_en.js', v:'JY_EN' },
-  { k:'jp',  name:'🎌 外語日語', file:null, v:null }];
+  { k:'jp',  name:'🎌 外語日語', file:'jy_jp.js', v:'JY_JP' }];
 const VIEWS = [['toc','📑 章節'],['mn','🎵 口訣總表'],['fig','🖼 圖解總覽'],['cmp','⚖️ 易混比較']];
 const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
@@ -384,6 +393,7 @@ const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 const GROUPS = {
   pr2: [['旅行業與觀光產業',1,5],['發展觀光條例',6,8],['民法旅遊',9,9],['入出境、海關與外匯',10,13],['兩岸與港澳',14,16],['定型化契約',17,17]],
   pr:  [['帶團作業',1,2],['危機處理與保險',3,5],['民航、契約與票務',6,9],['急救與安全',10,11],['國際禮儀',12,13],['觀光心理',14,15],['導覽解說',16,17],['臺灣觀光資源',18,19]],
+  jp:  [['讀音',1,2],['語彙',3,4],['文法',5,7],['敬語與慣用',8,9],['閱讀測驗',10,10]],
   gh:  [['國家公園與族群',1,2],['臺灣史',3,5],['宗教、藝文與民俗',6,7],['臺灣地理',8,10],['資源維護(導遊)',11,12],['世界史(領隊)',13,18],['世界地理(領隊)',19,23],['資源維護(領隊)',24,25]] };
 function groupsOf(J){
   const G = GROUPS[J.subj]; if (!G) return [{ name:'', k:0, chs:J.chapters }];
@@ -467,10 +477,11 @@ function tableHtml(head, rows, stack){
 }
 function exHtml(k, b, d){
   const q = d && d.map[b.key]; if (!q) return '';
-  const acc = SCORE.acc(q);
+  const acc = SCORE.acc(q), a = (k === 'jp' && d.ana && d.ana[b.key]) || {}, oz = Array.isArray(a.oz) ? a.oz : [];
+  const ozt = (o, i) => { const z = String(oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim(); return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };   // v263 日語選項中譯(去掉括號裡重複的日文)
   return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>
-    <div class="stem">${esc(clean(q.stem))}</div>
-    ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}">${'ABCD'[i]}. ${esc(clean(o))}${acc.includes(i)?' ✔':''}</div>`).join('')}
+    <div class="stem">${esc(clean(q.stem))}</div>${a.zh?`<div class="szh">${esc(a.zh)}</div>`:''}
+    ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${esc(clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
     <a href="${esc(PRACTICE.href(k,q))}">看原題完整詳解 →</a></div>`;
 }
@@ -480,27 +491,36 @@ function selfHtml(b){
 function mnHtml(b, hide){
   return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div></div>`;
 }
-/* v255 英語講義新格式的四種區塊:
+/* v263 日語章同樣用這四種區塊:單字表第 2 欄是假名讀音(不是音標)、🔊 唸假名;例子、會話、文法裡可用 {漢字|かな} 注音;
+   標題列多一個「🙈 遮住讀音」(自我測驗);發音提醒改叫「讀音提醒」。
+   v255 英語講義新格式的四種區塊:
    vocab 單字表 items:[字, 音標, 詞性, 中文, 例子(英), 例子(中)];dlg 情境會話 who:[角色…]、lines:[[第幾個角色, 英文, 中文]…](me 那一方靠右,預設 1);
    gram 文法重點 pat:[句型…]、points:[說明…]、egs:[[英, 中]…];pron 發音提醒 items:[字, 音標, 說明]。
    🔊 與例句、會話泡泡都帶 data-say(要唸的英文);**字** 會標紅 */
-const sayText = s => String(s == null ? '' : s).replace(/\*\*/g, '');
+const RUBY = /\{([^{}|]+)\|([^{}|]+)\}/g;   // v263 日語注音:{漢字|かな}
+const rb = s => String(s).replace(RUBY, '<ruby>$1<rt>$2</rt></ruby>');   // 畫面顯示成 ruby(s 已經 esc)
+const sayText = s => String(s == null ? '' : s).replace(/\*\*/g, '').replace(RUBY, '$2');   // 發音:去掉 ** 記號,注音的字唸假名
+const plainText = s => String(s == null ? '' : s).replace(RUBY, '$1');
+const isJP = () => cfg.subj === 'jp';
 function vocabHtml(b){
-  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span><button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.items.map(([w,ipa,pos,zh,eg,egz])=>
-    `<div class="vrow"><button class="spk" type="button" data-say="${esc(w)}" aria-label="聽 ${esc(w)} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?`<span class="ipa">/${esc(ipa)}/</span>`:''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span></div>${eg?`<div class="ve"><span class="en" data-say="${esc(eg)}">${esc(eg)}</span><span class="vz">${esc(egz||'')}</span></div>`:''}</div></div>`).join('')}</div>`;
+  const J = isJP();
+  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${b.items.map(([w,ipa,pos,zh,eg,egz])=>{
+    const sw = J && ipa ? ipa : plainText(w), se = J && ipa ? sayText(eg).split(w).join(ipa) : sayText(eg);   // 日語:單字與例子裡的這個字都唸假名讀音
+    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span></div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}</div></div>`; }).join('')}</div>`;
 }
 function dlgHtml(b){
   const me = b.me == null ? 1 : b.me;
-  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.lines.map(([w,en,zh])=>
+  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button>${isJP()?'<button class="vt" type="button" data-vy>🙈 遮住讀音</button>':''}<button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.lines.map(([w,en,zh])=>
     `<div class="dl${w===me?' me':''}"><div class="dw">${esc(b.who[w])}</div><div class="db" data-say="${esc(sayText(en))}"><div class="den">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
 }
 function gramHtml(b){
-  return `<div class="jgram"><div class="mh"><span>🧩 文法${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${esc(x)}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
+  return `<div class="jgram"><div class="mh"><span>🧩 ${esc(b.lbl||'文法')}${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${rb(esc(x))}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
     `<div class="geg"><button class="spk" type="button" data-say="${esc(sayText(en))}" aria-label="聽例句">🔊</button><div><div class="en">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
 }
 function pronHtml(b){
-  return `<div class="jpron"><div class="mh"><span>👄 發音提醒${b.h?' · '+esc(b.h):''}</span></div>${b.items.map(([w,ipa,note])=>
-    `<div class="prow"><button class="spk" type="button" data-say="${esc(w.replace(/\s*[\u2192\/]\s*/g, ', '))}" aria-label="聽 ${esc(w)} 的發音">🔊</button><div><span class="vw">${esc(w)}</span> <span class="ipa">/${esc(ipa)}/</span><div class="pn">${esc(note)}</div></div></div>`).join('')}</div>`;
+  const J = isJP();
+  return `<div class="jpron"><div class="mh"><span>👄 ${J?'讀音提醒':'發音提醒'}${b.h?' · '+esc(b.h):''}</span></div>${b.items.map(([w,ipa,note])=>
+    `<div class="prow"><button class="spk" type="button" data-say="${esc(J ? ipa : w.replace(/\s*[\u2192\/]\s*/g, ', '))}" aria-label="聽 ${esc(w)} 的發音">🔊</button><div><span class="vw">${esc(w)}</span> ${J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`}<div class="pn">${esc(note)}</div></div></div>`).join('')}</div>`;
 }
 function figHtml(b){ return `<figure class="jfig"><figcaption>🖼 ${esc(b.h)}</figcaption>${b.svg}</figure>`; }
 function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
@@ -516,11 +536,12 @@ function hlNum(s){
   return out + s.slice(last).replace(HL_NUM, '<b class="kn">$&</b>');
 }
 function hl(s){   // s 已經過 esc()
+  s = rb(s);   // v263 日語注音
   let out = '', last = 0;
   s.replace(HL_MARK, (m, t, i) => { out += hlNum(s.slice(last, i)) + '<b class="kn">' + t + '</b>'; last = i + m.length; return m; });
   return out + hlNum(s.slice(last));
 }
-function mk(s){ return s.replace(HL_MARK, '<b class="kn">$1</b>'); }   // 只轉手動標記
+function mk(s){ return rb(s.replace(HL_MARK, '<b class="kn">$1</b>')); }   // 只轉手動標記;v263 {漢字|かな} 顯示成注音
 /* v253 長段落自動條列:依句號、分號拆成一條一條(只在 <b>、括號、引號之外拆;分號前不到 18 字不拆);
    每條開頭是「短語:」的,把短語標成小標。內容文字不變,只改排版 */
 function pHtml(html){
@@ -594,12 +615,13 @@ function hydrateLawRef(){
 const TTS = (() => {
   const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
   const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
-  let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null;
+  let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null, jaVoice = null;
   let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
   const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
-    enVoice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; };
+    enVoice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
+    jaVoice = vs.find(v => /ja[-_]JP/i.test(v.lang)) || vs.find(v => /^ja/i.test(v.lang)) || null; };
   if (SS && SS.getVoices) { pickVoice(); if (SS.addEventListener) SS.addEventListener('voiceschanged', pickVoice); }
-  const T = el => el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
+  const T = el => { if (!el) return ''; let n = el; if (el.querySelector && el.querySelector('rt')) { n = el.cloneNode(true); n.querySelectorAll('rt').forEach(r => r.remove()); } return n.textContent.replace(/\s+/g, ' ').trim(); };   // v263 注音假名(rt)不唸
   const tidy = t => String(t || '').replace(/[\u2192\u21D2\u279C]/g, '\uFF0C')
     .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2934}\u{2935}\u{3030}\u{303D}\u{3297}\u{3299}\u{FE0F}\u{200D}\u{20E3}]/gu, '')   // 表情符號與圖示符號不唸
     .replace(/\s*[\u00B7\u30FB]\s*/g, '\u3001').replace(/(\d)\s*[~\uFF5E\u2013\u2014]\s*(\d)/g, '$1到$2').replace(/[|\u2502]/g, '\uFF0C').replace(/\s+/g, ' ').trim();
@@ -624,16 +646,30 @@ const TTS = (() => {
     if (el.matches('ul.jp')) return lis(el);   // v253 條列段落:一條一句
     return T(el);
   }
-  function enParts(el) {   // v255 英語區塊:英文用英語語音唸,中文說明用中文語音(langs 與 parts 一一對應)
-    const parts = [], langs = [];
-    const zh = t => split(tidy(t)).forEach(x => { parts.push(x); langs.push('zh-TW'); });
-    const en = t => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t) { parts.push(t); langs.push('en-US'); } };
+  function enParts(el) {   // v255 英語區塊:英文用英語語音唸,中文說明用中文語音(langs 與 parts 一一對應);v263 日語章同樣做法,外語改用日語語音(唸 data-say:漢字照注音假名唸)
+    const parts = [], langs = [], J = isJP(), FLG = J ? 'ja-JP' : 'en-US';
+    const zh = t => { const ps = split(tidy(t)); if (J) { const m = mixJa(ps); parts.push(...m.parts); langs.push(...m.langs); } else ps.forEach(x => { parts.push(x); langs.push('zh-TW'); }); };
+    const en = t => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t) { parts.push(t); langs.push(FLG); } };
+    const say = x => x ? x.dataset.say : '';
     zh(T(el.querySelector('.mh span')));
-    if (el.matches('.jvoc')) el.querySelectorAll('.vrow').forEach(r => { en(T(r.querySelector('.vw'))); zh(T(r.querySelector('.vm .vz'))); en(T(r.querySelector('.ve .en'))); });
-    else if (el.matches('.jdlg')) el.querySelectorAll('.den').forEach(d => en(T(d)));
-    else if (el.matches('.jgram')) { el.querySelectorAll('.gpt li').forEach(li => zh(T(li))); el.querySelectorAll('.geg').forEach(g => { en(T(g.querySelector('.en'))); zh(T(g.querySelector('.vz'))); }); }
-    else el.querySelectorAll('.prow').forEach(r => { en(T(r.querySelector('.vw')).replace(/\s*[\u2192\/]\s*/g, ', ')); zh(T(r.querySelector('.pn'))); });
+    if (el.matches('.jvoc')) el.querySelectorAll('.vrow').forEach(r => { en(say(r.querySelector('.spk'))); zh(T(r.querySelector('.vm .vz'))); en(say(r.querySelector('.ve .en'))); });
+    else if (el.matches('.jdlg')) el.querySelectorAll('.db').forEach(d => en(say(d)));
+    else if (el.matches('.jgram')) { el.querySelectorAll('.gpt li').forEach(li => zh(T(li))); el.querySelectorAll('.geg').forEach(g => { en(say(g.querySelector('.spk'))); zh(T(g.querySelector('.vz'))); }); }
+    else el.querySelectorAll('.prow').forEach(r => { en(say(r.querySelector('.spk'))); zh(T(r.querySelector('.pn'))); });
     return { el, parts, langs };
+  }
+  /* v263 日語章:中文說明裡的假名(讀音)改用日語語音唸,其餘用中文語音 */
+  function mixJa(ps) {
+    const parts = [], langs = [], add = (t, l) => { if (/[\p{L}\p{N}]/u.test(t)) { parts.push(t.trim()); langs.push(l); } };
+    ps.forEach(t => { let last = 0; t.replace(/[\u3041-\u3096\u30A1-\u30FA\u30FC]+/g, (m, i) => { add(t.slice(last, i), 'zh-TW'); add(m, 'ja-JP'); last = i + m.length; return m; }); add(t.slice(last), 'zh-TW'); });
+    return { parts, langs };
+  }
+  const jpSay = t => String(t || '').replace(/＿+|_{2,}/g, '、').replace(/[「」『』]/g, '');
+  function exJa(el) {   // v263 日語歷屆範例:題目與正解用日語語音,中譯與解題步驟用中文
+    const parts = [], langs = [], add = (t, l) => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t) { parts.push(t); langs.push(l); } };
+    add('歷屆範例', 'zh-TW'); add(jpSay(T(el.querySelector('.stem'))), 'ja-JP'); add(T(el.querySelector('.szh')), 'zh-TW');
+    const ok = el.querySelector('.op.ok'); if (ok) { add('正確答案', 'zh-TW'); add(jpSay(ok.dataset.say), 'ja-JP'); add(T(ok.querySelector('.oz')), 'zh-TW'); }
+    const m = mixJa(split(tidy(lis(el)))); return { el, parts: parts.concat(m.parts), langs: langs.concat(m.langs) };
   }
   function split(t) {
     const out = [];
@@ -665,7 +701,7 @@ const TTS = (() => {
     if (si >= q.parts.length) { bi++; si = 0; speak(); return; }
     if (si === 0) mark();
     ui();
-    const my = ++tok, u = new SpeechSynthesisUtterance(q.parts[si]), lg = (q.langs && q.langs[si]) || 'zh-TW', v = lg === 'en-US' ? enVoice : voice;   // v255 英語區塊的英文用英語語音
+    const my = ++tok, u = new SpeechSynthesisUtterance(q.parts[si]), lg = (q.langs && q.langs[si]) || 'zh-TW', v = lg === 'en-US' ? enVoice : lg === 'ja-JP' ? jaVoice : voice;   // v255 英語區塊的英文用英語語音;v263 日語用日語語音
     u.lang = lg; if (v) u.voice = v; u.rate = rate;
     u.onend = () => { if (my !== tok) return; si++; speak(); };
     u.onerror = e => { if (my !== tok || (e && (e.error === 'interrupted' || e.error === 'canceled'))) return; si++; speak(); };
@@ -674,7 +710,8 @@ const TTS = (() => {
   function restart() { tok++; SS.cancel(); speak(); }
   function start(i) {
     if (!SS || typeof SpeechSynthesisUtterance === 'undefined') { flash('這個瀏覽器不支援朗讀,可改用 Chrome、Edge 或 Safari'); return; }
-    Q = [...$('app').querySelectorAll(SEL)].map(el => el.matches('.jvoc, .jdlg, .jgram, .jpron') ? enParts(el) : ({ el, parts: split(tidy(textOf(el))) })).filter(x => x.parts.length);
+    Q = [...$('app').querySelectorAll(SEL)].map(el => el.matches('.jvoc, .jdlg, .jgram, .jpron') ? enParts(el) : !isJP() ? ({ el, parts: split(tidy(textOf(el))) })
+      : el.matches('.jex') ? exJa(el) : Object.assign({ el }, mixJa(split(tidy(textOf(el)))))).filter(x => x.parts.length);   // v263 日語章:範例與說明裡的日文用日語語音
     if (!Q.length) return;
     on = true; paused = false; bi = Math.max(0, Math.min(i || 0, Q.length - 1)); si = 0; ui(); restart();
   }
@@ -698,19 +735,20 @@ const TTS = (() => {
   }
   return { start, stop, act, jump, flash, get on() { return on; }, get queue() { return Q; }, get pos() { return [bi, si]; }, split, tidy };
 })();
-/* ---------- v255 英語發音(speechSynthesis en-US,用裝置內建語音,離線也能用)----------
+/* ---------- v255 英語發音(speechSynthesis en-US,用裝置內建語音,離線也能用;v263 日語章改用 ja-JP)----------
    🔊 唸單字 / 例句 / 文法例句 / 發音提醒;點會話泡泡唸那一句;▶ 播放會話逐句唸完(再按一次停止)。
    和整章朗讀(TTS)共用同一個語音引擎,互相會先停掉對方。log 記錄唸過的文字(測試用) */
 const SAY = (() => {
-  const SS = window.speechSynthesis, log = []; let voice = null, tok = 0;
-  const pick = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; };
+  const SS = window.speechSynthesis, log = []; let voice = null, jaVoice = null, tok = 0;
+  const pick = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
+    jaVoice = vs.find(v => /ja[-_]JP/i.test(v.lang)) || vs.find(v => /^ja/i.test(v.lang)) || null; };   // v263 日語章用日語語音
   if (SS && SS.getVoices) { pick(); if (SS.addEventListener) SS.addEventListener('voiceschanged', pick); }
   const ok = () => { if (SS && typeof SpeechSynthesisUtterance !== 'undefined') return true; TTS.flash('這個瀏覽器不支援發音,可改用 Chrome、Edge 或 Safari'); return false; };
   const unmark = () => document.querySelectorAll('.saying').forEach(x => x.classList.remove('saying'));
   const reset = () => { unmark(); document.querySelectorAll('[data-dplay].on').forEach(x => { x.classList.remove('on'); x.textContent = '▶ 播放會話'; }); };
   function stop() { tok++; if (SS) SS.cancel(); reset(); }
   function one(text, done) {
-    const my = tok, u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; if (voice) u.voice = voice; u.rate = 0.9; log.push(text);
+    const J = isJP(), v = J ? jaVoice : voice, my = tok, u = new SpeechSynthesisUtterance(text); u.lang = J ? 'ja-JP' : 'en-US'; if (v) u.voice = v; u.rate = 0.9; log.push(text);
     u.onend = () => { if (my === tok) done(); }; u.onerror = e => { if (my === tok && !(e && (e.error === 'interrupted' || e.error === 'canceled'))) done(); };
     SS.speak(u);
   }
@@ -834,6 +872,7 @@ document.querySelector('.bar').addEventListener('click', e=>{
 $('app').addEventListener('click', e=>{
   /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
   const dp = e.target.closest('[data-dplay]'); if (dp){ SAY.play(dp.closest('.jdlg'), dp); return; }
+  const vy = e.target.closest('[data-vy]'); if (vy){ const h = vy.closest('.jvoc, .jdlg').classList.toggle('hidey'); vy.textContent = h ? '👀 顯示讀音' : '🙈 遮住讀音'; vy.classList.toggle('on', h); return; }   // v263 日語:遮住假名讀音自我測驗
   const vz = e.target.closest('[data-vz]'); if (vz){ const h = vz.closest('.jvoc, .jdlg').classList.toggle('hidez'); vz.textContent = h ? '👀 顯示中文' : '🙈 遮住中文'; vz.classList.toggle('on', h); return; }
   const sy = e.target.closest('[data-say]'); if (sy){ SAY.say(sy.dataset.say, sy.closest('.vrow, .geg, .prow, .db') || sy); return; }
   if (TTS.on && !e.target.closest('button, a, input')) TTS.jump(e.target);   // 朗讀中點區塊 → 從那裡開始
