@@ -93,6 +93,7 @@
   .mbtn.on{background:var(--sel);color:#fff;border-color:var(--sel)}
   .pbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 13px;border-radius:999px;cursor:pointer;font-size:.84rem;font-family:inherit}
   .pbtn.dang{color:var(--dang);border-color:var(--dang)}
+  .pbtn.on{background:var(--sel);border-color:var(--sel);color:#fff}   /* v278 點字查詞開啟中 */
   .score{font-size:.82rem;color:var(--sub);font-weight:700;margin-left:auto}
   @media print{header .home,.bar,.tools2,.del,.say{display:none!important}.card{box-shadow:none;break-inside:avoid}}
 </style>
@@ -112,7 +113,7 @@
 <header><div class="wrap">
   <a class="home" href="考照中心.html">← 首頁</a>
   <h1>🎌 外語日語 · 錯題本</h1>
-  <p>模擬測驗答錯的題目自動收錄,依 1、3、7、14 天間隔複習,4 關都答對才移出 · 🔊 發音</p>
+  <p>模擬測驗答錯的題目自動收錄,依 1、3、7、14 天間隔複習,4 關都答對才移出 · 🔊 發音 · 🔍 點字查詞</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
@@ -127,6 +128,7 @@
   <div class="tools2">
     <button class="mbtn on" data-m="review">📖 複習模式</button>
     <button class="mbtn" data-m="test">✍️ 自測模式</button>
+    <button class="pbtn" id="lookBtn" type="button" aria-pressed="false" title="打開後點日文字詞,看讀音、詞性、中文與發音">🔍 點字查詞</button>
     <button class="pbtn" id="printBtn">🖨 匯出 PDF</button>
     <button class="pbtn dang" id="clearBtn">🗑 清空</button>
     <span class="score" id="score"></span>
@@ -296,6 +298,27 @@ document.getElementById('clearBtn').onclick=function(){
   localStorage.removeItem(WBJP_KEY);for(const k in picks)delete picks[k];clearArm=false;this.textContent='🗑 清空';
   fc='all';fy='all';buildFilters();render();
 };
+/* v278 點字查詞(同日文詳解頁):打開後點題幹、讀解文章、選項、難字表裡的日文字詞 → 讀音、原形、詞性、中文、🔊;
+   斷詞用 kuromoji(完全離線),第一次打開才載入詞典;解析與方框這類中日混排的地方,點到的那段字有假名才查;
+   中文翻譯、選項中譯不查;自測模式點選項照常作答。開關與日文詳解頁共用(pref_jp_look) */
+let LOOK = (() => { try { return localStorage.getItem('pref_jp_look') === '1'; } catch (e) { return false; } })(), TOK = null, TKBUSY = false, LKON = false;
+function loadJs(src){ return new Promise((ok, no) => { const t = document.createElement('script'); t.src = src; t.onload = ok; t.onerror = no; document.head.appendChild(t); }); }
+function setLook(){
+  const b = document.getElementById('lookBtn');
+  b.classList.toggle('on', LOOK); b.setAttribute('aria-pressed', String(LOOK));
+  if (!LOOK){ if (window.JPLOOK) JPLOOK.setOn(false); b.textContent = '🔍 點字查詞'; return; }
+  if (TOK && window.JPLOOK){ JPLOOK.setOn(true); b.textContent = '🔍 點字查詞:開'; return; }
+  if (TKBUSY) return; TKBUSY = true; b.textContent = '🔍 詞典載入中…';
+  Promise.all([window.kuromoji ? null : loadJs('kuromoji/kuromoji.js'), window.JPLOOK ? null : loadJs('jplook.js')])
+    .then(() => new Promise((ok, no) => kuromoji.builder({ dicPath: 'dict/' }).build((err, tk) => err ? no(err) : ok(tk))))
+    .then(tk => { TOK = tk; TKBUSY = false;
+      if (!LKON){ LKON = true; JPLOOK.attach(document.getElementById('list'), { tokenizer: () => TOK, speak: speak, romaji: () => false,
+        allow: '.stem, .psgt, div.opt, .vocab td:first-child', mixed: '.ana, .box, .vocab td', skip: '.ozh, .zh, .lbl, .lab, .mk, .say' }); }
+      setLook(); })
+    .catch(() => { TKBUSY = false; LOOK = false; b.classList.remove('on'); b.textContent = '🔍 點字查詞(詞典載入失敗,請稍後再試)'; });
+}
+document.getElementById('lookBtn').onclick = function(){ LOOK = !LOOK; try { localStorage.setItem('pref_jp_look', LOOK ? '1' : '0'); } catch (e) {} setLook(); };
+if (LOOK) setLook();
 SCORE.notice(document.getElementById('list'),SCORE.pruneWB(WBJP_KEY,id=>findQ(id)));
 document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 buildFilters();render();
