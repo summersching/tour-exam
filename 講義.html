@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v274(2026-11-14)
+<!-- 講義 · v275(2026-11-14)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v274 英語、日語講義加「📖 點讀」(右下角按鈕):英語點英文字看中文、音標、🔊;日語點日文字看讀音、原形、詞性、中文、🔊(kuromoji 斷詞,詞庫加入講義單字表);中日混排的說明只在有假名時才查,翻譯與讀音欄不查;換科目自動關閉
+     變更履歷:v275 情境會話加替換練習:虛線的字點一下換下一個說法(中文翻譯跟著換,並唸出換好的句子);▶ 播放會話與整章朗讀唸目前選的說法;英語 8 章 23 段會話共 29 處可替換
+              v274 英語、日語講義加「📖 點讀」(右下角按鈕):英語點英文字看中文、音標、🔊;日語點日文字看讀音、原形、詞性、中文、🔊(kuromoji 斷詞,詞庫加入講義單字表);中日混排的說明只在有假名時才查,翻譯與讀音欄不查;換科目自動關閉
               v273 範例的「看原題完整詳解」改成在講義裡從下方滑出詳解視窗(不換頁,五科共用);✕、點背景、Esc、手機返回鍵都回到原來的位置,視窗裡另有「在新分頁開啟詳解頁」
               v272 日語講義第 10 章上線(閱讀測驗),日語 10 章完成(涵蓋 1,600 題),五科講義全部完成;沒有講義的科目提示不再寫「日語陸續上線中」
               v271 日語講義第 9 章上線(慣用、諺語與日本文化知識)
@@ -355,6 +356,12 @@
   .vts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .vts .vt{margin-left:0}
   .hidey .yomi,.hidey rt{filter:blur(5px);user-select:none}
   .jex .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  /* v275 情境會話替換練習:虛線的字點一下換說法(中文跟著換) */
+  .jdlg .sw{border-bottom:2px dotted var(--c2);border-radius:3px;background:var(--c2b);padding:0 2px;cursor:pointer}
+  .jdlg .vz .sw{background:none;cursor:default;border-bottom-width:1px}
+  .jdlg .sw .swo{display:none} .jdlg .sw .swo.on{display:inline}
+  .jdlg .sw .swi{font-size:.68em;margin-left:2px;opacity:.75} .jdlg .vz .sw .swi{display:none}
+  .jdlg .dtools .swh{font-size:.75rem;color:var(--sub);align-self:center;margin-left:2px}
   /* v274 點讀(英語、日語講義):右下角按鈕,開啟後點英文或日文字看意思和發音 */
   #rdBtn{position:fixed;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
   #rdBtn.on{background:#2563eb} #rdBtn[hidden]{display:none}
@@ -544,8 +551,16 @@ function mnHtml(b, hide){
    🔊 與例句、會話泡泡都帶 data-say(要唸的英文);**字** 會標紅 */
 const RUBY = /\{([^{}|]+)\|([^{}|]+)\}/g;   // v263 日語注音:{漢字|かな}
 const rb = s => String(s).replace(RUBY, '<ruby>$1<rt>$2</rt></ruby>');   // 畫面顯示成 ruby(s 已經 esc)
-const sayText = s => String(s == null ? '' : s).replace(/\*\*/g, '').replace(RUBY, '$2');   // 發音:去掉 ** 記號,注音的字唸假名
-const plainText = s => String(s == null ? '' : s).replace(RUBY, '$1');
+const SLOT = /\[\[(.+?)\]\]/g, HAS_SLOT = /\[\[.+?\]\]/;   // v275 替換練習:[[說法1//說法2//說法3]]
+const slotPick = (s, idx) => { let i = 0; return String(s == null ? '' : s).replace(SLOT, (m, body) => { const ops = body.split('//'); return ops[(idx && idx[i++]) || 0] || ops[0]; }); };   // 依選到的位置組出句子(預設第一個說法)
+function slotHtml(s, render){   // 每個替換位置:所有說法都放進去,只顯示 .on 那一個;render 負責跳脫與粗體、注音
+  let out = '', last = 0, i = 0; s = String(s == null ? '' : s);
+  s.replace(SLOT, (m, body, off) => { out += render(s.slice(last, off)); last = off + m.length;
+    out += `<span class="sw" data-sw="${i++}" title="點一下換說法">${body.split('//').map((o, j) => `<span class="swo${j ? '' : ' on'}">${render(o)}</span>`).join('')}<span class="swi" aria-hidden="true">🔁</span></span>`; return m; });
+  return out + render(s.slice(last));
+}
+const sayText = s => slotPick(s).replace(/\*\*/g, '').replace(RUBY, '$2');   // 發音:去掉 ** 記號,注音的字唸假名
+const plainText = s => slotPick(s).replace(RUBY, '$1');
 const isJP = () => cfg.subj === 'jp';
 function vocabHtml(b){
   const J = isJP();
@@ -555,8 +570,8 @@ function vocabHtml(b){
 }
 function dlgHtml(b){
   const me = b.me == null ? 1 : b.me;
-  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button>${isJP()?'<button class="vt" type="button" data-vy>🙈 遮住讀音</button>':''}<button class="vt" type="button" data-vz>🙈 遮住中文</button></div>${b.lines.map(([w,en,zh])=>
-    `<div class="dl${w===me?' me':''}"><div class="dw">${esc(b.who[w])}</div><div class="db" data-say="${esc(sayText(en))}"><div class="den">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
+  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button>${isJP()?'<button class="vt" type="button" data-vy>🙈 遮住讀音</button>':''}<button class="vt" type="button" data-vz>🙈 遮住中文</button>${b.lines.some(l=>HAS_SLOT.test(l[1]))?'<span class="swh">🔁 點虛線的字換說法</span>':''}</div>${b.lines.map(([w,en,zh])=>
+    `<div class="dl${w===me?' me':''}"><div class="dw">${esc(b.who[w])}</div><div class="db" data-say="${esc(sayText(en))}"${HAS_SLOT.test(en)?` data-src="${esc(en)}"`:''}><div class="den">${slotHtml(en, x=>mk(esc(x)))}</div><div class="vz">${slotHtml(zh, x=>esc(x))}</div></div></div>`).join('')}</div>`;
 }
 function gramHtml(b){
   return `<div class="jgram"><div class="mh"><span>🧩 ${esc(b.lbl||'文法')}${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${rb(esc(x))}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
@@ -1022,6 +1037,15 @@ function xsHtml(k, q, d){
   }
   return h + `<a class="xs-go" href="${esc(PRACTICE.href(k, q))}" target="_blank" rel="noopener">在新分頁開啟詳解頁(看同一年的其他題)↗</a>`;
 }
+/* v275 替換練習:換到下一個說法,同一句中文的同一個位置跟著換;更新這句的發音並唸出來 */
+function swapSlot(sw){
+  const db = sw.closest('.db'), k = sw.dataset.sw;
+  const next = x => { if (!x) return; const os = [...x.querySelectorAll(':scope > .swo')], i = os.findIndex(o => o.classList.contains('on')); os[i].classList.remove('on'); os[(i + 1) % os.length].classList.add('on'); };
+  next(sw); next(db.querySelector(`.vz .sw[data-sw="${k}"]`));
+  const idx = [...db.querySelectorAll('.den .sw')].map(x => [...x.querySelectorAll(':scope > .swo')].findIndex(o => o.classList.contains('on')));
+  db.dataset.say = sayText(slotPick(db.dataset.src, idx));
+  SAY.say(db.dataset.say, db);
+}
 function openX(k, key, src){
   XS.show('詳解', '<div class="xs-na">載入中…</div>', src);
   const psg = k === 'jp' && !window.JPREAD ? PRACTICE.loadJs('jp_psg.js').catch(() => {}) : null;
@@ -1031,6 +1055,7 @@ function openX(k, key, src){
 
 $('app').addEventListener('click', e=>{
   const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
+  const swc = e.target.closest('.den .sw'); if (swc){ swapSlot(swc); return; }   // v275 替換練習
   /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
   const dp = e.target.closest('[data-dplay]'); if (dp){ SAY.play(dp.closest('.jdlg'), dp); return; }
   const vy = e.target.closest('[data-vy]'); if (vy){ const h = vy.closest('.jvoc, .jdlg').classList.toggle('hidey'); vy.textContent = h ? '👀 顯示讀音' : '🙈 遮住讀音'; vy.classList.toggle('on', h); return; }   // v263 日語:遮住假名讀音自我測驗

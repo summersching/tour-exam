@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v262
+/* jy_en.js — 講義:外語英語 · v275
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子)、
    發音提醒(pron)、文法重點(gram),加上圖解、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v275 (2026-11-14) 八章情境會話加替換練習:[[說法1//說法2//…]],23 段會話共 29 處
      v262 (2026-11-13) 新增第 8 章「文法總整理」(情境會話 2 段、單字 42 個含音標、發音提醒 8 則、文法 8 則;共 72 題)
      v261 (2026-11-13) 新增第 7 章「生活、職場與溝通」(情境會話 3 段、單字 135 個含音標、發音提醒 8 則、文法 2 則;共 181 題)
      v260 (2026-11-13) 新增第 6 章「安全、健康與緊急狀況」(情境會話 3 段、單字 107 個含音標、發音提醒 8 則、文法 2 則;共 120 題)
@@ -28,7 +29,7 @@ const JY_EN = {
       { t: 'p', html: '出國最常開口的三個場合:<b>報到櫃檯</b>、<b>入境審查與海關</b>、<b>行李提領</b>。先聽懂對方的固定問句,再記怎麼回答;歷屆的對話題幾乎都出自這些場景。' },
       { t: 'dlg', h: '報到櫃檯(check-in counter)', who: ['Clerk 櫃檯人員', 'Traveler 旅客'], lines: [
         [0, 'Good morning. May I see your **passport**, please?', '早安,請出示您的護照。'],
-        [1, 'Here you are. Could I have an **aisle seat**?', '在這裡。可以給我走道的座位嗎?'],
+        [1, 'Here you are. Could I have [[an **aisle seat**//a window seat//an exit row seat]]?', '在這裡。可以給我[[走道的座位//靠窗的座位//逃生出口那一排的座位]]嗎?'],
         [0, 'Let me check. Yes, 24C is available. Are you checking any bags?', '我查一下。有,24C 還有位子。您有行李要託運嗎?'],
         [1, 'Just this suitcase.', '只有這個行李箱。'],
         [0, 'Please put it on the scale. I am afraid it is two kilos **overweight**.', '請放到磅秤上。恐怕超重兩公斤。'],
@@ -37,9 +38,9 @@ const JY_EN = {
         [1, 'Thank you very much.', '非常感謝。']] },
       { t: 'dlg', h: '入境審查與海關(immigration and customs)', who: ['Officer 官員', 'Visitor 旅客'], lines: [
         [0, 'Good afternoon. What is the **purpose** of your visit?', '午安。您此行的目的是什麼?'],
-        [1, 'I am here for sightseeing.', '我是來觀光的。'],
+        [1, 'I am here [[for sightseeing//on business//to visit my relatives]].', '我是來[[觀光//出差//探親]]的。'],
         [0, 'How long will you be staying?', '您預計停留多久?'],
-        [1, 'A week. I am staying at a hotel downtown.', '一個星期,我住在市區的飯店。'],
+        [1, '[[A week//Five days//Two weeks]]. I am staying at a hotel downtown.', '[[一個星期//五天//兩個星期]],我住在市區的飯店。'],
         [0, 'Please look at the camera and place your fingers on the scanner.', '請看鏡頭,並把手指放在掃描器上。'],
         [0, 'Do you have anything to **declare**?', '(到了海關)您有東西要申報嗎?'],
         [1, 'No, nothing to declare.', '沒有,沒有要申報的東西。'],
@@ -49,7 +50,7 @@ const JY_EN = {
         [0, 'May I see your **baggage claim tag**, please?', '可以看一下您的行李條嗎?'],
         [1, 'Here it is.', '在這裡。'],
         [0, 'Could you describe your bag?', '可以描述一下您的行李嗎?'],
-        [1, 'It is a black suitcase with a yellow strap.', '是黑色的行李箱,綁著黃色束帶。'],
+        [1, 'It is a [[black//red//silver]] suitcase with a yellow strap.', '是[[黑色//紅色//銀色]]的行李箱,綁著黃色束帶。'],
         [0, 'Please fill in this form. We will deliver it to your hotel as soon as we find it.', '請填這張表,找到後我們會盡快送到您的飯店。']] },
       { t: 'ex', key: 'guide-109-69', steps: ['How long 問的是「多久」,要回答一段時間。', 'A week(一個星期)→ 選 A;New York 是地點,Once a week 是頻率(每週一次),Tomorrow 是時間點。'] },
       { t: 'h', text: '二、核心單字' },
@@ -213,8 +214,8 @@ const JY_EN = {
       { t: 'h', text: '一、情境會話' },
       { t: 'p', html: '帶團最常遇到的三個場合:<b>問路與搭車</b>、<b>飯店入住</b>、<b>客房出問題</b>。問路的問句、How 開頭的問句和飯店櫃檯的固定說法,都是對話題的常客。' },
       { t: 'dlg', h: '問路與搭車(asking for directions)', who: ['Local 當地人', 'Tourist 旅客'], lines: [
-        [1, 'Excuse me. Could you tell me how to get to the train station?', '不好意思,可以告訴我怎麼去火車站嗎?'],
-        [0, 'Sure. **Go straight** for two **blocks** and turn left at the traffic light.', '好的。直走兩個街區,在紅綠燈左轉。'],
+        [1, 'Excuse me. Could you tell me how to get to [[the train station//the night market//the museum]]?', '不好意思,可以告訴我怎麼去[[火車站//夜市//博物館]]嗎?'],
+        [0, 'Sure. **Go straight** for two **blocks** and turn [[left//right]] at the traffic light.', '好的。直走兩個街區,在紅綠燈[[左轉//右轉]]。'],
         [1, '**How far** is it from here?', '離這裡多遠?'],
         [0, 'It is about a ten-minute walk. You can also take the bus.', '走路大約十分鐘,也可以搭公車。'],
         [1, '**How often** does the bus run?', '公車多久一班?'],
@@ -223,16 +224,16 @@ const JY_EN = {
         [0, 'Yes, you can use it on buses and the subway.', '可以,公車和地鐵都能用。']] },
       { t: 'dlg', h: '飯店入住(checking in)', who: ['Receptionist 櫃檯人員', 'Guest 房客'], lines: [
         [0, 'Good afternoon. Welcome to our hotel. How may I help you?', '午安,歡迎光臨。有什麼需要為您服務的嗎?'],
-        [1, 'I have a **reservation** for two nights under the name of Chen.', '我訂了兩晚,訂房姓名是陳。'],
+        [1, 'I have a **reservation** for two nights under the name of [[Chen//Wang//Lin]].', '我訂了兩晚,訂房姓名是[[陳//王//林]]。'],
         [0, 'Yes, a **twin room** for two nights. May I have your passport and a credit card for the **deposit**?', '是的,雙床房兩晚。麻煩給我您的護照,以及刷訂金用的信用卡。'],
         [1, 'Here you are. Is breakfast included?', '在這裡。有含早餐嗎?'],
         [0, 'Yes. Here is your breakfast **voucher**. Breakfast is served from 6:30 to 10:00.', '有的,這是您的早餐券,早餐時間是 6 點半到 10 點。'],
         [1, 'What time do we have to **check out**?', '我們幾點要退房?'],
         [0, 'Check-out time is 11 a.m. Here is your room key. Enjoy your stay.', '退房時間是上午 11 點。這是您的房卡,祝您住宿愉快。']] },
       { t: 'dlg', h: '客房出問題(room problems)', who: ['Front desk 櫃檯', 'Guest 房客'], lines: [
-        [1, 'Hello, this is room 221. The air conditioning is not working.', '您好,這裡是 221 號房,冷氣壞了。'],
+        [1, 'Hello, this is room 221. The [[air conditioning//hair dryer//TV]] is not working.', '您好,這裡是 221 號房,[[冷氣//吹風機//電視]]壞了。'],
         [0, 'I am sorry about that. I will send someone from **maintenance** right away.', '很抱歉,我馬上請維修人員過去。'],
-        [1, 'Also, could I have two more towels?', '另外,可以再給我兩條毛巾嗎?'],
+        [1, 'Also, could I have two more [[towels//pillows//blankets]]?', '另外,可以再給我兩[[條毛巾//個枕頭//條毯子]]嗎?'],
         [0, 'Certainly. **Housekeeping** will bring them to your room.', '沒問題,房務人員會送到您的房間。'],
         [1, 'One more thing. Can I **settle** my bill now? I am leaving early tomorrow.', '還有一件事,我可以現在結帳嗎?我明天一早要離開。'],
         [0, 'Of course. You can settle it at the front desk at any time.', '當然可以,您隨時可以到櫃檯結帳。']] },
@@ -412,7 +413,7 @@ const JY_EN = {
         [0, 'It comes with a salad and French fries. **How would you like** your steak?', '附沙拉和薯條。牛排要幾分熟?'],
         [1, 'Medium, please.', '五分熟,謝謝。'],
         [0, 'Would you like anything to drink?', '要喝點什麼嗎?'],
-        [1, 'Just water, please. One of us is a **vegetarian**. Do you have a vegetarian menu?', '水就好。我們有一位吃素,有素食菜單嗎?'],
+        [1, 'Just [[water//iced tea//orange juice]], please. One of us is a **vegetarian**. Do you have a vegetarian menu?', '[[水//冰紅茶//柳橙汁]]就好。我們有一位吃素,有素食菜單嗎?'],
         [0, 'We sure do. I will bring it right away.', '有的,我馬上拿來。']] },
       { t: 'dlg', h: '結帳(paying the bill)', who: ['Server 服務生', 'Guest 客人'], lines: [
         [1, 'Excuse me. Could we have the **bill**, please?', '不好意思,麻煩結帳。'],
@@ -421,11 +422,11 @@ const JY_EN = {
         [0, 'No, the **tip** is extra.', '沒有,小費另計。'],
         [1, 'I think there is a mistake. We did not order this dessert.', '好像有錯,我們沒有點這個甜點。'],
         [0, 'I am sorry about that. I will fix it right now.', '很抱歉,我馬上更正。'],
-        [1, 'Thank you. Can I pay by credit card?', '謝謝。可以刷卡嗎?'],
+        [1, 'Thank you. Can I pay [[by credit card//in cash//with my phone]]?', '謝謝。可以[[刷卡//付現金//用手機付款]]嗎?'],
         [0, 'Of course. Here is your **receipt**.', '當然可以,這是您的收據。']] },
       { t: 'dlg', h: '逛街購物(shopping)', who: ['Clerk 店員', 'Customer 顧客'], lines: [
         [0, 'Can I help you find anything?', '需要幫您找什麼嗎?'],
-        [1, 'I am just **browsing**, thank you. Actually, do you have this jacket in a medium?', '我只是隨便看看,謝謝。對了,這件夾克有 M 號嗎?'],
+        [1, 'I am just **browsing**, thank you. Actually, do you have this [[jacket//sweater//shirt]] in [[a medium//a large//a smaller size]]?', '我只是隨便看看,謝謝。對了,這件[[夾克//毛衣//襯衫]]有[[M 號//L 號//小一號]]的嗎?'],
         [0, 'Yes. Here you are. The **fitting room** is right there.', '有,在這裡。試衣間就在那邊。'],
         [1, 'It fits well. Could you give me a **discount**?', '很合身。可以打折嗎?'],
         [0, 'It is already on sale, so that is the best price we can offer. How would you like to pay?', '已經是特價了,這是我們能給的最好價格。您要怎麼付款?'],
@@ -642,7 +643,7 @@ const JY_EN = {
       { t: 'dlg', h: '博物館參觀(at the museum)', who: ['Staff 館員', 'Visitor 遊客'], lines: [
         [1, 'Excuse me. How much is the **admission**?', '不好意思,門票多少錢?'],
         [0, 'It is 350 dollars for adults. Students and seniors can get a **concession** ticket.', '全票 350 元,學生和長者可以買優待票。'],
-        [1, 'Is there an **audio guide** in English?', '有英語的語音導覽嗎?'],
+        [1, 'Is there an **audio guide** in [[English//Japanese//Korean]]?', '有[[英語//日語//韓語]]的語音導覽嗎?'],
         [0, 'Yes. It is available in several languages. The **rental** is 150 dollars.', '有,語音導覽有好幾種語言,租借費 150 元。'],
         [1, 'Are we allowed to take pictures inside?', '裡面可以拍照嗎?'],
         [0, 'Yes, but **flash photography** is strictly **prohibited**.', '可以,但嚴禁使用閃光燈。'],
@@ -653,7 +654,7 @@ const JY_EN = {
         [1, 'Why are there so many people at the temple today?', '今天廟裡怎麼這麼多人?'],
         [0, 'It is the Mazu **pilgrimage**. Every year, believers follow the **procession** for over a week.', '這是媽祖遶境進香,每年信眾會跟著隊伍走一個多星期。'],
         [1, 'What are they doing with those sticks?', '他們拿著那些香在做什麼?'],
-        [0, 'They are burning **incense** to **worship** the gods and pray for **blessings**.', '他們在燒香拜神,祈求保佑。'],
+        [0, 'They are burning **incense** to **worship** the gods and pray for [[**blessings**//good health//a safe journey]].', '他們在燒香拜神,祈求[[保佑//身體健康//旅途平安]]。'],
         [1, 'Can I take photos here?', '這裡可以拍照嗎?'],
         [0, 'Yes, but please do not use flash near the **altar**, and keep your voice down.', '可以,但神桌附近請不要用閃光燈,說話也請小聲。'],
         [1, 'Got it. When is the next big festival?', '了解。下一個大節日是什麼時候?'],
@@ -662,7 +663,7 @@ const JY_EN = {
         [0, 'Welcome to Yangmingshan National Park. It is famous for its volcanic **landscape** and hot springs.', '歡迎來到陽明山國家公園,這裡以火山地形和溫泉聞名。'],
         [1, 'What is that smell?', '這是什麼味道?'],
         [0, 'It is **sulfur** from the volcano. The volcano is **dormant**, but you can still see the steam.', '是火山的硫磺味。火山目前休眠,但還看得到噴氣。'],
-        [1, 'The view from here is **breathtaking**!', '從這裡看出去的景色美得讓人屏息!'],
+        [1, 'The view from here is [[**breathtaking**//amazing//spectacular]]!', '從這裡看出去的景色[[美得讓人屏息//好驚人//真壯觀]]!'],
         [0, 'Look at that blue bird. It is a Taiwan blue magpie, which is **unique** to Taiwan.', '看那隻藍色的鳥,是臺灣藍鵲,臺灣特有的鳥。'],
         [1, 'Can we feed it?', '可以餵牠嗎?'],
         [0, 'No. Please do not feed wild animals. We should help **conserve** their **habitats**.', '不行,請不要餵食野生動物,我們要一起保育牠們的棲地。']] },
@@ -912,9 +913,9 @@ const JY_EN = {
       { t: 'p', html: '導遊每天要做的事:<b>集合點名、安排行程、帶隊健行</b>,還要提醒團員愛護環境。題目常考導遊的素養(準時、熱情、尊重)與永續旅遊的觀念。' },
       { t: 'dlg', h: '集合與自由活動(giving instructions)', who: ['Guide 導遊', 'Tourist 遊客'], lines: [
         [0, 'Good morning, everyone. Today we will visit the old street and the temple. Here is our **itinerary**.', '各位早安,今天我們要去老街和廟宇,這是我們的行程表。'],
-        [0, 'We will stop here for two hours. You are **free** to walk around and do some shopping.', '我們在這裡停留兩小時,大家可以自由走走、逛逛街。'],
+        [0, 'We will stop here for [[two hours//an hour//ninety minutes]]. You are **free** to walk around and do some shopping.', '我們在這裡停留[[兩小時//一小時//九十分鐘]],大家可以自由走走、逛逛街。'],
         [1, 'Where should we meet afterwards?', '之後要在哪裡集合?'],
-        [0, 'The **assembly point** is the main entrance of the temple. Please be **punctual**. We will leave at 11:30.', '集合點是廟的正門口,請準時,我們 11 點半出發。'],
+        [0, 'The **assembly point** is [[the main entrance of the temple//the bus stop//the parking lot]]. Please be **punctual**. We will leave at 11:30.', '集合點是[[廟的正門口//公車站牌//停車場]],請準時,我們 11 點半出發。'],
         [1, 'What if I get lost?', '如果我迷路了怎麼辦?'],
         [0, 'Call the number on this card and look for my flag. The pin on your backpack helps us **recognize** our group members.', '打這張卡片上的電話,並找我的旗子;背包上的徽章可以讓我們認出團員。'],
         [1, 'Can we take photos inside the temple?', '可以在廟裡拍照嗎?'],
@@ -926,13 +927,13 @@ const JY_EN = {
         [0, 'Around two hours to see the **highlights**. The package includes a guided tour and free **transportation**.', '看重點大約兩小時;套裝行程包含導覽和免費接送。'],
         [1, 'Can you **customize** the trip for a family with small children?', '可以為有小孩的家庭客製化行程嗎?'],
         [0, 'Of course. I will make some changes to the **schedule** and send you the new itinerary.', '當然可以,我會調整時程,再把新的行程表寄給您。'],
-        [1, 'Great. Do you have brochures in Spanish?', '太好了。有西班牙文的簡介嗎?'],
+        [1, 'Great. Do you have brochures in [[Spanish//French//German]]?', '太好了。有[[西班牙文//法文//德文]]的簡介嗎?'],
         [0, 'Sorry, they are only available in English and Chinese.', '抱歉,只有英文和中文的。']] },
       { t: 'dlg', h: '健行與戶外(going hiking)', who: ['Guide 導遊', 'Hiker 健行者'], lines: [
         [0, 'We will **hike** to the **summit** today. The **trail** is about five kilometers.', '我們今天要爬到山頂,步道大約五公里。'],
         [1, 'What should I bring?', '我該帶什麼?'],
         [0, 'Wear several **layers** of clothes. It gets cold in the mountains.', '多穿幾層衣服,山上會變冷。'],
-        [0, 'Bring water, a raincoat and **insect repellent**. I have a **first aid kit** with me.', '帶水、雨衣和防蚊液,我身上有急救包。'],
+        [0, 'Bring water, [[a raincoat//an umbrella//a hat]] and **insect repellent**. I have a **first aid kit** with me.', '帶水、[[雨衣//雨傘//帽子]]和防蚊液,我身上有急救包。'],
         [1, 'Can we pick some flowers along the way?', '路上可以摘花嗎?'],
         [0, 'No. Please **abide by** the park rules. Take only photographs, leave only **footprints**.', '不行,請遵守園區規定:除了照片什麼都別帶走,除了腳印什麼都別留下。'],
         [1, 'Got it. I will take my trash with me.', '了解,我會把垃圾帶走。']] },
@@ -1140,11 +1141,11 @@ const JY_EN = {
       { t: 'p', html: '出門在外最怕<b>生病、遇到小偷、碰上天災</b>。這一章把看醫生、報案、颱風地震時會用到的句子整理在一起;題目常考症狀、處方箋、扒手與預防措施。' },
       { t: 'dlg', h: '看醫生(seeing a doctor)', who: ['Doctor 醫生', 'Patient 病人'], lines: [
         [0, 'What seems to be the problem?', '哪裡不舒服?'],
-        [1, 'I have a high **fever** and a sore throat.', '我發高燒,喉嚨也痛。'],
+        [1, 'I have [[a high **fever**//a bad cough//a terrible headache]] and a sore throat.', '我[[發高燒//咳得很厲害//頭痛得很厲害]],喉嚨也痛。'],
         [0, 'How long have you had these **symptoms**?', '這些症狀多久了?'],
         [1, 'I was all right until this morning.', '我到今天早上都還好好的。'],
         [0, 'Are you **allergic** to any medicine?', '你對什麼藥物過敏嗎?'],
-        [1, 'Yes, I am allergic to penicillin.', '有,我對盤尼西林過敏。'],
+        [1, 'Yes, I am allergic to [[penicillin//aspirin//ibuprofen]].', '有,我對[[盤尼西林//阿斯匹靈//布洛芬]]過敏。'],
         [0, 'Then I will **prescribe** something else. Here is your **prescription**.', '那我開別的藥,這是你的處方箋。'],
         [0, 'Take the medicine three times a day after meals, and drink plenty of water.', '藥一天吃三次、飯後吃,並多喝水。'],
         [1, 'Thank you. Will my travel **insurance** cover this?', '謝謝。旅遊保險會給付嗎?'],
@@ -1154,7 +1155,7 @@ const JY_EN = {
         [0, 'Please calm down. Could you **describe** what happened?', '請先冷靜。可以描述一下發生什麼事嗎?'],
         [1, 'I was on a crowded train. Someone kept bumping into me.', '我在擁擠的火車上,有人一直撞我。'],
         [0, 'Did you notice anyone **suspicious**?', '你有注意到可疑的人嗎?'],
-        [1, 'A man in a black jacket stood very close to me.', '有個穿黑外套的男人站得離我很近。'],
+        [1, 'A man in a [[black jacket//gray hoodie//blue cap]] stood very close to me.', '有個[[穿黑外套//穿灰色連帽上衣//戴藍色帽子]]的男人站得離我很近。'],
         [0, 'I will file a **police report** for you. You will need it for your insurance claim.', '我幫你做報案紀錄,申請保險理賠時會用到。'],
         [1, 'What else should I do?', '我還應該做什麼?'],
         [0, 'Call your bank and cancel your credit cards right away.', '馬上打電話給銀行,把信用卡停掉。']] },
@@ -1165,7 +1166,7 @@ const JY_EN = {
         [0, 'Train services may be **disrupted**. Please check the news in the morning.', '火車可能會停駛或誤點,早上請先看新聞。'],
         [1, 'And what should we do if there is an **earthquake**?', '那如果發生地震該怎麼辦?'],
         [0, 'Drop, cover and hold on under a sturdy table. Do not use the elevator.', '趴下、掩護、穩住,躲在堅固的桌子下,不要搭電梯。'],
-        [0, 'The **emergency exit** is at the end of the hall.', '緊急出口在走廊盡頭。'],
+        [0, 'The **emergency exit** is [[at the end of the hall//next to the stairs//behind the front desk]].', '緊急出口在[[走廊盡頭//樓梯旁邊//櫃檯後面]]。'],
         [1, 'Thank you. I will tell everyone to take these **precautions**.', '謝謝,我會提醒大家做好這些預防措施。']] },
       { t: 'ex', key: 'leader-111-39', steps: ['醫生問 How long have you had these ___? 病人回答到今天早上都還好,說的是身體的狀況。', '「症狀」= symptoms → 選 D;systems(系統)、syntheses(合成)、symbols(符號)都是 sy- 開頭的形近字。'] },
       { t: 'h', text: '二、核心單字' },
@@ -1384,19 +1385,19 @@ const JY_EN = {
         [0, 'Certainly. Would you like to make a direct call or a **collect call**?', '好的,您要直撥還是打對方付費電話?'],
         [1, 'A collect call, please. My cellphone does not work here.', '對方付費,謝謝,我的手機在這裡不能用。'],
         [0, 'The **country code** for Taiwan is 886. Please hold, and I will **transfer** your call.', '臺灣的國碼是 886,請稍候,我幫您轉接。'],
-        [1, 'Thank you. Also, do you have an **adapter**? My hair dryer is from Europe.', '謝謝。另外,有轉接頭嗎?我的吹風機是在歐洲買的。'],
+        [1, 'Thank you. Also, do you have an **adapter**? My [[hair dryer//laptop charger//shaver]] is from Europe.', '謝謝。另外,有轉接頭嗎?我的[[吹風機//筆電充電器//刮鬍刀]]是在歐洲買的。'],
         [0, 'Yes. Taiwan uses 110 volts, so you may also need a **converter**. I will send one up.', '有。臺灣電壓是 110 伏特,可能還需要變壓器,我送一個上去。'],
         [1, 'Great. What is the Wi-Fi password?', '太好了。Wi-Fi 密碼是什麼?'],
         [0, 'It is on your key card. Please avoid **logging into** your bank account on public Wi-Fi.', '寫在房卡上。請避免用公共 Wi-Fi 登入銀行帳戶。']] },
       { t: 'dlg', h: '導遊工作面試(a job interview)', who: ['Manager 經理', 'Applicant 應徵者'], lines: [
         [0, 'Why do you want to be a tour guide?', '你為什麼想當導遊?'],
-        [1, 'I am passionate about travel, and I am **proficient** in English and Japanese.', '我熱愛旅遊,英文和日文都很精通。'],
+        [1, 'I am passionate about travel, and I am **proficient** in English and [[Japanese//Korean//Spanish]].', '我熱愛旅遊,英文和[[日文//韓文//西班牙文]]都很精通。'],
         [0, 'Speaking **multiple** languages is a valuable **asset**. How do you **deal with** complaints?', '會說多種語言是很大的優勢。你怎麼處理客訴?'],
         [1, 'I stay calm, listen carefully, and try to **sort out** the problem.', '我會保持冷靜、仔細聽,試著把問題解決。'],
         [0, 'Good. This is a **seasonal** job, and you will be **reimbursed** for travel expenses.', '很好。這是季節性的工作,出差費用可以報帳。'],
         [1, 'That sounds **rewarding**. I am **looking forward to** working with you.', '聽起來很有成就感,期待跟您一起工作。']] },
       { t: 'dlg', h: '天氣閒聊(small talk)', who: ['Guide 導遊', 'Tourist 遊客'], lines: [
-        [1, 'I love this breeze.', '我好喜歡這陣微風。'],
+        [1, 'I love this [[breeze//weather//sunshine]].', '我好喜歡這[[陣微風//種天氣//陽光]]。'],
         [0, 'And it is cool. It is neither hot nor **humid** today.', '而且很涼爽,今天不熱也不潮濕。'],
         [1, 'Last week was so **muggy**. I could not stop sweating.', '上星期好悶熱,我一直流汗。'],
         [0, 'Yes, and it rained for days. Luckily, the rain finally **let up**.', '對,還連下了好幾天雨,幸好雨終於停了。'],
@@ -1641,7 +1642,7 @@ const JY_EN = {
         [0, 'It is on the second floor. **As soon as** you get off the escalator, turn left.', '在二樓,一下手扶梯就左轉。'],
         [1, 'Do you know **what time boarding starts**?', '你知道幾點開始登機嗎?'],
         [0, 'At a quarter **to** ten. Please be at the gate **by** 9:40.', '九點四十五分,請在 9 點 40 分以前到登機門。'],
-        [1, '**Would you mind watching** my bag while I buy some water?', '我去買瓶水,可以幫我看一下行李嗎?'],
+        [1, '**Would you mind watching** my bag while I buy [[some water//a coffee//a sandwich]]?', '我去買[[瓶水//杯咖啡//個三明治]],可以幫我看一下行李嗎?'],
         [0, 'Sorry, I cannot. Please keep your bag with you, **or** it may be removed for security reasons.', '抱歉沒辦法。請把行李帶在身邊,否則可能會因安全理由被移走。'],
         [1, 'I see. Thank you.', '了解,謝謝。']] },
       { t: 'dlg', h: '導遊的行前說明(時間子句與假設)', who: ['Guide 導遊', 'Tourist 遊客'], lines: [
@@ -1650,7 +1651,7 @@ const JY_EN = {
         [0, '**If** it **rains**, we **will** visit the museum instead. **Even if** it rains a little, the train will still run.', '如果下雨,我們就改去博物館;就算下點小雨,火車還是會開。'],
         [1, 'Is the hotel near the station?', '飯店離車站近嗎?'],
         [0, 'Yes. It is **between** the station **and** the night market.', '近,在車站和夜市之間。'],
-        [1, 'Great. **Let’s** meet in the lobby at eight, **shall we**?', '太好了,我們八點在大廳集合,好嗎?'],
+        [1, 'Great. **Let’s** meet in the lobby at [[eight//seven thirty//nine]], **shall we**?', '太好了,我們[[八點//七點半//九點]]在大廳集合,好嗎?'],
         [0, 'Sure. **Should** you have any questions, please call me.', '好。如果有任何問題,請打電話給我。']] },
       { t: 'h', text: '二、文法重點' },
       { t: 'gram', h: '讓步連接詞:although、despite、even if、while', pat: ['although / even though + 子句(主詞 + 動詞)', 'despite / in spite of + 名詞(或 V-ing)', 'even if + 子句(假設的「就算」)', 'while = 當…時;而(對比);雖然(放句首)'],
