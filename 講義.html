@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v272(2026-11-13)
+<!-- 講義 · v273(2026-11-14)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v272 日語講義第 10 章上線(閱讀測驗),日語 10 章完成(涵蓋 1,600 題),五科講義全部完成;沒有講義的科目提示不再寫「日語陸續上線中」
+     變更履歷:v273 範例的「看原題完整詳解」改成在講義裡從下方滑出詳解視窗(不換頁,五科共用);✕、點背景、Esc、手機返回鍵都回到原來的位置,視窗裡另有「在新分頁開啟詳解頁」
+              v272 日語講義第 10 章上線(閱讀測驗),日語 10 章完成(涵蓋 1,600 題),五科講義全部完成;沒有講義的科目提示不再寫「日語陸續上線中」
               v271 日語講義第 9 章上線(慣用、諺語與日本文化知識)
               v270 日語講義第 8 章上線(敬語與待客會話)
               v269 日語講義第 7 章上線(文法(三):逆接、範圍、強調與評價句型)
@@ -353,6 +354,34 @@
   .vts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .vts .vt{margin-left:0}
   .hidey .yomi,.hidey rt{filter:blur(5px);user-select:none}
   .jex .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  /* v273 講義內看完整詳解:從下方滑出的詳解視窗(不換頁) */
+  .jex .xopen{display:inline-block;margin-top:6px;border:1.5px solid var(--c2);background:var(--card);color:var(--c2);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.85rem;font-family:inherit;cursor:pointer}
+  .jex .xopen:active{transform:scale(.97)}
+  html.xs-lock{overflow:hidden}
+  #xsheet{position:fixed;inset:0;z-index:10001;display:flex;flex-direction:column;justify-content:flex-end;background:rgba(15,20,30,.45)}
+  #xsheet[hidden]{display:none}
+  #xsheet .xs-box{background:var(--bg);color:var(--ink);width:100%;max-width:760px;margin:0 auto;max-height:88vh;display:flex;flex-direction:column;border-radius:16px 16px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.22);animation:xsUp .18s ease-out}
+  @keyframes xsUp{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+  #xsheet .xs-hd{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line)}
+  #xsheet .xs-t{flex:1;font-size:.88rem;color:var(--c2)}
+  #xsheet .xs-x{flex:none;border:0;background:var(--line);color:var(--ink);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit}
+  #xsheet .xs-bd{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 16px calc(18px + env(safe-area-inset-bottom));line-height:1.75}
+  #xsheet .xs-stem{font-weight:700;margin:2px 0 4px}
+  #xsheet .zh{font-size:.88rem;color:var(--sub);margin:0 0 6px}
+  #xsheet .lbl{font-size:.78rem;font-weight:800;color:var(--sub);margin:12px 0 2px}
+  #xsheet .xs-opts{margin:6px 0 4px} #xsheet .xs-op{font-size:.92rem;padding:3px 0} #xsheet .xs-op.ok{color:var(--ok);font-weight:800} #xsheet .xs-op[data-say]{cursor:pointer}
+  #xsheet .oz{font-weight:400;color:var(--sub);font-size:.84rem;margin-left:4px}
+  #xsheet .xs-ana{font-size:.92rem} #xsheet .xs-ana b.ac{color:var(--ok)}
+  #xsheet .box{border-width:1px;border-style:solid;border-radius:10px;padding:8px 11px;margin:10px 0;font-size:.9rem}
+  #xsheet .box:not(.stale){background:var(--card);border-color:var(--line)}
+  #xsheet .box .h{display:block;font-size:.82rem;margin-bottom:2px}
+  #xsheet .xs-voc{width:100%;border-collapse:collapse;font-size:.88rem;margin:4px 0}
+  #xsheet .xs-voc td{border:1px solid var(--line);padding:5px 8px;vertical-align:top} #xsheet .xs-voc td:first-child{width:48%}
+  #xsheet .xs-kk{color:var(--sub);font-size:.82rem}
+  #xsheet .spk{width:auto;height:auto;padding:1px 6px;font-size:.82rem;border-radius:8px;margin-left:2px}
+  #xsheet .xs-na{color:var(--sub);padding:12px 0}
+  #xsheet .xs-go{display:block;margin-top:14px;font-size:.86rem;font-weight:700}
+  @media print{#xsheet{display:none!important}}
   .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
 </style>
@@ -492,7 +521,7 @@ function exHtml(k, b, d){
     <div class="stem">${esc(clean(q.stem))}</div>${a.zh?`<div class="szh">${esc(a.zh)}</div>`:''}
     ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${esc(clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
-    <a href="${esc(PRACTICE.href(k,q))}">看原題完整詳解 →</a></div>`;
+    <button class="xopen" type="button" data-xs="${esc(k)}" data-xq="${esc(b.key)}">📖 看完整詳解</button></div>`;
 }
 function selfHtml(b){
   return `<div class="jself"><div class="mh">⏱ 一分鐘自我檢測</div><ol>${b.items.map(([q,a])=>`<li>${esc(q)}<button class="ans mask" type="button">${esc(a)}</button></li>`).join('')}</ol></div>`;
@@ -878,7 +907,72 @@ document.querySelector('.bar').addEventListener('click', e=>{
   const v = e.target.closest('[data-view]');
   if (v){ cfg.view = v.dataset.view; cfg.ch = null; saveCfg(); render(); }
 });
+/* v273 講義內看完整詳解:範例的「📖 看完整詳解」在原頁從下方滑出詳解視窗,不換頁;
+   ✕、點背景、Esc、手機返回鍵都會關閉,停在原來的位置(五科共用,資料來自 PRACTICE.load) */
+const XS = (() => {
+  let el = null, open = false, from = null;
+  function mount(){
+    if (el) return el;
+    el = document.createElement('div'); el.id = 'xsheet'; el.hidden = true;
+    el.innerHTML = '<div class="xs-box" role="dialog" aria-modal="true" aria-labelledby="xsT"><div class="xs-hd"><b class="xs-t" id="xsT"></b><button class="xs-x" type="button" aria-label="關閉詳解,回到講義">✕</button></div><div class="xs-bd"></div></div>';
+    document.body.appendChild(el);
+    el.addEventListener('click', e => {
+      if (e.target === el || e.target.closest('.xs-x')){ close(); return; }
+      const sy = e.target.closest('[data-say]'); if (sy){ e.preventDefault(); SAY.say(sy.dataset.say, sy); }
+    });
+    return el;
+  }
+  function show(title, html, src){
+    mount(); if (src) from = src;
+    el.querySelector('.xs-t').textContent = title;
+    const bd = el.querySelector('.xs-bd'); bd.innerHTML = html; bd.scrollTop = 0;
+    if (!open){ open = true; el.hidden = false; document.documentElement.classList.add('xs-lock'); try { history.pushState({ xs: 1 }, ''); } catch (e) {} el.querySelector('.xs-x').focus({ preventScroll: true }); }
+    if (window.ANAUI && ANAUI.maps) ANAUI.maps();
+  }
+  function hide(){
+    if (!el || !open) return;
+    open = false; el.hidden = true; document.documentElement.classList.remove('xs-lock'); SAY.stop();
+    if (from && from.isConnected) from.focus({ preventScroll: true }); from = null;
+  }
+  function close(){ if (open && history.state && history.state.xs) history.back(); else hide(); }
+  window.addEventListener('popstate', () => { if (open) hide(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) close(); });
+  return { show, close, isOpen: () => open };
+})();
+function xsHtml(k, q, d){
+  const key = PRACTICE.key(q), acc = SCORE.acc(q), J = k === 'jp', E = k === 'en', a = (d.ana && d.ana[key]) || {};
+  const say = s => (J || E) ? ` data-say="${esc(clean(s))}"` : '';
+  const box = (h, x) => x ? `<div class="box"><b class="h">${h}</b>${String(x).replace(/^\s*(💡|⚠️|⚠|📝|🎧)\s*/u, '')}</div>` : '';   // 內容開頭已有同樣圖示時去掉,避免重複
+  const ozt = (o, i) => { const z = J && Array.isArray(a.oz) ? String(a.oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim() : ''; return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };
+  let h = '';
+  if (J && window.JPREAD) h += JPREAD.html(q, { open: false, full: true, say: true });   // 日語讀解題:附上原文(預設收合,點開再看)
+  h += `<div class="xs-stem">${esc(clean(q.stem))}</div>`;
+  if (J && a.zh) h += `<div class="zh">${a.zh}</div>`;
+  if (E && q.zh) h += `<div class="zh">${q.zh}</div>`;
+  h += (window.STALE ? STALE.box(k, q) : '') + SCORE.banner(q);
+  h += `<div class="xs-opts">${q.opts.map((o, i) => `<div class="xs-op${acc.includes(i) ? ' ok' : ''}"${say(o)}>${'ABCD'[i]}. ${esc(clean(o))}${ozt(o, i)}${acc.includes(i) ? ' ✔' : ''}</div>`).join('')}</div>`;
+  if (E){
+    h += `<div class="lbl">解析</div><div class="xs-ana">${q.ana || ''}</div>` + box('💡 考試技巧', q.skill) + box('⚠️ 注意 / 易錯', q.note) + box('📝 文法 / 句型', q.gram) + box('🎧 現場實用 / 口試', q.real);
+    if ((q.vocab || []).length) h += `<div class="lbl">難字 / 片語</div><table class="xs-voc">${q.vocab.map(x => `<tr><td><b>${esc(x[0])}</b>${x[1] ? ` <span class="xs-kk">/${esc(x[1])}/</span>` : ''}${/^[A-Za-z]/.test(x[0]) ? ` <button class="spk" type="button" data-say="${esc(String(x[0]).replace(/\s*\(.*/, ''))}" aria-label="聽發音">🔊</button>` : ''}</td><td>${x[2] || ''}</td></tr>`).join('')}</table>`;
+  } else if (J){
+    h += (a.a ? `<div class="lbl">解析</div><div class="xs-ana">${a.a}</div>` : '') + box('📝 文法 / 句型', a.g);
+    if ((a.v || []).length) h += `<div class="lbl">難字 / 語彙</div><table class="xs-voc">${a.v.map(v => `<tr><td><b>${esc(v[0])}</b>${v[1] && v[1] !== v[0] ? ` <span class="xs-kk">${esc(v[1])}</span>` : ''} <button class="spk" type="button" data-say="${esc(v[1] || v[0])}" aria-label="聽發音">🔊</button></td><td>${esc(v[2] || '')}</td></tr>`).join('')}</table>`;
+    h += box('💡 解題技巧', a.s) + box('⚠️ 注意 / 易錯', a.n);
+  } else {
+    h += a.a ? `<div class="xs-ana">${a.a}</div>` : '<div class="xs-na">這一題的詳解還在整理中。</div>';
+    h += box('💡 解題技巧', a.s);
+  }
+  return h + `<a class="xs-go" href="${esc(PRACTICE.href(k, q))}" target="_blank" rel="noopener">在新分頁開啟詳解頁(看同一年的其他題)↗</a>`;
+}
+function openX(k, key, src){
+  XS.show('詳解', '<div class="xs-na">載入中…</div>', src);
+  const psg = k === 'jp' && !window.JPREAD ? PRACTICE.loadJs('jp_psg.js').catch(() => {}) : null;
+  Promise.all([PRACTICE.load(k), psg]).then(([d]) => { const q = d.map[key]; if (q && XS.isOpen()) XS.show(PRACTICE.label(k, q), xsHtml(k, q, d)); })
+    .catch(() => { if (XS.isOpen()) XS.show('詳解', '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
+}
+
 $('app').addEventListener('click', e=>{
+  const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
   /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
   const dp = e.target.closest('[data-dplay]'); if (dp){ SAY.play(dp.closest('.jdlg'), dp); return; }
   const vy = e.target.closest('[data-vy]'); if (vy){ const h = vy.closest('.jvoc, .jdlg').classList.toggle('hidey'); vy.textContent = h ? '👀 顯示讀音' : '🙈 遮住讀音'; vy.classList.toggle('on', h); return; }   // v263 日語:遮住假名讀音自我測驗
