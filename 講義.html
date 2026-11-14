@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v276(2026-11-14)
+<!-- 講義 · v277(2026-11-14)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v276 日語 10 章情境會話也加替換練習(23 段會話共 29 處;換字時注音跟著換,發音唸假名)
+     變更履歷:v277 英語、日語講義加「🔥 高頻字句」頁籤:依歷屆試題統計出題次數(英語難字表考 3 次以上的單字片語;日語文法題考 2 次以上的句型、常考單字),附講義句型總表;日語第 5~7 章文法區塊標成「句型」,第 8 章加「導遊帶團常用的一句話」12 句
+              v276 日語 10 章情境會話也加替換練習(23 段會話共 29 處;換字時注音跟著換,發音唸假名)
               v275 情境會話加替換練習:虛線的字點一下換下一個說法(中文翻譯跟著換,並唸出換好的句子);▶ 播放會話與整章朗讀唸目前選的說法;英語 8 章 23 段會話共 29 處可替換
               v274 英語、日語講義加「📖 點讀」(右下角按鈕):英語點英文字看中文、音標、🔊;日語點日文字看讀音、原形、詞性、中文、🔊(kuromoji 斷詞,詞庫加入講義單字表);中日混排的說明只在有假名時才查,翻譯與讀音欄不查;換科目自動關閉
               v273 範例的「看原題完整詳解」改成在講義裡從下方滑出詳解視窗(不換頁,五科共用);✕、點背景、Esc、手機返回鍵都回到原來的位置,視窗裡另有「在新分頁開啟詳解頁」
@@ -357,6 +358,16 @@
   .vts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .vts .vt{margin-left:0}
   .hidey .yomi,.hidey rt{filter:blur(5px);user-select:none}
   .jex .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  /* v277 🔥 高頻字句(英語、日語):依出題次數排的單字、句型,與講義句型總表 */
+  .hsec{margin:16px 0 4px;font-weight:800;color:var(--c2);font-size:1.02rem} .hsub{font-size:.8rem;color:var(--sub);margin:0 0 6px}
+  .hband{font-size:.8rem;color:var(--sub);margin:12px 0 4px;font-weight:800}
+  .hrow{display:flex;align-items:flex-start;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin:6px 0}
+  .hrow .hb{flex:1;min-width:0} .hrow .hw{font-size:1rem} .hrow .ipa,.hrow .yomi{margin-left:6px} .hrow .ipa{color:var(--sub);font-size:.85rem}
+  .hrow .hn{display:inline-block;font-size:.72rem;font-weight:800;color:var(--c4);background:var(--c4b);border-radius:999px;padding:1px 7px;margin-left:6px;white-space:nowrap}
+  .hrow .vz{font-size:.84rem;color:var(--sub)}
+  .hch{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--sub);border-radius:999px;font-size:.72rem;padding:3px 9px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .hpat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin:6px 0}
+  .hpat .hph{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.92rem} .hpat .hph span{flex:1} .hpat ul{margin:4px 0 0 18px;padding:0;font-size:.88rem}
   /* v275 情境會話替換練習:虛線的字點一下換說法(中文跟著換) */
   .jdlg .sw{border-bottom:2px dotted var(--c2);border-radius:3px;background:var(--c2b);padding:0 2px;cursor:pointer}
   .jdlg .vz .sw{background:none;cursor:default;border-bottom-width:1px}
@@ -440,6 +451,58 @@ const SUBJS = [
   { k:'en',  name:'🔤 外語英語', file:'jy_en.js', v:'JY_EN' },
   { k:'jp',  name:'🎌 外語日語', file:'jy_jp.js', v:'JY_JP' }];
 const VIEWS = [['toc','📑 章節'],['mn','🎵 口訣總表'],['fig','🖼 圖解總覽'],['cmp','⚖️ 易混比較']];
+/* v277 🔥 高頻字句(英語、日語):依歷屆考題統計出題次數 ——
+   英語:題目難字表(單字、片語),考 3 次以上;日語:文法題考的句型(考 2 次以上)與詳解語彙(考 2 次以上);
+   最後附講義各章的句型總表。每項有 🔊、考過幾次、在講義第幾章(點了直接開該章) */
+const HOT_SUBJ = ['en', 'jp'];
+const viewsOf = k => HOT_SUBJ.includes(k) ? [VIEWS[0], ['hot', '🔥 高頻字句'], ...VIEWS.slice(1)] : VIEWS;   // 排在「章節」後面,手機上不會被切到畫面外
+function hotPat(tt){   // 日語文法題的細類 → 句型(去掉「自動詞+」等前綴;單一動詞、名詞的細類不算句型)
+  const s = String(tt || '').trim();
+  if (/^(自動詞|他動詞|動詞|名詞|副詞|形容詞)\(/.test(s)) return '';
+  const m = s.match(/^助詞\((.{2,})\)$/); if (m) return '〜' + m[1];
+  if (/^助詞/.test(s)) return '';
+  const p = s.replace(/^[^+]*\+/, '').replace(/^〜/, '');
+  return p ? '〜' + p : '';
+}
+function renderHot(J){
+  const k = cfg.subj, JP = k === 'jp';
+  $('app').innerHTML = '<div class="empty">統計中…</div>';
+  bankOf(k).then(d => {
+    if (!d || cfg.view !== 'hot' || cfg.subj !== k) return;
+    const own = {}; J.chapters.forEach(ch => (ch.match.add || []).forEach(x => { own[x] = ch; }));
+    const V = new Map(); if (JP) J.chapters.forEach(ch => ch.blocks.forEach(b => { if (b.t === 'vocab') b.items.forEach(x => V.set(plainText(x[0]).replace(/^〜/, ''), x[3])); }));
+    const words = new Map(), pats = new Map();
+    const add = (m, key, rec, qk) => { let e = m.get(key); if (!e){ e = Object.assign({ n: 0, chs: {} }, rec); m.set(key, e); } e.n++; const ch = own[qk]; if (ch) e.chs[ch.id] = (e.chs[ch.id] || 0) + 1; };
+    d.bank.forEach(q => {
+      const qk = PRACTICE.key(q);
+      if (JP){
+        const a = d.ana[qk] || {};
+        (a.v || []).forEach(v => { if (v[0] && v[2]) add(words, v[0], { w: v[0], r: v[1] || '', z: v[2] }, qk); });
+        const p = a.t === '文法' ? hotPat(a.tt) : '';
+        if (p){ const g = String(a.g || '').replace(/<[^>]*>/g, ''), mg = g.match(/=\s*([^。;]{1,30})/); add(pats, p, { w: p, r: '', z: V.get(p.replace(/^〜/, '')) || (mg ? mg[1].trim() : '') }, qk); }
+      } else (q.vocab || []).forEach(v => {
+        const w = String(v[0] || '').replace(/\s*\((?:n|v|vt|vi|adj|adv|prep|conj|phr|pron|int|aux)\.?\)/gi, '').trim();
+        if (w) add(words, w.toLowerCase(), { w, r: v[1] || '', z: String(v[2] || '').replace(/<[^>]*>/g, '') }, qk);
+      });
+    });
+    const top = (m, min) => [...m.values()].filter(e => e.n >= min).sort((a, b) => b.n - a.n || a.w.localeCompare(b.w, JP ? 'ja' : 'en'));
+    const chOf = e => { const id = Object.keys(e.chs).sort((a, b) => e.chs[b] - e.chs[a])[0]; return id ? J.chapters.find(c => c.id === id) : null; };
+    const row = e => { const ch = chOf(e), say = String(JP ? (e.r || e.w) : e.w).replace(/〜/g, '');
+      return `<div class="hrow"><button class="spk" type="button" data-say="${esc(say)}" aria-label="聽 ${esc(e.w)} 的發音">🔊</button><div class="hb"><div><b class="hw">${esc(e.w)}</b>${e.r ? (JP ? `<span class="yomi">${esc(e.r)}</span>` : `<span class="ipa">/${esc(e.r)}/</span>`) : ''}<span class="hn">考 ${e.n} 次</span></div>${e.z ? `<div class="vz">${esc(e.z)}</div>` : ''}</div>${ch ? `<button class="hch" type="button" data-go="${esc(ch.id)}">第 ${ch.no} 章 →</button>` : ''}</div>`; };
+    const bands = (list, bs) => bs.map(([lo, hi]) => { const xs = list.filter(e => e.n >= lo && e.n <= hi); return xs.length ? `<div class="hband">${hi >= 99 ? '🔥 考 ' + lo + ' 次以上' : lo === hi ? '考 ' + lo + ' 次' : '考 ' + lo + '–' + hi + ' 次'}(${xs.length})</div>` + xs.map(row).join('') : ''; }).join('');
+    const sec = (id, t, sub) => `<div class="hsec" id="hot-${id}">${t}</div><div class="hsub">${sub}</div>`;
+    const W = top(words, JP ? 2 : 3), P = JP ? top(pats, 2) : [];
+    const G = J.chapters.flatMap(ch => ch.blocks.filter(b => b.t === 'gram' && b.lbl !== '規則' && b.lbl !== '題型').map(b => ({ ch, b })));
+    const parts = JP
+      ? [['pat', '🔥 高頻句型', `文法題考過 2 次以上的句型,共 ${P.length} 個(依出題次數排)`, bands(P, [[4, 99], [3, 3], [2, 2]])],
+         ['word', '🔥 常考單字', `詳解語彙考過 2 次以上的字,共 ${W.length} 個`, bands(W, [[3, 99], [2, 2]])]]
+      : [['word', '🔥 高頻單字與片語', `歷屆試題難字表裡考過 3 次以上的字,共 ${W.length} 個(依出題次數排)`, bands(W, [[7, 99], [5, 6], [4, 4], [3, 3]])]];
+    parts.push(['gram', '📐 講義句型總表', `講義各章的句型與用法,共 ${G.length} 則`, G.map(({ ch, b }) => `<div class="hpat"><div class="hph"><span>🧩 ${esc(b.lbl || '文法')} · ${esc(b.h || '')}</span><button class="hch" type="button" data-go="${esc(ch.id)}">第 ${ch.no} 章 →</button></div><ul>${b.pat.map(x => `<li>${mk(esc(x))}</li>`).join('')}</ul></div>`).join('')]);
+    $('app').innerHTML = `<div class="tocnav"><select id="hotJump" aria-label="跳到某一段">${parts.map(([id, t]) => `<option value="${id}">${t}</option>`).join('')}</select></div>`
+      + `<div class="tip0">🔥 依歷屆試題統計:出題越多次的字句越該先背。點 🔊 聽發音,點「第 N 章 →」回講義看用法與例句。</div>`
+      + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('');
+  });
+}
 const QUICK = { h:1, key:1, fig:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 /* v253 章節分組:[組名, 起章, 迄章](目錄的分組標籤與標題、章節選單的群組;沒列的科目不分組) */
@@ -827,8 +890,8 @@ const SAY = (() => {
    日語:點日文字 → 讀音、原形、詞性、中文、🔊(jplook.js:kuromoji 斷詞,詞庫 = 講義單字表 + 日文詳解的語彙)。
    中日混排的說明、表格只在點到的那段字有假名時才查;中文翻譯、讀音欄不查。換科目時自動關閉 */
 const RD = (() => {
-  const JP_ALLOW = '.jdlg .den, .jvoc .vw, .jvoc .ve .en, .jgram .geg .en, .jpron .vw, .jex .stem, .jex .op, #xsheet .xs-stem, #xsheet .xs-op, #xsheet .psgt';
-  const JP_MIXED = '.jgram .gpat div, .jtbl td, .jcmp td, .jkey li, .jtip li, .jtrap li, .jself li, .jmn, #xsheet .xs-ana, #xsheet .box, #xsheet .xs-voc td';
+  const JP_ALLOW = '.jdlg .den, .jvoc .vw, .jvoc .ve .en, .jgram .geg .en, .jpron .vw, .jex .stem, .jex .op, #xsheet .xs-stem, #xsheet .xs-op, #xsheet .psgt, .hrow .hw';
+  const JP_MIXED = '.jgram .gpat div, .jtbl td, .jcmp td, .jkey li, .jtip li, .jtrap li, .jself li, .jmn, #xsheet .xs-ana, #xsheet .box, #xsheet .xs-voc td, .hpat li';
   const JP_SKIP = '.oz, .vz, .yomi, .pos, .szh, .ipa, .spk, .ans';
   let btn = null, on = false, subj = null, tok = null, busy = false, attached = false;
   const label = t => { if (btn) btn.textContent = t; };
@@ -878,7 +941,7 @@ function renderBar(){
   $('subjRow').innerHTML = S.map(s=>{ const n = !s.file ? '製作中' : JY[s.k] ? JY[s.k].chapters.length + ' 章' : '';
     return `<button class="chip${cfg.subj===s.k?' on':''}" type="button" data-subj="${s.k}">${s.name}<span class="n">${n}</span></button>`; }).join('');
   $('tabs').style.display = cfg.view === 'ch' ? 'none' : '';
-  $('tabs').innerHTML = VIEWS.map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
+  $('tabs').innerHTML = viewsOf(cfg.subj).map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
   RD.sync();   // v274 點讀按鈕:英語、日語才顯示,換科目時關閉
 }
 function noData(){
@@ -956,6 +1019,7 @@ function openChapter(id){
 function render(){
   TTS.stop(true); SAY.stop();
   if (cfg.view === 'ch' && cfg.ch) return openChapter(cfg.ch);
+  if (cfg.view === 'hot' && !HOT_SUBJ.includes(cfg.subj)) cfg.view = 'toc';   // v277 高頻字句只有英語、日語
   history.replaceState(null, '', location.pathname);
   renderBar();
   const S = SUBJS.find(x=>x.k===cfg.subj);
@@ -964,7 +1028,7 @@ function render(){
   loadSubj(cfg.subj).then(J=>{
     renderBar();
     if (!J){ $('app').innerHTML = noData(); return; }
-    if (cfg.view === 'toc') renderToc(J); else renderAgg(J, cfg.view);
+    if (cfg.view === 'toc') renderToc(J); else if (cfg.view === 'hot') renderHot(J); else renderAgg(J, cfg.view);
   });
 }
 function startQuiz(all){
@@ -1090,6 +1154,7 @@ $('app').addEventListener('change', e=>{
   if (s.matches('.chsel, #tocJump')){ if (!v) return;
     if (v === '@toc'){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); window.scrollTo(0,0); } else openChapter(v); }
   else if (s.matches('.secsel')){ const el = document.getElementById('sec-' + v); s.value = ''; if (el) el.scrollIntoView({ block:'start', behavior:'smooth' }); }
+  else if (s.id === 'hotJump'){ const el = document.getElementById('hot-' + v); if (el) el.scrollIntoView({ block:'start', behavior:'smooth' }); }   // v277
   else if (s.id === 'aggJump'){ const el = v && document.querySelector('.it[data-agg="' + v + '"]'); s.value = ''; if (el) el.scrollIntoView({ block:'start', behavior:'smooth' }); }
 });
 $('ttsBar').addEventListener('click', e=>{ const b = e.target.closest('[data-tts]'); if (b) TTS.act(b.dataset.tts); });
