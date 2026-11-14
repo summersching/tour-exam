@@ -1,15 +1,18 @@
-/* jplook.js — 日文「點字查詞」(版本 v121)
+/* jplook.js — 日文「點字查詞」(版本 v274)
  * 開啟後,點題幹 / 讀解文章 / 解析裡的日文字詞 → 彈出小卡:讀音(平假名,可加羅馬拼音)、原形、詞性、
  * 中文意思(題庫內建詞庫)與 🔊。完全離線:斷詞用 kuromoji,詞庫由 jp_ana.js 的語彙(v)與選項中譯(oz)組成。
  * 用法:JPLOOK.attach(容器, {tokenizer:()=>TOK, speak:fn, romaji:()=>bool, toRomaji:fn, allow:'選擇器'})
  *       JPLOOK.setOn(true/false);JPLOOK.dictSize()
+ *       選用:skip(不查的子元素,例如中文翻譯)、mixed(中日混排的區塊:點到的那段連續文字有假名才查)、
+ *             extra()(額外詞庫 [[詞, 讀音, 中文]],排在題庫詞庫前面;講義用單字表)
+ * 變更履歷:v274 (2026-11-14) 講義點讀:加 skip / mixed / extra;點到詞組中間的字也能查到整個詞組(往前最多 3 個詞)
  */
 (function () {
   var ON = false, DICT = null, POP = null, OPT = null;
   var POS = { '名詞': '名詞', '動詞': '動詞', '形容詞': 'い形容詞', '副詞': '副詞', '助詞': '助詞', '助動詞': '助動詞', '連体詞': '連體詞', '接続詞': '接續詞', '感動詞': '感嘆詞', '接頭詞': '接頭詞', 'フィラー': '語氣詞' };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function k2h(s) { return String(s || '').replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }); }
-  var KANA = /[ぁ-んァ-ヶー]/, CJK = /[㐀-鿿]/;
+  var KANA = /[ぁ-んァ-ヶー]/, CJK = /[㐀-鿿]/, JPCH = /[ぁ-んァ-ヶー㐀-鿿々〜]/;
 
   function buildDict() {
     var d = {};
@@ -18,6 +21,7 @@
       if (!w || !m || w.length > 12 || d[w]) return;
       d[w] = { r: r || '', m: m };
     }
+    if (OPT && OPT.extra) { try { (OPT.extra() || []).forEach(function (x) { add(x[0], x[1], x[2]); }); } catch (err) {} }
     if (typeof JPANA === 'undefined') return d;
     var Q = {};
     if (typeof JPBANK !== 'undefined') JPBANK.forEach(function (q) { Q[q.c + '-' + q.y + '-' + q.no] = q; });
@@ -50,7 +54,7 @@
   function flatten(box, node, off) {
     var text = '', pos = -1;
     var w = document.createTreeWalker(box, NodeFilter.SHOW_TEXT, {
-      acceptNode: function (n) { return (n.parentNode && n.parentNode.closest && n.parentNode.closest('rt,.say,rp')) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
+      acceptNode: function (n) { return (n.parentNode && n.parentNode.closest && n.parentNode.closest('rt,.say,rp' + (OPT && OPT.skip ? ',' + OPT.skip : ''))) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
     });
     var n;
     while ((n = w.nextNode())) {
@@ -75,12 +79,14 @@
     return -1;
   }
   function lookupWord(tokens, i) {
-    var D = dict(), t = tokens[i];
-    // 由點到的字往後最多併 3 個詞,取詞庫裡最長的命中(例如 ため息、お預かり)
-    var best = null, s = '';
-    for (var j = i; j < Math.min(tokens.length, i + 4); j++) {
-      s += tokens[j].surface_form;
-      if (D[s]) best = { w: s, e: D[s], n: j - i + 1 };
+    var D = dict(), t = tokens[i], best = null;
+    // 點到的字所在的詞組:往前最多 3 個詞、合計最多 5 個詞,取詞庫裡最長的命中(例如 ため息、お預かり、目と鼻の先)
+    for (var a = Math.max(0, i - 3); a <= i; a++) {
+      var s = '';
+      for (var j = a; j < Math.min(tokens.length, a + 5); j++) {
+        s += tokens[j].surface_form;
+        if (j >= i && D[s] && (!best || s.length > best.w.length)) best = { w: s, e: D[s], n: j - a + 1 };
+      }
     }
     if (!best && t.basic_form && t.basic_form !== '*' && D[t.basic_form]) best = { w: t.basic_form, e: D[t.basic_form], n: 1 };
     return best;
@@ -100,8 +106,9 @@
   function onClick(e) {
     if (!ON || !OPT) return;
     if (POP && POP.contains(e.target)) return;
-    var box = e.target.closest && e.target.closest(OPT.allow);
-    if (!box || e.target.closest('.say,button.opt.clk,summary,a')) return;
+    var box = e.target.closest && e.target.closest(OPT.allow), mixed = false;
+    if (!box && OPT.mixed) { box = e.target.closest(OPT.mixed); mixed = !!box; }
+    if (!box || e.target.closest('.say,button.opt.clk,summary,a') || (OPT.skip && e.target.closest(OPT.skip))) return;
     var tok = OPT.tokenizer && OPT.tokenizer();
     if (!tok) return;
     var c = caret(e.clientX, e.clientY);
@@ -113,6 +120,12 @@
     if (i < 0) return;
     var t = tokens[i];
     if (t.pos === '記号' || !/[ぁ-んァ-ヶー㐀-鿿々]/.test(t.surface_form)) return;
+    if (mixed) {   // 中日混排:點到的那一段連續文字要有假名才當成日文(避免把中文說明當日文查)
+      var s0 = f.pos, s1 = f.pos;
+      while (s0 > 0 && JPCH.test(f.text[s0 - 1])) s0--;
+      while (s1 < f.text.length && JPCH.test(f.text[s1])) s1++;
+      if (!KANA.test(f.text.slice(s0, s1))) return;
+    }
     var hit = lookupWord(tokens, i);
     var surf = hit && hit.n > 1 ? hit.w : t.surface_form;
     var reading = hit && hit.n > 1 ? (hit.e.r || '') : (t.reading && t.reading !== '*' ? k2h(t.reading) : '');

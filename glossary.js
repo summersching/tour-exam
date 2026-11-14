@@ -1,5 +1,7 @@
 /* 點讀即查 — 點英文字看中文小框(離線,字典 dict.json)
-   開啟「點讀」後,點任一英文字跳出:單字 + 音標 + 中文 + 🔊;會攔截點擊,測驗中不會誤選答案。 */
+   開啟「點讀」後,點任一英文字跳出:單字 + 音標 + 中文 + 🔊;會攔截點擊,測驗中不會誤選答案。
+   頁面先設 window.GLOSS_MANUAL = true(講義)時不另外產生右下角按鈕,改由頁面用 GLOSS.setOn(true/false) 控制。
+   變更履歷:v274 (2026-11-14) 加 GLOSS_MANUAL 與 GLOSS.setOn / isOn(講義點讀用) */
 (function () {
   var DICT = null, on = false, loading = false, pop = null;
 
@@ -29,22 +31,26 @@
     '@media print{#glossBtn,#glossPop{display:none!important}}';
   document.head.appendChild(css);
 
-  var btn = document.createElement('button');
-  btn.id = 'glossBtn'; btn.type = 'button'; btn.textContent = '📖 點讀';
-  document.body.appendChild(btn);
-  btn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+  var btn = null;
+  if (!window.GLOSS_MANUAL) {
+    btn = document.createElement('button');
+    btn.id = 'glossBtn'; btn.type = 'button'; btn.textContent = '📖 點讀';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+  }
+  function label(t) { if (btn) btn.textContent = t; }
 
-  function toggle() {
-    on = !on;
-    btn.classList.toggle('on', on);
+  function toggle(v) {
+    on = v === undefined ? !on : !!v;
+    if (btn) btn.classList.toggle('on', on);
     document.body.classList.toggle('gloss-on', on);
-    btn.textContent = on ? '📖 點讀:開' : '📖 點讀';
+    label(on ? '📖 點讀:開' : '📖 點讀');
     hidePop();
     if (on && !DICT && !loading) {
-      loading = true; btn.textContent = '📖 載入字典…';
+      loading = true; label('📖 載入字典…');
       fetch('dict.json').then(function (r) { return r.json(); })
-        .then(function (d) { DICT = d; loading = false; btn.textContent = '📖 點讀:開'; })
-        .catch(function () { loading = false; btn.textContent = '📖 點讀:開'; });
+        .then(function (d) { DICT = d; loading = false; label(on ? '📖 點讀:開' : '📖 點讀'); })
+        .catch(function () { loading = false; label(on ? '📖 點讀:開' : '📖 點讀'); });
     }
   }
 
@@ -105,4 +111,5 @@
   }, true);
   window.addEventListener('scroll', hidePop, true);
   window.addEventListener('resize', hidePop);
+  window.GLOSS = { setOn: function (v) { toggle(!!v); }, isOn: function () { return on; }, ready: function () { return !!DICT; } };
 })();

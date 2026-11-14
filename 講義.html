@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v273(2026-11-14)
+<!-- 講義 · v274(2026-11-14)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v273 範例的「看原題完整詳解」改成在講義裡從下方滑出詳解視窗(不換頁,五科共用);✕、點背景、Esc、手機返回鍵都回到原來的位置,視窗裡另有「在新分頁開啟詳解頁」
+     變更履歷:v274 英語、日語講義加「📖 點讀」(右下角按鈕):英語點英文字看中文、音標、🔊;日語點日文字看讀音、原形、詞性、中文、🔊(kuromoji 斷詞,詞庫加入講義單字表);中日混排的說明只在有假名時才查,翻譯與讀音欄不查;換科目自動關閉
+              v273 範例的「看原題完整詳解」改成在講義裡從下方滑出詳解視窗(不換頁,五科共用);✕、點背景、Esc、手機返回鍵都回到原來的位置,視窗裡另有「在新分頁開啟詳解頁」
               v272 日語講義第 10 章上線(閱讀測驗),日語 10 章完成(涵蓋 1,600 題),五科講義全部完成;沒有講義的科目提示不再寫「日語陸續上線中」
               v271 日語講義第 9 章上線(慣用、諺語與日本文化知識)
               v270 日語講義第 8 章上線(敬語與待客會話)
@@ -354,6 +355,12 @@
   .vts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .vts .vt{margin-left:0}
   .hidey .yomi,.hidey rt{filter:blur(5px);user-select:none}
   .jex .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  /* v274 點讀(英語、日語講義):右下角按鈕,開啟後點英文或日文字看意思和發音 */
+  #rdBtn{position:fixed;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
+  #rdBtn.on{background:#2563eb} #rdBtn[hidden]{display:none}
+  #glossPop,.jlk{z-index:10002!important}
+  body.jlk-on .jdlg .den,body.jlk-on .jvoc .vw,body.jlk-on .jvoc .ve .en,body.jlk-on .jgram .geg .en,body.jlk-on .jex .stem,body.jlk-on .jex .op{cursor:help}
+  @media print{#rdBtn{display:none!important}}
   /* v273 講義內看完整詳解:從下方滑出的詳解視窗(不換頁) */
   .jex .xopen{display:inline-block;margin-top:6px;border:1.5px solid var(--c2);background:var(--card);color:var(--c2);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.85rem;font-family:inherit;cursor:pointer}
   .jex .xopen:active{transform:scale(.97)}
@@ -799,6 +806,56 @@ const SAY = (() => {
   }
   return { say, play, stop, log };
 })();
+/* v274 點讀(英語、日語講義):右下角「📖 點讀」打開後 ——
+   英語:點英文字 → 中文、音標、🔊(glossary.js,離線英文字典 dict.json);
+   日語:點日文字 → 讀音、原形、詞性、中文、🔊(jplook.js:kuromoji 斷詞,詞庫 = 講義單字表 + 日文詳解的語彙)。
+   中日混排的說明、表格只在點到的那段字有假名時才查;中文翻譯、讀音欄不查。換科目時自動關閉 */
+const RD = (() => {
+  const JP_ALLOW = '.jdlg .den, .jvoc .vw, .jvoc .ve .en, .jgram .geg .en, .jpron .vw, .jex .stem, .jex .op, #xsheet .xs-stem, #xsheet .xs-op, #xsheet .psgt';
+  const JP_MIXED = '.jgram .gpat div, .jtbl td, .jcmp td, .jkey li, .jtip li, .jtrap li, .jself li, .jmn, #xsheet .xs-ana, #xsheet .box, #xsheet .xs-voc td';
+  const JP_SKIP = '.oz, .vz, .yomi, .pos, .szh, .ipa, .spk, .ans';
+  let btn = null, on = false, subj = null, tok = null, busy = false, attached = false;
+  const label = t => { if (btn) btn.textContent = t; };
+  function mount(){
+    if (btn) return;
+    btn = document.createElement('button'); btn.id = 'rdBtn'; btn.type = 'button'; btn.hidden = true; btn.textContent = '📖 點讀';
+    btn.setAttribute('aria-pressed', 'false'); btn.title = '點讀:打開後點英文或日文字,看意思和發音';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', e => { e.stopPropagation(); set(!on); });
+  }
+  const jpExtra = () => { const J = JY.jp; return J ? J.chapters.flatMap(ch => ch.blocks.filter(b => b.t === 'vocab').flatMap(b => b.items.map(x => [plainText(x[0]), x[1], x[3]]))) : []; };
+  const fail = msg => { set(false); TTS.flash(msg); };
+  function enOn(v){
+    if (window.GLOSS){ GLOSS.setOn(v); return; }
+    if (!v) return;
+    window.GLOSS_MANUAL = true; label('📖 字典載入中…');
+    PRACTICE.loadJs('glossary.js').then(() => { if (on && subj === 'en'){ GLOSS.setOn(true); label('📖 點讀:開'); } }).catch(() => fail('點讀字典載入失敗,請稍後再試'));
+  }
+  function jpOn(v){
+    if (!v){ if (window.JPLOOK) JPLOOK.setOn(false); return; }
+    if (tok && window.JPLOOK){ JPLOOK.setOn(true); return; }
+    if (busy) return; busy = true; label('📖 日文字典載入中…');
+    Promise.all([window.kuromoji ? null : PRACTICE.loadJs('kuromoji/kuromoji.js'), window.JPLOOK ? null : PRACTICE.loadJs('jplook.js')])
+      .then(() => new Promise((ok, no) => kuromoji.builder({ dicPath: 'dict/' }).build((err, tk) => err ? no(err) : ok(tk))))
+      .then(tk => {
+        tok = tk; busy = false;
+        if (!attached){ attached = true; JPLOOK.attach(document.body, { tokenizer: () => tok, speak: t => SAY.say(t), romaji: () => false, allow: JP_ALLOW, mixed: JP_MIXED, skip: JP_SKIP, extra: jpExtra }); }
+        if (on && subj === 'jp'){ JPLOOK.setOn(true); label('📖 點讀:開'); }
+      })
+      .catch(() => { busy = false; fail('日文字典載入失敗,請稍後再試'); });
+  }
+  function set(v){
+    mount(); on = !!v;
+    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on)); label(on ? '📖 點讀:開' : '📖 點讀');
+    if (subj === 'en') enOn(on); else if (subj === 'jp') jpOn(on);
+  }
+  function sync(){
+    mount();
+    if (cfg.subj !== subj){ if (on) set(false); subj = cfg.subj; }
+    btn.hidden = !(subj === 'en' || subj === 'jp');
+  }
+  return { sync, set, isOn: () => on };
+})();
 function renderBar(){
   const S = SUBJS;
   document.body.dataset.sj = cfg.subj;   // v253 各科主色(屬性名不能用 data-subj:科目按鈕的點擊處理是找 [data-subj])
@@ -806,6 +863,7 @@ function renderBar(){
     return `<button class="chip${cfg.subj===s.k?' on':''}" type="button" data-subj="${s.k}">${s.name}<span class="n">${n}</span></button>`; }).join('');
   $('tabs').style.display = cfg.view === 'ch' ? 'none' : '';
   $('tabs').innerHTML = VIEWS.map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
+  RD.sync();   // v274 點讀按鈕:英語、日語才顯示,換科目時關閉
 }
 function noData(){
   return `<div class="card empty">📌 本科講義製作中。</div>`;
