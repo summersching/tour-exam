@@ -10,6 +10,7 @@
    選用 onResult(答對題數, 總題數, { redo, partial }):每次看到結果時呼叫(講義章末測驗用來記錄成績)
      redo = 這輪是「只練錯的」;partial = 中途關閉、只結算已作答的題目(這兩種不該算成整章成績)
    變更履歷:
+     v279 (2026-11-14) 閱讀題附文章(預設展開、可收合):英語閱讀題用 enread.js(q.psg),日語讀解題用 jp_psg.js(JPREAD);需要時自動載入
      v251 (2026-11-11) 支援外語英語、日語(講義章末測驗):題幹的 __BLANK__ 顯示成底線,錯題本提示用 PRACTICE.S 取科目名
      v201 (2026-11-02) 新增 onResult 回呼(附 redo / partial 旗標)
      v129 (2026-10-05) 題幹附圖(OPTIMG.fig);沒載入 optimg.js 的頁面自動補載
@@ -54,7 +55,9 @@
     if (!list.length) return;
     var subs = {}; list.forEach(function (x) { subs[x.s] = 1; });
     var img = window.OPTIMG ? Promise.resolve() : PRACTICE.loadJs('optimg.js').catch(function () {});   // 圖片題(選項圖、題幹附圖)要用
-    Promise.all(Object.keys(subs).map(function (s) { return PRACTICE.load(s).then(function (d) { return [s, d.ana]; }); }).concat([img])).then(function (rs) {
+    var psg = (subs.jp && !window.JPREAD) ? PRACTICE.loadJs('jp_psg.js').catch(function () {}) : Promise.resolve();   // v279 日語讀解題附文章
+    var enr = (!window.ENREAD && list.some(function (x) { return x.q.psg; })) ? PRACTICE.loadJs('enread.js').catch(function () {}) : Promise.resolve();   // v279 英語閱讀題(q.psg)附文章
+    Promise.all(Object.keys(subs).map(function (s) { return PRACTICE.load(s).then(function (d) { return [s, d.ana]; }); }).concat([img, psg, enr])).then(function (rs) {
       rs = rs.slice(0, Object.keys(subs).length);
       var ana = {}; rs.forEach(function (r) { ana[r[0]] = r[1]; });
       ST = { title: opt.title || '小測驗', pool: list, n: opt.n || 0, ana: ana, onResult: opt.onResult };
@@ -77,6 +80,11 @@
     show();
   }
   function bd() { return document.querySelector('.mq-ov .mq-bd'); }
+  function psgHtml(s, q) {   // v279 閱讀題附文章(預設展開,可收合);不顯示文章主題,避免洩漏主旨題答案
+    if (s === 'en' && q.psg && window.ENREAD) return ENREAD.html(q, { open: true });
+    if (s === 'jp' && window.JPREAD) return JPREAD.html(q, { open: true });
+    return '';
+  }
   function show() {
     var it = ST.items[ST.i], q = it.q, s = it.s;
     ST.answered = false;
@@ -86,7 +94,7 @@
       var img = window.OPTIMG ? OPTIMG.html(q, i) : '';
       return '<button class="mq-opt" type="button" data-i="' + i + '"><span class="lt">' + L[i] + '</span><span>' + img + esc(clean(o)) + '</span><span class="mk"></span></button>';
     }).join('');
-    bd().innerHTML = '<div class="mq-src">' + esc(PRACTICE.label(s, q)) + '</div><div class="mq-stem">' + esc(clean(q.stem)) + '</div>' + (window.OPTIMG && OPTIMG.fig ? OPTIMG.fig(q) : '') + stale +
+    bd().innerHTML = '<div class="mq-src">' + esc(PRACTICE.label(s, q)) + '</div>' + psgHtml(s, q) + '<div class="mq-stem">' + esc(clean(q.stem)) + '</div>' + (window.OPTIMG && OPTIMG.fig ? OPTIMG.fig(q) : '') + stale +
       '<div class="mq-opts">' + opts + '</div><div class="mq-fb"></div>';
     bd().querySelector('.mq-opts').onclick = function (e) { var b = e.target.closest('.mq-opt'); if (b) answer(+b.dataset.i); };
     document.querySelector('.mq-ov').scrollTop = 0;

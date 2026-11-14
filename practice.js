@@ -12,6 +12,7 @@
      PRACTICE.addDaily(n)       首頁「今日已練」計數(localStorage practice_daily = {YYYY-MM-DD: 題數})
    題庫檔是 top-level const(不在 window 上),以間接 eval 在全域範圍取值。
    變更履歷:
+     v279 (2026-11-14) 匯出 PRACTICE.enAna(把英語題目整理成 { a, s } 解析,講義併入閱讀題時用)
      v251 (2026-11-11) 外語兩科另列 XSUBJ(en、jp),PRACTICE.S(s) 取設定:講義與小測驗可讀英語、日語題庫;英語錯題本存整題(同英語詳解頁)
      v127 (2026-10-05) 初版
 */
@@ -91,5 +92,5 @@
     LSset('practice_daily', pd);
   }
   window.PRACTICE = { SUBJ: SUBJ, XSUBJ: XSUBJ, S: S, CNAME: CNAME, load: load, key: key, href: href, label: label, short: short,
-    wbAdd: wbAdd, addDaily: addDaily, LSget: LSget, LSset: LSset, dkey: dkey, gv: gv, loadJs: loadJs };
+    wbAdd: wbAdd, addDaily: addDaily, LSget: LSget, LSset: LSset, dkey: dkey, gv: gv, loadJs: loadJs, enAna: enAna };
 })();

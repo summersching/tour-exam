@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v277(2026-11-14)
+<!-- 講義 · v279(2026-11-14)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v277 英語、日語講義加「🔥 高頻字句」頁籤:依歷屆試題統計出題次數(英語難字表考 3 次以上的單字片語;日語文法題考 2 次以上的句型、常考單字),附講義句型總表;日語第 5~7 章文法區塊標成「句型」,第 8 章加「導遊帶團常用的一句話」12 句
+     變更履歷:v279 英語講義新增第 9 章「閱讀測驗」(第 71–80 題,200 題歸章);英語講義載入閱讀題(en_review.js + enread.js 併進題庫資料),範例、章末測驗與詳解視窗的閱讀題都附上文章(日語讀解題同樣附原文);🔥 高頻字句不計閱讀文章的難字表(維持依考題統計)
+              v277 英語、日語講義加「🔥 高頻字句」頁籤:依歷屆試題統計出題次數(英語難字表考 3 次以上的單字片語;日語文法題考 2 次以上的句型、常考單字),附講義句型總表;日語第 5~7 章文法區塊標成「句型」,第 8 章加「導遊帶團常用的一句話」12 句
               v276 日語 10 章情境會話也加替換練習(23 段會話共 29 處;換字時注音跟著換,發音唸假名)
               v275 情境會話加替換練習:虛線的字點一下換下一個說法(中文翻譯跟著換,並唸出換好的句子);▶ 播放會話與整章朗讀唸目前選的說法;英語 8 章 23 段會話共 29 處可替換
               v274 英語、日語講義加「📖 點讀」(右下角按鈕):英語點英文字看中文、音標、🔊;日語點日文字看讀音、原形、詞性、中文、🔊(kuromoji 斷詞,詞庫加入講義單字表);中日混排的說明只在有假名時才查,翻譯與讀音欄不查;換科目自動關閉
@@ -474,6 +475,7 @@ function renderHot(J){
     const words = new Map(), pats = new Map();
     const add = (m, key, rec, qk) => { let e = m.get(key); if (!e){ e = Object.assign({ n: 0, chs: {} }, rec); m.set(key, e); } e.n++; const ch = own[qk]; if (ch) e.chs[ch.id] = (e.chs[ch.id] || 0) + 1; };
     d.bank.forEach(q => {
+      if (!JP && q.psg) return;   // v279 英語閱讀題的難字表是整篇文章共用(同一篇 5 題重複),不計入出題次數
       const qk = PRACTICE.key(q);
       if (JP){
         const a = d.ana[qk] || {};
@@ -547,7 +549,25 @@ function loadSubj(k){
   JYLOAD[k] = pre.then(()=>{ JY[k] = PRACTICE.gv(S.v) || null; return JY[k]; }).catch(()=>{ delete JYLOAD[k]; return null; });
   return JYLOAD[k];
 }
-function bankOf(k){ return (PRACTICE.S ? PRACTICE.S(k) : PRACTICE.SUBJ[k]) ? PRACTICE.load(k).catch(()=>null) : Promise.resolve(null); }   // v251 外語由 PRACTICE.S 取設定
+function bankOf(k){ return (PRACTICE.S ? PRACTICE.S(k) : PRACTICE.SUBJ[k]) ? PRACTICE.load(k).then(d => k === 'en' ? withRead(d) : k === 'jp' ? withPsg(d) : d).catch(()=>null) : Promise.resolve(null); }   // v251 外語由 PRACTICE.S 取設定;v279 英語併入閱讀題、日語載入讀解文章
+/* v279 英語閱讀題(第 71–80 題)不在 bank.js:載入 en_review.js + enread.js,把 200 題閱讀題(附文章 psg)併進英語的題庫資料。
+   改的是 PRACTICE 快取的同一份物件(bank 換成合併後的新陣列,map 與解析 ana 補上閱讀題),章末測驗、詳解視窗都讀得到;載入失敗就照舊只用第 1–70 題 */
+let ENRP = null, JPPP = null;
+function withRead(d){
+  if (!d || d.readOk) return Promise.resolve(d);
+  ENRP = ENRP || (window.ENREAD ? Promise.resolve() : (PRACTICE.gv('EN_REVIEW') ? Promise.resolve() : PRACTICE.loadJs('en_review.js')).then(() => PRACTICE.loadJs('enread.js')));
+  return ENRP.then(() => {
+    if (d.readOk || !window.ENREAD) return d;
+    const rs = ENREAD.list().filter(q => !d.map[PRACTICE.key(q)]);
+    d.bank = d.bank.concat(rs); rs.forEach(q => { d.map[PRACTICE.key(q)] = q; });
+    Object.assign(d.ana, PRACTICE.enAna(rs)); d.readOk = true; return d;
+  }).catch(() => { ENRP = null; return d; });
+}
+function withPsg(d){   // v279 日語讀解文章(jp_psg.js,約 70 KB):範例、章末測驗、詳解視窗的讀解題附上原文
+  JPPP = JPPP || (window.JPREAD ? Promise.resolve() : PRACTICE.loadJs('jp_psg.js'));
+  return JPPP.then(() => d).catch(() => { JPPP = null; return d; });
+}
+const psgOf = (k, q) => k === 'en' && q.psg && window.ENREAD ? ENREAD.html(q, { open: false }) : k === 'jp' && window.JPREAD ? JPREAD.html(q, { open: false }) : '';   // v279 範例的閱讀題附文章(預設收合)
 function chapterQs(ch, d){
   if (!d) return [];
   const m = ch.match || {};
@@ -595,7 +615,7 @@ function exHtml(k, b, d){
   const q = d && d.map[b.key]; if (!q) return '';
   const acc = SCORE.acc(q), a = (k === 'jp' && d.ana && d.ana[b.key]) || {}, oz = Array.isArray(a.oz) ? a.oz : [];
   const ozt = (o, i) => { const z = String(oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim(); return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };   // v263 日語選項中譯(去掉括號裡重複的日文)
-  return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>
+  return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>${psgOf(k, q)}
     <div class="stem">${esc(clean(q.stem))}</div>${a.zh?`<div class="szh">${esc(a.zh)}</div>`:''}
     ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${esc(clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
@@ -890,7 +910,7 @@ const SAY = (() => {
    日語:點日文字 → 讀音、原形、詞性、中文、🔊(jplook.js:kuromoji 斷詞,詞庫 = 講義單字表 + 日文詳解的語彙)。
    中日混排的說明、表格只在點到的那段字有假名時才查;中文翻譯、讀音欄不查。換科目時自動關閉 */
 const RD = (() => {
-  const JP_ALLOW = '.jdlg .den, .jvoc .vw, .jvoc .ve .en, .jgram .geg .en, .jpron .vw, .jex .stem, .jex .op, #xsheet .xs-stem, #xsheet .xs-op, #xsheet .psgt, .hrow .hw';
+  const JP_ALLOW = '.jdlg .den, .jvoc .vw, .jvoc .ve .en, .jgram .geg .en, .jpron .vw, .jex .stem, .jex .op, #xsheet .xs-stem, #xsheet .xs-op, #xsheet .psgt, .jex .psgt, .hrow .hw';
   const JP_MIXED = '.jgram .gpat div, .jtbl td, .jcmp td, .jkey li, .jtip li, .jtrap li, .jself li, .jmn, #xsheet .xs-ana, #xsheet .box, #xsheet .xs-voc td, .hpat li';
   const JP_SKIP = '.oz, .vz, .yomi, .pos, .szh, .ipa, .spk, .ans';
   let btn = null, on = false, subj = null, tok = null, busy = false, attached = false;
@@ -1084,6 +1104,7 @@ function xsHtml(k, q, d){
   const ozt = (o, i) => { const z = J && Array.isArray(a.oz) ? String(a.oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim() : ''; return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };
   let h = '';
   if (J && window.JPREAD) h += JPREAD.html(q, { open: false, full: true, say: true });   // 日語讀解題:附上原文(預設收合,點開再看)
+  if (E && q.psg && window.ENREAD) h += ENREAD.html(q, { open: false, full: true, say: true });   // v279 英語閱讀題:附上文章
   h += `<div class="xs-stem">${esc(clean(q.stem))}</div>`;
   if (J && a.zh) h += `<div class="zh">${a.zh}</div>`;
   if (E && q.zh) h += `<div class="zh">${q.zh}</div>`;
@@ -1113,8 +1134,7 @@ function swapSlot(sw){
 }
 function openX(k, key, src){
   XS.show('詳解', '<div class="xs-na">載入中…</div>', src);
-  const psg = k === 'jp' && !window.JPREAD ? PRACTICE.loadJs('jp_psg.js').catch(() => {}) : null;
-  Promise.all([PRACTICE.load(k), psg]).then(([d]) => { const q = d.map[key]; if (q && XS.isOpen()) XS.show(PRACTICE.label(k, q), xsHtml(k, q, d)); })
+  bankOf(k).then(d => { if (!d) throw new Error('load'); const q = d.map[key]; if (q && XS.isOpen()) XS.show(PRACTICE.label(k, q), xsHtml(k, q, d)); })   // v279 用 bankOf:英語閱讀題、日語讀解文章一併載入
     .catch(() => { if (XS.isOpen()) XS.show('詳解', '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
 }
 
