@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v283(2026-11-16)
+<!-- 講義 · v284(2026-11-16)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解總覽、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v283 執業法規第 10 章加「國人出國的四種入境方式」與「出國前要先上網辦的電子旅行授權」(依 115 年命題大綱「各地簽證手續」)
+     變更履歷:v284 版面:拿掉各區塊左側的粗色條(小節標題、考情、口訣、技巧、陷阱、易混比較、歷屆範例、條文、會話、文法、發音、章節卡),改成淡色底加同色系細框
+              v283 執業法規第 10 章加「國人出國的四種入境方式」與「出國前要先上網辦的電子旅行授權」(依 115 年命題大綱「各地簽證手續」)
               v282 觀光資源第 19~23 章(世界地理)各加一節「標準行程的主要參觀點」(依 115 年命題大綱)
               v281 執業實務第 10 章加「簡單醫療術語」(字首字尾、症狀與病名、就醫與用藥縮寫;依 115 年命題大綱)
               v280 執業實務第 20 章上線(領隊技巧:歷史年代對照、遊程規劃與業務安全;依 115 年命題大綱補國內外歷史年代對照表、遊程規劃、業務安全),目錄分組加「領隊技巧與業務安全」
@@ -151,7 +152,7 @@
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button.on{color:#05211d}}
   .exam{background:var(--soft);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.86rem}
   .exam b{color:var(--sel)}
-  .jh{font-size:1.06rem;margin:22px 0 6px;padding-left:10px;border-left:4px solid var(--sel)}
+  .jh{font-size:1.06rem;margin:22px 0 6px}
   .jp{margin:8px 0;font-size:.96rem}
   .jp b,.kn{color:var(--key)}   /* v220 重點紅字:段落粗體關鍵詞;重點條列與表格裡的數字、日期(由 hl() 標出) */
   .kn{font-weight:800}
@@ -275,17 +276,16 @@
   .gh .gn{font-size:.72rem;font-weight:700;color:var(--sub)}
   .chlist{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
   @media (min-width:700px){.chlist{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-  a.chcard{display:flex;gap:10px;align-items:flex-start;min-width:0;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px}
+  a.chcard{display:flex;gap:10px;align-items:flex-start;min-width:0;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px}
   .chn{flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:var(--acb);color:var(--ac);font-weight:900;font-size:.95rem;display:flex;align-items:center;justify-content:center}
   .chb{flex:1;min-width:0} .chb>span{display:block}
   a.chcard .cht{font-size:.98rem;line-height:1.4;margin:0}
   a.chcard .chs{font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   a.chcard .chm{display:flex;margin-top:5px}
-  .chhead{border-left:5px solid var(--sel)}
   .chhead .sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
   .chhead .sub.open{display:block}
   /* 章內:小節標題、條列段落、各種區塊各有顏色 */
-  .jh{display:flex;align-items:center;gap:9px;margin:26px 0 10px;padding:9px 12px;border-radius:12px;background:var(--acb);border-left:5px solid var(--ac);scroll-margin-top:66px}
+  .jh{display:flex;align-items:center;gap:9px;margin:26px 0 10px;padding:9px 12px;border-radius:12px;background:var(--acb);border:1px solid color-mix(in srgb,var(--ac) 28%,transparent);scroll-margin-top:66px}
   .jh .hn{flex:0 0 auto;min-width:28px;height:28px;padding:0 6px;border-radius:9px;background:var(--ac);color:var(--on);font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
   ul.jp{list-style:none;margin:8px 0 14px;padding:0}
   ul.jp li{position:relative;padding:6px 0 6px 20px;line-height:1.75}
@@ -297,17 +297,17 @@
   .jkey{margin:2px 0;padding:0;list-style:none}
   .jkey li{position:relative;padding:3px 0 3px 22px;font-size:.93rem}
   .jkey li::before{content:'✔';position:absolute;left:2px;color:var(--c4);font-weight:900}
-  .exam{background:linear-gradient(135deg,var(--soft),var(--c2b));border-left:5px solid var(--sel)}
+  .exam{background:linear-gradient(135deg,var(--soft),var(--c2b));border:1px solid color-mix(in srgb,var(--sel) 28%,transparent)}
   .jtbl .th{color:var(--ac)} .jtbl th{background:var(--acb);color:var(--ac)}
-  .jmn{background:linear-gradient(135deg,var(--c3b),var(--c5b));border-left:5px solid var(--c3)}
+  .jmn{background:linear-gradient(135deg,var(--c3b),var(--c5b));border:1px solid color-mix(in srgb,var(--c3) 28%,transparent)}
   .jmn .mh,.jmn .mt{color:var(--c3)}
-  .jtip{background:var(--c6b);border:0;border-left:5px solid var(--c6)} .jtip .mh{color:var(--c6)}
-  .jtrap{background:var(--nobg);border:0;border-left:5px solid var(--no)}
-  .jcmp{border:0;border-left:5px solid var(--c2);background:var(--c2b)} .jcmp .mh{color:var(--c2)} .jcmp th{background:var(--card);color:var(--c2)}
-  .jex{border-left:5px solid var(--c2)} .jex .src{color:var(--c2)}
+  .jtip{background:var(--c6b);border:0;border:1px solid color-mix(in srgb,var(--c6) 28%,transparent)} .jtip .mh{color:var(--c6)}
+  .jtrap{background:var(--nobg);border:0;border:1px solid color-mix(in srgb,var(--no) 28%,transparent)}
+  .jcmp{border:0;border:1px solid color-mix(in srgb,var(--c2) 28%,transparent);background:var(--c2b)} .jcmp .mh{color:var(--c2)} .jcmp th{background:var(--card);color:var(--c2)}
+  .jex .src{color:var(--c2)}
   .jex ol{background:var(--bg);border-radius:10px;padding:8px 10px 8px 2em}
   .jself{border:2px dashed var(--c1)} .jself .mh{color:var(--c1)}
-  .jlaw{background:var(--paper);border:0;border-left:5px solid var(--sub)}
+  .jlaw{background:var(--paper);border:0;border:1px solid color-mix(in srgb,var(--sub) 28%,transparent)}
   .jstale{background:var(--card);border:1.5px dashed var(--warn)}
   @media print{.chnav,.tocnav,.grow,.end select{display:none!important}}
   /* ===== v255 英語講義新格式:單字表(音標 + 發音)、情境會話、文法重點、發音提醒 ===== */
@@ -332,7 +332,7 @@
   .ve .vz{font-weight:400;color:var(--sub);margin-left:6px}
   .hidez .vz{filter:blur(6px);user-select:none}
   /* 情境會話:對話泡泡(旅客那一方靠右) */
-  .jdlg{background:var(--c2b);border-left:5px solid var(--c2)}
+  .jdlg{background:var(--c2b);border:1px solid color-mix(in srgb,var(--c2) 28%,transparent)}
   .jdlg .mh{color:var(--c2)}
   .dtools{display:flex;gap:6px;margin:6px 0 4px;flex-wrap:wrap}
   .dtools .vt{margin-left:0}
@@ -345,14 +345,14 @@
   .db .vz{font-weight:400;font-size:.8rem;color:var(--sub)}
   .saying{outline:3px solid var(--accent);outline-offset:2px}
   /* 文法重點、發音提醒 */
-  .jgram{background:var(--c3b);border-left:5px solid var(--c3)}
+  .jgram{background:var(--c3b);border:1px solid color-mix(in srgb,var(--c3) 28%,transparent)}
   .jgram .mh{color:var(--c3)}
   .gpat{background:var(--card);border-radius:10px;padding:8px 10px;margin:6px 0;font-weight:800;font-size:.9rem;line-height:1.7}
   .gpt{margin:6px 0;padding-left:1.2em;font-size:.9rem}
   .geg{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
   .geg .en{font-weight:700;font-size:.93rem}
   .geg .vz{font-weight:400;font-size:.82rem;color:var(--sub)}
-  .jpron{background:var(--c5b);border-left:5px solid var(--c5)}
+  .jpron{background:var(--c5b);border:1px solid color-mix(in srgb,var(--c5) 28%,transparent)}
   .jpron .mh{color:var(--c5)}
   .prow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
   .prow .vw{color:var(--c5)} .pn{font-size:.84rem}
