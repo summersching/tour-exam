@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v287(2026-11-17)
+<!-- 講義 · v288(2026-11-17)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
+     變更履歷:v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
+              v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
               v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
               v285 圖解分兩種:真的示意圖(線條、箭頭、位置、並排)保留叫「圖解」並各章重新編號;只是方框條列文字的 151 張改成「重點整理卡」(可選取、放大、朗讀、點讀);圖解總覽改「圖解與整理卡」
               v284 版面:拿掉各區塊左側的粗色條(小節標題、考情、口訣、技巧、陷阱、易混比較、歷屆範例、條文、會話、文法、發音、章節卡),改成淡色底加同色系細框
@@ -354,6 +355,13 @@
   .ve{font-size:.84rem;color:var(--sub);margin-top:1px}
   .ve .en{color:var(--ink);cursor:pointer;border-bottom:1px dotted var(--sub)}
   .ve .vz{font-weight:400;color:var(--sub);margin-left:6px}
+  /* v288 英語單字:歷屆出題次數(5 題以上紅底)、同義字與反義字 */
+  .vf{font-size:.7rem;font-weight:800;color:var(--sub);background:var(--soft);border-radius:999px;padding:0 7px;white-space:nowrap}
+  .vf.hot{color:#fff;background:var(--no)}
+  .vs{font-size:.8rem;color:var(--ink);margin-top:2px;display:flex;flex-wrap:wrap;gap:0 12px}
+  .vs b{font-size:.7rem;font-weight:800;border-radius:6px;padding:0 4px;margin-right:4px;color:#fff}
+  .vs .sy b{background:var(--c6)} .vs .an b{background:var(--c5)}
+  .vleg{font-size:.74rem;color:var(--sub);margin:2px 0 4px;line-height:1.6} .vleg .vs{display:inline-flex;margin-left:6px;font-size:.74rem}
   .hidez .vz{filter:blur(6px);user-select:none}
   /* 情境會話:對話泡泡(旅客那一方靠右) */
   .jdlg{background:var(--c2b);border:1px solid color-mix(in srgb,var(--c2) 28%,transparent)}
@@ -683,11 +691,41 @@ function slotHtml(s, render){   // 每個替換位置:所有說法都放進去,�
 const sayText = s => slotPick(s).replace(/\*\*/g, '').replace(RUBY, '$2');   // 發音:去掉 ** 記號,注音的字唸假名
 const plainText = s => slotPick(s).replace(RUBY, '$1');
 const isJP = () => cfg.subj === 'jp';
-function vocabHtml(b){
-  const J = isJP();
-  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${b.items.map(([w,ipa,pos,zh,eg,egz])=>{
+/* v288 英語單字的歷屆出題次數:題目與選項(不含閱讀文章本文)出現過幾題;比對常見字形變化(-s、-es、-ed、-ing、y→ies…),
+   片語的第一個字與最後一個字都可以變化、開頭的 be 可換成 is / are / was…;虛詞與含 someone、something、doing 的句型不算 */
+const VF_SKIP = /^(or|any|with|would|through|between|while|until|mine|others|the others|given)$|\b(someone|something|doing)\b/;
+const VFC = new WeakMap();
+const vfNorm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+let VFW = null;
+const vfWords = () => VFW || (JY.en ? (VFW = new Set(JY.en.chapters.flatMap(ch => ch.blocks.filter(b => b.t === 'vocab').flatMap(b => b.items.map(x => vfNorm(plainText(x[0])).trim()))))) : new Set());
+function vfRe(w){
+  const ws = w.replace(/[^a-z' -]/g, ' ').trim().split(/\s+/).filter(Boolean); if (!ws.length) return null;
+  const E = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const forms = x => { const f = new Set([x, x + 's', x + 'es', x + 'ed', x + 'ing', x + 'd']);
+    if (/e$/.test(x)) f.add(x.slice(0, -1) + 'ing');
+    if (/[^aeiou]y$/.test(x)){ f.add(x.slice(0, -1) + 'ies'); f.add(x.slice(0, -1) + 'ied'); }
+    if (/[^aeiou][aeiou][bdgklmnprt]$/.test(x)){ f.add(x + x.slice(-1) + 'ed'); f.add(x + x.slice(-1) + 'ing'); }
+    const V = vfWords(); [...f].forEach(y => { if (y !== x && V.has(y)) f.delete(y); });   // 別的單字(custom 的 customs = 海關)不算進來
+    return '(?:' + [...f].map(E).join('|') + ')'; };
+  const parts = ws.map((x, i) => x === 'be' && i === 0 ? '(?:be|is|are|am|was|were|been|being)' : (i === 0 || i === ws.length - 1) ? forms(x) : E(x));
+  return new RegExp('(?:^|[^a-z])' + parts.join('[\\s-]+') + '(?![a-z])');
+}
+function vfreq(d, w){
+  if (!d || !d.bank) return 0;
+  let C = VFC.get(d);
+  if (!C){ C = { t: d.bank.map(q => vfNorm(' ' + [q.stem].concat(q.opts || []).join(' | ') + ' ').replace(/__blank__/g, ' ').replace(/<[^>]*>/g, ' ')), m: new Map() }; VFC.set(d, C); }
+  const k = vfNorm(w).trim();
+  if (C.m.has(k)) return C.m.get(k);
+  let n = 0;
+  if (!VF_SKIP.test(k)){ const re = vfRe(k); if (re) C.t.forEach(t => { if (re.test(t)) n++; }); }
+  C.m.set(k, n); return n;
+}
+function vocabHtml(b, d){
+  const J = isJP(), first = !J && CUR && CUR.ch && CUR.ch.blocks.find(x => x.t === 'vocab') === b;   // v288 每章第一個英語單字表加圖例
+  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${first?'<div class="vleg">「考 N 次」= 106–115 年英語試題的題目或選項出現過的題數(10 題以上紅底);<span class="vs"><span class="sy"><b>同</b>同義字</span><span class="an"><b>反</b>反義字</span></span></div>':''}${b.items.map(([w,ipa,pos,zh,eg,egz,sa])=>{
+    const f = J ? 0 : vfreq(d, plainText(w));   // v288 歷屆出題次數(英語)
     const sw = J && ipa ? ipa : plainText(w), se = J && ipa ? sayText(eg).split(w).join(ipa) : sayText(eg);   // 日語:單字與例子裡的這個字都唸假名讀音
-    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span></div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}</div></div>`; }).join('')}</div>`;
+    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆英語試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${esc(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${esc(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
 }
 function dlgHtml(b){
   const me = b.me == null ? 1 : b.me;
@@ -807,7 +845,7 @@ function blockHtml(k, b, d){
     case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}${lawRefLink(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
     case 'ex': return exHtml(k, b, d);
     case 'self': return selfHtml(b);
-    case 'vocab': return vocabHtml(b);
+    case 'vocab': return vocabHtml(b, d);
     case 'dlg': return dlgHtml(b);
     case 'gram': return gramHtml(b);
     case 'pron': return pronHtml(b);
