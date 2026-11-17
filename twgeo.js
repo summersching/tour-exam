@@ -1,4 +1,4 @@
-/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型、南海諸島)· v162
+/* twgeo.js — 臺灣地理總圖(離線 SVG:縣市、河川、山脈、地名、四極、海岸類型、南海諸島)· v163
    ------------------------------------------------------------------
    資料:twgeo_data.js(縣市界線依內政部國土測繪中心開放資料;河川、山脈為示意走向,出處見該檔檔頭)
    TWGEO.widget(id, cfg) → HTML(放進頁面即可;切換分區、圖層、點選說明都由本檔處理)
@@ -11,11 +11,13 @@
      cfg.arrows : [{ k: 'w' 冬 / 's' 夏, p: [[經,緯], …], t: 名稱, at: 名稱位置 0~1 }] 季風等粗箭頭(只畫在全臺圖)
      cfg.texts  : [{ t: 文字, p: [經,緯] }] 區域說明文字(例:副熱帶季風氣候);cfg.tropic:不開四極圖層也畫北回歸線
    TWGEO.svg({ marks:[{ n 名稱, p:[經度,緯度], lab 標籤, c 顏色, side 'r'|'l'|'u'|'d' 標籤優先方向 }], mt 1 = 加畫山脈, view 分區(省略 = 自動) })
+     v163 起另可給 layers:{ rv 河川, mt 山脈, pole 四極與北回歸線, coast 海岸類型, pt 地名 }(1 = 畫)與 pkAll、rgPr、arrows、texts、tropic(同 widget)
      → 解析用靜態圖 SVG 字串:縣市底色與名稱 + 標示,沒有切換按鈕;不畫南海諸島小框與縣市政府,東沙小框只在有標示時才畫;
        3 個以上標示都擠在同一分區時自動放大到該分區
    TWGEO.focus(id, 鍵) 讓地圖顯示某個項目(鍵:'rv:zhuoshui' 'cty:南投縣' 'pk:玉山' 'pt:野柳' 'mk:名稱' 'sc:西沙群島')
    頁面上任何 <button data-tgf="鍵" data-tgt="id"> 點了也會捲到地圖並標示該項目。
    變更履歷:
+     v163 (2026-11-17) TWGEO.svg 靜態圖可指定圖層(河川、山脈、四極、海岸類型、地名)與季風箭頭、區域文字(講義的位置圖用)
      v162 (2026-10-19) 新增 TWGEO.svg 解析用靜態圖(觀光複習解析裡的臺灣位置圖改用縣市底圖,看得出在哪個縣市);標示可指定標籤優先方向
      v152 (2026-10-14) 東沙、太平島說明加「南海屏障」「南疆鎖鑰」國碑、太平島是實際管轄最南與最西;北回歸線說明列出 5 座標誌與設立順序;
                        分區圖的北回歸線標誌依設立先後標 ①水上 ②瑞穗 ③靜浦 ④東石 ⑤虎井,且優先畫出
@@ -678,9 +680,11 @@
       return { n: (m.n || '標示') + '#' + i, p: m.p, lab: lab, alt: alt || lab, c: m.c, s: m.s || 'dot', pr: 0, z: 0, side: m.side || '' };
     });
     var id = '__tgs' + (++SSEQ), d = INSETS[2].b;
-    ST[id] = { cfg: { marks: mk }, v: cfg.view || autoView(mk), on: cfg.mt ? { cty: 1, mt: 1, mk: 1 } : { cty: 1, mk: 1 }, hl: null,
+    var on = cfg.mt ? { cty: 1, mt: 1, mk: 1 } : { cty: 1, mk: 1 };
+    if (cfg.layers) Object.keys(cfg.layers).forEach(function (k) { on[k] = cfg.layers[k] ? 1 : 0; });   /* v163 指定圖層 */
+    ST[id] = { cfg: { marks: mk, pkAll: cfg.pkAll, rgPr: cfg.rgPr, arrows: cfg.arrows, texts: cfg.texts, tropic: cfg.tropic }, v: cfg.view || autoView(mk), on: on, hl: null,
       stat: { dongsha: mk.some(function (m) { return m.p[0] >= d[0] && m.p[0] <= d[2] && m.p[1] >= d[1] && m.p[1] <= d[3]; }) } };
     try { return render(id).replace('<svg class="tgm"', '<svg class="tgm tgs"').replace('aria-label="臺灣地理總圖', 'aria-label="臺灣位置示意圖'); } finally { delete ST[id]; }
   }
-  root.TWGEO = { svg: svgStatic, widget: widget, focus: focus, draw: draw, _render: render, keyOf: function (n, cfg) { return keyOf(n, cfg || {}); }, info: function (k, cfg) { return infoOf(k, cfg || {}); }, VIEWS: VIEWS, data: D };
+  root.TWGEO = { ver: 163, svg: svgStatic, widget: widget, focus: focus, draw: draw, _render: render, keyOf: function (n, cfg) { return keyOf(n, cfg || {}); }, info: function (k, cfg) { return infoOf(k, cfg || {}); }, VIEWS: VIEWS, data: D };
 })(typeof window !== 'undefined' ? window : this);

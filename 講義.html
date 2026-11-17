@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v285(2026-11-17)
+<!-- 講義 · v286(2026-11-17)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v285 圖解分兩種:真的示意圖(線條、箭頭、位置、並排)保留叫「圖解」並各章重新編號;只是方框條列文字的 151 張改成「重點整理卡」(可選取、放大、朗讀、點讀);圖解總覽改「圖解與整理卡」
+     變更履歷:v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
+              v285 圖解分兩種:真的示意圖(線條、箭頭、位置、並排)保留叫「圖解」並各章重新編號;只是方框條列文字的 151 張改成「重點整理卡」(可選取、放大、朗讀、點讀);圖解總覽改「圖解與整理卡」
               v284 版面:拿掉各區塊左側的粗色條(小節標題、考情、口訣、技巧、陷阱、易混比較、歷屆範例、條文、會話、文法、發音、章節卡),改成淡色底加同色系細框
               v283 執業法規第 10 章加「國人出國的四種入境方式」與「出國前要先上網辦的電子旅行授權」(依 115 年命題大綱「各地簽證手續」)
               v282 觀光資源第 19~23 章(世界地理)各加一節「標準行程的主要參觀點」(依 115 年命題大綱)
@@ -181,6 +182,13 @@
   .jcard .cd div+div{margin-top:3px}
   .jcard li.cn{display:block;color:var(--sub);font-size:.8rem}
   .jcard li.cl{display:block}
+  /* v286 位置圖:臺灣用縣市底圖(twgeo.js 靜態圖)、世界用世界圖(worldmap.js,ana.js 畫);圖下方是圖說與資料出處 */
+  .jmap{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+  .jmap figcaption{font-weight:800;font-size:.88rem;margin:0 2px 8px}
+  .jmap figure.xm{margin:0}
+  .jmap figure.xm svg,.jmap .jtw svg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto}
+  .jtw-ph{min-height:220px;max-width:520px;margin:0 auto;border-radius:10px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.82rem}
+  .jmap .src{font-size:.72rem;color:var(--sub);text-align:center;margin-top:4px;line-height:1.45}
   @media screen and (max-width:560px){.jcard li{grid-template-columns:1fr;gap:1px}}
   #jyArrow path{fill:var(--sub)}
   .jtbl{margin:12px 0}
@@ -228,7 +236,7 @@
   .ans.mask::after{content:'點我看答案';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.72rem;text-shadow:none;white-space:nowrap}
   .end{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
   .gl{font-size:.74rem;color:var(--sub);font-weight:700;margin-top:4px}
-  .agg .jmn,.agg .jfig,.agg .jcard,.agg .jcmp{margin-top:6px}
+  .agg .jmn,.agg .jfig,.agg .jcard,.agg .jmap,.agg .jcmp{margin-top:6px}
   .agg .it{margin:14px 0}
   .jmn.hide .mt,.jmn.hide .mx{filter:blur(6px);user-select:none;cursor:pointer}
   /* v210 🔊 朗讀:底部播放列 + 目前段落外框 */
@@ -245,7 +253,7 @@
     font-size:.84rem;font-weight:700;border-radius:10px;padding:8px 14px;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:90vw;text-align:center}
   @media print{.ttsbar,.tflash{display:none!important}.reading{outline:none}}
   @media print{.bar,.home,.tools,.end,.tip0,header p{display:none!important}
-    body{background:#fff}.card,.jfig,.jcard,.jtip,.jtrap,.jcmp,.jlaw,.jself,.jex{box-shadow:none;break-inside:avoid}
+    body{background:#fff}.card,.jfig,.jcard,.jmap,.jtip,.jtrap,.jcmp,.jlaw,.jself,.jex{box-shadow:none;break-inside:avoid}
     .ans.mask{color:inherit;text-shadow:none;background:none}.ans.mask::after{content:none}.jmn.hide .mt,.jmn.hide .mx{filter:none}}
   /* ===== v253 閱讀體驗改版 ===== */
   /* 配色:各科主色(body[data-sj]);小節與分組輪流用 6 種強調色(.k1~.k6:--ac 強調色、--acb 淡底;--on 是強調色上的文字) */
@@ -445,7 +453,7 @@
 <header><div class="wrap">
   <a class="home" href="考照中心.html">← 首頁</a>
   <h1>📘 講義</h1>
-  <p>本章考情 · 觀念講解 · 圖解與整理卡 · 口訣 · 解題技巧 · 歷屆範例 · 章末測驗 · 朗讀(陸續增加中)</p>
+  <p>本章考情 · 觀念講解 · 圖解、地圖與整理卡 · 口訣 · 解題技巧 · 歷屆範例 · 章末測驗 · 朗讀(陸續增加中)</p>
 </div></header>
 
 <div class="bar"><div class="wrap">
@@ -520,7 +528,7 @@ function renderHot(J){
       + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('');
   });
 }
-const QUICK = { h:1, key:1, fig:1, card:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
+const QUICK = { h:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 /* v253 章節分組:[組名, 起章, 迄章](目錄的分組標籤與標題、章節選單的群組;沒列的科目不分組) */
 const GROUPS = {
@@ -690,6 +698,34 @@ function cardHtml(b){
     : `<li><span class="ct">${esc(t)}</span><span class="cd">${ds.map(x=>`<div>${hl(esc(x))}</div>`).join('')}</span></li>`;
   return `<div class="jcard"><div class="mh">🗂 整理卡:${esc(b.h)}</div><ul>${b.items.map(row).join('')}</ul>${b.note?`<div class="tn">${hl(esc(b.note))}</div>`:''}</div>`;
 }
+/* v286 位置圖 { t:'map', h, tw:{ marks:[[名, 經度, 緯度, 標籤, 顏色鍵或色碼, 標籤方向]], layers:{ rv, mt, pole, coast }, pkAll, rgPr, arrows, texts, tropic }
+   或 w:{ marks:'地名=標籤|…', rivers, seas, flows, view:[西, 南, 東, 北] }, note }
+   世界圖:輸出 figure.xm[data-wmap],由 ana.js 畫(國名、世界位置小圖);臺灣圖:JMAP.fill() 載入 twgeo 後畫靜態縣市底圖 */
+const MAPC = { np: '#15803d', nnp: '#0d9488', nsa: '#ea580c', pt: '#dc2626' };
+function mapHtml(b){
+  const cap = `<figcaption>🗺 位置圖:${esc(b.h)}</figcaption>`, nt = b.note ? `<div class="tn">${esc(b.note)}</div>` : '';
+  if (b.w){ const w = b.w, at = (k, v) => v ? ` data-${k}="${esc(Array.isArray(v) ? v.join(',') : v)}"` : '';
+    return `<figure class="jmap">${cap}<figure class="xm" data-wmap="${esc(w.marks || '')}"${at('rivers', w.rivers)}${at('seas', w.seas)}${at('flows', w.flows)}${at('view', w.view)}></figure>${nt}</figure>`; }
+  return `<figure class="jmap">${cap}<div class="jtw" data-tw="${esc(JSON.stringify(b.tw || {}))}"><div class="jtw-ph">🗺 地圖載入中…</div></div>${nt}</figure>`;
+}
+const JMAP = (() => {
+  let ready = null;
+  const need = (src, ok) => ok() ? Promise.resolve() : new Promise((res, rej) => { const t = document.createElement('script'); t.src = src; t.onload = res; t.onerror = rej; document.head.appendChild(t); });
+  const load = () => ready || (ready = need('twgeo_data.js?v=152', () => !!window.TWGEO_DATA).then(() => need('twgeo.js?v=163', () => !!(window.TWGEO && TWGEO.ver >= 163))).catch(e => { ready = null; throw e; }));
+  function fill(){
+    const els = [...document.querySelectorAll('.jtw[data-tw]:not([data-done])')];
+    if (!els.length) return;
+    load().then(() => els.forEach(el => {
+      if (el.dataset.done || !el.isConnected) return;
+      el.dataset.done = '1';
+      const c = JSON.parse(el.dataset.tw);
+      c.marks = (c.marks || []).map(([n, lon, lat, lab, col, side]) => ({ n, p: [lon, lat], lab: lab == null ? n : lab, c: MAPC[col] || col || MAPC.pt, side: side || '' }));
+      let sv = ''; try { sv = TWGEO.svg(c); } catch (e) {}
+      el.innerHTML = sv ? sv + '<div class="src">示意圖(河川、山脈為大致走向)· 金門、馬祖在左上小框 · 縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版)</div>' : '<div class="jtw-ph">地圖畫不出來,請重新整理</div>';
+    })).catch(() => els.forEach(el => { const p = el.querySelector('.jtw-ph'); if (p) p.textContent = '地圖載入失敗(離線且尚未快取),請連網後重新整理'; }));
+  }
+  return { fill };
+})();
 function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
 /* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
    「」『』引號內(原文用語或錯誤選項)、括號內與「N 年考題」(考題出處)、「第 N 條」不自動標。
@@ -739,6 +775,7 @@ function blockHtml(k, b, d){
     case 'key': return `<div class="jkeyb"><div class="mh">📌 重點整理</div><ul class="jkey">${b.items.map(x=>`<li>${hl(esc(x))}</li>`).join('')}</ul></div>`;
     case 'fig': return figHtml(b);
     case 'card': return cardHtml(b);
+    case 'map': return mapHtml(b);
     case 'link': return `<a class="jlink" href="${esc(b.href)}">${esc(b.text)}</a>`;
     case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
     case 'mn': return mnHtml(b, false);
@@ -778,11 +815,11 @@ function hydrateLawRef(){
 }
 /* ---------- v210 🔊 講義朗讀(speechSynthesis:用裝置內建語音,離線也能用)----------
    照畫面上的區塊順序唸(完整閱讀 / 快速複習看到什麼就唸什麼):標題、本章考情、內文、重點、表格逐列「欄名:內容」、口訣、
-   技巧與陷阱、易混比較、條文原文、歷屆範例(題目 + 正解 + 步驟)、自我檢測(題目 + 答案);圖只唸標題、整理卡逐列唸「標題:說明」;表情符號不唸。
+   技巧與陷阱、易混比較、條文原文、歷屆範例(題目 + 正解 + 步驟)、自我檢測(題目 + 答案);圖只唸標題、位置圖唸標題與圖說、整理卡逐列唸「標題:說明」;表情符號不唸。
    長段切成短句再唸(部分瀏覽器長句會中斷);朗讀中點任一區塊 → 從那裡開始;語速記在 pref_jy_rate */
 const TTS = (() => {
   const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
-  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jcard, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
+  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jcard, .jmap, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
   let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null, jaVoice = null;
   let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
   const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
@@ -797,6 +834,7 @@ const TTS = (() => {
   function textOf(el) {
     if (el.matches('.chhead')) return [T(el.querySelector('.chno')), T(el.querySelector('.cht')), T(el.querySelector('.chs'))].filter(Boolean).join('。');
     if (el.matches('.jfig')) return '圖解：' + T(el.querySelector('figcaption'));
+    if (el.matches('.jmap')) return [T(el.querySelector('figcaption')), T(el.querySelector(':scope > .tn'))].filter(Boolean).join('。');   // v286
     if (el.matches('.jcard')) return [T(el.querySelector('.mh')), ...[...el.querySelectorAll('li')].map(li => li.matches('.cn, .cl') ? T(li)
       : T(li.querySelector('.ct')) + '：' + [...li.querySelectorAll('.cd div')].map(T).join('，')), T(el.querySelector('.tn'))].filter(Boolean).join('。');   // v285
     if (el.matches('.jtbl, .jcmp')) {
@@ -996,7 +1034,7 @@ function noData(){
 function renderToc(J){
   const p = prog(), gs = groupsOf(J), named = gs.some(g=>g.name);
   if (cfg.grp !== 'all' && !(named && gs[+cfg.grp])) cfg.grp = 'all';
-  const intro = `<div class="tip0">💡 每章都可以切換 <b>📖 完整閱讀</b>(觀念、條文、歷屆範例逐步解題)與 <b>⚡ 快速複習</b>(只看圖解、整理卡、重點表、口訣、技巧、易錯)。章末測驗會排除法規已修正的題目;讀完記得按「標記已讀」。</div>`;
+  const intro = `<div class="tip0">💡 每章都可以切換 <b>📖 完整閱讀</b>(觀念、條文、歷屆範例逐步解題)與 <b>⚡ 快速複習</b>(只看圖解、位置圖、整理卡、重點表、口訣、技巧、易錯)。章末測驗會排除法規已修正的題目;讀完記得按「標記已讀」。</div>`;
   const card = (ch, k) => { const s = p[ch.id] || {};
     return `<a class="chcard k${k}" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}"><span class="chn">${ch.no}</span><span class="chb"><span class="cht">${esc(ch.t)}</span><span class="chs">${esc(ch.sub)}</span>
       <span class="chm"><span class="pill" data-stat="${esc(ch.id)}">計算考情中…</span>${s.read?'<span class="pill ok">✅ 已讀</span>':''}${s.best!=null?`<span class="pill w">📝 最佳 ${s.best}%</span>`:''}</span></span></a>`; };
@@ -1010,13 +1048,14 @@ function renderToc(J){
 }
 function renderAgg(J, type){
   const items = [];
-  J.chapters.forEach(ch=>ch.blocks.forEach(b=>{ if (b.t === type || (type === 'fig' && b.t === 'card')) items.push({ ch, b }); }));   // v285 圖解總覽也收整理卡
+  J.chapters.forEach(ch=>ch.blocks.forEach(b=>{ if (b.t === type || (type === 'fig' && (b.t === 'card' || b.t === 'map'))) items.push({ ch, b }); }));   // v285 圖解總覽也收整理卡;v286 位置圖
   const tip = type === 'mn' ? '🎵 全科口訣集中在這裡。預設遮住口訣內容,先看主題自己想一想,再點一下對答案。'
-    : type === 'fig' ? '🖼 全科的圖解(示意圖)與重點整理卡集中在這裡,適合考前快速翻一遍。' : '⚖️ 容易搞混的概念並排比較;點章名可以回到該章。';
+    : type === 'fig' ? '🖼 全科的圖解(示意圖)、位置圖(地圖)與重點整理卡集中在這裡,適合考前快速翻一遍。' : '⚖️ 容易搞混的概念並排比較;點章名可以回到該章。';
   const tools = type === 'mn' ? `<div class="tools"><button class="tbtn" type="button" id="maskAll">${cfg.mask?'👀 全部顯示':'🙈 全部遮住'}</button></div>` : '';
   const chs = J.chapters.filter(ch=>items.some(x=>x.ch===ch));
   const jump = chs.length > 1 ? `<div class="tocnav"><select id="aggJump" aria-label="跳到某一章"><option value="">📑 跳到某一章(共 ${items.length} 則)</option>${chs.map(ch=>`<option value="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)}(${items.filter(x=>x.ch===ch).length})</option>`).join('')}</select></div>` : '';
-  $('app').innerHTML = jump + `<div class="tip0">${tip}</div>${tools}<div class="agg">` + (items.length ? items.map(({ch,b})=>`<div class="it" data-agg="${esc(ch.id)}"><div class="gl"><a class="jlink" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)} →</a></div>${type==='mn'?mnHtml(b, cfg.mask):type==='fig'?(b.t==='card'?cardHtml(b):figHtml(b)):cmpHtml(b)}</div>`).join('') : '<div class="empty">本科目前還沒有內容</div>') + '</div>';
+  $('app').innerHTML = jump + `<div class="tip0">${tip}</div>${tools}<div class="agg">` + (items.length ? items.map(({ch,b})=>`<div class="it" data-agg="${esc(ch.id)}"><div class="gl"><a class="jlink" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)} →</a></div>${type==='mn'?mnHtml(b, cfg.mask):type==='fig'?(b.t==='card'?cardHtml(b):b.t==='map'?mapHtml(b):figHtml(b)):cmpHtml(b)}</div>`).join('') : '<div class="empty">本科目前還沒有內容</div>') + '</div>';
+  JMAP.fill();   // v286 位置圖
 }
 function bodyHtml(k, ch, d){   // v253 以小節標題分段,每段輪流換一種強調色;標題的「一、」做成數字牌
   let out = '', n = 0;
@@ -1048,7 +1087,7 @@ function renderChapter(){
       ${prev?`<button class="tbtn" type="button" data-go="${esc(prev.id)}">← 上一章</button>`:''}${next?`<button class="tbtn" type="button" data-go="${esc(next.id)}">下一章 →</button>`:''}
       <select class="chsel" aria-label="章節選單"><option value="">📑 章節選單:跳到其他章…</option><option value="@toc">← 回章節目錄</option>${chOptions(J)}</select></div>`
     + (p.best!=null?`<div class="tip0">📝 章末測驗:最佳 ${p.best}%,上次 ${p.last}%</div>`:'');
-  hydrateLawRef();
+  hydrateLawRef(); JMAP.fill();   // v286 位置圖
 }
 function openChapter(id){
   const k = id.split('-')[0];

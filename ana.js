@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v165
+/* ana.js — 詳解排版(單一來源)· v166
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -25,6 +25,7 @@
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v166 (2026-11-17) 地圖程式網址改 worldmap.js?v=166(地名庫加桂林、張家界、黃山、富士山)、twgeo.js?v=163(靜態圖可指定圖層)
      v165 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=165(地名庫加入領隊 106 觀光資源解析用的地名與長江)
      v164 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=164(地名庫加入領隊 107 觀光資源解析用的地名與黃河、恆河、布拉馬普特拉河)
      v163 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=163(地名庫加入領隊 108 觀光資源解析用的地名與三江並流)
@@ -155,11 +156,11 @@
     document.head.appendChild(sc);
   }
   function needMap(cb) { need('twmap.js', function () { return !!window.TWMAP; }, cb); }
-  function needWorld(cb) { need('worldmap.js?v=165', function () { return !!(window.WMAP && window.WMAP.noteAna); }, cb); }
+  function needWorld(cb) { need('worldmap.js?v=166', function () { return !!(window.WMAP && window.WMAP.noteAna); }, cb); }
   /* 縣市底圖(twgeo_data.js → twgeo.js);cb(true) = 可用,cb(false) = 載入失敗,改畫輪廓圖 */
   function needGeo(cb) {
     need('twgeo_data.js?v=152', function () { return !!window.TWGEO_DATA; }, function () {
-      need('twgeo.js?v=162', function () { return !!(window.TWGEO && window.TWGEO.svg); }, function () { cb(true); }, function () { cb(false); });
+      need('twgeo.js?v=163', function () { return !!(window.TWGEO && window.TWGEO.svg); }, function () { cb(true); }, function () { cb(false); });
     }, function () { cb(false); });
   }
   var TWCOL = { np: '#16a34a', nsa: '#ea580c', pt: '#dc2626' };
