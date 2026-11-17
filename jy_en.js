@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v279
+/* jy_en.js — 講義:外語英語 · v285
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子)、
-   發音提醒(pron)、文法重點(gram),加上圖解、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
+   發音提醒(pron)、文法重點(gram),加上整理卡、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v285 (2026-11-17) 各章圖解(方框條列文字,27 張)改成重點整理卡(card)
      v279 (2026-11-14) 新增第 9 章「閱讀測驗」(第 71–80 題:情境會話 3 段、閱讀題的問法與解題四步驟、換句話說、上下文猜字義、轉折詞與文章結構、歷屆文章主題、常考的字 68 個含音標;共 200 題)
      v275 (2026-11-14) 八章情境會話加替換練習:[[說法1//說法2//…]],23 段會話共 29 處
      v262 (2026-11-13) 新增第 8 章「文法總整理」(情境會話 2 段、單字 42 個含音標、發音提醒 8 則、文法 8 則;共 72 題)
@@ -85,7 +86,11 @@ const JY_EN = {
           ['常考字', 'visa、admission、overstay、deport', 'declare、allowance、confiscate、quarantine'],
           ['易錯', 'immigration 是不可數名詞', '**customs** 要用複數(單數 custom 是「習俗」)']] },
       { t: 'ex', key: 'leader-115-27', steps: ['看到 Green Channel 與 customs agent,情境是海關。', '沒有東西要「申報」才能走綠色通道 → 選 B declare;pay、hide、regret 都不是海關用語。'] },
-      { t: 'fig', h: '圖解 1:抵達後的入境流程', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="抵達後的入境流程:第一步 Passport control 或 Immigration,證照查驗,檢查護照與簽證,外國人要繳入境卡;第二步 Baggage claim,行李提領,到 carousel 行李轉盤領託運行李;第三步 Customs,海關,沒有東西申報走 Green Channel,要申報走 Red Channel;第四步 Arrivals hall,入境大廳,接機、換匯與搭車"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">① Passport control / Immigration</text><text class="ts" x="16" y="43">證照查驗:護照、簽證,外國人繳 arrival card</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">② Baggage claim</text><text class="ts" x="16" y="93">行李提領:到 carousel(行李轉盤)領託運行李</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">③ Customs</text><text class="ts" x="16" y="143">海關:nothing to declare 走 Green Channel</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">④ Arrivals hall</text><text class="ts" x="16" y="193">入境大廳:接機、換匯、搭車</text></svg>' },
+      { t: 'card', h: '抵達後的入境流程', items: [
+        ['① Passport control / Immigration', '證照查驗:護照、簽證,外國人繳 arrival card'],
+        ['② Baggage claim', '行李提領:到 carousel(行李轉盤)領託運行李'],
+        ['③ Customs', '海關:nothing to declare 走 Green Channel'],
+        ['④ Arrivals hall', '入境大廳:接機、換匯、搭車']] },
       { t: 'vocab', h: '報到與行李', items: [
         ['terminal', 'ˈtɝmɪnəl', 'n.', '航廈', 'Terminal 2', '第二航廈'],
         ['check in', 'ˌtʃɛk ˈɪn', 'v.', '報到', 'check in online', '線上報到'],
@@ -106,7 +111,11 @@ const JY_EN = {
         ['banned', 'bænd', 'adj.', '被禁止的', 'banned items', '違禁品'],
         ['unattended', 'ˌʌnəˈtɛndɪd', 'adj.', '無人看管的', 'unattended baggage', '無人看管的行李'],
         ['random', 'ˈrændəm', 'adj.', '隨機的', 'a random search', '隨機抽檢']] },
-      { t: 'fig', h: '圖解 2:安全檢查(security check)', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="安全檢查:液體每瓶不超過 100 毫升,約 3.4 盎司,裝進透明夾鏈袋,水瓶要倒空;隨身行李放上 conveyor 輸送帶通過 X 光;刀具、尖銳物等 prohibited items 違禁品會被 confiscate 沒收;行李不可 unattended 無人看管,易碎品要標 fragile"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Liquids:每瓶 100 ml 以下</text><text class="ts" x="16" y="43">約 3.4 oz,裝透明夾鏈袋;水瓶要 empty</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Conveyor belt</text><text class="ts" x="16" y="93">carry-on 隨身行李放上輸送帶過 X 光</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Prohibited items</text><text class="ts" x="16" y="143">刀具、尖銳物 → confiscate(沒收)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">Unattended luggage</text><text class="ts" x="16" y="193">行李不可無人看管;易碎品標 fragile</text></svg>' },
+      { t: 'card', h: '安全檢查(security check)', items: [
+        ['Liquids:每瓶 100 ml 以下', '約 3.4 oz,裝透明夾鏈袋;水瓶要 empty'],
+        ['Conveyor belt', 'carry-on 隨身行李放上輸送帶過 X 光'],
+        ['Prohibited items', '刀具、尖銳物 → confiscate(沒收)'],
+        ['Unattended luggage', '行李不可無人看管;易碎品標 fragile']] },
       { t: 'vocab', h: '機上', items: [
         ['board', 'bɔrd', 'v.', '登機', 'board the plane', '登機'],
         ['aisle', 'aɪl', 'n.', '走道', 'an aisle seat', '走道座位'],
@@ -118,7 +127,11 @@ const JY_EN = {
         ['cruising', 'ˈkruzɪŋ', 'n.', '巡航', 'cruising altitude', '巡航高度'],
         ['complimentary', 'ˌkɑmpləˈmɛntəri', 'adj.', '免費招待的', 'complimentary drinks', '免費飲料'],
         ['takeoff', 'ˈteɪkˌɔf', 'n.', '起飛', 'before takeoff', '起飛前']] },
-      { t: 'fig', h: '圖解 3:機上廣播常聽到的句子', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="機上廣播常聽到的句子:Fasten your seat belt,繫好安全帶,遇到 turbulence 亂流更要繫好;Seat in the upright position,起降前椅背豎直;Stow your carry-on,隨身行李收進頭頂置物櫃 overhead compartment;Switch to flight mode,手機切換飛航模式,客艙失壓時 oxygen masks 氧氣面罩會落下"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Fasten your seat belt</text><text class="ts" x="16" y="43">繫好安全帶;遇到 turbulence(亂流)更要繫</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Seat in the upright position</text><text class="ts" x="16" y="93">起飛、降落前椅背豎直</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Stow your carry-on</text><text class="ts" x="16" y="143">收進 overhead compartment(頭頂置物櫃)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">Switch to flight mode</text><text class="ts" x="16" y="193">手機切飛航模式;失壓時 oxygen masks 落下</text></svg>' },
+      { t: 'card', h: '機上廣播常聽到的句子', items: [
+        ['Fasten your seat belt', '繫好安全帶;遇到 turbulence(亂流)更要繫'],
+        ['Seat in the upright position', '起飛、降落前椅背豎直'],
+        ['Stow your carry-on', '收進 overhead compartment(頭頂置物櫃)'],
+        ['Switch to flight mode', '手機切飛航模式;失壓時 oxygen masks 落下']] },
       { t: 'ex', key: 'leader-109-64', steps: ['句子要乘客坐著時都繫好安全帶,以防遇到「突如其來的」某種狀況(unexpected)。', '會讓飛機搖晃、需要繫安全帶的是亂流 → 選 A turbulence;occurrence、monument、installment 都不合。'] },
       { t: 'vocab', h: '航班狀況', items: [
         ['delay', 'dɪˈleɪ', 'n. / v.', '延誤', 'a ten-hour delay', '延誤十小時'],
@@ -252,7 +265,11 @@ const JY_EN = {
         ['alight', 'əˈlaɪt', 'v.', '下車', 'alight from the train', '下火車'],
         ['belongings', 'bɪˈlɔŋɪŋz', 'n.', '隨身物品', 'personal belongings', '個人隨身物品'],
         ['block', 'blɑk', 'n.', '街區', 'go straight for two blocks', '直走兩個街區']] },
-      { t: 'fig', h: '圖解 1:搭車與轉乘常聽到的字', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="搭車與轉乘常聽到的字:shuttle bus 是機場與飯店之間的接駁車,常常免費;fare 是車資,刷卡進站時 deducted 自動扣款;transfer 是中途換車或轉機,call at 是列車停靠某一站;alighting 是下車,下車前帶好 belongings 隨身物品"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">shuttle bus</text><text class="ts" x="16" y="43">機場、飯店之間的接駁車(常免費)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">fare / deducted</text><text class="ts" x="16" y="93">車資;刷卡進站時自動扣款</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">transfer / call at</text><text class="ts" x="16" y="143">中途換車(轉乘)/ 列車停靠某站</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">alighting / belongings</text><text class="ts" x="16" y="193">下車;下車前帶好隨身物品</text></svg>' },
+      { t: 'card', h: '搭車與轉乘常聽到的字', items: [
+        ['shuttle bus', '機場、飯店之間的接駁車(常免費)'],
+        ['fare / deducted', '車資;刷卡進站時自動扣款'],
+        ['transfer / call at', '中途換車(轉乘)/ 列車停靠某站'],
+        ['alighting / belongings', '下車;下車前帶好隨身物品']] },
       { t: 'ex', key: 'leader-106-13', steps: ['關鍵字是 between the airport and the city center:機場和市區之間往返的公車。', '固定路線來回接送的車是接駁車 → 選 B shuttle;resort、terminal、roundabout(圓環)都不是公車的種類。'] },
       { t: 'vocab', h: '路況與行程', items: [
         ['congestion', 'kənˈdʒɛstʃən', 'n.', '壅塞', 'traffic congestion', '交通壅塞'],
@@ -296,7 +313,11 @@ const JY_EN = {
           ['相關字', 'twin-size bed;可 convertible 成大床', 'king-size、queen-size bed'],
           ['常考說法', 'rooms which provide two beds', 'one bed for two people']] },
       { t: 'ex', key: 'guide-107-7', steps: ['關鍵字是 provide two beds:提供兩張床的房型。', 'twin room 是兩張單人床 → 選 D;double room 是一張雙人床,single、triple 不合。'] },
-      { t: 'fig', h: '圖解 2:從訂房到退房', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="從訂房到退房:reservation 訂房並付 deposit 訂金,才算 guaranteed 保證訂房;到 reception 櫃台 check in 辦入住,拿房卡與 voucher 兌換券;房內有 amenities 備品,complimentary breakfast 免費早餐用兌換券兌換;最後 check out 退房,超過時間可能要多付一晚"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">reservation + deposit</text><text class="ts" x="16" y="43">訂房付訂金,才算保證訂房(guaranteed)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">check in at reception</text><text class="ts" x="16" y="93">櫃台辦入住,拿房卡與 voucher</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">amenities / complimentary</text><text class="ts" x="16" y="143">房內備品;免費早餐用兌換券</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">check out</text><text class="ts" x="16" y="193">退房;超過時間可能要多付一晚</text></svg>' },
+      { t: 'card', h: '從訂房到退房', items: [
+        ['reservation + deposit', '訂房付訂金,才算保證訂房(guaranteed)'],
+        ['check in at reception', '櫃台辦入住,拿房卡與 voucher'],
+        ['amenities / complimentary', '房內備品;免費早餐用兌換券'],
+        ['check out', '退房;超過時間可能要多付一晚']] },
       { t: 'vocab', h: '飯店人員與服務', items: [
         ['reception', 'rɪˈsɛpʃən', 'n.', '櫃檯', 'ask at reception', '到櫃檯詢問'],
         ['concierge', 'ˌkɑnsiˈɛrʒ', 'n.', '禮賓員', 'the concierge service', '禮賓服務'],
@@ -310,7 +331,11 @@ const JY_EN = {
         ['facilities', 'fəˈsɪlətiz', 'n.', '設施', 'hotel facilities', '飯店設施'],
         ['settle', 'ˈsɛtəl', 'v.', '結清', 'settle the bill', '結帳'],
         ['adjacent', 'əˈdʒeɪsənt', 'adj.', '相鄰的', 'adjacent rooms', '相鄰的房間']] },
-      { t: 'fig', h: '圖解 3:飯店人員各做什麼', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="飯店人員各做什麼:concierge 禮賓員幫房客訂餐廳、買票、安排當地行程;reception 或 front desk 櫃台辦理入住與退房,介紹 facilities 設施;valet 代客泊車員幫房客停車;porter 行李員、bellhop 門僮、maid 房務員"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">concierge 禮賓員</text><text class="ts" x="16" y="43">訂餐廳、買票、安排當地行程</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">reception / front desk</text><text class="ts" x="16" y="93">櫃台:check in、check out、介紹 facilities</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">valet 代客泊車員</text><text class="ts" x="16" y="143">幫房客把車開去停車場</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">porter / bellhop / maid</text><text class="ts" x="16" y="193">行李員、門僮、房務員</text></svg>' },
+      { t: 'card', h: '飯店人員各做什麼', items: [
+        ['concierge 禮賓員', '訂餐廳、買票、安排當地行程'],
+        ['reception / front desk', '櫃台:check in、check out、介紹 facilities'],
+        ['valet 代客泊車員', '幫房客把車開去停車場'],
+        ['porter / bellhop / maid', '行李員、門僮、房務員']] },
       { t: 'ex', key: 'guide-109-45', steps: ['這個人的工作是幫房客安排當地行程、訂餐廳、買票。', '這是飯店的禮賓員 → 選 A concierge;porter 搬行李、bellhop 是門僮、maid 打掃房間。'] },
       { t: 'vocab', h: '客房設備與報修', items: [
         ['air conditioning', 'ˈɛr kənˌdɪʃənɪŋ', 'n.', '冷氣', 'turn up the air conditioning', '把冷氣開強一點'],
@@ -448,7 +473,11 @@ const JY_EN = {
         ['banquet', 'ˈbæŋkwɪt', 'n.', '宴會', 'a wedding banquet', '婚宴'],
         ['upscale', 'ˈʌpˌskeɪl', 'adj.', '高檔的', 'an upscale restaurant', '高檔餐廳'],
         ['dress code', 'ˈdrɛs ˌkoʊd', 'n.', '服裝規定', 'follow the dress code', '遵守服裝規定']] },
-      { t: 'fig', h: '圖解 1:西餐的上菜順序', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="西餐的上菜順序:先上 appetizer 開胃菜,例如 chicken wings;接著是 soup 湯或 salad 沙拉;然後是 entrée 主菜,也就是 main course,例如 T-bone steak;最後是 dessert 甜點與 beverage 飲料,soft drinks 是不含酒精的飲料"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">appetizer 開胃菜</text><text class="ts" x="16" y="43">先上的小點,例如 chicken wings</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">soup / salad</text><text class="ts" x="16" y="93">湯或沙拉</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">entrée = main course</text><text class="ts" x="16" y="143">主菜,例如 T-bone steak</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">dessert / beverage</text><text class="ts" x="16" y="193">甜點與飲料(soft drinks 不含酒精)</text></svg>' },
+      { t: 'card', h: '西餐的上菜順序', items: [
+        ['appetizer 開胃菜', '先上的小點,例如 chicken wings'],
+        ['soup / salad', '湯或沙拉'],
+        ['entrée = main course', '主菜,例如 T-bone steak'],
+        ['dessert / beverage', '甜點與飲料(soft drinks 不含酒精)']] },
       { t: 'ex', key: 'guide-108-17', steps: ['T-bone steak(丁骨牛排)是一餐裡最主要的那道菜。', '主菜 = entrée → 選 A;appetizer 是開胃菜,brochure(手冊)、vessel(容器、船)和點餐無關。'] },
       { t: 'vocab', h: '飲食需求', items: [
         ['vegetarian', 'ˌvɛdʒəˈtɛriən', 'n.', '素食者', 'a vegetarian menu', '素食菜單'],
@@ -516,7 +545,11 @@ const JY_EN = {
         ['separate checks', 'ˈsɛprət ˈtʃɛks', 'phr.', '分開結帳', 'We are on separate checks.', '我們分開結帳。'],
         ['on the house', 'ɑn ðə ˈhaʊs', 'phr.', '店家招待', 'The dessert is on the house.', '甜點由店家招待。'],
         ['go Dutch', 'ˌgoʊ ˈdʌtʃ', 'phr.', '各付各的', 'Let us go Dutch.', '我們各付各的吧。']] },
-      { t: 'fig', h: '圖解 2:付帳常用的說法', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="付帳常用的說法:bill 或 check 是帳單,付完拿到的是 receipt 收據;gratuity 就是 tip 小費,常見是帳單的 10 到 15%;Go Dutch 就是 split the bill,各付各的;on the house 是店家招待,不用付錢"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">bill / check → receipt</text><text class="ts" x="16" y="43">帳單;付完拿到的是收據</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">gratuity = tip</text><text class="ts" x="16" y="93">小費;常見是帳單的 10 到 15%</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Go Dutch = split the bill</text><text class="ts" x="16" y="143">各付各的</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">on the house</text><text class="ts" x="16" y="193">店家招待,不用付錢</text></svg>' },
+      { t: 'card', h: '付帳常用的說法', items: [
+        ['bill / check → receipt', '帳單;付完拿到的是收據'],
+        ['gratuity = tip', '小費;常見是帳單的 10 到 15%'],
+        ['Go Dutch = split the bill', '各付各的'],
+        ['on the house', '店家招待,不用付錢']] },
       { t: 'mn', h: '小費 gratuity', text: '「gratuity 和 gratitude(感謝)同一個字根 grat-:小費是對服務表達謝意」', ex: '考題常用 leave a gratuity(留小費);grateful(感激的)也是同一個字根。' },
       { t: 'ex', key: 'guide-108-16', steps: ['前半句說餐廳的服務很糟(terrible),所以「沒有留下」的東西和服務好壞有關。', 'leave a gratuity 是留小費 → 選 D;upscale(高檔的)是形容詞,refuge(避難所)、elegance(優雅)意思不合。'] },
       { t: 'vocab', h: '逛街購物', items: [
@@ -566,7 +599,11 @@ const JY_EN = {
         ['fair', 'fɛr', 'adj.', '公道的', 'a fair exchange rate', '公道的匯率'],
         ['stand for', 'ˈstænd ˌfɔr', 'v.', '代表', 'What does VAT stand for?', 'VAT 代表什麼?'],
         ['spending', 'ˈspɛndɪŋ', 'n.', '消費金額', 'spending over a certain amount', '消費超過一定金額']] },
-      { t: 'fig', h: '圖解 3:收據、退換貨與退稅', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="收據、退換貨與退稅:receipt 是收據,退貨、退款、退稅都要用到;refund 是退款,replacement 是換一個新的;warranty 是保固,期限內壞了可以修理或更換;tax refund 是退稅,要出示護照、填退稅表,離境時辦理"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">receipt 收據</text><text class="ts" x="16" y="43">退貨、退款、退稅都要用到</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">refund / replacement</text><text class="ts" x="16" y="93">退款 / 換一個新的</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">warranty 保固</text><text class="ts" x="16" y="143">期限內壞了可以修理或更換</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">tax refund 退稅</text><text class="ts" x="16" y="193">出示護照、填退稅表,離境時辦理</text></svg>' },
+      { t: 'card', h: '收據、退換貨與退稅', items: [
+        ['receipt 收據', '退貨、退款、退稅都要用到'],
+        ['refund / replacement', '退款 / 換一個新的'],
+        ['warranty 保固', '期限內壞了可以修理或更換'],
+        ['tax refund 退稅', '出示護照、填退稅表,離境時辦理']] },
       { t: 'ex', key: 'leader-106-48', steps: ['需要現金(cash),而且是從 cash dispenser(提款機)拿錢。', '領錢 = withdraw → 選 A;deposit 是存入,意思相反;withhold(扣留)、deliver(遞送)不合。'] },
       { t: 'ex', key: 'leader-111-56', steps: ['free of VAT(免加值稅)、出示護照、填表格:這是外國旅客辦退稅的手續。', '退稅表是 tax refund form → 選 D;deduction 是扣除額,independence(獨立)、conduct(行為)不合。'] },
       { t: 'table', h: '重點表:餐廳與商店的固定問答', stack: true, head: ['對方問', '可以這樣答'],
@@ -692,7 +729,11 @@ const JY_EN = {
           ['常考搭配', 'natural scenery', 'geologic landscapes', 'a panoramic view'],
           ['例子', 'enjoy the scenery', 'a volcanic landscape', 'a breathtaking view']] },
       { t: 'ex', key: 'guide-114-19', steps: ['Taipei 101 是臺灣最高的建築,代表臺灣的象徵性建築。', '地標 = landmark → 選 B;footmark(足跡)、bookmark(書籤)、postmark(郵戳)都是 -mark 結尾的形近字。'] },
-      { t: 'fig', h: '圖解 1:用英文介紹一個景點', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="用英文介紹一個景點的四個步驟:第一說位置,用 is located on 或 in,例如 Kenting is located on the southern tip of Taiwan;第二說特色,用 is famous for 或 features,例如 Taroko is famous for its marble cliffs;第三說歷史,用 was built in 或 dates back to,例如 Longshan Temple was built in 1738;第四給建議,用 is a must-see,例如 Jiufen is a must-see for its old street"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">1 位置:is located on / in</text><text class="ts" x="16" y="43">Kenting is located on the southern tip of Taiwan.</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">2 特色:is famous for / features</text><text class="ts" x="16" y="93">Taroko is famous for its marble cliffs.</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">3 歷史:was built in / dates back to</text><text class="ts" x="16" y="143">Longshan Temple was built in 1738.</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">4 推薦:is a must-see</text><text class="ts" x="16" y="193">Jiufen is a must-see for its old street.</text></svg>' },
+      { t: 'card', h: '用英文介紹一個景點', items: [
+        ['1 位置:is located on / in', 'Kenting is located on the southern tip of Taiwan.'],
+        ['2 特色:is famous for / features', 'Taroko is famous for its marble cliffs.'],
+        ['3 歷史:was built in / dates back to', 'Longshan Temple was built in 1738.'],
+        ['4 推薦:is a must-see', 'Jiufen is a must-see for its old street.']] },
       { t: 'vocab', h: '自然景觀', items: [
         ['altitude', 'ˈæltəˌtud', 'n.', '海拔', 'at an altitude of 1,600 meters', '海拔 1,600 公尺'],
         ['hot spring', 'ˈhɑt ˌsprɪŋ', 'n.', '溫泉', 'Beitou hot springs', '北投溫泉'],
@@ -745,7 +786,11 @@ const JY_EN = {
         ['cloakroom', 'ˈkloʊkˌrum', 'n.', '寄物處', 'leave your bag at the cloakroom', '把包包寄放在寄物處'],
         ['restore', 'rɪˈstɔr', 'v.', '修復', 'restore an old painting', '修復舊畫'],
         ['interactive', 'ˌɪntɚˈæktɪv', 'adj.', '互動的', 'interactive exhibits for children', '給兒童的互動式展品']] },
-      { t: 'fig', h: '圖解 2:參觀博物館常用的字', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="參觀博物館常用的字:admission 是門票或入場費,concession 是學生、長者的優待票;audio guide 是語音導覽,rental 是租借費;cloakroom 是寄物處,check in 是寄放大型包包與貴重物品;No flash photography 是禁止使用閃光燈拍照,也不要觸摸展品 exhibits"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">admission / concession</text><text class="ts" x="16" y="43">門票(入場費);學生、長者的優待票</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">audio guide / rental</text><text class="ts" x="16" y="93">語音導覽;租借費</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">cloakroom / check in</text><text class="ts" x="16" y="143">寄物處;寄放大型包包與貴重物品</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">No flash photography</text><text class="ts" x="16" y="193">禁止使用閃光燈拍照;不要觸摸展品(exhibits)</text></svg>' },
+      { t: 'card', h: '參觀博物館常用的字', items: [
+        ['admission / concession', '門票(入場費);學生、長者的優待票'],
+        ['audio guide / rental', '語音導覽;租借費'],
+        ['cloakroom / check in', '寄物處;寄放大型包包與貴重物品'],
+        ['No flash photography', '禁止使用閃光燈拍照;不要觸摸展品(exhibits)']] },
       { t: 'ex', key: 'guide-110-58', steps: ['houses 在這裡是「收藏」,空格要填一大批藝術品的集合。', '典藏 = collection → 選 A;crowd 是人群、flock 是鳥群或羊群、herd 是牛群。'] },
       { t: 'vocab', h: '建築與古蹟', items: [
         ['architecture', 'ˈɑrkəˌtɛktʃɚ', 'n.', '建築(風格)', 'Renaissance architecture', '文藝復興式建築'],
@@ -782,7 +827,11 @@ const JY_EN = {
         ['originate', 'əˈrɪdʒəˌneɪt', 'v.', '起源', 'originate from an old legend', '起源於古老的傳說'],
         ['parade', 'pəˈreɪd', 'v.', '遊行', 'people parading through the streets', '在街上遊行的人群'],
         ['myriad', 'ˈmɪriəd', 'adj.', '無數的', 'myriad festivals', '無數的節慶']] },
-      { t: 'fig', h: '圖解 3:臺灣節慶的英文(依農曆)', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="臺灣節慶的英文,依農曆排列:正月十五是 Lantern Festival 元宵節,有 sky lanterns 天燈和 beehive fireworks 蜂炮;農曆三月是 Mazu Pilgrimage 媽祖遶境,有 procession 遶境隊伍,大家 pray for blessings 祈福;五月初五是 Dragon Boat Festival 端午節,commemorates Qu Yuan 紀念屈原;七月是 Ghost Festival 中元節,the gates of the underworld open 鬼門開"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Lantern Festival 元宵節</text><text class="ts" x="16" y="43">正月十五:sky lanterns 天燈、beehive fireworks 蜂炮</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Mazu Pilgrimage 媽祖遶境</text><text class="ts" x="16" y="93">農曆三月:procession 遶境、pray for blessings</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Dragon Boat Festival 端午節</text><text class="ts" x="16" y="143">五月初五:commemorates Qu Yuan 紀念屈原</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">Ghost Festival 中元節</text><text class="ts" x="16" y="193">七月:the gates of the underworld open 鬼門開</text></svg>' },
+      { t: 'card', h: '臺灣節慶的英文(依農曆)', items: [
+        ['Lantern Festival 元宵節', '正月十五:sky lanterns 天燈、beehive fireworks 蜂炮'],
+        ['Mazu Pilgrimage 媽祖遶境', '農曆三月:procession 遶境、pray for blessings'],
+        ['Dragon Boat Festival 端午節', '五月初五:commemorates Qu Yuan 紀念屈原'],
+        ['Ghost Festival 中元節', '七月:the gates of the underworld open 鬼門開']] },
       { t: 'table', h: '重點表:臺灣節慶的英文', stack: true, head: ['節慶', '英文與常考的字'],
         rows: [['**元宵節**', 'Lantern Festival:sky lanterns(平溪天燈)、beehive fireworks(鹽水蜂炮)'],
           ['**媽祖遶境**', 'Mazu pilgrimage:農曆三月、procession(遶境隊伍)'],
@@ -982,7 +1031,11 @@ const JY_EN = {
           ['特色', '當天來回或很短', '路線艱難、有目的', '列出每天去哪裡'],
           ['常考搭配', 'a day excursion', 'jungle expeditions', 'plan your itinerary']] },
       { t: 'ex', key: 'leader-107-15', steps: ['plan your ___ ahead of time(事先規劃),又說要保持彈性,講的是旅行的安排。', '行程 = itinerary → 選 D;disorganization(混亂)、disorientation(迷失方向)、irrelevance(無關)都不能「規劃」。'] },
-      { t: 'fig', h: '圖解 1:帶團的一天', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="帶團的一天:先在 assembly point 集合點集合,請大家 punctual 準時,點名後出發;接著是 guided tour 導覽,跟著導遊的旗子 see the highlights 看重點;然後是 free time 自由活動,You are free to walk around 可以自由走走;最後 meet again 再集合,例如 Be back at 11:30 在 11 點半回到集合點"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">assembly point 集合點</text><text class="ts" x="16" y="43">Please be punctual. 請準時,點名後出發</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">guided tour 導覽</text><text class="ts" x="16" y="93">see the highlights 看重點;跟著導遊的旗子</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">free time 自由活動</text><text class="ts" x="16" y="143">You are free to walk around. 可以自由走走</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">meet again 再集合</text><text class="ts" x="16" y="193">Be back at 11:30. 11 點半回到集合點</text></svg>' },
+      { t: 'card', h: '帶團的一天', items: [
+        ['assembly point 集合點', 'Please be punctual. 請準時,點名後出發'],
+        ['guided tour 導覽', 'see the highlights 看重點;跟著導遊的旗子'],
+        ['free time 自由活動', 'You are free to walk around. 可以自由走走'],
+        ['meet again 再集合', 'Be back at 11:30. 11 點半回到集合點']] },
       { t: 'ex', key: 'guide-113-59', steps: ['in case the group got separated(以防團員走散),導遊要先說明一個地方。', '走散時回去集合的地方是 assembly point → 選 A;resemblance place、junction area、unity zone 都不是集合點的說法。'] },
       { t: 'table', h: '重點表:導遊帶團常用的一句話', stack: true, head: ['英文', '意思'],
         rows: [['**Please be punctual.**', '請準時。'],
@@ -1007,7 +1060,11 @@ const JY_EN = {
         ['access', 'ˈæksɛs', 'n.', '通道、進入', 'easy access to the museum', '去博物館很方便'],
         ['coral', 'ˈkɔrəl', 'n.', '珊瑚', 'coral reefs', '珊瑚礁'],
         ['marine', 'məˈrin', 'adj.', '海洋的', 'marine animals', '海洋動物']] },
-      { t: 'fig', h: '圖解 2:健行前的準備', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="健行前的準備:layers 多層衣物,山上溫差大,多穿幾層、帶雨衣;insect repellent 防蚊液,穿長袖長褲防蚊蟲叮咬;first aid kit 急救包,有 OK 繃與消毒用品,領隊隨身攜帶;emergency contact 緊急聯絡人,報名表要填,身體不適時聯絡"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">layers 多層衣物</text><text class="ts" x="16" y="43">山上溫差大,多穿幾層、帶雨衣</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">insect repellent 防蚊液</text><text class="ts" x="16" y="93">穿長袖長褲,防蚊蟲叮咬</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">first aid kit 急救包</text><text class="ts" x="16" y="143">OK 繃、消毒用品;領隊隨身攜帶</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">emergency contact 緊急聯絡人</text><text class="ts" x="16" y="193">報名表要填;身體不適時聯絡</text></svg>' },
+      { t: 'card', h: '健行前的準備', items: [
+        ['layers 多層衣物', '山上溫差大,多穿幾層、帶雨衣'],
+        ['insect repellent 防蚊液', '穿長袖長褲,防蚊蟲叮咬'],
+        ['first aid kit 急救包', 'OK 繃、消毒用品;領隊隨身攜帶'],
+        ['emergency contact 緊急聯絡人', '報名表要填;身體不適時聯絡']] },
       { t: 'vocab', h: '永續與生態旅遊', items: [
         ['sustainable', 'səˈsteɪnəbəl', 'adj.', '永續的', 'sustainable tourism', '永續旅遊'],
         ['responsible', 'rɪˈspɑnsəbəl', 'adj.', '負責任的', 'responsible tourism', '負責任的旅遊'],
@@ -1023,7 +1080,11 @@ const JY_EN = {
         ['commitment', 'kəˈmɪtmənt', 'n.', '承諾', 'a firm commitment to sustainability', '對永續的堅定承諾'],
         ['initiative', 'ɪˈnɪʃətɪv', 'n.', '倡議、措施', 'green initiatives', '環保措施'],
         ['cater to', 'ˈkeɪtɚ tu', 'v.', '滿足、迎合', 'cater to different needs', '滿足不同需求']] },
-      { t: 'fig', h: '圖解 3:負責任的旅遊', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="負責任的旅遊:Take only photographs,除了照片什麼都不帶走,不摘花、不撿石頭;Leave only footprints,除了腳印什麼都不留下,垃圾帶走;選 reusable 可重複使用的而不是 disposable 拋棄式的,帶環保袋、水壺;abide by the rules 遵守園區規定,不餵食野生動物"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Take only photographs</text><text class="ts" x="16" y="43">除了照片,什麼都不帶走(不摘花、不撿石頭)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Leave only footprints</text><text class="ts" x="16" y="93">除了腳印,什麼都不留下(垃圾帶走)</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">reusable,不用 disposable</text><text class="ts" x="16" y="143">帶環保袋、水壺;少用拋棄式餐具</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">abide by the rules</text><text class="ts" x="16" y="193">遵守園區規定;不餵食野生動物</text></svg>' },
+      { t: 'card', h: '負責任的旅遊', items: [
+        ['Take only photographs', '除了照片,什麼都不帶走(不摘花、不撿石頭)'],
+        ['Leave only footprints', '除了腳印,什麼都不留下(垃圾帶走)'],
+        ['reusable,不用 disposable', '帶環保袋、水壺;少用拋棄式餐具'],
+        ['abide by the rules', '遵守園區規定;不餵食野生動物']] },
       { t: 'ex', key: 'leader-106-32', steps: ['這句是負責任旅遊的名言:Take only photographs; leave only ___。', '只留下「腳印」= footprints → 選 A;guidelines(指南)、leaflets(傳單)、monuments(紀念碑)都不合。'] },
       { t: 'table', h: '重點表:各種旅遊型態(tourism)', stack: true, head: ['英文', '意思'],
         rows: [['**sustainable tourism**', '永續旅遊'],
@@ -1190,7 +1251,11 @@ const JY_EN = {
         ['emergency room', 'ɪˈmɝdʒənsi ˌrum', 'n.', '急診室', 'go to the emergency room', '去急診'],
         ['appointment', 'əˈpɔɪntmənt', 'n.', '(門診)預約', 'schedule an appointment', '預約看診']] },
       { t: 'ex', key: 'leader-112-68', steps: ['店員說這個藥 no prescription needed(不需要處方箋)。', '不用處方箋就能買的成藥 = over-the-counter → 選 C;clinic(診所)、side effect(副作用)、symptom(症狀)都不合。'] },
-      { t: 'fig', h: '圖解 1:出國看病的流程', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="出國看病的流程:先 describe your symptoms 說明症狀,例如 fever 發燒、sore throat 喉嚨痛;醫生會問 Are you allergic to,要先告知過敏的藥物;處方藥要 prescription 處方箋,不用處方箋的成藥叫 over-the-counter;最後保留 receipt 收據與 medical certificate 診斷證明,回國申請保險理賠"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">describe your symptoms</text><text class="ts" x="16" y="43">說明症狀:fever 發燒、sore throat 喉嚨痛</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Are you allergic to …?</text><text class="ts" x="16" y="93">醫生會問過敏;先告知過敏的藥物</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">prescription 處方箋</text><text class="ts" x="16" y="143">處方藥要處方箋;成藥 over-the-counter</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">receipt + medical certificate</text><text class="ts" x="16" y="193">保留收據與診斷證明,回國申請保險理賠</text></svg>' },
+      { t: 'card', h: '出國看病的流程', items: [
+        ['describe your symptoms', '說明症狀:fever 發燒、sore throat 喉嚨痛'],
+        ['Are you allergic to …?', '醫生會問過敏;先告知過敏的藥物'],
+        ['prescription 處方箋', '處方藥要處方箋;成藥 over-the-counter'],
+        ['receipt + medical certificate', '保留收據與診斷證明,回國申請保險理賠']] },
       { t: 'table', h: '重點表:看醫生常用的一句話', stack: true, head: ['英文', '意思'],
         rows: [['**I am not feeling well.**', '我不太舒服。'],
           ['**I have a high fever.**', '我發高燒。'],
@@ -1238,7 +1303,11 @@ const JY_EN = {
           ['動詞', 'steal(偷東西)', 'rob(搶人、搶地方)', 'burglarize'],
           ['常考搭配', 'report a theft', 'a bank robbery', 'a burglary at home']] },
       { t: 'ex', key: 'guide-111-21', steps: ['fall ___ to the pickpockets:在擁擠的景點很容易「成為」扒手的目標。', 'fall prey to(成為…的受害者)是固定片語 → 選 B;bait、decoy(誘餌)、trap(陷阱)不能接在 fall 後面。'] },
-      { t: 'fig', h: '圖解 2:遇到竊盜怎麼辦', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="遇到竊盜怎麼辦:第一 Stay calm 先冷靜,確認團員安全,回想最後一次看到東西的地方;第二 report a theft 到警察局報案,拿 police report 報案證明;第三 cancel your cards 馬上打給銀行停掉信用卡、提款卡;如果 passport lost 護照遺失,找 embassy 大使館或 consulate 領事館補發 reissue"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Stay calm. 先冷靜</text><text class="ts" x="16" y="43">確認團員安全,回想最後一次看到東西的地方</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">report a theft 報案</text><text class="ts" x="16" y="93">到警察局報案,拿 police report 報案證明</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">cancel your cards 停卡</text><text class="ts" x="16" y="143">馬上打給銀行停掉信用卡、提款卡</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">passport lost 護照遺失</text><text class="ts" x="16" y="193">找 embassy / consulate 補發(reissue)</text></svg>' },
+      { t: 'card', h: '遇到竊盜怎麼辦', items: [
+        ['Stay calm. 先冷靜', '確認團員安全,回想最後一次看到東西的地方'],
+        ['report a theft 報案', '到警察局報案,拿 police report 報案證明'],
+        ['cancel your cards 停卡', '馬上打給銀行停掉信用卡、提款卡'],
+        ['passport lost 護照遺失', '找 embassy / consulate 補發(reissue)']] },
       { t: 'ex', key: 'guide-108-48', steps: ['句子是給旅客的提醒:在機場要「提防」陌生人,行李不要離身。', 'Beware of(當心、提防)→ 選 C;Affirm(肯定)、Confirm(確認)、Guarantee(保證)都不能接 of strangers。'] },
       { t: 'vocab', h: '安全守則', items: [
         ['precaution', 'prɪˈkɔʃən', 'n.', '預防措施', 'take precautions', '做好預防措施'],
@@ -1284,7 +1353,11 @@ const JY_EN = {
         ['disrupt', 'dɪsˈrʌpt', 'v.', '擾亂、中斷', 'disrupt train services', '使火車停駛或誤點'],
         ['severe', 'səˈvɪr', 'adj.', '嚴重的', 'a severe lack of rainfall', '嚴重缺雨'],
         ['smog', 'smɑg', 'n.', '霧霾', 'ground-level smog', '地面霧霾']] },
-      { t: 'fig', h: '圖解 3:天災時的自保', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="天災時的自保:Typhoon 颱風時 stay indoors 待在室內、遠離窗戶;Earthquake 地震時 Drop, cover and hold on 趴下、掩護、穩住;Fire 火災時不要搭電梯,走 emergency exit 緊急出口;Evacuate 撤離時聽從指示,帶上隨身急救包"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Typhoon 颱風</text><text class="ts" x="16" y="43">stay indoors 待在室內、遠離窗戶</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Earthquake 地震</text><text class="ts" x="16" y="93">Drop, cover and hold on 趴下、掩護、穩住</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Fire 火災</text><text class="ts" x="16" y="143">不要搭電梯;走 emergency exit 緊急出口</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">Evacuate 撤離</text><text class="ts" x="16" y="193">聽從指示撤離;帶上隨身急救包</text></svg>' },
+      { t: 'card', h: '天災時的自保', items: [
+        ['Typhoon 颱風', 'stay indoors 待在室內、遠離窗戶'],
+        ['Earthquake 地震', 'Drop, cover and hold on 趴下、掩護、穩住'],
+        ['Fire 火災', '不要搭電梯;走 emergency exit 緊急出口'],
+        ['Evacuate 撤離', '聽從指示撤離;帶上隨身急救包']] },
       { t: 'ex', key: 'guide-106-65', steps: ['火山最近異常活躍,居民擔心它很快就會……。', '火山「爆發」= erupt → 選 B;freeze(結凍)、creep(緩慢移動)、perish(消亡)都不合。'] },
       { t: 'vocab', h: '防疫與衛生', items: [
         ['vaccinate', 'ˈvæksəˌneɪt', 'v.', '接種疫苗', 'be fully vaccinated', '完整接種疫苗'],
@@ -1434,9 +1507,17 @@ const JY_EN = {
           ['**Can I take a message?**', '要留言嗎?'],
           ['**I would like to make a collect call.**', '我要打對方付費電話。'],
           ['**What is the country code for France?**', '法國的國碼是多少?(33)']] },
-      { t: 'fig', h: '圖解 1:從國外打電話回臺灣', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="從國外打電話回臺灣:先撥國際冠碼,各國不同,美國、加拿大撥 011,多數國家撥 00;再撥臺灣的國碼 country code 886;接著撥區碼並去掉 0,例如台北 02 只撥 2;例如 00-886-2-xxxx-xxxx,從手機撥也可以用加號代替國際冠碼"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">國際冠碼(各國不同)</text><text class="ts" x="16" y="43">美國、加拿大撥 011,多數國家撥 00</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">國碼 886</text><text class="ts" x="16" y="93">臺灣的 country code</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">區碼去掉 0</text><text class="ts" x="16" y="143">台北 02 → 只撥 2(area code)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">例:00-886-2-xxxx-xxxx</text><text class="ts" x="16" y="193">用手機撥也可以用 + 代替國際冠碼</text></svg>' },
+      { t: 'card', h: '從國外打電話回臺灣', items: [
+        ['國際冠碼(各國不同)', '美國、加拿大撥 011,多數國家撥 00'],
+        ['國碼 886', '臺灣的 country code'],
+        ['區碼去掉 0', '台北 02 → 只撥 2(area code)'],
+        ['例:00-886-2-xxxx-xxxx', '用手機撥也可以用 + 代替國際冠碼']] },
       { t: 'ex', key: 'guide-114-15', steps: ['臺灣是 110 伏特,歐洲、澳洲等地的電器需要某種裝置才能用。', '轉接器 = adapter → 選 A;alternator(交流發電機)、amplifier(擴大器)、inverter(逆變器)都不是旅客會帶的轉接頭。'] },
-      { t: 'fig', h: '圖解 2:插頭與電壓', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="插頭與電壓:臺灣是 110 V、60 Hz,美國、日本的電器多半可以直接使用;adapter 轉接頭在插頭形狀不同時使用,只改形狀不變壓;converter 變壓器在電壓不同時使用,例如歐洲 220 到 240 V 的電器;標示 100-240V 的 dual voltage 雙電壓電器只要轉接頭"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">Taiwan:110 V、60 Hz</text><text class="ts" x="16" y="43">美國、日本的電器多半可直接使用</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">adapter 轉接頭</text><text class="ts" x="16" y="93">插頭形狀不同時用(只改形狀,不變壓)</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">converter 變壓器</text><text class="ts" x="16" y="143">電壓不同時用(例:歐洲 220~240 V 的電器)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">dual voltage 雙電壓</text><text class="ts" x="16" y="193">標示 100-240V 的電器只要轉接頭</text></svg>' },
+      { t: 'card', h: '插頭與電壓', items: [
+        ['Taiwan:110 V、60 Hz', '美國、日本的電器多半可直接使用'],
+        ['adapter 轉接頭', '插頭形狀不同時用(只改形狀,不變壓)'],
+        ['converter 變壓器', '電壓不同時用(例:歐洲 220~240 V 的電器)'],
+        ['dual voltage 雙電壓', '標示 100-240V 的電器只要轉接頭']] },
       { t: 'vocab', h: '天氣', items: [
         ['humid', 'ˈhjumɪd', 'adj.', '潮濕的', 'hot and humid', '又熱又潮濕'],
         ['muggy', 'ˈmʌgi', 'adj.', '悶熱潮濕的', 'muggy summer days', '悶熱的夏天'],
@@ -1485,7 +1566,11 @@ const JY_EN = {
         ['keep your word', 'ˈkip jɚ ˈwɝd', 'phr.', '遵守諾言', 'He always keeps his word.', '他總是說到做到。'],
         ['waste your breath', 'ˈweɪst jɚ ˈbrɛθ', 'phr.', '白費唇舌', 'Do not waste your breath.', '別白費唇舌了。'],
         ['forte', 'ˈfɔrteɪ', 'n.', '專長', 'Singing is her forte.', '唱歌是她的專長。']] },
-      { t: 'fig', h: '圖解 3:餐桌與社交禮儀', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="餐桌與社交禮儀:table manners 餐桌禮儀,坐直、手肘不放桌上,湯輕輕攪拌不用吹;Do not stack the plates,吃完盤子留在原位不要疊起來;avoid personal questions,不問宗教、年齡、婚姻狀況 marital status;Please help yourself,請自己拿、別客氣,主人招待時常說"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">table manners</text><text class="ts" x="16" y="43">坐直、手肘不放桌上;湯輕輕攪拌,不用吹</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">Do not stack the plates.</text><text class="ts" x="16" y="93">吃完盤子留在原位,不要疊起來</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">avoid personal questions</text><text class="ts" x="16" y="143">不問宗教、年齡、婚姻狀況(marital status)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">Please help yourself.</text><text class="ts" x="16" y="193">請自己拿、別客氣;主人招待時常說</text></svg>' },
+      { t: 'card', h: '餐桌與社交禮儀', items: [
+        ['table manners', '坐直、手肘不放桌上;湯輕輕攪拌,不用吹'],
+        ['Do not stack the plates.', '吃完盤子留在原位,不要疊起來'],
+        ['avoid personal questions', '不問宗教、年齡、婚姻狀況(marital status)'],
+        ['Please help yourself.', '請自己拿、別客氣;主人招待時常說']] },
       { t: 'vocab', h: '法規與社會', items: [
         ['mandatory', 'ˈmændəˌtɔri', 'adj.', '強制的', 'Wearing seat belts is mandatory.', '一定要繫安全帶。'],
         ['voluntary', 'ˈvɑlənˌtɛri', 'adj.', '自願的', 'voluntary work', '志工服務'],
@@ -1661,7 +1746,11 @@ const JY_EN = {
           ['**Despite** the attack, thousands of people still gathered to celebrate.', '儘管發生攻擊事件,仍有數千人聚集慶祝。'],
           ['**Even if** I could drive the bus, I would not.', '就算我會開這輛巴士,我也不會開。'],
           ['Many tourists are Europeans, **while** others come from Asia.', '許多遊客是歐洲人,而其他的來自亞洲。']] },
-      { t: 'fig', h: '圖解 1:讓步連接詞怎麼選', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="讓步連接詞怎麼選:although 或 even though 後面接子句,例如 Although it rained, we went out;despite 或 in spite of 後面接名詞,例如 Despite the rain, we went out;even if 是假設的就算,例如 Even if it rains, we will go;while 放句首是雖然,放中間是而,表示對比"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">although / even though</text><text class="ts" x="16" y="43">+ 子句:Although it rained, we went out.</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">despite / in spite of</text><text class="ts" x="16" y="93">+ 名詞:Despite the rain, we went out.</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">even if</text><text class="ts" x="16" y="143">就算(假設):Even if it rains, we will go.</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">while</text><text class="ts" x="16" y="193">放句首 = 雖然;放兩句中間 = 而(對比)</text></svg>' },
+      { t: 'card', h: '讓步連接詞怎麼選', items: [
+        ['although / even though', '+ 子句:Although it rained, we went out.'],
+        ['despite / in spite of', '+ 名詞:Despite the rain, we went out.'],
+        ['even if', '就算(假設):Even if it rains, we will go.'],
+        ['while', '放句首 = 雖然;放兩句中間 = 而(對比)']] },
       { t: 'ex', key: 'guide-106-30', steps: ['空格後面是 the terrorist attack(名詞),不是子句;前後意思相反:有攻擊事件,大家還是去慶祝。', '接名詞的「儘管」= Despite → 選 C;Unless(除非)接子句、Except(除了)、In addition(此外)意思不合。'] },
       { t: 'gram', h: '時間與目的:as soon as、until、so that、in order to', pat: ['as soon as / when / the next time + 現在式(表未來)', 'until + 時間點(一直到)', 'so that + 子句;in order to + 原形動詞(為了)'],
         points: ['時間子句裡不用 will,用現在式表示未來:**The next time** Paul **flies** to New York, he will …。', '**until** 表示狀態持續到某個時間點:unavailable until eight o’clock。', '表目的:**so that** 後面接子句,**in order to** 後面接原形動詞。'],
@@ -1691,7 +1780,11 @@ const JY_EN = {
           ['Do you feel like **having** a cup of hot tea?', '想喝杯熱茶嗎?'],
           ['The Lego temple made him **rocket** to fame.', '那座樂高廟讓他一舉成名。'],
           ['Would you help Karen **find** the information?', '可以幫凱倫找資料嗎?']] },
-      { t: 'fig', h: '圖解 2:動詞後面接什麼', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="動詞後面接什麼:mind、feel like、prohibit 後面接 V-ing,例如 Would you mind waiting;make、let、have 加受詞後面接原形,例如 make him rocket to fame;help 加受詞後面接原形或 to 加原形,例如 help Karen find it;have 或 find 加受詞加過去分詞表示被處理,例如 have money converted"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">mind / feel like / prohibit</text><text class="ts" x="16" y="43">+ V-ing:Would you mind waiting?</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">make / let / have + 受詞</text><text class="ts" x="16" y="93">+ 原形:make him rocket to fame</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">help + 受詞</text><text class="ts" x="16" y="143">+ (to) 原形:help Karen (to) find it</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">have / find + 受詞 + p.p.</text><text class="ts" x="16" y="193">被處理:have your money converted</text></svg>' },
+      { t: 'card', h: '動詞後面接什麼', items: [
+        ['mind / feel like / prohibit', '+ V-ing:Would you mind waiting?'],
+        ['make / let / have + 受詞', '+ 原形:make him rocket to fame'],
+        ['help + 受詞', '+ (to) 原形:help Karen (to) find it'],
+        ['have / find + 受詞 + p.p.', '被處理:have your money converted']] },
       { t: 'mn', h: '使役動詞', text: '「make、let、have 叫人做事:受詞後面直接接原形」', ex: 'make him rocket to fame、let us go、have the porter carry the bags;help 後面可以接原形,也可以接 to + 原形。' },
       { t: 'ex', key: 'guide-107-38', steps: ['Would you mind … 是「你介意…嗎」的禮貌請求。', 'mind 後面接動名詞 → waiting,選 B;to wait、waited、of wait 都不能接在 mind 後面。'] },
       { t: 'ex', key: 'guide-109-40', steps: ['which made him ___ to fame:make 是使役動詞,受詞 him 後面要接動作。', '使役動詞 make + 受詞 + 原形動詞 → rocket,選 A;rockets、rocketed、rocketing 都不是原形。'] },
@@ -1718,7 +1811,11 @@ const JY_EN = {
           ['Do you know **what the weather will be like** tomorrow?', '你知道明天天氣如何嗎?'],
           ['I didn’t know **what time the bus would get there**.', '我不知道公車幾點會到。'],
           ['Let’s call it a day, **shall we**?', '今天就到這裡,好嗎?']] },
-      { t: 'fig', h: '圖解 3:間接問句不倒裝', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="間接問句不倒裝:直接問句 Where is the gate 是疑問詞加 be 動詞加主詞的倒裝語序;間接問句 Could you tell me where the gate is 是主詞加動詞;Do you know what time the bus leaves,不加 does;主句是過去式,子句也用過去式,例如 I didn’t know what time it would leave"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">直接問:Where is the gate?</text><text class="ts" x="16" y="43">疑問詞 + be 動詞 + 主詞(倒裝)</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">間接問:Could you tell me …</text><text class="ts" x="16" y="93">where the gate is(主詞 + 動詞)</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">Do you know what time …</text><text class="ts" x="16" y="143">what time the bus leaves(不加 does)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">主句過去式 → 子句也過去</text><text class="ts" x="16" y="193">I didn’t know what time it would leave.</text></svg>' },
+      { t: 'card', h: '間接問句不倒裝', items: [
+        ['直接問:Where is the gate?', '疑問詞 + be 動詞 + 主詞(倒裝)'],
+        ['間接問:Could you tell me …', 'where the gate is(主詞 + 動詞)'],
+        ['Do you know what time …', 'what time the bus leaves(不加 does)'],
+        ['主句過去式 → 子句也過去', 'I didn’t know what time it would leave.']] },
       { t: 'ex', key: 'guide-110-36', steps: ['Could you tell me where … 是間接問句,疑問詞 where 後面要用直述語序。', '主詞 + 動詞 → the check-in counter for Lufthansa is,選 B;A 是倒裝的疑問語序,C、D 多了 has。'] },
       { t: 'gram', h: '介系詞、代名詞與比較', pat: ['by + 交通工具(不加 the);on the plane / bus / train;on the island', 'another(另一個)/ others(其他一些)/ the others(其餘全部)', 'the most / the least + 形容詞;so + 助動詞 + 主詞(…也一樣)'],
         points: ['**by ferry、by bus** 不加冠詞;在交通工具上用 **on**:on the plane。', 'upstairs、downstairs、here、there 是副詞,前面不加介系詞:They are **upstairs**。', '主詞和動詞要一致:a variety of flowers **blossom**、eateries **offer**、places **are**。'],
@@ -1863,7 +1960,11 @@ const JY_EN = {
           ['Which of the following is NOT mentioned in the passage?', '下列何者本文沒有提到?'],
           ['What does the word "viable" in the last paragraph mean?', '最後一段的 viable 是什麼意思?'],
           ['What can be inferred from the second paragraph?', '從第二段可以推論出什麼?']] },
-      { t: 'fig', h: '圖解 1:閱讀測驗四步驟', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="閱讀測驗四步驟:第一先看題目,知道要找主旨、細節、字義還是推論;第二用人名、地名、數字、年份等關鍵字回文章定位;第三比對選項,正解常是原文的換句話說;第四用刪去法,刪掉相反、沒提到、講太滿的選項"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">① 先看題目</text><text class="ts" x="16" y="43">知道要找主旨、細節、字義還是推論</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">② 關鍵字定位</text><text class="ts" x="16" y="93">用人名、地名、數字、年份回文章找</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">③ 比對換句話說</text><text class="ts" x="16" y="143">正解常把原文換個說法(同義字、主被動)</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">④ 刪去法</text><text class="ts" x="16" y="193">刪掉相反、沒提到、講太滿的選項</text></svg>' },
+      { t: 'card', h: '閱讀測驗四步驟', items: [
+        ['① 先看題目', '知道要找主旨、細節、字義還是推論'],
+        ['② 關鍵字定位', '用人名、地名、數字、年份回文章找'],
+        ['③ 比對換句話說', '正解常把原文換個說法(同義字、主被動)'],
+        ['④ 刪去法', '刪掉相反、沒提到、講太滿的選項']] },
       { t: 'table', h: '重點表:題目常見問法', stack: true, head: ['英文問法', '意思', '答案在哪裡'],
         rows: [['What is the passage mainly about?', '本文主要在談什麼', '第一段與最後一段,要涵蓋全文'], ['What is the best title for the passage?', '最適合的標題', '同主旨題,不能只講一段'], ['What is the purpose of the passage?', '寫作目的', '看作者立場:介紹、提醒、說服或比較'],
           ['According to the passage, ...?', '根據本文…', '用關鍵字回文章定位'], ['Which statement is TRUE / NOT true?', '何者正確 / 錯誤', '每個選項回文核對'], ['Which is NOT mentioned?', '何者沒有提到', '刪掉有提到的三個'],
@@ -1886,7 +1987,11 @@ const JY_EN = {
         egs: [['Ecotourism, that is, travel that protects nature, is growing.', '生態旅遊,也就是保護自然的旅遊,正在成長。'],
           ['Unlike the bright new train, the old one had subdued colors.', '和明亮的新列車不同,舊列車的顏色很素雅。'],
           ['Local snacks, such as oyster omelets and stinky tofu, fill the night market.', '在地小吃,像是蚵仔煎和臭豆腐,擺滿了夜市。']] },
-      { t: 'fig', h: '圖解 2:用上下文猜字義的四種線索', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="用上下文猜字義的四種線索:定義線索,that is、in other words 後面就是解釋;對比線索,however、unlike、but 前後意思相反;例子線索,such as、for example 用例子看範圍;同義重述,同一段換個字說同一件事,例如 feathers 和 plumage"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">① 定義線索</text><text class="ts" x="16" y="43">that is、in other words 後面就是解釋</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">② 對比線索</text><text class="ts" x="16" y="93">however、unlike、but 前後意思相反</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">③ 例子線索</text><text class="ts" x="16" y="143">such as、for example 用例子看範圍</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">④ 同義重述</text><text class="ts" x="16" y="193">同段換字說同一件事:feathers = plumage</text></svg>' },
+      { t: 'card', h: '用上下文猜字義的四種線索', items: [
+        ['① 定義線索', 'that is、in other words 後面就是解釋'],
+        ['② 對比線索', 'however、unlike、but 前後意思相反'],
+        ['③ 例子線索', 'such as、for example 用例子看範圍'],
+        ['④ 同義重述', '同段換字說同一件事:feathers = plumage']] },
       { t: 'table', h: '重點表:歷屆考過的字義題', stack: true, head: ['考過的字', '正解', '中文', '出處'],
         rows: [['subdued', 'understated', '素雅的、低調的', '導遊 115'], ['plumage', 'feather', '羽毛', '導遊 115'], ['undercut', 'sell at a lower price', '削價競爭', '導遊 115'], ['fragmented', 'broken into parts', '分裂成好幾塊的', '領隊 115'],
           ['perpetual', 'never-ending', '永無止境的', '領隊 114'], ['viable', 'practical', '實際可行的', '領隊 114'], ['leveraging', 'exploiting', '善用、運用', '導遊 114'], ['nuances', 'subtle differences', '細微差異', '領隊 113'],
@@ -1902,7 +2007,11 @@ const JY_EN = {
           ['Despite the rain, the parade went on.', '儘管下雨,遊行照常進行。'],
           ['The bridge was closed. As a result, we took the ferry.', '橋封閉了,所以我們改搭渡輪。'],
           ['City hotels are busy on weekdays, whereas resorts are busy on weekends.', '城市飯店平日忙,度假村則是週末忙。']] },
-      { t: 'fig', h: '圖解 3:文章結構看段落', svg: '<svg viewBox="0 0 360 208" role="img" aria-label="文章結構看段落:第一段引出主題,常有主旨句;中間段落是例子、細節與數字,細節題多在這裡;however 等轉折詞後面是作者的重點與態度;最後一段總結或建議,主旨與目的題看這裡"><rect class="b1" x="6" y="6" width="348" height="46" rx="8"/><text class="tb" x="16" y="25">① 第一段</text><text class="ts" x="16" y="43">引出主題,常有主旨句</text><rect class="b2" x="6" y="56" width="348" height="46" rx="8"/><text class="tb" x="16" y="75">② 中間段落</text><text class="ts" x="16" y="93">例子、細節、數字(細節題多在這裡)</text><rect class="b3" x="6" y="106" width="348" height="46" rx="8"/><text class="tb" x="16" y="125">③ 轉折之後</text><text class="ts" x="16" y="143">however 後面是作者的重點與態度</text><rect class="bx" x="6" y="156" width="348" height="46" rx="8"/><text class="tb" x="16" y="175">④ 最後一段</text><text class="ts" x="16" y="193">總結或建議(主旨、目的題看這裡)</text></svg>' },
+      { t: 'card', h: '文章結構看段落', items: [
+        ['① 第一段', '引出主題,常有主旨句'],
+        ['② 中間段落', '例子、細節、數字(細節題多在這裡)'],
+        ['③ 轉折之後', 'however 後面是作者的重點與態度'],
+        ['④ 最後一段', '總結或建議(主旨、目的題看這裡)']] },
       { t: 'cmp', h: '容易混淆的轉折詞', head: ['轉折詞', '前後關係', '例'],
         rows: [['however', '前後相反,重點在後面', 'Prices are high. However, the view is worth it.'], ['therefore / as a result', '前因後果', 'The road was closed. As a result, we took a boat.'],
           ['moreover / in addition', '補充同方向的理由', 'The hotel is cheap. Moreover, it is near the station.'], ['instead', '取代前面的做法', 'We did not drive. Instead, we took the train.'],
