@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v286(2026-11-17)
+<!-- 講義 · v287(2026-11-17)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
+     變更履歷:v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
+              v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
               v285 圖解分兩種:真的示意圖(線條、箭頭、位置、並排)保留叫「圖解」並各章重新編號;只是方框條列文字的 151 張改成「重點整理卡」(可選取、放大、朗讀、點讀);圖解總覽改「圖解與整理卡」
               v284 版面:拿掉各區塊左側的粗色條(小節標題、考情、口訣、技巧、陷阱、易混比較、歷屆範例、條文、會話、文法、發音、章節卡),改成淡色底加同色系細框
               v283 執業法規第 10 章加「國人出國的四種入境方式」與「出國前要先上網辦的電子旅行授權」(依 115 年命題大綱「各地簽證手續」)
@@ -224,6 +225,10 @@
   .jlaw dt{font-weight:800;font-size:.86rem;margin-top:8px} .jlaw dd{margin:2px 0 0;font-size:.86rem;color:var(--sub)}
   a.lref{font-size:.72rem;font-weight:800;text-decoration:none;background:var(--soft);color:var(--accent);border-radius:8px;padding:1px 8px;margin-left:4px;white-space:nowrap}
   @media print{a.lref{display:none}}
+  /* v287 內文條號:點了滑出條文視窗(看起來像文字,只加虛線底線與主色) */
+  .aref{all:unset;cursor:pointer;color:var(--sel);font-weight:700;text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;border-radius:4px}
+  .aref:hover{background:var(--soft)} .aref:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+  @media print{.aref{color:inherit;font-weight:inherit;text-decoration:none}}
   .jex{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
   .jex .src{font-size:.74rem;color:var(--sub);font-weight:700}
   .jex .stem{font-weight:700;margin:4px 0}
@@ -431,6 +436,15 @@
   #xsheet .spk{width:auto;height:auto;padding:1px 6px;font-size:.82rem;border-radius:8px;margin-left:2px}
   #xsheet .xs-na{color:var(--sub);padding:12px 0}
   #xsheet .xs-go{display:block;margin-top:14px;font-size:.86rem;font-weight:700}
+  /* v287 條文視窗 */
+  #xsheet .ar-h{font-weight:800;font-size:.86rem;margin:14px 0 4px;color:var(--sel)} #xsheet .ar-h:first-child{margin-top:2px}
+  #xsheet .ar-q{margin:0} #xsheet .ar-q dt{font-weight:800;font-size:.84rem;margin-top:6px} #xsheet .ar-q dd{margin:2px 0 0;font-size:.9rem;line-height:1.75}
+  #xsheet .ar-q .from{font-size:.74rem;color:var(--sub);font-weight:400;margin-left:4px}
+  #xsheet .ar-qs{list-style:none;margin:4px 0;padding:0}
+  #xsheet .ar-it{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;font:inherit;font-size:.86rem;color:var(--ink);cursor:pointer;line-height:1.55}
+  #xsheet .ar-it .s{display:block;font-size:.72rem;color:var(--sub);font-weight:700} #xsheet .ar-it .a{color:var(--ok);font-weight:800}
+  #xsheet .ar-go{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px} #xsheet .ar-go a.tbtn{text-decoration:none;display:inline-block}
+  #xsheet .ar-back{margin:0 0 8px}
   @media print{#xsheet{display:none!important}}
   .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
@@ -724,8 +738,15 @@ const JMAP = (() => {
       el.innerHTML = sv ? sv + '<div class="src">示意圖(河川、山脈為大致走向)· 金門、馬祖在左上小框 · 縣市界線:內政部國土測繪中心開放資料(政府資料開放授權條款第 1 版)</div>' : '<div class="jtw-ph">地圖畫不出來,請重新整理</div>';
     })).catch(() => els.forEach(el => { const p = el.querySelector('.jtw-ph'); if (p) p.textContent = '地圖載入失敗(離線且尚未快取),請連網後重新整理'; }));
   }
-  return { fill };
+  return { fill, load };
 })();
+/* v287 開章前先載入這一章位置圖要用的程式:地圖跟內容同時畫好,不會晚出現把內容往下推(跳小節時跑位) */
+function mapLibsReady(ch){
+  const ms = ch.blocks.filter(b => b.t === 'map'), ps = [];
+  if (ms.some(b => b.tw)) ps.push(JMAP.load().catch(() => {}));
+  if (ms.some(b => b.w) && !(window.WMAP && WMAP.noteAna)) ps.push(new Promise(res => { const t = document.createElement('script'); t.src = 'worldmap.js?v=166'; t.onload = t.onerror = () => res(); document.head.appendChild(t); }));
+  return Promise.all(ps);
+}
 function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
 /* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
    「」『』引號內(原文用語或錯誤選項)、括號內與「N 年考題」(考題出處)、「第 N 條」不自動標。
@@ -1057,10 +1078,39 @@ function renderAgg(J, type){
   $('app').innerHTML = jump + `<div class="tip0">${tip}</div>${tools}<div class="agg">` + (items.length ? items.map(({ch,b})=>`<div class="it" data-agg="${esc(ch.id)}"><div class="gl"><a class="jlink" href="?ch=${encodeURIComponent(ch.id)}" data-ch="${esc(ch.id)}">第 ${ch.no} 章 ${esc(ch.t)} →</a></div>${type==='mn'?mnHtml(b, cfg.mask):type==='fig'?(b.t==='card'?cardHtml(b):b.t==='map'?mapHtml(b):figHtml(b)):cmpHtml(b)}</div>`).join('') : '<div class="empty">本科目前還沒有內容</div>') + '</div>';
   JMAP.fill();   // v286 位置圖
 }
+/* v287 內文「第 N 條」連結:artlaw.js 判斷是哪一部法(明寫的法規名或簡稱、「、第 N 條」接續、各章各節人工判讀;不明確的不連),
+   把條號包成按鈕;只處理中文三科的說明、重點、表格、比較、整理卡、口訣、技巧、陷阱、時效提醒(條文原文、歷屆範例、自我檢測、標題不處理) */
+const ARTB = { p:1, key:1, table:1, cmp:1, card:1, mn:1, tip:1, trap:1, stale:1 }, ART_SUBJ = ['pr2', 'pr', 'gh'];
+let artLawP = null;
+function artLawReady(k){
+  if (!ART_SUBJ.includes(k) || PRACTICE.gv('ART_LAW')) return Promise.resolve();
+  return artLawP || (artLawP = PRACTICE.loadJs('artlaw.js').catch(() => { artLawP = null; }));
+}
+const ARTENT = { '&amp;':'&', '&lt;':'<', '&gt;':'>', '&quot;':'"', '&#39;':"'" };
+function artLink(html, cid, sec){
+  const A = PRACTICE.gv('ART_LAW'); if (!A || html.indexOf('條') < 0) return html;
+  let plain = ''; const map = [];
+  for (let i = 0; i < html.length; ){
+    const c = html[i];
+    if (c === '<'){ const j = html.indexOf('>', i); if (j < 0) break; if (/^<\/?(?:td|th|tr|li|p|div|dt|dd|br|ul|ol|table|thead|tbody|h\d|section)\b/i.test(html.slice(i, j + 1))){ plain += '\n'; map.push(-1); } i = j + 1; continue; }
+    if (c === '&'){ const j = html.indexOf(';', i), e = j > i && j - i < 8 ? ARTENT[html.slice(i, j + 1)] : null; if (e){ plain += e; map.push(i); i = j + 1; continue; } }
+    plain += c; map.push(i); i++;
+  }
+  const hits = A.find(plain, cid, sec);
+  for (let n = hits.length - 1; n >= 0; n--){
+    const h = hits[n], a = map[h.i], z = map[h.j - 1];
+    if (a == null || z == null || a < 0 || z < 0) continue;
+    const seg = html.slice(a, z + 1); if (seg.indexOf('<') >= 0) continue;
+    html = html.slice(0, a) + `<button type="button" class="aref" data-law="${esc(h.law)}" data-art="${esc(h.art)}" title="看${esc(h.law)}這一條與考過的題目">${seg}</button>` + html.slice(z + 1);
+  }
+  return html;
+}
 function bodyHtml(k, ch, d){   // v253 以小節標題分段,每段輪流換一種強調色;標題的「一、」做成數字牌
-  let out = '', n = 0;
+  let out = '', n = 0, sec = '';
+  const AL = ART_SUBJ.includes(k);   // v287 條號連結
   ch.blocks.forEach(b=>{
-    if (b.t !== 'h'){ out += blockHtml(k, b, d); return; }
+    if (b.t !== 'h'){ const h = blockHtml(k, b, d); out += AL && ARTB[b.t] && h ? artLink(h, ch.id, sec) : h; return; }
+    sec = b.text;
     const m = String(b.text).match(/^([一二三四五六七八九十]+)、\s*(.+)$/);
     out += (n ? '</section>' : '') + `<section class="sec k${n%6+1}"><h3 class="jh" id="sec-${n}">${m ? `<span class="hn">${m[1]}</span><span>${esc(m[2])}</span>` : esc(b.text)}</h3>`; n++;
   });
@@ -1094,11 +1144,14 @@ function openChapter(id){
   cfg.subj = k; cfg.view = 'ch'; cfg.ch = id; saveCfg();
   history.replaceState(null, '', '?ch=' + encodeURIComponent(id) + (cfg.mode==='quick'?'&mode=quick':''));
   renderBar(); $('app').innerHTML = '<div class="empty">載入中…</div>';
-  Promise.all([loadSubj(k), bankOf(k)]).then(([J, d])=>{
+  Promise.all([loadSubj(k), bankOf(k), artLawReady(k)]).then(([J, d])=>{   // v287 中文三科先載入條號連結規則
     const ch = J && J.chapters.find(c=>c.id===id);
     if (!ch){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); return; }
-    CUR = { k, ch, d, st: stats(k, ch, d) };
-    renderBar(); renderChapter(); window.scrollTo(0,0);
+    return mapLibsReady(ch).then(()=>{   // v287 位置圖程式先載入
+      if (cfg.view !== 'ch' || cfg.ch !== id) return;   // 等待時已換到別章或別的頁籤
+      CUR = { k, ch, d, st: stats(k, ch, d) };
+      renderBar(); renderChapter(); window.scrollTo(0,0);
+    });
   });
 }
 function render(){
@@ -1142,6 +1195,8 @@ const XS = (() => {
     el.addEventListener('click', e => {
       if (e.target === el || e.target.closest('.xs-x')){ close(); return; }
       const sy = e.target.closest('[data-say]'); if (sy){ e.preventDefault(); SAY.say(sy.dataset.say, sy); }
+      const aq = e.target.closest('[data-axq]'); if (aq){ ART.q(aq.dataset.axs, aq.dataset.axq); return; }   // v287 條文視窗裡的題目 → 詳解
+      const ab = e.target.closest('[data-artback]'); if (ab){ ART.back(); return; }   // v287 詳解 → 回到條文
     });
     return el;
   }
@@ -1161,6 +1216,49 @@ const XS = (() => {
   window.addEventListener('popstate', () => { if (open) hide(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) close(); });
   return { show, close, isOpen: () => open };
+})();
+/* v287 條文視窗:講義收錄的條文原文(三科條文區塊)+ 歷屆考過的題目(law_ref.js;點了在同一個視窗看完整詳解,可回到條文)
+   + 條文反查與全國法規資料庫查詢 */
+const ART = (() => {
+  let cur = null;
+  const label = a => { const [n, m] = String(a).split('-'); return '第 ' + n + ' 條' + (m ? '之 ' + m : ''); };
+  const DB = law => 'https://law.moj.gov.tw/Law/LawSearchResult.aspx?cur=Ln&ty=ONEBAR&kw=' + encodeURIComponent(law);
+  const qLabel = key => { const m = String(key).split(':')[1].match(/^(guide|leader)-(\d+)-(\d+)$/); return m ? (m[1] === 'guide' ? '導遊' : '領隊') + ' ' + m[2] + ' 年第 ' + m[3] + ' 題' : key; };
+  const cut = (s, n) => { s = String(s || '').replace(/__BLANK__/g, '＿＿'); return s.length > n ? s.slice(0, n) + '…' : s; };
+  function quotes(law, art){
+    const out = [];
+    const cs = CUR && CUR.k ? [CUR.k].concat(ART_SUBJ.filter(x => x !== CUR.k)) : ART_SUBJ;   // 目前這一科的講義優先
+    cs.forEach(k => { const J = JY[k]; if (!J) return; J.chapters.forEach(ch => ch.blocks.forEach(b => { if (b.t !== 'law') return;
+      b.items.forEach(([n, t]) => { const m = String(n).match(LAWDT); if (!m || m[1].trim() !== law) return;
+        if (m[2] + (m[3] ? '-' + m[3] : m[4] ? '-' + m[4] : '') !== art || out.some(x => x.t === t)) return; out.push({ n, t, ch, k }); }); })); });
+    return out;
+  }
+  const SN = { pr2: '執業法規', pr: '執業實務', gh: '觀光資源' };
+  function body(law, art){
+    const qs = quotes(law, art), R = PRACTICE.gv('LAW_REF'), L = R && R.laws.find(x => x.n === law), r = L && L.arts.find(x => x[0] === art), ks = r ? r[1] : [];
+    let h = '<div class="ar-h">📜 條文原文</div>' + (qs.length ? '<dl class="ar-q">' + qs.map(q => `<dt>${esc(q.n)}<span class="from">(${SN[q.k]}講義第 ${q.ch.no} 章收錄)</span></dt><dd>${esc(q.t)}</dd>`).join('') + '</dl>'
+      : '<div class="xs-na">講義沒有收錄這一條的原文,可以到全國法規資料庫看最新條文。</div>');
+    h += `<div class="ar-h">🔎 歷屆考過 ${ks.length} 題</div>` + (ks.length ? '<ul class="ar-qs">' + ks.slice(0, 12).map(key => { const p = key.split(':'), q = (R.qs && R.qs[key]) || ['', ''];
+      return `<li><button type="button" class="ar-it" data-axs="${esc(p[0])}" data-axq="${esc(p[1])}"><span class="s">${esc(qLabel(key))} · 點了看完整詳解</span>${esc(cut(q[0], 90))}<span class="a"> 答 ${esc(q[1])}</span></button></li>`; }).join('') + '</ul>'
+      + (ks.length > 12 ? `<div class="tn">還有 ${ks.length - 12} 題,到「條文反查」看全部。</div>` : '')
+      : '<div class="xs-na">歷屆詳解沒有直接引用這一條。</div>');
+    h += `<div class="ar-go"><a class="tbtn" href="條文反查.html?law=${encodeURIComponent(law)}&art=${encodeURIComponent(art)}">📚 條文反查</a><a class="tbtn" href="${DB(law)}" target="_blank" rel="noopener">🌐 全國法規資料庫</a></div>`;
+    return h + '<div class="tn">條文以全國法規資料庫的現行條文為準;講義收錄的原文依各章的「資料截至」日期。</div>';
+  }
+  function open(law, art, src){
+    cur = { law, art };
+    const title = law + ' ' + label(art);
+    XS.show(title, '<div class="xs-na">載入中…</div>', src);
+    const lr = PRACTICE.gv('LAW_REF') ? Promise.resolve() : (lawRefP = lawRefP || PRACTICE.loadJs('law_ref.js'));
+    Promise.all([lr.catch(() => { lawRefP = null; })].concat(ART_SUBJ.map(loadSubj))).then(() => { if (XS.isOpen() && cur && cur.law === law && cur.art === art) XS.show(title, body(law, art)); });
+  }
+  function q(k, key){
+    const back = cur ? `<button type="button" class="tbtn ar-back" data-artback>← 回到${esc(cur.law)}${esc(label(cur.art))}</button>` : '';
+    XS.show('詳解', back + '<div class="xs-na">載入中…</div>');
+    bankOf(k).then(d => { const qq = d && d.map[key]; if (!XS.isOpen()) return; if (qq) XS.show(PRACTICE.label(k, qq), back + xsHtml(k, qq, d)); else XS.show('詳解', back + '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
+  }
+  function back(){ if (cur) open(cur.law, cur.art); }
+  return { open, q, back, label };
 })();
 function xsHtml(k, q, d){
   const key = PRACTICE.key(q), acc = SCORE.acc(q), J = k === 'jp', E = k === 'en', a = (d.ana && d.ana[key]) || {};
@@ -1204,6 +1302,7 @@ function openX(k, key, src){
 }
 
 $('app').addEventListener('click', e=>{
+  const ar = e.target.closest('.aref'); if (ar){ ART.open(ar.dataset.law, ar.dataset.art, ar); return; }   // v287 內文條號 → 條文視窗
   const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
   const swc = e.target.closest('.den .sw'); if (swc){ swapSlot(swc); return; }   // v275 替換練習
   /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
