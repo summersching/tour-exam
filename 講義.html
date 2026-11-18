@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v296(2026-11-18)
+<!-- 講義 · v297(2026-11-18)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v296 詳解視窗裡的「歷屆同考點」點了不換頁:在視窗裡換成那一題,上方「← 回到上一題」一路退回,按 ✕ 回到講義原本的位置
+     變更履歷:v297 情境會話改「劇本式」:每句左邊一個字的說話者小標(上方列出代表誰),外文在上、中文在下,細線分隔;關鍵字改螢光筆底色;會話下面列出本段關鍵字考過幾次
+              v296 詳解視窗裡的「歷屆同考點」點了不換頁:在視窗裡換成那一題,上方「← 回到上一題」一路退回,按 ✕ 回到講義原本的位置
               v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
               v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
               v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
@@ -365,17 +366,25 @@
   .vleg{font-size:.74rem;color:var(--sub);margin:2px 0 4px;line-height:1.6} .vleg .vs{display:inline-flex;margin-left:6px;font-size:.74rem}
   .hidez .vz{filter:blur(6px);user-select:none}
   /* 情境會話:對話泡泡(旅客那一方靠右) */
-  .jdlg{background:var(--c2b);border:1px solid color-mix(in srgb,var(--c2) 28%,transparent)}
-  .jdlg .mh{color:var(--c2)}
+  /* v297 情境會話改「劇本式」:不用對話泡泡;說話者用一個字的小標,外文在上、中文在下,句與句之間細線分隔,關鍵字用螢光筆標記 */
+  .jdlg{background:var(--card);border:1px solid var(--line)}
+  .jdlg .mh{color:var(--ink)}
   .dtools{display:flex;gap:6px;margin:6px 0 4px;flex-wrap:wrap}
   .dtools .vt{margin-left:0}
-  .dl{display:flex;flex-direction:column;align-items:flex-start;margin:8px 0}
-  .dl.me{align-items:flex-end}
-  .dw{font-size:.7rem;font-weight:800;color:var(--sub);margin:0 6px 2px}
-  .db{max-width:88%;background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:7px 11px;cursor:pointer}
-  .dl.me .db{background:var(--c6b);border-color:var(--c6);border-radius:14px 14px 4px 14px}
-  .den{font-weight:700;font-size:.95rem;line-height:1.5}
-  .db .vz{font-weight:400;font-size:.8rem;color:var(--sub)}
+  .dwho{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--sub);margin:4px 0 2px}
+  .dwho span{display:inline-flex;align-items:center;gap:5px}
+  .dl{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:10px;align-items:start;padding:9px 0;margin:0}
+  .dl+.dl{border-top:1px solid var(--line)}
+  .dw,.dwho i{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;font-style:normal;background:var(--bg);color:var(--sub);margin:0;flex:none;line-height:1.1;text-align:center}
+  .dwho i{width:24px;height:24px;font-size:.72rem;border-radius:7px}
+  .dl.me .dw,.dwho i.me{background:var(--c2b);color:var(--c2)}
+  .dl.w2 .dw,.dwho i.w2{background:var(--c1b);color:var(--c1)}
+  .db{background:none;border:0;border-radius:0;padding:0;cursor:pointer;min-width:0}
+  .den{font-weight:700;font-size:.97rem;line-height:1.55}
+  .db .vz{font-weight:400;font-size:.84rem;color:var(--sub);margin-top:1px}
+  .jdlg .den .kn{color:inherit;background:color-mix(in srgb,var(--c4) 22%,transparent);border-radius:3px;padding:0 2px}
+  .dkp{margin:6px 0 2px;padding-top:8px;border-top:1px dashed var(--line);font-size:.82rem;color:var(--sub);line-height:1.75}
+  .dkp b{color:var(--ink);font-weight:700} .dkp .n{font-size:.74rem;font-weight:800;color:var(--c4);margin-left:3px}
   .saying{outline:3px solid var(--accent);outline-offset:2px}
   /* 文法重點、發音提醒 */
   .jgram{background:var(--c3b);border:1px solid color-mix(in srgb,var(--c3) 28%,transparent)}
@@ -729,10 +738,38 @@ function vocabHtml(b, d){
     const sw = J && ipa ? ipa : plainText(w), se = J && ipa ? sayText(eg).split(w).join(ipa) : sayText(eg);   // 日語:單字與例子裡的這個字都唸假名讀音
     return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆英語試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${esc(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${esc(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
 }
-function dlgHtml(b){
-  const me = b.me == null ? 1 : b.me;
-  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button>${isJP()?'<button class="vt" type="button" data-vy>🙈 遮住讀音</button>':''}<button class="vt" type="button" data-vz>🙈 遮住中文</button>${b.lines.some(l=>HAS_SLOT.test(l[1]))?'<span class="swh">🔁 點虛線的字換說法</span>':''}</div>${b.lines.map(([w,en,zh])=>
-    `<div class="dl${w===me?' me':''}"><div class="dw">${esc(b.who[w])}</div><div class="db" data-say="${esc(sayText(en))}"${HAS_SLOT.test(en)?` data-src="${esc(en)}"`:''}><div class="den">${slotHtml(en, x=>mk(esc(x)))}</div><div class="vz">${slotHtml(zh, x=>esc(x))}</div></div></div>`).join('')}</div>`;
+/* v297 情境會話「劇本式」:說話者用一個字的小標(上方列出代表誰)、每句外文在上中文在下、細線分隔;
+   會話下面列出本段關鍵字在歷屆考題出現幾次(英語:會話裡標記的關鍵字;日語:本章單字表裡、這段會話用到的字) */
+function whoShort(who){
+  const zh = who.map(x => { const m = String(x).match(/[\u4e00-\u9fff]+/g); return m ? m[m.length - 1] : String(x).replace(/[^A-Za-z]/g, ''); });
+  const one = zh.map(x => x.slice(0, 1));
+  return new Set(one).size === one.length ? one : zh.map(x => x.slice(0, 2));
+}
+const JFC = new WeakMap();
+function jfreq(d, w){   // 日語:題目或選項含這個字的題數
+  if (!d || !d.bank || !w) return 0;
+  let C = JFC.get(d);
+  if (!C){ C = { t: d.bank.map(q => [q.stem].concat(q.opts || []).join(' | ').replace(/<[^>]*>/g, '')), m: new Map() }; JFC.set(d, C); }
+  if (C.m.has(w)) return C.m.get(w);
+  let n = 0; C.t.forEach(t => { if (t.includes(w)) n++; });
+  C.m.set(w, n); return n;
+}
+function dlgKeys(b, d){
+  const J = isJP(), out = new Map();
+  if (J){
+    const txt = b.lines.map(l => plainText(l[1])).join(' ');
+    const ws = CUR && CUR.ch ? CUR.ch.blocks.filter(x => x.t === 'vocab').flatMap(x => x.items.map(it => plainText(it[0]).replace(/^〜/, ''))) : [];
+    ws.forEach(w => { if (w.length >= 2 && txt.includes(w) && !out.has(w)) out.set(w, w); });
+  } else b.lines.forEach(l => String(l[1]).replace(/\*\*([^*]+?)\*\*/g, (m, w) => { const k = plainText(w).trim(); if (k && !out.has(k.toLowerCase())) out.set(k.toLowerCase(), k); return m; }));
+  return [...out.values()].map(w => ({ w, n: J ? jfreq(d, w) : vfreq(d, w) })).sort((a, b) => b.n - a.n).slice(0, 8);
+}
+function dlgHtml(b, d){
+  const me = b.me == null ? 1 : b.me, S = whoShort(b.who), cls = w => w === me ? ' me' : (w !== 0 && w !== 1) ? ' w2' : '', J = isJP(), K = dlgKeys(b, d);
+  return `<div class="jdlg"><div class="mh"><span>🗣 情境會話${b.h?' · '+esc(b.h):''}</span></div><div class="dtools"><button class="vt" type="button" data-dplay>▶ 播放會話</button>${J?'<button class="vt" type="button" data-vy>🙈 遮住讀音</button>':''}<button class="vt" type="button" data-vz>🙈 遮住中文</button>${b.lines.some(l=>HAS_SLOT.test(l[1]))?'<span class="swh">🔁 點虛線的字換說法</span>':''}</div>`
+    + `<div class="dwho">${b.who.map((x, i) => `<span><i class="${cls(i).trim()}">${esc(S[i])}</i>${esc(x)}</span>`).join('')}</div>`
+    + b.lines.map(([w,en,zh])=>
+    `<div class="dl${cls(w)}"><div class="dw" title="${esc(b.who[w])}">${esc(S[w])}</div><div class="db" data-say="${esc(sayText(en))}"${HAS_SLOT.test(en)?` data-src="${esc(en)}"`:''}><div class="den">${slotHtml(en, x=>mk(esc(x)))}</div><div class="vz">${slotHtml(zh, x=>esc(x))}</div></div></div>`).join('')
+    + (K.length ? `<div class="dkp">📝 ${J ? '本段用到的本章單字' : '本段關鍵字'}:${K.map(x => `<b>${esc(x.w)}</b>${x.n ? `<span class="n">考 ${x.n} 次</span>` : ''}`).join('、')}</div>` : '') + '</div>';
 }
 function gramHtml(b){
   return `<div class="jgram"><div class="mh"><span>🧩 ${esc(b.lbl||'文法')}${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${rb(esc(x))}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
@@ -848,7 +885,7 @@ function blockHtml(k, b, d){
     case 'ex': return exHtml(k, b, d);
     case 'self': return selfHtml(b);
     case 'vocab': return vocabHtml(b, d);
-    case 'dlg': return dlgHtml(b);
+    case 'dlg': return dlgHtml(b, d);
     case 'gram': return gramHtml(b);
     case 'pron': return pronHtml(b);
     default: return '';
