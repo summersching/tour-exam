@@ -173,7 +173,7 @@ function preview(){
 function formHtml(){
   const subs = [['pr2','執業法規'],['pr','執業實務'],['gh','觀光資源'],['lang','外語']];
   return `<div class="card" id="form"><h2>${PLAN.get() ? '⚙️ 調整設定' : '🎯 建立你的學習計畫'}</h2>
-    <div class="lbl">考試日期</div><div class="row"><input type="date" id="fExam" value="${esc(F.exam)}"><span class="pv" style="margin:0">請依考選部公告填寫(首頁倒數也會一起更新)</span></div>
+    <div class="lbl">考試日期</div><div class="row"><input type="date" id="fExam" value="${esc(F.exam)}"><span class="pv" style="margin:0">請依交通部觀光署公告填寫(116 年筆試:領隊 3/6、導遊 3/7;首頁倒數也會一起更新)</span></div>
     <div class="lbl">報考</div><div class="row" data-f="cert">${[['guide','導遊'],['leader','領隊']].map(([v,t])=>`<button type="button" class="chip${F.cert===v?' on':''}" data-v="${v}">${t}</button>`).join('')}</div>
     <div class="lbl">外語</div><div class="row" data-f="lang">${[['en','英語'],['jp','日語']].map(([v,t])=>`<button type="button" class="chip${F.lang===v?' on':''}" data-v="${v}">${t}</button>`).join('')}</div>
     <div class="lbl">每個讀書日可讀</div><div class="row" data-f="mins">${MINS.map(m=>`<button type="button" class="chip${F.mins===m?' on':''}" data-v="${m}">${m < 60 ? m + ' 分' : (m/60) + ' 小時'}</button>`).join('')}</div>
