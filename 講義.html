@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v288(2026-11-17)
+<!-- 講義 · v296(2026-11-18)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
+     變更履歷:v296 詳解視窗裡的「歷屆同考點」點了不換頁:在視窗裡換成那一題,上方「← 回到上一題」一路退回,按 ✕ 回到講義原本的位置
+              v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
               v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
               v286 觀光資源地理相關章節加「位置圖」22 張:臺灣(國家公園、山脈、海岸、惡地與火山、季風、河川、水庫、四極、離島、國家風景區、古道)用縣市底圖,世界(中國、日本、東南亞、印度、西亞、非洲、歐洲、美洲、澳紐)用世界圖;用到才載入地圖程式
               v285 圖解分兩種:真的示意圖(線條、箭頭、位置、並排)保留叫「圖解」並各章重新編號;只是方框條列文字的 151 張改成「重點整理卡」(可選取、放大、朗讀、點讀);圖解總覽改「圖解與整理卡」
@@ -453,6 +454,7 @@
   #xsheet .ar-it .s{display:block;font-size:.72rem;color:var(--sub);font-weight:700} #xsheet .ar-it .a{color:var(--ok);font-weight:800}
   #xsheet .ar-go{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px} #xsheet .ar-go a.tbtn{text-decoration:none;display:inline-block}
   #xsheet .ar-back{margin:0 0 8px}
+  #xsheet .xq-back{margin:0 0 8px}
   @media print{#xsheet{display:none!important}}
   .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
@@ -1223,6 +1225,17 @@ document.querySelector('.bar').addEventListener('click', e=>{
 });
 /* v273 講義內看完整詳解:範例的「📖 看完整詳解」在原頁從下方滑出詳解視窗,不換頁;
    ✕、點背景、Esc、手機返回鍵都會關閉,停在原來的位置(五科共用,資料來自 PRACTICE.load) */
+/* v296 詳解視窗裡點「歷屆同考點」:不換頁,在視窗裡換成那一題;上方「← 回到上一題」一路退回(條文視窗點進來的題目也算) */
+const XQ = { cur: null, hist: [] };
+function xref(href){
+  try {
+    const u = new URL(href, location.href), f = decodeURIComponent(u.pathname.split('/').pop()), m = /^#q(\d+)$/.exec(u.hash || ''), c = u.searchParams.get('cert'), y = u.searchParams.get('year');
+    const k = Object.keys(PRACTICE.SUBJ).find(x => PRACTICE.SUBJ[x].page === f);
+    return k && c && y && m ? { k, key: c + '-' + y + '-' + m[1] } : null;
+  } catch (e) { return null; }
+}
+const xqBack = () => { const p = XQ.hist[XQ.hist.length - 1]; return p ? `<button type="button" class="tbtn xq-back" data-xqback>← 回到上一題${p.label ? '(' + esc(p.label) + ')' : ''}</button>` : ''; };
+function xqGo(p){ if (p.art) ART.q(p.k, p.key, true); else openX(p.k, p.key, null, true); }
 const XS = (() => {
   let el = null, open = false, from = null;
   function mount(){
@@ -1232,6 +1245,9 @@ const XS = (() => {
     document.body.appendChild(el);
     el.addEventListener('click', e => {
       if (e.target === el || e.target.closest('.xs-x')){ close(); return; }
+      const xr = e.target.closest('.xrl a[href]');   // v296 同考點:在視窗裡換題(按住 Ctrl / ⌘ / Shift 照一般連結開新分頁)
+      if (xr && e.button === 0 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)){ const r = xref(xr.getAttribute('href')); if (r){ e.preventDefault(); if (XQ.cur) XQ.hist.push(XQ.cur); openX(r.k, r.key, null, true); return; } }
+      const xb = e.target.closest('[data-xqback]'); if (xb){ const p = XQ.hist.pop(); if (p) xqGo(p); return; }
       const sy = e.target.closest('[data-say]'); if (sy){ e.preventDefault(); SAY.say(sy.dataset.say, sy); }
       const aq = e.target.closest('[data-axq]'); if (aq){ ART.q(aq.dataset.axs, aq.dataset.axq); return; }   // v287 條文視窗裡的題目 → 詳解
       const ab = e.target.closest('[data-artback]'); if (ab){ ART.back(); return; }   // v287 詳解 → 回到條文
@@ -1284,16 +1300,19 @@ const ART = (() => {
     return h + '<div class="tn">條文以全國法規資料庫的現行條文為準;講義收錄的原文依各章的「資料截至」日期。</div>';
   }
   function open(law, art, src){
-    cur = { law, art };
+    cur = { law, art }; XQ.cur = null; XQ.hist = [];
     const title = law + ' ' + label(art);
     XS.show(title, '<div class="xs-na">載入中…</div>', src);
     const lr = PRACTICE.gv('LAW_REF') ? Promise.resolve() : (lawRefP = lawRefP || PRACTICE.loadJs('law_ref.js'));
     Promise.all([lr.catch(() => { lawRefP = null; })].concat(ART_SUBJ.map(loadSubj))).then(() => { if (XS.isOpen() && cur && cur.law === law && cur.art === art) XS.show(title, body(law, art)); });
   }
-  function q(k, key){
+  function q(k, key, keep){
+    if (!keep) XQ.hist = [];
+    const me = XQ.cur = { k, key, label: '', art: true };
     const back = cur ? `<button type="button" class="tbtn ar-back" data-artback>← 回到${esc(cur.law)}${esc(label(cur.art))}</button>` : '';
-    XS.show('詳解', back + '<div class="xs-na">載入中…</div>');
-    bankOf(k).then(d => { const qq = d && d.map[key]; if (!XS.isOpen()) return; if (qq) XS.show(PRACTICE.label(k, qq), back + xsHtml(k, qq, d)); else XS.show('詳解', back + '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
+    XS.show('詳解', back + xqBack() + '<div class="xs-na">載入中…</div>');
+    bankOf(k).then(d => { const qq = d && d.map[key]; if (!XS.isOpen() || XQ.cur !== me) return;
+      if (qq){ me.label = PRACTICE.label(k, qq); XS.show(me.label, back + xqBack() + xsHtml(k, qq, d)); } else XS.show('詳解', back + xqBack() + '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
   }
   function back(){ if (cur) open(cur.law, cur.art); }
   return { open, q, back, label };
@@ -1333,10 +1352,12 @@ function swapSlot(sw){
   db.dataset.say = sayText(slotPick(db.dataset.src, idx));
   SAY.say(db.dataset.say, db);
 }
-function openX(k, key, src){
-  XS.show('詳解', '<div class="xs-na">載入中…</div>', src);
-  bankOf(k).then(d => { if (!d) throw new Error('load'); const q = d.map[key]; if (q && XS.isOpen()) XS.show(PRACTICE.label(k, q), xsHtml(k, q, d)); })   // v279 用 bankOf:英語閱讀題、日語讀解文章一併載入
-    .catch(() => { if (XS.isOpen()) XS.show('詳解', '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
+function openX(k, key, src, keep){
+  if (!keep) XQ.hist = [];
+  const me = XQ.cur = { k, key, label: '' };
+  XS.show('詳解', xqBack() + '<div class="xs-na">載入中…</div>', src);
+  bankOf(k).then(d => { if (!d) throw new Error('load'); const q = d.map[key]; if (q && XS.isOpen() && XQ.cur === me){ me.label = PRACTICE.label(k, q); XS.show(me.label, xqBack() + xsHtml(k, q, d)); } })   // v279 用 bankOf:英語閱讀題、日語讀解文章一併載入
+    .catch(() => { if (XS.isOpen() && XQ.cur === me) XS.show('詳解', xqBack() + '<div class="xs-na">詳解載入失敗,請稍後再試。</div>'); });
 }
 
 $('app').addEventListener('click', e=>{

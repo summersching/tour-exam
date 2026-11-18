@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v166
+/* ana.js — 詳解排版(單一來源)· v296
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -11,6 +11,7 @@
        <div class='xh'>⚖️ 法規依據</div><div class='xl'>條文</div>
        <figure class='xm' data-twmap='…'>(臺灣位置圖)  <figure class='xm' data-tline='…'>(時間軸)
        <div class='xh'>📚 歷屆同考點</div><ul class='xo xrl'><li><a href='…'>導遊 110 第 3 題</a>:…</li></ul>
+         點題號不換頁:原地跳出那一題(題目、選項、詳解),視窗裡可再換題、回上一題,底部才連到題庫(v296;講義的詳解視窗自己處理)
      </div>
    這支負責樣式(各頁共用,含深色模式)、快問收合、解析內地圖與時間軸;內容寫在 gh_ana.js / pr_ana.js / pr2_ana.js。
    ANAUI.compact(html)  快問、小測驗彈窗用:詳細內容收進「📖 看完整解析」,作答節奏不被長文打斷
@@ -25,6 +26,7 @@
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v296 (2026-11-18) 歷屆同考點點了不換頁:原地跳出那一題的小視窗(複習頁、錯題本、模擬測驗等;講義詳解視窗另外處理)
      v166 (2026-11-17) 地圖程式網址改 worldmap.js?v=166(地名庫加桂林、張家界、黃山、富士山)、twgeo.js?v=163(靜態圖可指定圖層)
      v165 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=165(地名庫加入領隊 106 觀光資源解析用的地名與長江)
      v164 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=164(地名庫加入領隊 107 觀光資源解析用的地名與黃河、恆河、布拉馬普特拉河)
@@ -222,5 +224,112 @@
   function schedule() { if (pend) return; pend = true; (window.requestAnimationFrame || setTimeout)(function () { pend = false; hydrate(); }); }
   try { if ('MutationObserver' in window) new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
   if (document.readyState !== 'loading') schedule(); else document.addEventListener('DOMContentLoaded', schedule);
-  window.ANAUI = { compact: compact, maps: hydrate, tline: tline, eraBar: eraBar, era: ERA_TW, parseTline: parseTline, parseMarks: parseMarks };
+  /* v296 歷屆同考點:點題號不換頁,在原地跳出那一題(題目、選項、詳解);視窗裡再點同考點會換題,上方「← 回到上一題」一路退回;
+     視窗底部「到題庫看這一年」才真的換頁。講義的詳解視窗自己處理(這裡看到 defaultPrevented 或在 #xsheet 裡就不管);
+     按住 Ctrl / ⌘ / Shift / Alt 或用中鍵點,照一般連結開新分頁 */
+  var QPAGES = { '觀光複習.html': 'gh', '執業實務複習.html': 'pr', '執業法規複習.html': 'pr2' };
+  var QP = { el: null, open: false, hist: [], cur: null, from: null };
+  function qpEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function qpRef(href) {
+    try {
+      var u = new URL(href, location.href), f = u.pathname.split('/').pop();
+      try { f = decodeURIComponent(f); } catch (e) {}
+      var s = QPAGES[f], c = u.searchParams.get('cert'), y = u.searchParams.get('year'), m = /^#q(\d+)$/.exec(u.hash || '');
+      return s && c && y && m ? { s: s, key: c + '-' + y + '-' + m[1], href: href } : null;
+    } catch (e) { return null; }
+  }
+  function qpNeed() {
+    if (window.PRACTICE) return Promise.resolve();
+    return new Promise(function (ok, no) { var t = document.createElement('script'); t.src = 'practice.js'; t.onload = ok; t.onerror = no; document.head.appendChild(t); });
+  }
+  try {
+    var qcss = document.createElement('style');
+    qcss.textContent =
+      '#qpk{position:fixed;inset:0;z-index:10050;display:flex;flex-direction:column;justify-content:flex-end;background:rgba(15,20,30,.45)}' +
+      '#qpk[hidden]{display:none}' +
+      '#qpk .qp-box{background:var(--bg,#f4f6f9);color:var(--ink,#1c2330);width:100%;max-width:760px;margin:0 auto;max-height:88vh;display:flex;flex-direction:column;border-radius:16px 16px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.22)}' +
+      '#qpk .qp-hd{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line,#e2e8f2)}' +
+      '#qpk .qp-t{flex:1;font-size:.88rem;color:var(--accent,#2563eb)}' +
+      '#qpk .qp-x{flex:none;border:0;background:var(--line,#e2e8f2);color:var(--ink,#1c2330);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit}' +
+      '#qpk .qp-bd{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 16px calc(18px + env(safe-area-inset-bottom));line-height:1.75}' +
+      '#qpk .qp-back{display:inline-block;margin:0 0 10px;border:1.5px solid var(--accent,#2563eb);background:var(--card,#fff);color:var(--accent,#2563eb);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.84rem;font-family:inherit;cursor:pointer}' +
+      '#qpk .qp-stem{font-weight:700;margin:2px 0 6px}' +
+      '#qpk .qp-op{font-size:.92rem;padding:3px 0}#qpk .qp-op.ok{color:var(--ok,#15803d);font-weight:800}' +
+      '#qpk .qp-ana{font-size:.92rem;margin-top:8px}' +
+      '#qpk .qp-bx{border:1px solid var(--line,#e2e8f2);background:var(--card,#fff);border-radius:10px;padding:8px 11px;margin:10px 0;font-size:.9rem}' +
+      '#qpk .qp-na{color:var(--sub,#5a6b82);padding:12px 0}' +
+      '#qpk .qp-go{display:block;margin-top:14px;font-size:.86rem;font-weight:700;color:var(--accent,#2563eb)}' +
+      'html.qp-lock,html.qp-lock body{overflow:hidden}' +
+      '@media print{#qpk{display:none!important}}';
+    (document.head || document.documentElement).appendChild(qcss);
+  } catch (e) {}
+  function qpMount() {
+    if (QP.el) return QP.el;
+    var el = document.createElement('div'); el.id = 'qpk'; el.hidden = true;
+    el.innerHTML = '<div class="qp-box" role="dialog" aria-modal="true" aria-labelledby="qpT"><div class="qp-hd"><b class="qp-t" id="qpT"></b><button class="qp-x" type="button" aria-label="關閉,回到原本的位置">✕</button></div><div class="qp-bd"></div></div>';
+    document.body.appendChild(el);
+    el.addEventListener('click', function (e) {
+      if (e.target === el || e.target.closest('.qp-x')) { qpClose(); return; }
+      if (e.target.closest('[data-qpback]')) { var p = QP.hist.pop(); if (p) qpShow(p); }
+    });
+    QP.el = el;
+    return el;
+  }
+  function qpSet(title, html) {
+    var el = qpMount();
+    el.querySelector('.qp-t').textContent = title;
+    var bd = el.querySelector('.qp-bd'); bd.innerHTML = html; bd.scrollTop = 0;
+    if (!QP.open) {
+      QP.open = true; el.hidden = false; document.documentElement.classList.add('qp-lock');
+      try { history.pushState({ qp: 1 }, ''); } catch (e) {}
+      try { el.querySelector('.qp-x').focus({ preventScroll: true }); } catch (e) {}
+    }
+    hydrate();
+  }
+  function qpHide() {
+    if (!QP.el || !QP.open) return;
+    QP.open = false; QP.el.hidden = true; document.documentElement.classList.remove('qp-lock'); QP.hist = []; QP.cur = null;
+    try { if (QP.from && QP.from.isConnected) QP.from.focus({ preventScroll: true }); } catch (e) {}
+    QP.from = null;
+  }
+  function qpClose() { if (QP.open && history.state && history.state.qp) history.back(); else qpHide(); }
+  function qpBack() { var p = QP.hist[QP.hist.length - 1]; return p ? '<button type="button" class="qp-back" data-qpback>← 回到上一題' + (p.label ? '(' + qpEsc(p.label) + ')' : '') + '</button>' : ''; }
+  function qpGo(href) { return '<a class="qp-go" href="' + qpEsc(href) + '">到題庫看這一年的其他題 →</a>'; }
+  function qpHtml(s, q, d) {
+    var P = window.PRACTICE, k = P.key(q), a = (d.ana && d.ana[k]) || {}, L = 'ABCD', O = window.OPTIMG;
+    var acc = window.SCORE && window.SCORE.acc ? window.SCORE.acc(q) : (q.ans >= 0 ? [q.ans] : []);
+    var h = '<div class="qp-stem">' + qpEsc(q.stem) + '</div>';
+    if (O && O.fig) h += O.fig(q) || '';
+    if (window.SCORE && window.SCORE.banner) h += window.SCORE.banner(q) || '';
+    if (window.STALE && window.STALE.box) h += window.STALE.box(s, q) || '';
+    h += '<div class="qp-opts">' + q.opts.map(function (o, i) { var ok = acc.indexOf(i) >= 0; return '<div class="qp-op' + (ok ? ' ok' : '') + '">' + L.charAt(i) + '. ' + (O && O.html ? O.html(q, i) || '' : '') + qpEsc(o) + (ok ? ' ✔' : '') + '</div>'; }).join('') + '</div>';
+    h += a.a ? '<div class="qp-ana">' + a.a + '</div>' : '<div class="qp-na">這一題的詳解還在整理中。</div>';
+    if (a.s) h += '<div class="qp-bx"><b>💡 解題技巧</b> ' + a.s + '</div>';
+    if (a.n) h += '<div class="qp-bx"><b>⚠️ 注意 / 易錯</b> ' + a.n + '</div>';
+    return h;
+  }
+  function qpShow(r) {
+    var me = QP.cur = { s: r.s, key: r.key, href: r.href, label: '' };
+    qpSet('詳解', qpBack() + '<div class="qp-na">載入中…</div>');
+    qpNeed().then(function () { return window.PRACTICE.load(r.s); }).then(function (d) {
+      if (!QP.open || QP.cur !== me) return;
+      var q = d.map[r.key];
+      if (!q) { qpSet('詳解', qpBack() + '<div class="qp-na">找不到這一題。</div>' + qpGo(r.href)); return; }
+      me.label = window.PRACTICE.label(r.s, q);
+      qpSet(me.label, qpBack() + qpHtml(r.s, q, d) + qpGo(r.href));
+    }).catch(function () { if (QP.open && QP.cur === me) qpSet('詳解', qpBack() + '<div class="qp-na">詳解載入失敗,請稍後再試。</div>' + qpGo(r.href)); });
+  }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    var a = e.target && e.target.closest ? e.target.closest('.xrl a[href]') : null;
+    if (!a || a.closest('#xsheet')) return;
+    var r = qpRef(a.getAttribute('href'));
+    if (!r) return;
+    e.preventDefault();
+    if (QP.open && QP.cur) QP.hist.push(QP.cur); else { QP.hist = []; QP.from = a; }
+    qpShow(r);
+  });
+  window.addEventListener('popstate', function () { if (QP.open) qpHide(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && QP.open) qpClose(); });
+  window.ANAUI = { compact: compact, maps: hydrate, tline: tline, eraBar: eraBar, era: ERA_TW, parseTline: parseTline, parseMarks: parseMarks, peek: function (href) { var r = qpRef(href); if (r) { QP.hist = []; QP.from = document.activeElement; qpShow(r); } return !!r; } };
 })();
