@@ -7,11 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
 <title>講義</title>
-<!-- 講義 · v297(2026-11-18)
+<!-- 講義 · v298(2026-11-18)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v297 情境會話改「劇本式」:每句左邊一個字的說話者小標(上方列出代表誰),外文在上、中文在下,細線分隔;關鍵字改螢光筆底色;會話下面列出本段關鍵字考過幾次
+     變更履歷:v298 英語、日語單字表每組依歷屆出題次數排(考越多次越前面),日語單字也標「考 N 次」;🔥 高頻字句加「🔮 可能會考(推估)」:當過 2 次以上干擾選項、還沒當過正解的字詞
+              v297 情境會話改「劇本式」:每句左邊一個字的說話者小標(上方列出代表誰),外文在上、中文在下,細線分隔;關鍵字改螢光筆底色;會話下面列出本段關鍵字考過幾次
               v296 詳解視窗裡的「歷屆同考點」點了不換頁:在視窗裡換成那一題,上方「← 回到上一題」一路退回,按 ✕ 回到講義原本的位置
               v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
               v287 內文的「第 N 條」可以點:從下方滑出條文原文、歷屆考過的題目(點了看詳解、可回到條文)、條文反查與全國法規資料庫;中文三科 391 處(法規由 artlaw.js 判斷,不明確的不連)
@@ -412,6 +413,7 @@
   .hrow .hb{flex:1;min-width:0} .hrow .hw{font-size:1rem} .hrow .ipa,.hrow .yomi{margin-left:6px} .hrow .ipa{color:var(--sub);font-size:.85rem}
   .hrow .hn{display:inline-block;font-size:.72rem;font-weight:800;color:var(--c4);background:var(--c4b);border-radius:999px;padding:1px 7px;margin-left:6px;white-space:nowrap}
   .hrow .vz{font-size:.84rem;color:var(--sub)}
+  .hrow.hg .hn{color:var(--c3);background:var(--c3b)}   /* v298 可能會考:用紫色標「當干擾選項 N 次」,和「考 N 次」分開 */
   .hch{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--sub);border-radius:999px;font-size:.72rem;padding:3px 9px;cursor:pointer;font-family:inherit;white-space:nowrap}
   .hpat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin:6px 0}
   .hpat .hph{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.92rem} .hpat .hph span{flex:1} .hpat ul{margin:4px 0 0 18px;padding:0;font-size:.88rem}
@@ -521,6 +523,33 @@ function hotPat(tt){   // 日語文法題的細類 → 句型(去掉「自動詞
   const p = s.replace(/^[^+]*\+/, '').replace(/^〜/, '');
   return p ? '〜' + p : '';
 }
+/* v298 🔮 可能會考(推估):歷屆當過 2 次以上干擾選項、還沒當過正解的字詞(出題者用過、之後可能改當正解;只是推估,僅供參考)
+   英語:去掉介系詞、連接詞、代名詞、助動詞等虛詞與 3 個字母以內的字,以及選項後面標「無此用法」的;日語:去掉 2 個字以內的助詞、標「誤」的錯誤形 */
+const GUESS_STOP = new Set('a an the in at on of to for with by from into onto upon over under between among through during before after above below off out up down about since but and or so as if than then that which who whom whose what when where while because although though unless until it its they them their he she we you me my your our his her be is are was were been being do does did have has had will would can could shall should may might must not no yes too very much many more most some any all each every both either neither none other another such this these those there here how why just only also even still yet already ever never'.split(' '));
+function guessList(d, JP){
+  const M = new Map();
+  d.bank.forEach(q => {
+    if (q.psg || !Array.isArray(q.opts)) return;
+    const acc = SCORE.acc(q); if (!acc.length) return;   // 送分題沒有正解,不算
+    const a = JP ? (d.ana[PRACTICE.key(q)] || {}) : null;
+    q.opts.forEach((o, i) => {
+      let w, z;
+      if (JP){
+        const oz = Array.isArray(a.oz) ? String(a.oz[i] || '') : '';
+        w = String(o).trim(); z = oz.replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim();
+        if (!w || w.length < 3 || w.length > 12 || /\s/.test(w) || /誤/.test(oz) || /^[(（]/.test(oz)) return;
+      } else {
+        const m = String(o).match(/^([A-Za-z][A-Za-z' .-]*?)\s*([\u4e00-\u9fff].*)?$/); if (!m) return;
+        w = m[1].trim().toLowerCase(); z = (m[2] || '').trim();
+        if (!w || w.split(/\s+/).length > 4 || (!/\s/.test(w) && (w.length < 4 || GUESS_STOP.has(w))) || /無此|錯誤|不存在/.test(z)) return;
+      }
+      let e = M.get(w); if (!e){ e = { w, z: '', ans: 0, n: 0 }; M.set(w, e); }
+      if (acc.includes(i)) e.ans++; else e.n++;
+      if (!e.z && z) e.z = z;
+    });
+  });
+  return [...M.values()].filter(e => e.ans === 0 && e.n >= 2 && e.z).sort((a, b) => b.n - a.n || a.w.localeCompare(b.w, JP ? 'ja' : 'en'));   // 沒有中文意思的不列
+}
 function renderHot(J){
   const k = cfg.subj, JP = k === 'jp';
   $('app').innerHTML = '<div class="empty">統計中…</div>';
@@ -555,6 +584,9 @@ function renderHot(J){
       ? [['pat', '🔥 高頻句型', `文法題考過 2 次以上的句型,共 ${P.length} 個(依出題次數排)`, bands(P, [[4, 99], [3, 3], [2, 2]])],
          ['word', '🔥 常考單字', `詳解語彙考過 2 次以上的字,共 ${W.length} 個`, bands(W, [[3, 99], [2, 2]])]]
       : [['word', '🔥 高頻單字與片語', `歷屆試題難字表裡考過 3 次以上的字,共 ${W.length} 個(依出題次數排)`, bands(W, [[7, 99], [5, 6], [4, 4], [3, 3]])]];
+    const GU = guessList(d, JP).slice(0, JP ? 40 : 60);   // v298
+    const grow = e => `<div class="hrow hg"><button class="spk" type="button" data-say="${esc(e.w)}" aria-label="聽 ${esc(e.w)} 的發音">🔊</button><div class="hb"><div><b class="hw">${esc(e.w)}</b><span class="hn">當干擾選項 ${e.n} 次</span></div>${e.z ? `<div class="vz">${esc(e.z)}</div>` : ''}</div></div>`;
+    if (GU.length) parts.push(['guess', '🔮 可能會考(推估)', `歷屆當過 2 次以上干擾選項、還沒當過正解的字詞,共 ${GU.length} 個:出題者用過的字,之後可能改當正解;只是推估,不保證會考`, GU.map(grow).join('')]);
     parts.push(['gram', '📐 講義句型總表', `講義各章的句型與用法,共 ${G.length} 則`, G.map(({ ch, b }) => `<div class="hpat"><div class="hph"><span>🧩 ${esc(b.lbl || '文法')} · ${esc(b.h || '')}</span><button class="hch" type="button" data-go="${esc(ch.id)}">第 ${ch.no} 章 →</button></div><ul>${b.pat.map(x => `<li>${mk(esc(x))}</li>`).join('')}</ul></div>`).join('')]);
     $('app').innerHTML = `<div class="tocnav"><select id="hotJump" aria-label="跳到某一段">${parts.map(([id, t]) => `<option value="${id}">${t}</option>`).join('')}</select></div>`
       + `<div class="tip0">🔥 依歷屆試題統計:出題越多次的字句越該先背。點 🔊 聽發音,點「第 N 章 →」回講義看用法與例句。</div>`
@@ -732,11 +764,12 @@ function vfreq(d, w){
   C.m.set(k, n); return n;
 }
 function vocabHtml(b, d){
-  const J = isJP(), first = !J && CUR && CUR.ch && CUR.ch.blocks.find(x => x.t === 'vocab') === b;   // v288 每章第一個英語單字表加圖例
-  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${first?'<div class="vleg">「考 N 次」= 106–115 年英語試題的題目或選項出現過的題數(10 題以上紅底);<span class="vs"><span class="sy"><b>同</b>同義字</span><span class="an"><b>反</b>反義字</span></span></div>':''}${b.items.map(([w,ipa,pos,zh,eg,egz,sa])=>{
-    const f = J ? 0 : vfreq(d, plainText(w));   // v288 歷屆出題次數(英語)
+  const J = isJP(), first = CUR && CUR.ch && CUR.ch.blocks.find(x => x.t === 'vocab') === b;   // v288 每章第一個單字表加圖例(v298 日語也加)
+  const fr = w => J ? jfreq(d, plainText(w).replace(/^〜/, '')) : vfreq(d, plainText(w));   // 歷屆出題次數:v288 英語、v298 日語
+  const items = b.items.map((x, i) => ({ x, i, f: fr(x[0]) })).sort((p, q) => q.f - p.f || p.i - q.i);   // v298 同一組裡考越多次的越前面
+  return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${first?(J?'<div class="vleg">「考 N 次」= 106–115 年日語試題的題目或選項出現過的題數(10 題以上紅底);每組依出題次數排</div>':'<div class="vleg">「考 N 次」= 106–115 年英語試題的題目或選項出現過的題數(10 題以上紅底),每組依出題次數排;<span class="vs"><span class="sy"><b>同</b>同義字</span><span class="an"><b>反</b>反義字</span></span></div>'):''}${items.map(({ x: [w,ipa,pos,zh,eg,egz,sa], f })=>{
     const sw = J && ipa ? ipa : plainText(w), se = J && ipa ? sayText(eg).split(w).join(ipa) : sayText(eg);   // 日語:單字與例子裡的這個字都唸假名讀音
-    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆英語試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${esc(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${esc(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
+    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆${J?'日語':'英語'}試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${esc(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${esc(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
 }
 /* v297 情境會話「劇本式」:說話者用一個字的小標(上方列出代表誰)、每句外文在上中文在下、細線分隔;
    會話下面列出本段關鍵字在歷屆考題出現幾次(英語:會話裡標記的關鍵字;日語:本章單字表裡、這段會話用到的字) */
