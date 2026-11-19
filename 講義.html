@@ -8,11 +8,13 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v303(2026-11-19)
+<!-- 講義 · v304(2026-11-19)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v303 每節最後加「本節練習」:本章題目依內容分到各小節,列出歷屆考過幾題、近 3 年幾題、常見問法,附 3 題可直接作答
+     變更履歷:v304 本節練習加「看這節全部 N 題的問與答」:這節分到的每一題列出題目與正解(英語、日語附題目中譯),最多列最近的 40 題;
+                   官方送分題標「一律給分」,不放進本節練習的 3 題
+              v303 每節最後加「本節練習」:本章題目依內容分到各小節,列出歷屆考過幾題、近 3 年幾題、常見問法,附 3 題可直接作答
                    (答錯收進錯題本、算進今日練習);章首加「本章相關新制」(newlaw.js);加「考前速記」(口訣、數字表、易錯、自我檢測;外語:最常考的字、句型、發音)
               v302 內容卡片拿掉彩色線條:單字表改成白卡加淡色標題列,小節標題、重點、技巧、陷阱、比較、文法、發音、自我檢測只用淡色底(沒有框線),
                    考情與口訣改成平塗底色,條列與單字之間的虛線改成淡實線;全站改成暖米色底
@@ -517,6 +519,17 @@
   #xsheet .memo .mmr{color:var(--sub);font-size:.82rem}
   #xsheet .memo .mmh{font-weight:800;margin:8px 0 2px}
   #xsheet .memo .mqa b{color:var(--ok)}
+  .sqa{margin-top:10px;background:var(--card);border-radius:12px}
+  .sqa>summary{list-style:none;cursor:pointer;padding:9px 12px;font-size:.86rem;font-weight:700;color:var(--k-purple,#534ab7);display:flex;align-items:center;gap:8px}
+  .sqa>summary::-webkit-details-marker{display:none}
+  .sqa>summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s}
+  .sqa[open]>summary::after{transform:rotate(-135deg)}
+  .sqa ol{margin:0;padding:0 12px 6px 2.2em;font-size:.86rem;line-height:1.65}
+  .sqa li{margin:0 0 10px}
+  .sqa-y{display:inline-block;font-size:.72rem;font-weight:700;color:var(--sub);background:var(--bg);border-radius:6px;padding:0 6px;margin-bottom:2px}
+  .sqa-q{font-weight:600}
+  .sqa-z{color:var(--sub);font-size:.8rem}
+  .sqa-a{color:var(--ok);font-weight:700}
   @media print{.sq,.nlx{display:none}}
 </style>
 <link rel="manifest" href="manifest.json">
@@ -1313,7 +1326,7 @@ function sqPat(k, items){
   return ps.length ? `<p class="sq-pat">常見問法:${ps.join('、')}</p>` : '';
 }
 function sqOk(k, q, exKeys){
-  if (exKeys.has(PRACTICE.key(q)) || q.psg || !q.opts || q.opts.length < 2 || String(q.stem).length > 260) return false;
+  if (exKeys.has(PRACTICE.key(q)) || SCORE.free(q) || q.psg || !q.opts || q.opts.length < 2 || String(q.stem).length > 260) return false;   // 送分題沒有唯一正解,不拿來練
   return !(k === 'jp' && psgOf(k, q));
 }
 function sqQ(k, q){
@@ -1329,9 +1342,18 @@ function sqHtml(k, items, i){
   const n = items.length, rc = items.filter(x => ys.includes(+x.q.y)).length;
   const exKeys = new Set(CUR.ch.blocks.filter(b => b.t === 'ex').map(b => b.key));
   const pick = items.filter(x => sqOk(k, x.q, exKeys)).sort((a, b) => b.s - a.s || b.q.y - a.q.y).slice(0, SQ_N);
-  const more = n > pick.length ? `<p class="sq-more">這節還有 ${n - pick.length} 題,章末的「本章全部題目」可以一起練</p>` : '';
   return `<details class="sq" data-sq="${i}"><summary><span class="sq-ic">${IC('clipboard')}</span><b>本節練習</b><span class="sq-n">歷屆考過 ${n} 題 · 近 3 年 ${rc} 題</span></summary>
-    <div class="sq-b">${sqPat(k, items)}${pick.map(x => sqQ(k, x.q)).join('')}${more}</div></details>`;
+    <div class="sq-b">${sqPat(k, items)}${pick.map(x => sqQ(k, x.q)).join('')}${sqAll(k, items)}</div></details>`;
+}
+/* v304 這節全部題目的問與答:依年份由新到舊,列題目與正解(送分題寫「全部給分」);英語、日語附題目中譯;最多 40 題 */
+const SQA_MAX = 40;
+function sqAll(k, items){
+  const d = CUR && CUR.d, list = items.slice().sort((a, b) => b.q.y - a.q.y || a.q.c.localeCompare(b.q.c) || a.q.no - b.q.no);
+  const zh = q => { const z = k === 'en' ? q.zh : k === 'jp' ? ((d && d.ana && d.ana[PRACTICE.key(q)]) || {}).zh : ''; return z ? `<div class="sqa-z">${esc(plainText(String(z)).replace(/<[^>]*>/g, ''))}</div>` : ''; };
+  const ans = q => SCORE.free(q) ? (q.sungei === 2 ? '有作答就給分(官方送分)' : '一律給分(官方送分)') : SCORE.acc(q).map(i => 'ABCD'[i] + '. ' + esc(clean(q.opts[i]))).join(' / ');
+  const li = ({ q }) => `<li><span class="sqa-y">${PRACTICE.CNAME[q.c] || ''} ${q.y}-${q.no}</span><div class="sqa-q">${esc(clean(q.stem))}</div>${zh(q)}<div class="sqa-a">${ans(q)}</div></li>`;
+  return `<details class="sqa"><summary>看這節全部 ${items.length} 題的問與答</summary><ol>${list.slice(0, SQA_MAX).map(li).join('')}</ol>` +
+    (list.length > SQA_MAX ? `<p class="sq-more">只列最近的 ${SQA_MAX} 題,其他 ${list.length - SQA_MAX} 題可以用章末的「本章全部題目」練</p>` : '') + '</details>';
 }
 function sqAnswer(btn){
   const box = btn.closest('.sq-q'); if (!box || box.classList.contains('done')) return;
