@@ -8,11 +8,13 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v304(2026-11-19)
+<!-- 講義 · v305(2026-11-19)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v304 本節練習加「看這節全部 N 題的問與答」:這節分到的每一題列出題目與正解(英語、日語附題目中譯),最多列最近的 40 題;
+     變更履歷:v305 新增「考法拆解」區塊(how:本章歷屆怎麼考、怎麼破解);重點整理可以自訂標題(key 的 h,例:延伸重點);小節標題 x:1 = 延伸補充(不分配歷屆題);
+                   每節練習分配題目時不算章末的解題技巧、陷阱、時效、條文、範例、自我檢測(避免最後一節通吃)
+              v304 本節練習加「看這節全部 N 題的問與答」:這節分到的每一題列出題目與正解(英語、日語附題目中譯),最多列最近的 40 題;
                    官方送分題標「一律給分」,不放進本節練習的 3 題
               v303 每節最後加「本節練習」:本章題目依內容分到各小節,列出歷屆考過幾題、近 3 年幾題、常見問法,附 3 題可直接作答
                    (答錯收進錯題本、算進今日練習);章首加「本章相關新制」(newlaw.js);加「考前速記」(口訣、數字表、易錯、自我檢測;外語:最常考的字、句型、發音)
@@ -530,6 +532,12 @@
   .sqa-q{font-weight:600}
   .sqa-z{color:var(--sub);font-size:.8rem}
   .sqa-a{color:var(--ok);font-weight:700}
+  /* v305 考法拆解 */
+  .jhow{background:var(--k-purple-bg,#eeedfe);border-radius:14px;padding:12px 14px;margin:12px 0 16px}
+  .jhow .mh{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--k-purple,#534ab7);margin:0 0 6px}
+  .jhow .mh svg{width:20px;height:20px}
+  .jhow ul{margin:0;padding-left:1.2em;font-size:.92rem;line-height:1.7}
+  .jhow li{margin:4px 0}
   @media print{.sq,.nlx{display:none}}
 </style>
 <link rel="manifest" href="manifest.json">
@@ -657,7 +665,7 @@ function renderHot(J){
       + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('');
   });
 }
-const QUICK = { h:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
+const QUICK = { h:1, how:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 /* v253 章節分組:[組名, 起章, 迄章](目錄的分組標籤與標題、章節選單的群組;沒列的科目不分組) */
 const GROUPS = {
@@ -967,7 +975,8 @@ function blockHtml(k, b, d){
   switch (b.t){
     case 'h': return `<h3 class="jh">${esc(b.text)}</h3>`;
     case 'p': return pHtml(b.html);
-    case 'key': return `<div class="jkeyb"><div class="mh">📌 重點整理</div><ul class="jkey">${b.items.map(x=>`<li>${hl(esc(x))}</li>`).join('')}</ul></div>`;
+    case 'key': return `<div class="jkeyb"><div class="mh">${b.h ? esc(b.h) : '📌 重點整理'}</div><ul class="jkey">${b.items.map(x=>`<li>${hl(esc(x))}</li>`).join('')}</ul></div>`;
+    case 'how': return `<div class="jhow"><div class="mh">${IC('route')}<span>本章考法拆解</span></div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;   // v305
     case 'fig': return figHtml(b);
     case 'card': return cardHtml(b);
     case 'map': return mapHtml(b);
@@ -1014,7 +1023,7 @@ function hydrateLawRef(){
    長段切成短句再唸(部分瀏覽器長句會中斷);朗讀中點任一區塊 → 從那裡開始;語速記在 pref_jy_rate */
 const TTS = (() => {
   const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
-  const SEL = '.chhead, .exam, .jh, .jp, .jkey, .jfig, .jcard, .jmap, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
+  const SEL = '.chhead, .exam, .jhow, .jh, .jp, .jkey, .jfig, .jcard, .jmap, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
   let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null, jaVoice = null;
   let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
   const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
@@ -1038,7 +1047,7 @@ const TTS = (() => {
       return [T(el.querySelector('.th, .mh')), rows, T(el.querySelector('.tn'))].filter(Boolean).join('。');
     }
     if (el.matches('.jkey')) return '重點。' + lis(el);
-    if (el.matches('.jtip, .jtrap')) return T(el.querySelector('.mh')) + '。' + lis(el);
+    if (el.matches('.jtip, .jtrap, .jhow')) return T(el.querySelector('.mh')) + '。' + lis(el);
     if (el.matches('.jmn')) return [T(el.querySelector('.mh')), T(el.querySelector('.mt')), T(el.querySelector('.mx'))].filter(Boolean).join('。');
     if (el.matches('.jlaw')) return '條文原文。' + [...el.querySelectorAll('dt')].map(dt => { const a = dt.querySelector('a'); return T(dt).replace(a ? T(a) : '', '').trim() + '。' + T(dt.nextElementSibling); }).join('。');
     if (el.matches('.jex')) {
@@ -1286,6 +1295,7 @@ function artLink(html, cid, sec){
    本章相關新制:newlaw.js 的新制卡,相關歷屆題屬於本章就列出(那些舊題的答案可能已改)
    考前速記:把本章的口訣、有數字的表格、易錯陷阱、自我檢測集中在一個視窗;外語:本章最常考的字、句型、發音提醒 */
 const SQ_N = 3, SQ_MIN = 0.04;   // 每節最多出幾題;相似度低於 SQ_MIN 的題目不分配
+const SQ_SKIP = new Set(['tip', 'trap', 'stale', 'law', 'ex', 'self', 'link', 'how']);   // v305 章末彙整的區塊不算進小節內容(它們放在最後一節,但講的是整章)
 const SQ_STOP = new Set('the and for with that this from are was were you your have has had will would can could should may might not but all any one two three which what who whom whose when where why how into onto about than then them they their there these those its our out off over under very just also only more most much many some such each other another'.split(' '));
 const IC = n => (window.ICONS ? ICONS.svg(n) : '');
 function sqToks(s){
@@ -1297,9 +1307,9 @@ function sqToks(s){
 }
 function sqAssign(ch, qs){
   const secs = []; let cur = null;
-  ch.blocks.forEach(b => { if (b.t === 'h'){ cur = [b.text]; secs.push(cur); } else if (cur) cur.push(JSON.stringify(b)); });
+  ch.blocks.forEach(b => { if (b.t === 'h'){ cur = [b.text]; cur.x = !!b.x; secs.push(cur); } else if (cur && !SQ_SKIP.has(b.t)) cur.push(JSON.stringify(b)); });
   if (!secs.length || !qs || !qs.length) return [];
-  const T = secs.map(x => sqToks(x.join(' ')));
+  const T = secs.map(x => x.x ? new Set() : sqToks(x.join(' ')));   // v305 小節標題 x:1 = 延伸補充(還沒考過的內容),不分配歷屆題
   const df = new Map(); T.forEach(t => t.forEach(x => df.set(x, (df.get(x) || 0) + 1)));
   const N = T.length, idf = x => Math.log(1 + N / (df.get(x) || N));
   const L = T.map(t => { let s2 = 0; t.forEach(x => { const w = idf(x); s2 += w * w; }); return Math.sqrt(s2) || 1; });   // 小節長度校正(字多的小節不會通吃)
