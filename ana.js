@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v296
+/* ana.js — 詳解排版(單一來源)· v301
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -26,6 +26,7 @@
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v301 (2026-11-19) 同考點小視窗連看幾題後,「← 回到上一題」旁邊多一顆「回到剛才的頁面」,一次關掉視窗、回到原本的位置
      v296 (2026-11-18) 歷屆同考點點了不換頁:原地跳出那一題的小視窗(複習頁、錯題本、模擬測驗等;講義詳解視窗另外處理)
      v166 (2026-11-17) 地圖程式網址改 worldmap.js?v=166(地名庫加桂林、張家界、黃山、富士山)、twgeo.js?v=163(靜態圖可指定圖層)
      v165 (2026-10-20) 世界地圖程式網址改 worldmap.js?v=165(地名庫加入領隊 106 觀光資源解析用的地名與長江)
@@ -252,6 +253,8 @@
       '#qpk .qp-t{flex:1;font-size:.88rem;color:var(--accent,#2563eb)}' +
       '#qpk .qp-x{flex:none;border:0;background:var(--line,#e2e8f2);color:var(--ink,#1c2330);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit}' +
       '#qpk .qp-bd{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px 16px calc(18px + env(safe-area-inset-bottom));line-height:1.75}' +
+      '#qpk .qp-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}#qpk .qp-nav .qp-back{margin:0}' +
+      '#qpk .qp-back.qp-home{background:var(--ui-fill,var(--accent,#2563eb));border-color:var(--ui-fill,var(--accent,#2563eb));color:#fff}' +
       '#qpk .qp-back{display:inline-block;margin:0 0 10px;border:1.5px solid var(--accent,#2563eb);background:var(--card,#fff);color:var(--accent,#2563eb);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.84rem;font-family:inherit;cursor:pointer}' +
       '#qpk .qp-stem{font-weight:700;margin:2px 0 6px}' +
       '#qpk .qp-op{font-size:.92rem;padding:3px 0}#qpk .qp-op.ok{color:var(--ok,#15803d);font-weight:800}' +
@@ -270,6 +273,7 @@
     document.body.appendChild(el);
     el.addEventListener('click', function (e) {
       if (e.target === el || e.target.closest('.qp-x')) { qpClose(); return; }
+      if (e.target.closest('[data-qphome]')) { qpClose(); return; }   // v301 一次回到剛才的頁面
       if (e.target.closest('[data-qpback]')) { var p = QP.hist.pop(); if (p) qpShow(p); }
     });
     QP.el = el;
@@ -293,7 +297,8 @@
     QP.from = null;
   }
   function qpClose() { if (QP.open && history.state && history.state.qp) history.back(); else qpHide(); }
-  function qpBack() { var p = QP.hist[QP.hist.length - 1]; return p ? '<button type="button" class="qp-back" data-qpback>← 回到上一題' + (p.label ? '(' + qpEsc(p.label) + ')' : '') + '</button>' : ''; }
+  /* v301 連看同考點時兩顆按鈕:一題一題退回,或一次回到剛才的頁面(關掉視窗,停在原本的位置) */
+  function qpBack() { var p = QP.hist[QP.hist.length - 1]; return p ? '<div class="qp-nav"><button type="button" class="qp-back" data-qpback>← 回到上一題' + (p.label ? '(' + qpEsc(p.label) + ')' : '') + '</button><button type="button" class="qp-back qp-home" data-qphome>回到剛才的頁面</button></div>' : ''; }
   function qpGo(href) { return '<a class="qp-go" href="' + qpEsc(href) + '">到題庫看這一年的其他題 →</a>'; }
   function qpHtml(s, q, d) {
     var P = window.PRACTICE, k = P.key(q), a = (d.ana && d.ana[k]) || {}, L = 'ABCD', O = window.OPTIMG;

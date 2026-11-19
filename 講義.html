@@ -8,11 +8,13 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v298(2026-11-18)
+<!-- 講義 · v301(2026-11-19)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v298 英語、日語單字表每組依歷屆出題次數排(考越多次越前面),日語單字也標「考 N 次」;🔥 高頻字句加「🔮 可能會考(推估)」:當過 2 次以上干擾選項、還沒當過正解的字詞
+     變更履歷:v301 詳解視窗裡連看同考點的題目時,「← 回到上一題」旁邊多一顆「回到剛才讀的講義」,一次關掉視窗、回到原本讀的位置
+              v300 頁首改用全站共用的淺色樣式(ui.css),標題不放 emoji
+              v298 英語、日語單字表每組依歷屆出題次數排(考越多次越前面),日語單字也標「考 N 次」;🔥 高頻字句加「🔮 可能會考(推估)」:當過 2 次以上干擾選項、還沒當過正解的字詞
               v297 情境會話改「劇本式」:每句左邊一個字的說話者小標(上方列出代表誰),外文在上、中文在下,細線分隔;關鍵字改螢光筆底色;會話下面列出本段關鍵字考過幾次
               v296 詳解視窗裡的「歷屆同考點」點了不換頁:在視窗裡換成那一題,上方「← 回到上一題」一路退回,按 ✕ 回到講義原本的位置
               v288 英語單字表:每個字標出歷屆考題出現過幾題(題目或選項,含常見字形變化,5 題以上標紅),並加同義字、反義字(706 個字)
@@ -466,7 +468,8 @@
   #xsheet .ar-it .s{display:block;font-size:.72rem;color:var(--sub);font-weight:700} #xsheet .ar-it .a{color:var(--ok);font-weight:800}
   #xsheet .ar-go{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px} #xsheet .ar-go a.tbtn{text-decoration:none;display:inline-block}
   #xsheet .ar-back{margin:0 0 8px}
-  #xsheet .xq-back{margin:0 0 8px}
+  #xsheet .xq-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  #xsheet .xq-home{background:var(--sel);border-color:var(--sel);color:var(--on)}
   @media print{#xsheet{display:none!important}}
   .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
@@ -1306,7 +1309,8 @@ function xref(href){
     return k && c && y && m ? { k, key: c + '-' + y + '-' + m[1] } : null;
   } catch (e) { return null; }
 }
-const xqBack = () => { const p = XQ.hist[XQ.hist.length - 1]; return p ? `<button type="button" class="tbtn xq-back" data-xqback>← 回到上一題${p.label ? '(' + esc(p.label) + ')' : ''}</button>` : ''; };
+/* v301 連看同考點時兩顆按鈕:一題一題退回,或一次回到剛才讀的講義(關掉視窗,停在原本的位置) */
+const xqBack = () => { const p = XQ.hist[XQ.hist.length - 1]; return p ? `<div class="xq-nav"><button type="button" class="tbtn xq-back" data-xqback>← 回到上一題${p.label ? '(' + esc(p.label) + ')' : ''}</button><button type="button" class="tbtn xq-home" data-xqhome>回到剛才讀的講義</button></div>` : ''; };
 function xqGo(p){ if (p.art) ART.q(p.k, p.key, true); else openX(p.k, p.key, null, true); }
 const XS = (() => {
   let el = null, open = false, from = null;
@@ -1320,6 +1324,7 @@ const XS = (() => {
       const xr = e.target.closest('.xrl a[href]');   // v296 同考點:在視窗裡換題(按住 Ctrl / ⌘ / Shift 照一般連結開新分頁)
       if (xr && e.button === 0 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)){ const r = xref(xr.getAttribute('href')); if (r){ e.preventDefault(); if (XQ.cur) XQ.hist.push(XQ.cur); openX(r.k, r.key, null, true); return; } }
       const xb = e.target.closest('[data-xqback]'); if (xb){ const p = XQ.hist.pop(); if (p) xqGo(p); return; }
+      if (e.target.closest('[data-xqhome]')){ close(); return; }   // v301 一次回到剛才讀的講義
       const sy = e.target.closest('[data-say]'); if (sy){ e.preventDefault(); SAY.say(sy.dataset.say, sy); }
       const aq = e.target.closest('[data-axq]'); if (aq){ ART.q(aq.dataset.axs, aq.dataset.axq); return; }   // v287 條文視窗裡的題目 → 詳解
       const ab = e.target.closest('[data-artback]'); if (ab){ ART.back(); return; }   // v287 詳解 → 回到條文
