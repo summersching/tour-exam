@@ -3,7 +3,8 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d9488">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
 <title>外語英語 學習中心</title>
 <!-- v220 (2026-11-04) 分頁列放進置中欄(桌機與下方內容對齊);手機工具列改成「搜尋 + 字數」一列、按鈕一列左右滑,分頁 5 格排滿 -->
 <style>
@@ -69,7 +70,7 @@
   .frow{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
   .prog{font-size:.82rem;color:var(--sub);margin-top:8px}
   .tip{font-size:.75rem;color:var(--sub)}
-  header .tip{color:rgba(255,255,255,.82)}
+  header .tip{color:var(--sub)}
   .qset{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0 8px}
   .qset .lab{font-size:.76rem;color:var(--sub);align-self:center}
   .schip{font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
@@ -187,12 +188,13 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="glossary.js" defer></script>
+<link rel="stylesheet" href="ui.css">
 </head><body>
 <header><div class="wrap">
-  <a class="home" href="考照中心.html">← 首頁</a>
-  <h1>🎓 外語英語 學習中心</h1>
-  <p>單字庫:領隊 + 導遊 106–115(共 20 份)外語(英語)詳解 · 點單字下方出處可跳回原題複習</p>
-  <p class="tip">單字 · 文法 · 技巧 · 陷阱皆含領隊 + 導遊 20 份 · 日語單字請到「<a href="日語學習中心.html" style="color:#fff;font-weight:700">日語學習中心</a>」</p>
+  <a class="home" href="考照中心.html">考照中心</a>
+  <h1>外語英語 學習中心</h1>
+  <p>收錄 106–115 年領隊、導遊 20 份英語考題的單字,點單字下方的出處可以跳回原題</p>
+  <p class="tip">單字、文法、技巧與陷阱都涵蓋這 20 份考卷;日語單字請到「<a href="日語學習中心.html">日語學習中心</a>」</p>
 </div></header>
 
 <div class="certbar"><div class="wrap">

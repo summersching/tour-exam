@@ -5,7 +5,8 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ea580c">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
 <title>考前衝刺</title>
 <!-- 考前衝刺 · v141(2026-10-12)
      英語:高頻必背 / 片語 / 易混字(sprint.js);日語:文法 / 讀音 / 敬語 / 慣用 / 語彙(jp.js 即時彙整);
@@ -99,12 +100,13 @@
 <script src="prefs.js"></script>
 <script src="pwa.js" defer></script>
 <script src="sprint.js"></script>
+<link rel="stylesheet" href="ui.css">
 </head>
 <body>
 <header><div class="wrap">
-  <a class="home" href="考照中心.html">← 首頁</a>
-  <h1>🔥 考前衝刺</h1>
-  <p id="sub">從 20 份考卷萃取的高頻精華 · 考前一週快速掃</p>
+  <a class="home" href="考照中心.html">考照中心</a>
+  <h1>考前衝刺</h1>
+  <p id="sub">從 20 份英語考卷整理出的高頻重點,適合考前一週快速複習</p>
 </div></header>
 
 <div class="tabs"><div class="wrap" id="tabs">
@@ -137,8 +139,8 @@ const TABS={
   jp:[['gram','📝 文法句型'],['read','🔤 漢字讀音'],['keigo','🙇 敬語'],['idiom','🎌 慣用・諺語'],['vocab','📚 語彙・常識']],
   cn:[['gh','🏯 觀光資源概要'],['pr','🧳 執業實務'],['pr2','⚖️ 執業法規']]
 };
-const SUBT={en:'從 20 份考卷萃取的高頻精華 · 考前一週快速掃',jp:'外語日語 20 份考卷 · 文法 / 讀音 / 敬語 / 慣用語 · 依考過次數排序',
-  cn:'中文三科 · 依歷屆出題比例挑出每科最該背的 100 條 · 遮住答案自測 · 標記已背'};
+const SUBT={en:'從 20 份英語考卷整理出的高頻重點,適合考前一週快速複習',jp:'從 20 份日語考卷整理文法、讀音、敬語與慣用語,依考過次數排序',
+  cn:'中文三科依歷屆出題比例,各挑出最該背的 100 條,可以遮住答案自測、標記已背'};
 let LANG=(function(){try{var v=localStorage.getItem('pref_sprint_lang');return v==='jp'||v==='cn'?v:'en';}catch(e){return 'en';}})();
 let cur=TABS[LANG][0][0];
 /* 首頁帶來的科目(?subj=):英語 / 日語 → 該語言;觀光 / 執業實務 / 執業法規 → 中文三科的該科 */

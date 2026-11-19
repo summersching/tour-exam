@@ -5,7 +5,8 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#4338ca">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
 <title>口試練習</title>
 <style>
   :root{
@@ -95,12 +96,13 @@
 <script src="oral.js"></script>
 <script src="oral_jp.js"></script>
 <script src="oral_mock.js"></script>
+<link rel="stylesheet" href="ui.css">
 </head>
 <body>
 <header><div class="wrap">
-  <a class="home" href="考照中心.html">← 首頁</a>
-  <h1>🎤 口試練習</h1>
-  <p id="sub">帶團現場實用句 · 口試主題準備 · 點英文句跟讀</p>
+  <a class="home" href="考照中心.html">考照中心</a>
+  <h1>口試練習</h1>
+  <p id="sub">帶團現場的英語實用句與口試主題範例,也能計時錄音模擬口試</p>
 </div></header>
 
 <div class="tabs"><div class="wrap" id="tabs">
@@ -126,7 +128,7 @@
 <script>
 const CNAME={leader:'領隊',guide:'導遊'};
 const TABS={en:[['phrases','🗣️ 帶團實用句'],['topics','📋 主題準備'],['mock','🎙 口試模擬']],jp:[['jphr','🗣️ 接待實用句'],['jtop','📋 主題範例'],['mock','🎙 口試模擬']]};
-const SUBT={en:'帶團現場實用句 · 口試主題準備 · 口試模擬(計時 + 錄音)',jp:'日語接待實用句 · 口試主題範例 · 口試模擬(計時 + 錄音)'};
+const SUBT={en:'帶團現場的英語實用句與口試主題範例,也能計時錄音模擬口試',jp:'接待日本旅客的日語實用句與口試主題範例,也能計時錄音模擬口試'};
 let LANG=(function(){try{return localStorage.getItem('pref_oral_lang')==='jp'?'jp':'en';}catch(e){return 'en';}})();
 (function(){const s=new URLSearchParams(location.search).get('subj');if(s==='en'||s==='jp'){LANG=s;try{localStorage.setItem('pref_oral_lang',LANG);}catch(e){}}})();   // 首頁帶來的科目
 let cur=TABS[LANG][0][0];

@@ -5,81 +5,107 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0b0b0f">
+<meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12161c" media="(prefers-color-scheme: dark)">
 <title>我的工作站</title>
-<!-- 工作站首頁 · v254(2026-11-12)
-     全站最上層的入口頁:一列一個功能,點進去才是各功能自己的首頁(例如「領隊·導遊 考照中心」= 考照中心.html)。
-     要加新功能:在下面的 LINKS 陣列加一筆 { icon, bg, name, desc, href }(href 指到該功能的頁面);
-     { sec:'標題' } 是分區小標;soon:true 是「準備中」(不能點);subs 是這一列下方的捷徑小按鈕。
-     名稱、標語、頭像(emoji)改 HUB 這個物件就好。
-     變更履歷:v254 初版(原本的 index.html 改名為 考照中心.html) -->
+<!-- 工作站首頁 · v300(2026-11-18)
+     全站最上層的入口頁:每個功能一張主卡,主卡下方是常用捷徑(線條圖示,圖示畫在 icons.js)。
+     要加新功能:在下面的 LINKS 陣列加一筆 { icon, name, desc, href, subs }(icon 是 icons.js 的圖示名稱;
+     desc 可以是函式,回傳那張卡要顯示的即時狀態;subs 是 [名稱, 網址, 圖示] 的捷徑清單);{ sec:'標題' } 是分區小標。
+     標題改 HUB 這個物件就好。
+     變更履歷:v300 改成淺色(跟著手機深色模式變深)、一張主卡加四格捷徑、線條圖示;主卡顯示考試倒數與今天還剩幾題;
+               拿掉「新功能準備中」空卡片
+               v254 初版(原本的 index.html 改名為 考照中心.html) -->
 <style>
-  :root{--bg:#0b0b0f;--card:#1b1b22;--card2:#26262f;--ink:#f5f5f7;--sub:#a1a1aa;--line:#2c2c36;--chip:#26262f}
-  :root[data-theme="light"]{--bg:#f4f6f9;--card:#fff;--card2:#eef2f7;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--chip:#eef2f7}
+  :root{--bg:#f4f6f9;--card:#fff;--card2:#f4f7fb;--ink:#1c2330;--sub:#5a6b82;--line:#e2e8f2;--acc:#2563eb;--accsoft:#eaf1ff}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1b2029;--card2:#222935;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--acc:#5b8cff;--accsoft:#1c2a4a}}
+  :root[data-theme="dark"]{--bg:#12161c;--card:#1b2029;--card2:#222935;--ink:#e8edf5;--sub:#9aa8bd;--line:#2b333f;--acc:#5b8cff;--accsoft:#1c2a4a}
   *{box-sizing:border-box} html{-webkit-tap-highlight-color:transparent}
   body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);line-height:1.6;
     font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
-  .hub{max-width:520px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top)) 16px 44px;text-align:center}
-  .av{width:104px;height:104px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:3rem;
-    background:linear-gradient(135deg,#facc15,#f97316);box-shadow:0 10px 34px rgba(250,204,21,.22)}
-  h1{margin:0 0 6px;font-size:1.5rem;font-weight:900;letter-spacing:.02em}
-  .tag{margin:0 0 20px;color:var(--sub);font-size:.9rem}
-  .sec{margin:22px 4px 6px;font-size:.76rem;font-weight:800;color:var(--sub);letter-spacing:.1em;text-align:left}
-  .lk{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 14px 10px 10px;margin:10px 0 0;
-    text-decoration:none;color:var(--ink);text-align:left;transition:background .15s,transform .15s}
-  a.lk:hover,a.lk:active{background:var(--card2);transform:translateY(-1px)}
-  .lk .ic{flex:0 0 auto;width:54px;height:54px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.7rem}
+  .hub{max-width:520px;margin:0 auto;padding:calc(30px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom))}
+  .date{margin:0;font-size:.84rem;color:var(--sub)}
+  h1{margin:2px 0 18px;font-size:1.6rem;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  .sec{margin:22px 2px 8px;font-size:.78rem;font-weight:700;color:var(--sub)}
+  .lk{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;
+    text-decoration:none;color:var(--ink);transition:border-color .15s,background .15s}
+  a.lk:hover,a.lk:focus-visible{border-color:var(--acc)}
+  a.lk:active{background:var(--card2)}
+  .lk .ic{flex:0 0 auto;width:46px;height:46px;border-radius:12px;background:var(--accsoft);color:var(--acc);display:flex;align-items:center;justify-content:center}
+  .lk .ic svg{width:26px;height:26px}
   .lk .tx{flex:1;min-width:0}
-  .lk .nm{display:block;font-weight:800;font-size:1.04rem}
-  .lk .ds{display:block;font-size:.76rem;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lk .go{flex:0 0 auto;color:var(--sub);font-size:1.4rem;line-height:1}
-  .lk.soon{border-style:dashed;opacity:.7}
-  .subs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 2px 0} .subs::-webkit-scrollbar{display:none}
-  .subs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;white-space:nowrap}
-  .subs a:hover,.subs a:active{border-color:var(--sub)}
-  footer{margin-top:30px;color:var(--sub);font-size:.74rem;line-height:1.8}
-  #lockNow{margin-top:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .lk .nm{display:block;font-weight:800;font-size:1.05rem;line-height:1.35}
+  .lk .ds{display:block;font-size:.8rem;color:var(--sub);margin-top:2px}
+  .lk .go{flex:0 0 auto;color:var(--sub);display:flex}
+  .lk .go svg{width:20px;height:20px}
+  .subs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+  .subs a{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;text-decoration:none;color:var(--ink);font-weight:700;font-size:.95rem;transition:border-color .15s,background .15s}
+  .subs a:hover,.subs a:focus-visible{border-color:var(--acc)}
+  .subs a:active{background:var(--card2)}
+  .subs a svg{width:22px;height:22px;color:var(--acc)}
+  .subs a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:24px;color:var(--sub);font-size:.8rem}
+  #lockNow{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:var(--sub);font:inherit;font-weight:700;cursor:pointer;padding:6px 2px}
+  #lockNow[hidden]{display:none}
+  #lockNow svg{width:16px;height:16px}
+  #lockNow:hover,#lockNow:focus-visible{color:var(--acc)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <script src="prefs.js"></script>
+<script src="icons.js"></script>
 <script src="pwa.js" defer></script>
 </head>
 <body>
 <main class="hub">
-  <div class="av" id="hubAv" aria-hidden="true"></div>
+  <p class="date" id="hubDate"></p>
   <h1 id="hubName"></h1>
-  <p class="tag" id="hubTag"></p>
   <nav id="links" aria-label="功能入口"></nav>
   <footer>
-    全部功能離線可用,免費、無廣告、不需註冊
-    <div><button id="lockNow" type="button" hidden>🔒 立即上鎖</button></div>
+    <span>離線可用 · 免費 · 無廣告 · 不需註冊</span>
+    <button id="lockNow" type="button" hidden></button>
   </footer>
 </main>
 <script>
 'use strict';
+const IC = (n) => (window.ICONS ? ICONS.svg(n) : '');
+function LSg(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+/* 今天已練幾題:算法和考照中心的「今日已練」相同(模擬測驗紀錄 quiz_history + 是非快問等的 practice_daily) */
+function todayDone(){
+  const k=dkey(new Date()); let n=0;
+  try{JSON.parse(LSg('quiz_history')||'[]').forEach(x=>{if(x&&x.ts&&dkey(new Date(x.ts))===k)n+=(+x.total||0);});}catch(e){}
+  try{n+=(+(JSON.parse(LSg('practice_daily')||'{}')[k])||0);}catch(e){}
+  return n;
+}
+/* 考照中心主卡的即時狀態:有設考試日就加倒數;每日目標沒設定時是 30 題(和考照中心相同) */
+function examStatus(){
+  const goal=Math.max(1,+(LSg('daily_goal')||30)), done=todayDone(), left=Math.max(0,goal-done);
+  const t=left?`今天還有 ${left} 題`:`今天的 ${goal} 題已完成`;
+  const ex=LSg('exam_date');
+  if(ex){const d0=new Date();d0.setHours(0,0,0,0);const dl=Math.round((new Date(ex+'T00:00:00')-d0)/86400000);if(dl>0)return `距考試 ${dl} 天 · ${t}`;}
+  return t;
+}
 /* ==== 工作站設定:改這兩個就好 ==== */
-const HUB = { av: '🧭', name: '我的工作站', tag: '學習 · 工具 · 資料,都從這裡進去' };
+const HUB = { name: '我的工作站' };
 const LINKS = [
-  { sec: '學習' },
-  { icon: '🎓', bg: 'linear-gradient(135deg,#1e3a8a,#2563eb)', name: '領隊·導遊 考照中心', desc: '歷屆試題 · 模擬測驗 · 講義 · 錯題本 · 學習計畫', href: '考照中心.html',
-    subs: [['📅 學習計畫', '學習計畫.html'], ['📘 講義', '講義.html'], ['📝 模擬測驗', '模擬測驗.html'], ['📌 錯題本', '錯題本.html']] },
-  { sec: '其他功能' },
-  { icon: '➕', bg: 'linear-gradient(135deg,#3f3f46,#52525b)', name: '新功能準備中', desc: '之後的功能會加在這裡', soon: true }
+  { icon: 'school', name: '領隊·導遊 考照中心', desc: examStatus, href: '考照中心.html',
+    subs: [['學習計畫', '學習計畫.html', 'calendar'], ['講義', '講義.html', 'book'], ['模擬測驗', '模擬測驗.html', 'clipboard'], ['錯題本', '錯題本.html', 'bookmark']] }
 ];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-document.getElementById('hubAv').textContent = HUB.av;
-document.getElementById('hubName').textContent = HUB.name;
-document.getElementById('hubTag').textContent = HUB.tag;
-document.getElementById('links').innerHTML = LINKS.map(l=>{
-  if (l.sec) return `<div class="sec">${esc(l.sec)}</div>`;
-  const inner = `<span class="ic" style="background:${esc(l.bg||'var(--card2)')}">${esc(l.icon)}</span><span class="tx"><span class="nm">${esc(l.name)}</span><span class="ds">${esc(l.desc||'')}</span></span>${l.soon?'':'<span class="go" aria-hidden="true">›</span>'}`;
-  const row = l.soon ? `<div class="lk soon" aria-disabled="true">${inner}</div>` : `<a class="lk" href="${esc(l.href)}">${inner}</a>`;
-  return row + (l.subs && !l.soon ? `<div class="subs">${l.subs.map(([n,h])=>`<a href="${esc(h)}">${esc(n)}</a>`).join('')}</div>` : '');
+const D=new Date();
+document.getElementById('hubDate').textContent=`${D.getMonth()+1} 月 ${D.getDate()} 日 週${'日一二三四五六'[D.getDay()]}`;
+document.getElementById('hubName').textContent=HUB.name;
+document.getElementById('links').innerHTML=LINKS.map(l=>{
+  if(l.sec)return `<div class="sec">${esc(l.sec)}</div>`;
+  let ds='';try{ds=typeof l.desc==='function'?l.desc():(l.desc||'');}catch(e){ds='';}
+  const row=`<a class="lk" href="${esc(l.href)}"><span class="ic">${IC(l.icon)}</span><span class="tx"><span class="nm">${esc(l.name)}</span><span class="ds">${esc(ds)}</span></span><span class="go">${IC('chevron')}</span></a>`;
+  return row+(l.subs?`<div class="subs">${l.subs.map(([n,h,i])=>`<a href="${esc(h)}">${IC(i)}<span>${esc(n)}</span></a>`).join('')}</div>`:'');
 }).join('');
-/* 有設定進入密碼時才顯示「立即上鎖」(清除這台裝置的記住狀態) */
-(function(){const b=document.getElementById('lockNow');if(b&&window.APPLOCK&&APPLOCK.enabled()){b.hidden=false;b.onclick=()=>APPLOCK.lock();}})();
+/* 有設定進入密碼時才顯示「上鎖」(清除這台裝置的記住狀態) */
+(function(){const b=document.getElementById('lockNow');if(b&&window.APPLOCK&&APPLOCK.enabled()){b.innerHTML=IC('lock')+'<span>上鎖</span>';b.hidden=false;b.onclick=()=>APPLOCK.lock();}})();
 </script>
 </body>
 </html>

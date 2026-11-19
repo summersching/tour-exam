@@ -1,0 +1,56 @@
+/* ui.css — 全站頁首與篩選列的共用樣式 · v300(2026-11-18)
+   ------------------------------------------------------------------
+   統一方向:淺色頁首(跟著手機深色模式變深)、全站只用一個主色、返回連結用線條箭頭、標題不放 emoji。
+   用法:每一頁在 </head> 前面加 <link rel="stylesheet" href="ui.css">(要放在頁面自己的 <style> 後面,才蓋得過舊的漸層頁首)。
+   顏色沿用各頁自己的 --card / --ink / --sub / --line / --bg;主色另外用 --ui-acc(文字)/ --ui-fill(按鈕底色),全站一致。
+   各頁原本各有自己的主色(執業實務橘、模擬測驗紫、日語玫瑰紅、學習中心藍綠…),分散在這些變數:
+     --accent --sel --selbg --soft --hd1 --hd2 --tabk --grp --chip --chipk --chipbg
+   這裡一律改成同一個藍色主色,所以選中的模式按鈕、題號標籤、分頁底線、篩選鈕全站同色。
+   對錯、警告等表示意思的顏色(--ok --no --warn --gold、各類別小標籤)不動。
+   講義例外:各科主色寫在 body[data-sj=…] 上(科目切換用),不受這裡影響。
+   涵蓋:
+     header            頁首(白底、細底線、標題深色、說明灰色)
+     header .home/.hubl 返回連結(標題上方的小字 + 線條箭頭)
+     .chip2.on         篩選小按鈕選中時用主色
+     #fCert            「證照」篩選改成分段切換(領隊 / 導遊 / 全部)
+   變更履歷:v300 初版 */
+:root{--ui-acc:#2563eb;--ui-fill:#2563eb;--ui-acc-soft:#eaf1ff;--ui-seg:#e9edf3;--ui-shadow:0 1px 3px rgba(16,24,40,.14);
+  --accent:#2563eb;--sel:#2563eb;--selbg:#eaf1ff;--soft:#eaf1ff;--hd1:#1e40af;--hd2:#2563eb;--tabk:#2563eb;--grp:#2563eb;--chip:#eaf1ff;--chipk:#1d4ed8;--chipbg:#eaf1ff}
+/* 深色:選取鈕底色用較深的藍(白字才看得清楚),文字連結用較亮的藍 */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ui-acc:#7ea2ff;--ui-fill:#3f6fe8;--ui-acc-soft:#1c2a4a;--ui-seg:#12161c;--ui-shadow:0 1px 3px rgba(0,0,0,.5);
+  --accent:#5b8cff;--sel:#3f6fe8;--selbg:#1c2a4a;--soft:#1c2a4a;--hd1:#9db8ff;--hd2:#3f6fe8;--tabk:#7ea2ff;--grp:#5b8cff;--chip:#1c2a4a;--chipk:#9db8ff;--chipbg:#1c2a4a}}
+:root[data-theme="dark"]{--ui-acc:#7ea2ff;--ui-fill:#3f6fe8;--ui-acc-soft:#1c2a4a;--ui-seg:#12161c;--ui-shadow:0 1px 3px rgba(0,0,0,.5);
+  --accent:#5b8cff;--sel:#3f6fe8;--selbg:#1c2a4a;--soft:#1c2a4a;--hd1:#9db8ff;--hd2:#3f6fe8;--tabk:#7ea2ff;--grp:#5b8cff;--chip:#1c2a4a;--chipk:#9db8ff;--chipbg:#1c2a4a}
+
+/* 頁首 */
+header{background:var(--card);color:var(--ink);box-shadow:none;border-bottom:1px solid var(--line);
+  padding:calc(12px + env(safe-area-inset-top)) 0 14px}
+header h1{color:var(--ink);font-size:1.36rem;font-weight:800;letter-spacing:-.01em;line-height:1.3;margin:2px 0 4px;padding-right:0}
+header p{color:var(--sub);opacity:1;font-size:.84rem;line-height:1.55}
+header b{color:var(--ink)}
+header a:not(.home):not(.hubl){color:var(--ui-acc);font-weight:700}
+
+/* 返回連結:標題上方的小字,前面是線條箭頭(不用 emoji,各家手機看起來一樣) */
+header .home,header .hubl{position:static;display:inline-flex;align-items:center;gap:6px;background:none;border:0;border-radius:0;
+  padding:4px 0;margin:0;color:var(--sub);font-size:.84rem;font-weight:600;text-decoration:none;line-height:1.2}
+header .home::before,header .hubl::before{content:"";width:7px;height:7px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(45deg);margin:0 1px 0 3px;border-radius:1px}
+header .home:hover,header .hubl:hover,header .home:focus-visible,header .hubl:focus-visible{color:var(--ui-acc)}
+
+/* 頁首的小標籤(例:考照中心「離線可用 · 免費」) */
+header .free{display:inline-flex;align-items:center;gap:5px;margin-top:10px;background:var(--ui-acc-soft);color:var(--ui-acc);
+  padding:3px 11px;border-radius:999px;font-size:.76rem;font-weight:700}
+
+/* 篩選小按鈕:選中時一律用主色 */
+.chip2.on{background:var(--ui-fill);border-color:var(--ui-fill);color:#fff}
+
+/* 「證照」篩選:分段切換 */
+#fCert{display:inline-flex;gap:2px;padding:3px;background:var(--ui-seg);border:1px solid var(--line);border-radius:11px;vertical-align:middle}
+#fCert:empty{display:none}
+#fCert .chip2{border:0;background:transparent;color:var(--sub);border-radius:8px;padding:4px 14px;margin:0}
+#fCert .chip2:hover{color:var(--ink)}
+#fCert .chip2.on{background:var(--card);color:var(--ink);box-shadow:var(--ui-shadow);font-weight:700}
+
+/* 列印:頁首一律白底黑字(各頁舊的列印規則會把頁首塗成彩色,這裡蓋掉) */
+@media print{header{background:#fff!important;color:#000;border-bottom:1px solid #ccc}header h1{color:#000}header p{color:#333}
+  header .home,header .hubl{display:none!important}}
