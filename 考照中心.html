@@ -5,9 +5,14 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>領隊·導遊 考照中心</title>
+<!-- 考照中心 · v302(2026-11-19)
+     領隊·導遊考照的首頁:頁首、考試提醒(examdates.js:報名 / 筆試 / 放榜、要準備的資料、考試當天、加到行事曆)、
+     今天(今日目標、待複習錯題、今日路線)、工具卡(依分類上色的線條圖示,icons.js)、最下面是考試資訊
+     變更履歷:v302 新設計:頁首改成青綠色區塊;加考試提醒卡;「今日目標」與「今日複習」合成「今天」一張;
+               工具卡改用線條圖示並依分類上色(做題紫、複習青綠、錯題本珊瑚、工具琥珀);考試制度速覽、建議使用順序移到最下面 -->
 <style>
   :root{
     --bg:#f4f6f9; --card:#fff; --ink:#1c2330; --sub:#5a6b82; --line:#e2e8f2;
@@ -174,6 +179,45 @@
   .rcard .rchip .b{background:var(--newk);color:#fff;border-radius:10px;padding:0 7px;font-size:.74rem}
   .rcard .rchip.z{opacity:.55} .rcard .rchip.z .b{background:var(--grey)}
   .rcard .tip{font-size:.78rem;color:var(--sub);margin-top:10px}
+  /* ===== v302 新設計 ===== */
+  .hero{display:flex;align-items:center;gap:13px;background:var(--k-teal-bg);border-radius:18px;padding:14px 16px;margin:8px 0 2px}
+  .hero-ic{flex:none;width:48px;height:48px;border-radius:14px;background:var(--k-teal);color:var(--k-teal-bg);display:flex;align-items:center;justify-content:center}
+  .hero-ic svg{width:28px;height:28px}
+  .hero-tx{min-width:0}
+  header .hero h1{margin:0;font-size:1.3rem;color:var(--k-teal);line-height:1.3}
+  header .hero p{margin:3px 0 0;font-size:.84rem;color:var(--ink)}
+  #remind{margin-top:12px}
+  #studyCard{margin-top:12px}
+  .scard{border:0;box-shadow:none}
+  .scard .top{align-items:center}
+  .scard .tt2{font-size:1.06rem;font-weight:800}
+  .scard .streak{margin-left:0;background:var(--k-amber-bg);color:var(--k-amber);font-size:.8rem;padding:3px 10px}
+  .scard .setbtn{margin-left:auto;display:inline-flex;align-items:center;gap:4px;border:0;background:var(--bg);color:var(--ink)}
+  .scard .setbtn svg{width:16px;height:16px}
+  .scard .gtrack{background:var(--bg)}
+  .scard .gfill{background:var(--k-teal)}
+  .scard .ofc{border:0;background:var(--k-teal-bg);color:var(--k-teal);border-radius:9px;padding:7px 11px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer}
+  .scard .rv{margin-top:12px;background:var(--k-coral-bg);border-radius:12px;padding:10px 12px}
+  .scard .rvh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:.9rem;font-weight:800;color:var(--k-coral)}
+  .scard .rvh b{font-size:1.05rem}
+  .scard .rvs{margin-left:auto;font-size:.76rem;font-weight:600;color:var(--sub)}
+  .scard .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+  .scard .rchip{display:inline-flex;gap:6px;align-items:center;background:var(--card);border-radius:999px;padding:5px 12px;text-decoration:none;color:var(--ink);font-size:.84rem;font-weight:700}
+  .scard .rchip .b{background:var(--k-coral);color:var(--k-coral-bg);border-radius:10px;padding:0 7px;font-size:.74rem;font-variant-numeric:tabular-nums}
+  .scard .rchip.z{opacity:.6}
+  .scard .plan{border-top:0;background:var(--k-teal-bg);border-radius:12px;padding:10px 12px}
+  .scard .plan li>span:first-child{display:inline-flex;color:var(--k-teal)}
+  .scard .plan li svg{width:16px;height:16px;vertical-align:-3px}
+  .sect h2::before{width:10px;height:10px;border-radius:3px;background:var(--c,var(--accent))}
+  .tc{border:0;box-shadow:none}
+  .tc:hover,.tc:active{box-shadow:var(--shadow2);border-color:transparent}
+  .tc .ic{background:var(--cb,var(--bg));color:var(--c,var(--ink))}
+  .tc .ic svg{width:25px;height:25px}
+  .tc .wn{background:var(--k-coral)}
+  .xcard{border:0;box-shadow:none}
+  #infoHd{margin-top:8px}
+  #infoHd .sect{margin-bottom:4px}
+  #examCard,#guideCard{margin-top:10px}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -182,26 +226,33 @@
 <script src="subjects.js"></script>
 <script src="srs.js"></script>
 <script src="plan.js"></script>
+<script src="icons.js"></script>
+<script src="examdates.js"></script>
 <script src="pwa.js" defer></script>
 <link rel="stylesheet" href="ui.css">
 </head>
 <body>
 <header>
   <div class="wrap">
-    <a class="hubl" href="index.html">工作站</a>
-    <h1>考照中心</h1>
-    <p>領隊·導遊|歷屆試題、講義、模擬測驗</p>
-    <span class="free">離線可用 · 免費</span>
+    <a class="hubl" href="index.html">我的基地</a>
+    <div class="hero">
+      <span class="hero-ic" id="heroIc" aria-hidden="true"></span>
+      <div class="hero-tx"><h1>領隊·導遊 考照中心</h1><p id="heroSub">116 年筆試 3/6(六)領隊、3/7(日)導遊</p></div>
+    </div>
   </div>
 </header>
 
+<div class="wrap" id="remind"></div>
+
 <div class="wrap" id="studyCard"></div>
 
-<div class="wrap" id="reviewCard"></div>
+<div class="wrap" id="main"></div>
+
+<div class="wrap" id="infoHd"><div class="sect" style="--c:var(--k-gray)"><h2>考試資訊</h2></div></div>
 
 <div class="wrap" id="examCard">
   <details class="xcard" id="examInfo">
-    <summary><span class="xh">📋 考試制度速覽</span><span class="xs">依 116 年官方簡章 · 點開</span></summary>
+    <summary><span class="xh">考試制度速覽</span><span class="xs">依 116 年官方簡章 · 點開</span></summary>
     <div class="xb">
       <h4>考哪些科目</h4>
       <table>
@@ -264,13 +315,13 @@
 
 <div class="wrap" id="guideCard">
   <details class="xcard" id="guideInfo">
-    <summary><span class="xh">🧭 建議使用順序</span><span class="xs">第一次用?照這個順序最有效</span></summary>
+    <summary><span class="xh">建議使用順序</span><span class="xs">第一次用?照這個順序最有效</span></summary>
     <div class="xb">
       <ol class="steps">
         <li><b>先排計畫</b>:到「<a href="學習計畫.html">學習計畫</a>」輸入考試日與每天可讀的時間,之後每天照首頁的「今日路線」做;落後會自動重排。</li>
         <li><b>看詳解打底</b>:到「<a href="歷屆試題.html">歷屆試題</a>」先挑最近 2–3 屆,用複習模式把題目和解析看過一輪。</li>
         <li><b>自測找弱點</b>:各科詳解切「自測模式」,或用「<a href="模擬測驗.html">模擬測驗</a>」隨機組卷;答錯的題目會自動收進錯題本。</li>
-        <li><b>每天清錯題</b>:點上方「今日複習」的科目,把今天到期的錯題做完;答對會依 3、7、14 天往後排,4 關都過就移出。</li>
+        <li><b>每天清錯題</b>:點上方「今天」卡片裡的科目,把今天到期的錯題做完;答對會依 3、7、14 天往後排,4 關都過就移出。</li>
         <li><b>背高頻考點</b>:先看「出題趨勢」決定先念哪些主題,再用「考前衝刺(含中文三科必背 100 條)」「考點速記」「觀光資源圖鑑」「法規速查」「英語 / 日語學習中心」,零碎時間背單字與重點。</li>
         <li><b>考前整卷模擬</b>:最後兩週用「模擬測驗 → 整卷模擬 + 官方時間」,每週 2–3 份,目標穩定 70 分以上(及格線 60)。</li>
         <li><b>外語導遊口試</b>:筆試後到「<a href="口試練習.html">口試練習</a>」用「口試模擬」計時練習、錄音回放。</li>
@@ -280,12 +331,10 @@
   </details>
 </div>
 
-<div class="wrap" id="main"></div>
-
 <footer>
   全部功能離線可用,免費、無廣告、不需註冊<br>
   外語(英語/日語)+ 觀光 + 執業實務 + 執業法規 · <b>10 屆完整詳解 + 模擬測驗 + 錯題本</b>
-  <div><button id="lockNow" type="button" hidden style="margin-top:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">🔒 立即上鎖</button></div>
+  <div><button id="lockNow" type="button" hidden style="margin-top:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit">上鎖</button></div>
 </footer>
 
 <script>
@@ -293,7 +342,11 @@
 /* 科目清單一律取自 subjects.js(SSoT);未載入時給空陣列不致崩 */
 const SUBJ = window.SUBJECTS || [];
 const SUBJFILTERS = [['all','全部']].concat(SUBJ.map(s=>[s.k, s.name]));
-const CATS=[['do','🎯 做題'],['review','📖 複習 · 衝刺'],['wrong','📌 錯題本'],['tool','⚙️ 紀錄 · 工具']];
+const CATS=[['do','做題','purple'],['review','複習 · 衝刺','teal'],['wrong','錯題本','coral'],['tool','紀錄 · 工具','amber']];
+/* v302 工具卡圖示:線條圖示(icons.js),依分類上色(做題紫、複習青綠、錯題本珊瑚、工具琥珀);錯題本一律用書籤圖示 */
+const TI={past:'files',quiz:'clipboard',plan:'calendar',search:'search',jy:'book',wb:'lang',wbjp:'torii',sprint:'flame',oral:'mic',lawref:'scale',lawidx:'filesearch',newlaw:'sparkle',sprintcn:'cards',tf:'ox',num:'hash',tb:'toolbox',atlas:'map',trend:'trend',cs:'passport',dash:'chart',fav:'star',backup:'download'};
+const CATC={}; CATS.forEach(c=>{CATC[c[0]]=c[2];});
+const IC=n=>(window.ICONS?ICONS.svg(n):'');
 const TOOLS = [
   { id:'past',  name:'歷屆試題', icon:'📚', desc:'五科 10 屆 · 逐題官方答案 + 詳解', file:'歷屆試題.html', cat:'do', subj:'all' },
   { id:'quiz',  name:'模擬測驗', icon:'📝', desc:'五科隨機組卷 / 整卷模擬 · 計分 · 限時', file:'模擬測驗.html', cat:'do', subj:'all' },
@@ -333,22 +386,24 @@ function toolHref(t){
   const multi=t.subj==='all'||(Array.isArray(t.subj)&&t.subj.length>1&&t.subj.indexOf(FILTER)>=0);
   return multi?t.file+'?subj='+FILTER:t.file;
 }
-function toolCard(t){return `<a class="tc" href="${esc(toolHref(t))}"${t.desc?` title="${esc(t.desc)}"`:''}><div class="ic">${t.icon}</div>
+function icOf(t){const n=t.cat==='wrong'?'bookmark':TI[t.id];return (n&&IC(n))||esc(t.icon||'');}
+function colOf(t){const c=CATC[t.cat]||'teal';return `--c:var(--k-${c});--cb:var(--k-${c}-bg)`;}
+function toolCard(t){return `<a class="tc" href="${esc(toolHref(t))}" style="${colOf(t)}"${t.desc?` title="${esc(t.desc)}"`:''}><div class="ic">${icOf(t)}</div>
     <div><div class="tt">${esc(t.name)}</div>${t.desc?`<div class="dd">${esc(t.desc)}</div>`:''}</div></a>`;}
 /* 錯題本快捷:與工具卡同款大卡(icon 底框 + 科目 + 題數說明 + 右側題數角標)*/
 function wchip(t){let o={};try{o=JSON.parse(localStorage.getItem(t.wb)||'{}');}catch(e){}
   const n=Object.keys(o).length,d=SRS.countDue(o);   // C9 角標 = 今天到期的題數
-  return `<a class="tc" href="${esc(t.file)}"><div class="ic">${t.icon}</div>
+  return `<a class="tc" href="${esc(t.file)}" style="${colOf(t)}"><div class="ic">${icOf(t)}</div>
     <div><div class="tt">${esc(t.name)}</div><div class="dd">${n?(d?d+' 題今天要複習 · 共 '+n+' 題':'共 '+n+' 題 · 今天已複習完'):'尚無錯題'}</div></div>
     ${d?`<span class="wn">${d}</span>`:''}</a>`;}
 
 function render(){
   let html=`<div class="subs subjbar">`+SUBJFILTERS.map(([k,n])=>
     `<button class="${k===FILTER?'on':''}" data-f="${k}">${n}</button>`).join('')+`</div>`;
-  CATS.forEach(([cat,label])=>{
+  CATS.forEach(([cat,label,col])=>{
     const items=TOOLS.filter(t=>t.cat===cat&&match(t));
     if(!items.length)return;
-    html+=`<div class="sect"><h2>${label}</h2></div>`;
+    html+=`<div class="sect" style="--c:var(--k-${col})"><h2>${label}</h2></div>`;
     html+= `<div class="tools">${items.map(cat==='wrong'?wchip:toolCard).join('')}</div>`;
   });
   document.getElementById('main').innerHTML=html;
@@ -376,6 +431,20 @@ function histByDay(){let h=[];try{h=JSON.parse(LSg('quiz_history')||'[]');}catch
 function streakOf(m){let s=0,d=new Date();d.setHours(0,0,0,0);
   if(!m[dkey(d)])d.setDate(d.getDate()-1);           // 今天還沒練 → 從昨天起算(寬限一天)
   while(m[dkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
+/* v302「今天」卡:今日已練(目標進度)、待複習的錯題(各科)、今日路線、設定(考試日期、每日目標);考試倒數改由上方考試提醒卡顯示 */
+const OFFICIAL={leader:'2027-03-06',guide:'2027-03-07',all:'2027-03-06'};   // 116 年筆試日(examdates.js);「用官方日期」按鈕用
+function reviewHtml(){
+  let pool=0, due=0; const per={};
+  SUBJ.forEach(s=>{
+    let o={}; try{o=JSON.parse(LSg(s.wb)||'{}');}catch(e){}
+    const ids=Object.keys(o), d=ids.filter(id=>SRS.isDue(o[id])).length;
+    per[s.k]={total:ids.length,due:d}; pool+=ids.length; due+=d;
+  });
+  if(!pool)return '';   // 沒有任何錯題就不顯示
+  const chips=SUBJ.filter(s=>per[s.k].total>0).map(s=>{const p=per[s.k];
+    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}${p.due?'?due=1':''}">${esc(s.name)}<span class="b">${p.due?p.due:'✓'}</span></a>`;}).join('');
+  return `<div class="rv"><div class="rvh">${due?`今天要複習 <b>${due}</b> 題`:'今天的複習都完成了'}<span class="rvs" title="答對會依 3、7、14 天往後排,4 關都答對就移出錯題本">錯題本共 ${pool} 題</span></div><div class="chips">${chips}</div></div>`;
+}
 function renderStudyCard(){
   const box=document.getElementById('studyCard'); if(!box)return;
   const exam=LSg('exam_date')||'';
@@ -384,34 +453,26 @@ function renderStudyCard(){
   const today=m[dkey(new Date())]||0;
   const streak=streakOf(m);
   const pct=Math.min(100,Math.round(today/goal*100));
-  let head;
-  if(exam){
-    const dleft=daysUntil(exam);
-    head = dleft>=0
-      ? `<span class="dd">${dleft}<small>天後考試</small></span><span class="exdate">${exam}</span>`
-      : `<span class="empty">🎓 考試日(${exam})已過,祝金榜題名!可設定下次目標</span>`;
-  }else{
-    head = `<span class="empty">🎯 設定考試日期,顯示倒數與每日目標</span>`;
-  }
+  const ex=exam&&daysUntil(exam)>0?`;距你設定的考試日 ${daysUntil(exam)} 天`:'';
   box.innerHTML=`<div class="scard">
-    <div class="top">${head}
-      ${streak?`<span class="streak">🔥 連續 ${streak} 天</span>`:''}
-      <button class="setbtn" id="scSet">${exam?'⚙️ 設定':'＋ 設定'}</button>
-    </div>
+    <div class="top"><b class="tt2">今天</b>${streak?`<span class="streak">連續 ${streak} 天</span>`:''}<button class="setbtn" id="scSet" type="button" aria-expanded="false">${IC('sliders')}<span>設定</span></button></div>
     <div class="goalrow">
       <span class="glabel">今日已練</span>
       <div class="gtrack"><div class="gfill ${today>=goal?'done':''}" style="width:${pct}%"></div></div>
       <span class="gpct">${today}/${goal} 題</span>
     </div>
-    ${exam&&daysUntil(exam)>0?`<div class="tip">💡 距考試 ${daysUntil(exam)} 天,建議每天至少 ${goal} 題,穩住手感。今日${today>=goal?'已達標 🎉':'再 '+(goal-today)+' 題達標'}</div>`:`<div class="tip">💡 每天做一點,靠「連續天數」養成手感。進度以模擬測驗、是非快問、數字速記等的作答數計。</div>`}
+    <div class="tip">${today>=goal?`今天的 ${goal} 題已達標`:`再 ${goal-today} 題達標`}${ex}。進度以模擬測驗、是非快問、數字速記等的作答數計</div>
+    ${reviewHtml()}
     ${planBlock()}
     <div class="setwrap" id="scForm">
       <label class="glabel">考試日期 <input type="date" id="scDate" value="${exam}"></label>
+      <button type="button" class="ofc" id="scOfc">用 116 年官方日期</button>
       <label class="glabel">每日目標 <input type="number" id="scGoal" min="1" max="500" value="${goal}"> 題</label>
-      <button class="save" id="scSave">儲存</button>
+      <button class="save" id="scSave" type="button">儲存</button>
     </div>
   </div>`;
-  document.getElementById('scSet').onclick=()=>document.getElementById('scForm').classList.toggle('on');
+  document.getElementById('scSet').onclick=()=>{const f=document.getElementById('scForm');f.classList.toggle('on');document.getElementById('scSet').setAttribute('aria-expanded',f.classList.contains('on')?'true':'false');};
+  document.getElementById('scOfc').onclick=()=>{const c=window.EXAMDATES?EXAMDATES.certOf():'all';document.getElementById('scDate').value=OFFICIAL[c]||OFFICIAL.all;};
   document.getElementById('scSave').onclick=()=>{
     const dv=document.getElementById('scDate').value;
     const gv=Math.max(1,Math.min(500,+document.getElementById('scGoal').value||30));
@@ -425,46 +486,26 @@ function planBlock(){
   if(!window.PLAN)return '';
   let P; try{P=PLAN.build();}catch(e){return '';}
   if(!P.ok){
-    if(P.why==='noplan')return `<div class="plan"><a class="cta" href="學習計畫.html">📅 產生學習計畫:依考試日自動排每天要讀什麼 →</a></div>`;
+    if(P.why==='noplan')return `<div class="plan"><a class="cta" href="學習計畫.html">產生學習計畫:依考試日自動排每天要讀什麼 →</a></div>`;
     return '';
   }
   const items=P.route.filter(r=>r.kind!=='rev').slice(0,4);
-  const head=P.isStudy?`🧭 今日路線 · ${P.phName}期`:'🧭 今天是休息日';
-  const li=r=>`<li class="${r.done?'ok':''}"><span>${r.done?'✅':r.ic}</span><a href="${esc(r.href||'學習計畫.html')}">${esc(r.t)}</a>${r.min&&!r.done?`<span class="m">${r.min} 分</span>`:''}</li>`;
-  const body=items.length?`<ul>${items.map(li).join('')}</ul>`:`<ul><li><span>💤</span><a href="學習計畫.html">${P.isStudy?'今天沒有排新任務,看看計畫 →':'好好休息,想多做可以到計畫頁加到今天 →'}</a></li></ul>`;
-  const late=P.late.n?`<div class="tip" style="margin-top:6px">⏰ 落後 ${P.late.n} 項,已自動排進接下來的日子</div>`:'';
+  const head=P.isStudy?`今日路線 · ${P.phName}期`:'今天是休息日';
+  const li=r=>`<li class="${r.done?'ok':''}"><span>${r.done?IC('check'):IC('dot')}</span><a href="${esc(r.href||'學習計畫.html')}">${esc(r.t)}</a>${r.min&&!r.done?`<span class="m">${r.min} 分</span>`:''}</li>`;
+  const body=items.length?`<ul>${items.map(li).join('')}</ul>`:`<ul><li><span>${IC('dot')}</span><a href="學習計畫.html">${P.isStudy?'今天沒有排新任務,看看計畫 →':'好好休息,想多做可以到計畫頁加到今天 →'}</a></li></ul>`;
+  const late=P.late.n?`<div class="tip" style="margin-top:6px">落後 ${P.late.n} 項,已自動排進接下來的日子</div>`:'';
   return `<div class="plan"><div class="ph">${head}<a href="學習計畫.html">完整計畫 →</a></div>${body}${late}</div>`;
 }
 
-/* ==== C2 智慧複習:彙整各科錯題本,算出「今天該複習」的題數 ==== */
-/* 規則:錯題上次接觸(ts)在今天之前 → 今天該再看一次;今天已複習(ts=今天)或答對移除者不再列入 */
-function renderReviewCard(){
-  const box=document.getElementById('reviewCard'); if(!box)return;
-  /* C9 間隔複習:到期 = 依 1、3、7、14 天排程排到今天(srs.js) */
-  let pool=0, due=0; const per={};
-  SUBJ.forEach(s=>{
-    let o={}; try{o=JSON.parse(LSg(s.wb)||'{}');}catch(e){}
-    const ids=Object.keys(o), d=ids.filter(id=>SRS.isDue(o[id])).length;
-    per[s.k]={total:ids.length,due:d}; pool+=ids.length; due+=d;
-  });
-  if(!pool){box.innerHTML=''; return; }   // 沒有任何錯題就不顯示
-  const chips=SUBJ.filter(s=>per[s.k].total>0).map(s=>{
-    const p=per[s.k];
-    return `<a class="rchip ${p.due?'':'z'}" href="${s.page}${p.due?'?due=1':''}">${s.icon} ${s.name}<span class="b">${p.due?p.due:'✓'}</span></a>`;
-  }).join('');
-  const tip = due
-    ? `今天到期 <b>${due}</b> 題,點科目直接開始複習。答對會依 3、7、14 天往後排,4 關都答對就移出錯題本;答錯明天重來。`
-    : '🎉 今天的複習都完成了!錯題本還有 '+pool+' 題,會依間隔排在之後的日子。';
-  box.innerHTML=`<div class="rcard">
-    <div class="top"><h3>🧠 今日複習</h3>${due?`<span class="due">待複習 ${due} 題</span>`:`<span class="due" style="color:var(--teal);background:var(--tealbg)">今日已完成</span>`}</div>
-    <div class="chips">${chips}</div>
-    <div class="tip">${tip}</div>
-  </div>`;
-}
+/* v302 錯題複習併進「今天」卡(reviewHtml);保留這個名字給舊呼叫用 */
+function renderReviewCard(){ renderStudyCard(); }
 
+/* v302 頁首圖示與筆試日期、考試提醒卡(examdates.js) */
+(function(){const h=document.getElementById('heroIc');if(h)h.innerHTML=IC('school');
+  const p=document.getElementById('heroSub');if(p&&window.EXAMDATES)p.textContent='116 年筆試 '+EXAMDATES.examText('all');
+  const r=document.getElementById('remind');if(r&&window.EXAMDATES){r.innerHTML=EXAMDATES.card(new Date());EXAMDATES.bind(r);}})();
 render();
 renderStudyCard();
-renderReviewCard();
 /* C11 建議使用順序:還沒有任何測驗紀錄的新使用者預設展開;之後記住展開狀態 */
 (function(){const d=document.getElementById('guideInfo');if(!d)return;let v=null;
   try{v=localStorage.getItem('pref_guide_open');if(v===null)v=JSON.parse(localStorage.getItem('quiz_history')||'[]').length?'0':'1';}catch(e){}

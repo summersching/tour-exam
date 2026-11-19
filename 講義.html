@@ -5,14 +5,16 @@
 <script src="lock_config.js"></script>
 <script src="lock.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1b2029" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v301(2026-11-19)
+<!-- 講義 · v302(2026-11-19)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v301 詳解視窗裡連看同考點的題目時,「← 回到上一題」旁邊多一顆「回到剛才讀的講義」,一次關掉視窗、回到原本讀的位置
+     變更履歷:v302 內容卡片拿掉彩色線條:單字表改成白卡加淡色標題列,小節標題、重點、技巧、陷阱、比較、文法、發音、自我檢測只用淡色底(沒有框線),
+                   考情與口訣改成平塗底色,條列與單字之間的虛線改成淡實線;全站改成暖米色底
+              v301 詳解視窗裡連看同考點的題目時,「← 回到上一題」旁邊多一顆「回到剛才讀的講義」,一次關掉視窗、回到原本讀的位置
               v300 頁首改用全站共用的淺色樣式(ui.css),標題不放 emoji
               v298 英語、日語單字表每組依歷屆出題次數排(考越多次越前面),日語單字也標「考 N 次」;🔥 高頻字句加「🔮 可能會考(推估)」:當過 2 次以上干擾選項、還沒當過正解的字詞
               v297 情境會話改「劇本式」:每句左邊一個字的說話者小標(上方列出代表誰),外文在上、中文在下,細線分隔;關鍵字改螢光筆底色;會話下面列出本段關鍵字考過幾次
@@ -167,7 +169,7 @@
   .jp b,.kn{color:var(--key)}   /* v220 重點紅字:段落粗體關鍵詞;重點條列與表格裡的數字、日期(由 hl() 標出) */
   .kn{font-weight:800}
   .jkey{margin:6px 0;padding-left:1.2em}
-  .jfig{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+  .jfig{margin:12px 0;background:var(--card);border:0;border-radius:14px;padding:10px 10px 12px}
   .jfig figcaption{font-weight:800;font-size:.88rem;margin:0 2px 8px}
   .jfig svg{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;font-family:inherit}
   .jfig .bx{fill:var(--card);stroke:var(--line);stroke-width:1.5}
@@ -182,16 +184,16 @@
   .jfig .d1{fill:var(--sel)} .jfig .d2{fill:var(--warn)}
   .jfig .bar{fill:var(--sel)} .jfig .bar.r{fill:var(--warn)}
   /* v285 重點整理卡:原本畫成「方框由上而下排列」的純文字圖改成條列卡(左欄標題、右欄說明;手機改上下排);標題用所在小節的強調色 */
-  .jcard{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px 8px}
+  .jcard{margin:12px 0;background:var(--card);border:0;border-radius:14px;padding:10px 12px 8px}
   .jcard ul{list-style:none;margin:0;padding:0}
-  .jcard li{display:grid;grid-template-columns:minmax(6em,32%) 1fr;gap:2px 12px;padding:7px 2px;border-top:1px dashed var(--line);font-size:.88rem;line-height:1.6}
+  .jcard li{display:grid;grid-template-columns:minmax(6em,32%) 1fr;gap:2px 12px;padding:7px 2px;border-top:1px solid var(--line);font-size:.88rem;line-height:1.6}
   .jcard li:first-child{border-top:0;padding-top:2px}
   .jcard .ct{font-weight:800;color:var(--ac,var(--c1))}
   .jcard .cd div+div{margin-top:3px}
   .jcard li.cn{display:block;color:var(--sub);font-size:.8rem}
   .jcard li.cl{display:block}
   /* v286 位置圖:臺灣用縣市底圖(twgeo.js 靜態圖)、世界用世界圖(worldmap.js,ana.js 畫);圖下方是圖說與資料出處 */
-  .jmap{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+  .jmap{margin:12px 0;background:var(--card);border:0;border-radius:14px;padding:10px 10px 12px}
   .jmap figcaption{font-weight:800;font-size:.88rem;margin:0 2px 8px}
   .jmap figure.xm{margin:0}
   .jmap figure.xm svg,.jmap .jtw svg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto}
@@ -236,7 +238,7 @@
   .aref{all:unset;cursor:pointer;color:var(--sel);font-weight:700;text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;border-radius:4px}
   .aref:hover{background:var(--soft)} .aref:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
   @media print{.aref{color:inherit;font-weight:inherit;text-decoration:none}}
-  .jex{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .jex{border:0;background:var(--card);border-radius:12px;padding:10px 12px;margin:12px 0}
   .jex .src{font-size:.74rem;color:var(--sub);font-weight:700}
   .jex .stem{font-weight:700;margin:4px 0}
   .jex .op{font-size:.88rem;padding:2px 0} .jex .op.ok{color:var(--ok);font-weight:800}
@@ -316,30 +318,30 @@
   .chhead .sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
   .chhead .sub.open{display:block}
   /* 章內:小節標題、條列段落、各種區塊各有顏色 */
-  .jh{display:flex;align-items:center;gap:9px;margin:26px 0 10px;padding:9px 12px;border-radius:12px;background:var(--acb);border:1px solid color-mix(in srgb,var(--ac) 28%,transparent);scroll-margin-top:66px}
+  .jh{display:flex;align-items:center;gap:9px;margin:26px 0 10px;padding:9px 12px;border-radius:12px;background:var(--acb);border:0;scroll-margin-top:66px}
   .jh .hn{flex:0 0 auto;min-width:28px;height:28px;padding:0 6px;border-radius:9px;background:var(--ac);color:var(--on);font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
   ul.jp{list-style:none;margin:8px 0 14px;padding:0}
   ul.jp li{position:relative;padding:6px 0 6px 20px;line-height:1.75}
   ul.jp li::before{content:'';position:absolute;left:5px;top:1.1em;width:7px;height:7px;border-radius:50%;background:var(--ac)}
-  ul.jp li+li{border-top:1px dashed var(--line)}
+  ul.jp li+li{border-top:1px solid var(--line)}
   .jp .ld{font-weight:900;color:var(--ac);margin-right:3px}
   .jkeyb{background:var(--c4b);border-radius:12px;padding:10px 12px 8px;margin:12px 0}
   .jkeyb .mh{color:var(--c4)}
   .jkey{margin:2px 0;padding:0;list-style:none}
   .jkey li{position:relative;padding:3px 0 3px 22px;font-size:.93rem}
   .jkey li::before{content:'✔';position:absolute;left:2px;color:var(--c4);font-weight:900}
-  .exam{background:linear-gradient(135deg,var(--soft),var(--c2b));border:1px solid color-mix(in srgb,var(--sel) 28%,transparent)}
+  .exam{background:var(--soft);border:0}
   .jtbl .th{color:var(--ac)} .jtbl th{background:var(--acb);color:var(--ac)}
-  .jmn{background:linear-gradient(135deg,var(--c3b),var(--c5b));border:1px solid color-mix(in srgb,var(--c3) 28%,transparent)}
+  .jmn{background:var(--c3b);border:0}
   .jmn .mh,.jmn .mt{color:var(--c3)}
-  .jtip{background:var(--c6b);border:0;border:1px solid color-mix(in srgb,var(--c6) 28%,transparent)} .jtip .mh{color:var(--c6)}
-  .jtrap{background:var(--nobg);border:0;border:1px solid color-mix(in srgb,var(--no) 28%,transparent)}
-  .jcmp{border:0;border:1px solid color-mix(in srgb,var(--c2) 28%,transparent);background:var(--c2b)} .jcmp .mh{color:var(--c2)} .jcmp th{background:var(--card);color:var(--c2)}
+  .jtip{background:var(--c6b);border:0} .jtip .mh{color:var(--c6)}
+  .jtrap{background:var(--nobg);border:0}
+  .jcmp{border:0;background:var(--c2b)} .jcmp .mh{color:var(--c2)} .jcmp th{background:var(--card);color:var(--c2)}
   .jex .src{color:var(--c2)}
   .jex ol{background:var(--bg);border-radius:10px;padding:8px 10px 8px 2em}
-  .jself{border:2px dashed var(--c1)} .jself .mh{color:var(--c1)}
+  .jself{border:0;background:var(--c1b)} .jself .mh{color:var(--c1)}
   .jlaw{background:var(--paper);border:0;border:1px solid color-mix(in srgb,var(--sub) 28%,transparent)}
-  .jstale{background:var(--card);border:1.5px dashed var(--warn)}
+  .jstale{background:var(--warnbg,#fef3c7);border:0}
   @media print{.chnav,.tocnav,.grow,.end select{display:none!important}}
   /* ===== v255 英語講義新格式:單字表(音標 + 發音)、情境會話、文法重點、發音提醒 ===== */
   .spk{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:10px;width:36px;height:36px;font-size:1rem;cursor:pointer;font-family:inherit;line-height:1;padding:0}
@@ -348,11 +350,11 @@
   .pos{font-size:.7rem;color:var(--sub);border:1px solid var(--line);border-radius:6px;padding:0 5px;white-space:nowrap}
   .jvoc,.jdlg,.jgram,.jpron{border-radius:14px;padding:10px 12px;margin:12px 0}
   .jvoc .mh,.jdlg .mh,.jgram .mh,.jpron .mh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .jvoc{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ac)}
-  .jvoc .mh{color:var(--ac)}
+  .jvoc{background:var(--card);border:0;padding-top:0;overflow:hidden}
+  .jvoc .mh{color:var(--ac);background:var(--acb);margin:0 -12px 6px;padding:9px 12px}
   .vt{margin-left:auto;border:1.5px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:3px 10px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
   .vt.on{background:var(--sel);border-color:var(--sel);color:var(--on)}
-  .vrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .vrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);border-radius:8px}
   .vrow:first-of-type{border-top:0}
   .vb{flex:1;min-width:0}
   .vm{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}
@@ -371,7 +373,7 @@
   .hidez .vz{filter:blur(6px);user-select:none}
   /* 情境會話:對話泡泡(旅客那一方靠右) */
   /* v297 情境會話改「劇本式」:不用對話泡泡;說話者用一個字的小標,外文在上、中文在下,句與句之間細線分隔,關鍵字用螢光筆標記 */
-  .jdlg{background:var(--card);border:1px solid var(--line)}
+  .jdlg{background:var(--card);border:0}
   .jdlg .mh{color:var(--ink)}
   .dtools{display:flex;gap:6px;margin:6px 0 4px;flex-wrap:wrap}
   .dtools .vt{margin-left:0}
@@ -387,20 +389,20 @@
   .den{font-weight:700;font-size:.97rem;line-height:1.55}
   .db .vz{font-weight:400;font-size:.84rem;color:var(--sub);margin-top:1px}
   .jdlg .den .kn{color:inherit;background:color-mix(in srgb,var(--c4) 22%,transparent);border-radius:3px;padding:0 2px}
-  .dkp{margin:6px 0 2px;padding-top:8px;border-top:1px dashed var(--line);font-size:.82rem;color:var(--sub);line-height:1.75}
+  .dkp{margin:6px 0 2px;padding-top:8px;border-top:1px solid var(--line);font-size:.82rem;color:var(--sub);line-height:1.75}
   .dkp b{color:var(--ink);font-weight:700} .dkp .n{font-size:.74rem;font-weight:800;color:var(--c4);margin-left:3px}
   .saying{outline:3px solid var(--accent);outline-offset:2px}
   /* 文法重點、發音提醒 */
-  .jgram{background:var(--c3b);border:1px solid color-mix(in srgb,var(--c3) 28%,transparent)}
+  .jgram{background:var(--c3b);border:0}
   .jgram .mh{color:var(--c3)}
   .gpat{background:var(--card);border-radius:10px;padding:8px 10px;margin:6px 0;font-weight:800;font-size:.9rem;line-height:1.7}
   .gpt{margin:6px 0;padding-left:1.2em;font-size:.9rem}
-  .geg{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .geg{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--line);border-radius:8px}
   .geg .en{font-weight:700;font-size:.93rem}
   .geg .vz{font-weight:400;font-size:.82rem;color:var(--sub)}
-  .jpron{background:var(--c5b);border:1px solid color-mix(in srgb,var(--c5) 28%,transparent)}
+  .jpron{background:var(--c5b);border:0}
   .jpron .mh{color:var(--c5)}
-  .prow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);border-radius:8px}
+  .prow{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--line);border-radius:8px}
   .prow .vw{color:var(--c5)} .pn{font-size:.84rem}
   /* v263 日語:假名讀音、注音假名(ruby)、遮住讀音、歷屆範例的題目中譯與選項中譯 */
   .vt+.vt{margin-left:0}
