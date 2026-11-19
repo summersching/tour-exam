@@ -8,11 +8,13 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v302(2026-11-19)
+<!-- 講義 · v303(2026-11-19)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v302 內容卡片拿掉彩色線條:單字表改成白卡加淡色標題列,小節標題、重點、技巧、陷阱、比較、文法、發音、自我檢測只用淡色底(沒有框線),
+     變更履歷:v303 每節最後加「本節練習」:本章題目依內容分到各小節,列出歷屆考過幾題、近 3 年幾題、常見問法,附 3 題可直接作答
+                   (答錯收進錯題本、算進今日練習);章首加「本章相關新制」(newlaw.js);加「考前速記」(口訣、數字表、易錯、自我檢測;外語:最常考的字、句型、發音)
+              v302 內容卡片拿掉彩色線條:單字表改成白卡加淡色標題列,小節標題、重點、技巧、陷阱、比較、文法、發音、自我檢測只用淡色底(沒有框線),
                    考情與口訣改成平塗底色,條列與單字之間的虛線改成淡實線;全站改成暖米色底
               v301 詳解視窗裡連看同考點的題目時,「← 回到上一題」旁邊多一顆「回到剛才讀的講義」,一次關掉視窗、回到原本讀的位置
               v300 頁首改用全站共用的淺色樣式(ui.css),標題不放 emoji
@@ -475,6 +477,47 @@
   @media print{#xsheet{display:none!important}}
   .jex .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   @media print{.spk,.vt,.dtools{display:none!important}.hidez .vz,.hidey .yomi,.hidey rt{filter:none}.saying{outline:none}}
+  /* ===== v303 每節練習、本章相關新制、考前速記(沒有框線,用淡色底分區) ===== */
+  .sq,.nlx{margin:14px 0 4px;background:var(--k-purple-bg,#eeedfe);border-radius:14px}
+  .nlx{background:var(--k-amber-bg,#faeeda);margin:12px 0}
+  .sq>summary,.nlx>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 12px;flex-wrap:wrap}
+  .sq>summary::-webkit-details-marker,.nlx>summary::-webkit-details-marker{display:none}
+  .sq-ic{flex:none;width:30px;height:30px;border-radius:9px;background:var(--k-purple,#534ab7);color:var(--k-purple-bg,#eeedfe);display:flex;align-items:center;justify-content:center}
+  .nlx .sq-ic{background:var(--k-amber,#854f0b);color:var(--k-amber-bg,#faeeda)}
+  .sq-ic svg{width:18px;height:18px}
+  .sq summary b{color:var(--k-purple,#534ab7);font-size:.95rem}
+  .nlx summary b{color:var(--k-amber,#854f0b);font-size:.95rem}
+  .sq-n{font-size:.8rem;color:var(--sub)}
+  .sq>summary::after,.nlx>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--sub);border-bottom:2px solid var(--sub);transform:rotate(45deg);transition:transform .2s}
+  .sq[open]>summary::after,.nlx[open]>summary::after{transform:rotate(-135deg)}
+  .sq-b{padding:0 12px 12px}
+  .sq-pat{font-size:.82rem;margin:0 0 6px;line-height:1.6}
+  .sq-q{background:var(--card);border-radius:12px;padding:10px 12px;margin:8px 0}
+  .sq-src{font-size:.74rem;color:var(--sub);font-weight:700}
+  .sq-st{font-weight:700;margin:4px 0 6px;line-height:1.6}
+  .sq-o{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 10px;margin:5px 0;font:inherit;font-size:.9rem;line-height:1.55;cursor:pointer}
+  .sq-o:hover{border-color:var(--k-purple,#534ab7)}
+  .sq-q.done .sq-o{cursor:default}
+  .sq-o.ok{border-color:var(--ok);background:var(--okbg);color:var(--ok);font-weight:700}
+  .sq-o.no{border-color:var(--no);background:var(--nobg);color:var(--no)}
+  .sq-fb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:.86rem}
+  .sq-fb .ok{color:var(--ok)}.sq-fb .no{color:var(--no)}
+  .sq-fb .xopen,.nl-go{border:0;background:var(--k-purple-bg,#eeedfe);color:var(--k-purple,#534ab7);border-radius:999px;padding:5px 12px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-decoration:none}
+  .sq-more{font-size:.78rem;color:var(--sub);margin:8px 2px 0}
+  .nl-i{background:var(--card);border-radius:12px;padding:9px 12px;margin:8px 0;font-size:.88rem;line-height:1.6}
+  .nl-q{font-weight:700}.nl-a{color:var(--ok);font-weight:700;margin-top:2px}.nl-x{color:var(--sub);font-size:.82rem;margin-top:2px}
+  .nl-go{display:inline-block;margin-top:4px;background:var(--card);color:var(--k-amber,#854f0b)}
+  #xsheet .memo h4{margin:14px 0 6px;font-size:.95rem;color:var(--sel)}
+  #xsheet .memo h4:first-child{margin-top:2px}
+  #xsheet .memo ul{margin:0;padding-left:1.2em}#xsheet .memo li{margin:4px 0;line-height:1.6}
+  #xsheet .memo .mm{width:100%;border-collapse:collapse;font-size:.86rem}
+  #xsheet .memo .mm td,#xsheet .memo .mm th{padding:5px 6px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+  #xsheet .memo .mm th{font-size:.8rem;color:var(--sub)}
+  #xsheet .memo .mmf{white-space:nowrap;color:var(--sub);text-align:right}
+  #xsheet .memo .mmr{color:var(--sub);font-size:.82rem}
+  #xsheet .memo .mmh{font-weight:800;margin:8px 0 2px}
+  #xsheet .memo .mqa b{color:var(--ok)}
+  @media print{.sq,.nlx{display:none}}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -488,6 +531,7 @@
 <script src="fav.js"></script>
 <script src="practice.js"></script>
 <script src="miniquiz.js"></script>
+<script src="icons.js"></script>
 <link rel="stylesheet" href="ui.css">
 </head>
 <body>
@@ -1222,16 +1266,128 @@ function artLink(html, cid, sec){
   }
   return html;
 }
-function bodyHtml(k, ch, d){   // v253 以小節標題分段,每段輪流換一種強調色;標題的「一、」做成數字牌
+/* ===== v303 講義延伸:每節練習、本章相關新制、考前速記 =====
+   每節練習:把本章題池(章末測驗用的,已排除法規修正題)依內容分到最相關的小節,每節最後列出「歷屆考過幾題、近 3 年幾題、常見問法」,
+             附 3 題可直接作答(點選項立刻對答案;答錯收進錯題本,算進今日練習題數),也能打開完整詳解;歷屆範例用過的題目不重複
+   分配方法:小節文字與題目(題幹 + 選項)取詞元(中文、日文取相鄰兩字,英文取 3 個字母以上的單字),共同詞元依稀有度加分,分到分數最高的小節
+   本章相關新制:newlaw.js 的新制卡,相關歷屆題屬於本章就列出(那些舊題的答案可能已改)
+   考前速記:把本章的口訣、有數字的表格、易錯陷阱、自我檢測集中在一個視窗;外語:本章最常考的字、句型、發音提醒 */
+const SQ_N = 3, SQ_MIN = 0.04;   // 每節最多出幾題;相似度低於 SQ_MIN 的題目不分配
+const SQ_STOP = new Set('the and for with that this from are was were you your have has had will would can could should may might not but all any one two three which what who whom whose when where why how into onto about than then them they their there these those its our out off over under very just also only more most much many some such each other another'.split(' '));
+const IC = n => (window.ICONS ? ICONS.svg(n) : '');
+function sqToks(s){
+  s = String(s == null ? '' : s).replace(/<[^>]*>/g, ' ').replace(/\*\*/g, '').replace(/\{([^|}]*)\|[^}]*\}/g, '$1').toLowerCase();
+  const out = new Set();
+  (s.match(/[\u3040-\u30ff\u3400-\u9fff]+/g) || []).forEach(w => { for (let i = 0; i < w.length - 1; i++) out.add(w.slice(i, i + 2)); });
+  (s.match(/[a-z][a-z'-]{2,}/g) || []).forEach(w => { if (!SQ_STOP.has(w)) out.add(w); });
+  return out;
+}
+function sqAssign(ch, qs){
+  const secs = []; let cur = null;
+  ch.blocks.forEach(b => { if (b.t === 'h'){ cur = [b.text]; secs.push(cur); } else if (cur) cur.push(JSON.stringify(b)); });
+  if (!secs.length || !qs || !qs.length) return [];
+  const T = secs.map(x => sqToks(x.join(' ')));
+  const df = new Map(); T.forEach(t => t.forEach(x => df.set(x, (df.get(x) || 0) + 1)));
+  const N = T.length, idf = x => Math.log(1 + N / (df.get(x) || N));
+  const L = T.map(t => { let s2 = 0; t.forEach(x => { const w = idf(x); s2 += w * w; }); return Math.sqrt(s2) || 1; });   // 小節長度校正(字多的小節不會通吃)
+  const res = T.map(() => []);
+  qs.forEach(q => {
+    const tq = [...sqToks(q.stem + ' ' + (q.opts || []).join(' '))].filter(x => df.has(x));
+    const qn = Math.sqrt(tq.reduce((a, x) => a + idf(x) * idf(x), 0)) || 1;
+    let best = -1, bs = 0;
+    T.forEach((t, i) => { let dot = 0; tq.forEach(x => { if (t.has(x)) dot += idf(x) * idf(x); }); const sc = dot / (L[i] * qn); if (sc > bs){ bs = sc; best = i; } });
+    if (best >= 0 && bs >= SQ_MIN) res[best].push({ q, s: bs });
+  });
+  return res;
+}
+const SQ_WRONG = /何者(?:錯誤|不正確|有誤|為非|非|不是|不屬於|不得|不可|不適當|不符|不宜)|錯誤者|不正確者|不包括/;
+const SQ_RIGHT = /何者(?:正確|為是|適當|最適當|最恰當|最佳|屬之|為宜)|正確者/;
+function sqPat(k, items){
+  if (k === 'en' || k === 'jp') return '';
+  let w = 0, r = 0;
+  items.forEach(({ q }) => { if (SQ_WRONG.test(q.stem)) w++; else if (SQ_RIGHT.test(q.stem)) r++; });
+  const o = items.length - w - r, ps = [];
+  if (w) ps.push(`選錯的(何者錯誤)${w} 題`);
+  if (r) ps.push(`選對的(何者正確)${r} 題`);
+  if (o) ps.push(`直接問內容 ${o} 題`);
+  return ps.length ? `<p class="sq-pat">常見問法:${ps.join('、')}</p>` : '';
+}
+function sqOk(k, q, exKeys){
+  if (exKeys.has(PRACTICE.key(q)) || q.psg || !q.opts || q.opts.length < 2 || String(q.stem).length > 260) return false;
+  return !(k === 'jp' && psgOf(k, q));
+}
+function sqQ(k, q){
+  const acc = SCORE.acc(q), O = window.OPTIMG;
+  return `<div class="sq-q" data-k="${esc(k)}" data-key="${esc(PRACTICE.key(q))}" data-acc="${acc.join(',')}"><div class="sq-src">${esc(PRACTICE.label(k, q))}</div>
+    ${O && O.fig ? (O.fig(q) || '') : ''}<div class="sq-st">${esc(clean(q.stem))}</div>
+    ${q.opts.map((o, i) => `<button type="button" class="sq-o" data-i="${i}">${'ABCD'[i]}. ${O && O.html ? (O.html(q, i) || '') : ''}${esc(clean(o))}</button>`).join('')}
+    <div class="sq-fb" hidden></div></div>`;
+}
+function sqHtml(k, items, i){
+  if (!items || !items.length || !CUR) return '';
+  const st = CUR.st, ys = st ? st.years.slice(-3) : [];
+  const n = items.length, rc = items.filter(x => ys.includes(+x.q.y)).length;
+  const exKeys = new Set(CUR.ch.blocks.filter(b => b.t === 'ex').map(b => b.key));
+  const pick = items.filter(x => sqOk(k, x.q, exKeys)).sort((a, b) => b.s - a.s || b.q.y - a.q.y).slice(0, SQ_N);
+  const more = n > pick.length ? `<p class="sq-more">這節還有 ${n - pick.length} 題,章末的「本章全部題目」可以一起練</p>` : '';
+  return `<details class="sq" data-sq="${i}"><summary><span class="sq-ic">${IC('clipboard')}</span><b>本節練習</b><span class="sq-n">歷屆考過 ${n} 題 · 近 3 年 ${rc} 題</span></summary>
+    <div class="sq-b">${sqPat(k, items)}${pick.map(x => sqQ(k, x.q)).join('')}${more}</div></details>`;
+}
+function sqAnswer(btn){
+  const box = btn.closest('.sq-q'); if (!box || box.classList.contains('done')) return;
+  const acc = box.dataset.acc.split(',').filter(x => x !== '').map(Number), i = +btn.dataset.i, ok = acc.includes(i);
+  box.classList.add('done');
+  box.querySelectorAll('.sq-o').forEach(b => { const j = +b.dataset.i; if (acc.includes(j)) b.classList.add('ok'); else if (j === i) b.classList.add('no'); });
+  const fb = box.querySelector('.sq-fb');
+  fb.innerHTML = `<b class="${ok ? 'ok' : 'no'}">${ok ? '答對了' : '答錯了,正解是 ' + acc.map(j => 'ABCD'[j]).join('、')}</b><button class="xopen" type="button" data-xs="${esc(box.dataset.k)}" data-xq="${esc(box.dataset.key)}">看完整詳解</button>`;
+  fb.hidden = false;
+  try { PRACTICE.addDaily(1); } catch (e) {}
+  if (!ok){ const d = CUR && CUR.d, q = d && d.map[box.dataset.key]; if (q) try { PRACTICE.wbAdd(box.dataset.k, q, i); } catch (e) {} }
+}
+const NL_SUBJ = ['pr', 'pr2', 'gh'];
+function nlReady(k){ return NL_SUBJ.includes(k) && !PRACTICE.gv('NEWLAW') ? PRACTICE.loadJs('newlaw.js').catch(() => {}) : Promise.resolve(); }
+function nlHtml(k, ch, d){
+  const NL = NL_SUBJ.includes(k) && d && PRACTICE.gv('NEWLAW'); if (!NL) return '';
+  const keys = new Set(chapterQs(ch, d).map(q => k + ':' + PRACTICE.key(q)));
+  const cs = NL.cards.filter(c => (c.r || []).some(r => keys.has(r)));
+  if (!cs.length) return '';
+  return `<details class="nlx"><summary><span class="sq-ic">${IC('sparkle')}</span><b>本章相關新制</b><span class="sq-n">${cs.length} 條 · 舊題的答案可能已經不同</span></summary>
+    <div class="sq-b">${cs.map(c => `<div class="nl-i"><div class="nl-q">${esc(c.q)}</div><div class="nl-a">現行:${esc(c.o[0])}</div><div class="nl-x">${esc(c.x)}</div></div>`).join('')}<a class="nl-go" href="法規異動.html">到「新制與法規異動」做新制測驗 →</a></div></details>`;
+}
+function memoHtml(k, ch, d){
+  const B = ch.blocks, P = x => plainText(String(x == null ? '' : x)).replace(/<[^>]*>/g, '').replace(/\*\*/g, '');
+  const sec = (t, body) => body ? `<h4>${t}</h4>${body}` : '';
+  const mn = B.filter(b => b.t === 'mn').map(b => `<div class="mmh">${esc(P(b.h || ''))}</div><div>${esc(P(b.text || ''))}${b.ex ? '<div class="mmr">' + esc(P(b.ex)) + '</div>' : ''}</div>`).join('');
+  let h = '';
+  if (k === 'en' || k === 'jp'){
+    const J = k === 'jp', fr = w => J ? jfreq(d, plainText(w).replace(/^〜/, '')) : vfreq(d, plainText(w));
+    const seen = new Set(), ws = [];
+    B.filter(b => b.t === 'vocab').forEach(b => b.items.forEach(x => { const w = P(x[0]); if (!seen.has(w)){ seen.add(w); ws.push({ x, f: d ? fr(x[0]) : 0 }); } }));
+    const top = ws.filter(o => o.f > 0).sort((a, b) => b.f - a.f).slice(0, 20);
+    h += sec('本章最常考的字', top.length ? `<table class="mm"><tbody>${top.map(({ x, f }) => `<tr><td><b>${esc(P(x[0]))}</b>${J && x[1] ? ' <span class="mmr">' + esc(P(x[1])) + '</span>' : ''}</td><td>${esc(P(x[3]))}</td><td class="mmf">考 ${f} 題</td></tr>`).join('')}</tbody></table>` : '');
+    h += sec(J ? '句型與規則' : '文法句型', B.filter(b => b.t === 'gram').map(b => `<div class="mmh">${esc(P(b.h))}</div><ul>${(b.pat || []).map(x => `<li>${esc(P(x))}</li>`).join('')}</ul>`).join(''));
+    h += sec(J ? '讀音提醒' : '發音提醒', B.filter(b => b.t === 'pron').map(b => `<ul>${(b.items || []).map(x => `<li><b>${esc(P(x[0]))}</b> ${esc(P(x[2] || x[1] || ''))}</li>`).join('')}</ul>`).join(''));
+    h += sec('口訣', mn);
+  } else {
+    h += sec('口訣', mn);
+    h += sec('數字與比較', B.filter(b => (b.t === 'table' || b.t === 'cmp') && b.rows && b.rows.some(r => r.some(c => /\d/.test(P(c))))).map(b =>
+      `<div class="mmh">${esc(P(b.h || ''))}</div><table class="mm"><thead><tr>${(b.head || []).map(x => `<th>${esc(P(x))}</th>`).join('')}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${esc(P(c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`).join(''));
+    h += sec('易錯陷阱', B.filter(b => b.t === 'trap').map(b => `<ul>${(b.items || []).map(x => `<li>${esc(P(x))}</li>`).join('')}</ul>`).join(''));
+  }
+  h += sec('自我檢測(問 → 答)', B.filter(b => b.t === 'self').map(b => `<ul class="mqa">${(b.items || []).map(([q, a]) => `<li>${esc(P(q))} → <b>${esc(P(a))}</b></li>`).join('')}</ul>`).join(''));
+  return `<div class="memo">${h || '<p>這一章還沒有可以整理的速記內容。</p>'}</div>`;
+}
+function bodyHtml(k, ch, d, SQ){   // v253 以小節標題分段,每段輪流換一種強調色;標題的「一、」做成數字牌;v303 每節最後加「本節練習」
   let out = '', n = 0, sec = '';
   const AL = ART_SUBJ.includes(k);   // v287 條號連結
+  const tail = i => SQ && SQ[i] ? sqHtml(k, SQ[i], i) : '';
   ch.blocks.forEach(b=>{
     if (b.t !== 'h'){ const h = blockHtml(k, b, d); out += AL && ARTB[b.t] && h ? artLink(h, ch.id, sec) : h; return; }
     sec = b.text;
     const m = String(b.text).match(/^([一二三四五六七八九十]+)、\s*(.+)$/);
-    out += (n ? '</section>' : '') + `<section class="sec k${n%6+1}"><h3 class="jh" id="sec-${n}">${m ? `<span class="hn">${m[1]}</span><span>${esc(m[2])}</span>` : esc(b.text)}</h3>`; n++;
+    out += (n ? tail(n - 1) + '</section>' : '') + `<section class="sec k${n%6+1}"><h3 class="jh" id="sec-${n}">${m ? `<span class="hn">${m[1]}</span><span>${esc(m[2])}</span>` : esc(b.text)}</h3>`; n++;
   });
-  return out + (n ? '</section>' : '');
+  return out + (n ? tail(n - 1) + '</section>' : '');
 }
 function renderChapter(){
   TTS.stop(true); SAY.stop();
@@ -1247,8 +1403,8 @@ function renderChapter(){
   $('app').innerHTML = nav + `<div class="card chhead"><div class="chno">${esc(J.name)} · 第 ${ch.no} 章</div><div class="cht">${esc(ch.t)}</div><div class="chs sub" title="點一下展開或收合">${esc(ch.sub)}</div>
     <div class="chs">資料截至 ${esc(ch.ver)}</div>
     <div class="tools"><span class="seg"><button type="button" data-mode="full" class="${cfg.mode==='full'?'on':''}">📖 完整閱讀</button><button type="button" data-mode="quick" class="${cfg.mode==='quick'?'on':''}">⚡ 快速複習</button></span>
-    <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button><button class="tbtn" type="button" data-act="tts">🔊 朗讀</button><button class="tbtn" type="button" data-act="print">🖨 列印</button></div></div>`
-    + exam + bodyHtml(k, ch, d)
+    <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button><button class="tbtn" type="button" data-act="tts">🔊 朗讀</button><button class="tbtn" type="button" data-act="memo">考前速記</button><button class="tbtn" type="button" data-act="print">🖨 列印</button></div></div>`
+    + exam + nlHtml(k, ch, d) + bodyHtml(k, ch, d, d && st ? sqAssign(ch, st.quiz) : [])
     + `<div class="end"><button class="tbtn fill" type="button" data-act="quiz"${st&&st.quiz.length?'':' disabled'}>📝 章末測驗 ${QUIZ_N} 題</button><button class="tbtn" type="button" data-act="quizall"${st&&st.quiz.length?'':' disabled'}>📚 本章全部 ${st?st.quiz.length:0} 題</button>
       <button class="tbtn" type="button" data-act="read">${p.read?'✅ 已讀':'標記已讀'}</button>
       ${prev?`<button class="tbtn" type="button" data-go="${esc(prev.id)}">← 上一章</button>`:''}${next?`<button class="tbtn" type="button" data-go="${esc(next.id)}">下一章 →</button>`:''}
@@ -1261,7 +1417,7 @@ function openChapter(id){
   cfg.subj = k; cfg.view = 'ch'; cfg.ch = id; saveCfg();
   history.replaceState(null, '', '?ch=' + encodeURIComponent(id) + (cfg.mode==='quick'?'&mode=quick':''));
   renderBar(); $('app').innerHTML = '<div class="empty">載入中…</div>';
-  Promise.all([loadSubj(k), bankOf(k), artLawReady(k)]).then(([J, d])=>{   // v287 中文三科先載入條號連結規則
+  Promise.all([loadSubj(k), bankOf(k), artLawReady(k), nlReady(k)]).then(([J, d])=>{   // v287 中文三科先載入條號連結規則
     const ch = J && J.chapters.find(c=>c.id===id);
     if (!ch){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); return; }
     return mapLibsReady(ch).then(()=>{   // v287 位置圖程式先載入
@@ -1440,6 +1596,7 @@ function openX(k, key, src, keep){
 }
 
 $('app').addEventListener('click', e=>{
+  const so = e.target.closest('.sq-o'); if (so){ sqAnswer(so); return; }   // v303 本節練習作答
   const ar = e.target.closest('.aref'); if (ar){ ART.open(ar.dataset.law, ar.dataset.art, ar); return; }   // v287 內文條號 → 條文視窗
   const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
   const swc = e.target.closest('.den .sw'); if (swc){ swapSlot(swc); return; }   // v275 替換練習
@@ -1465,6 +1622,7 @@ $('app').addEventListener('click', e=>{
   if (act === 'toc'){ cfg.view = 'toc'; cfg.ch = null; saveCfg(); render(); window.scrollTo(0,0); }
   else if (act === 'read'){ const p = prog()[CUR.ch.id] || {}; setProg(CUR.ch.id, { read: p.read ? null : Date.now() }); renderChapter(); }
   else if (act === 'print') window.print();
+  else if (act === 'memo') XS.show('考前速記 · ' + CUR.ch.t, memoHtml(CUR.k, CUR.ch, CUR.d), b);   // v303
   else if (act === 'tts'){ SAY.stop(); TTS.start(0); }
   else if (act === 'quiz') startQuiz(false);
   else if (act === 'quizall') startQuiz(true);
