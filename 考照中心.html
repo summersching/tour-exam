@@ -8,10 +8,11 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>領隊·導遊 考照中心</title>
-<!-- 考照中心 · v302(2026-11-19)
+<!-- 考照中心 · v319(2026-11-23)
      領隊·導遊考照的首頁:頁首、考試提醒(examdates.js:報名 / 筆試 / 放榜、要準備的資料、考試當天、加到行事曆)、
      今天(今日目標、待複習錯題、今日路線)、工具卡(依分類上色的線條圖示,icons.js)、最下面是考試資訊
-     變更履歷:v302 新設計:頁首改成青綠色區塊;加考試提醒卡;「今日目標」與「今日複習」合成「今天」一張;
+     變更履歷:v319 工具卡滑過、按住或用鍵盤選到時,外圍補回主色框線(v302 改成無框卡片時一起不見了)
+               v302 新設計:頁首改成青綠色區塊;加考試提醒卡;「今日目標」與「今日複習」合成「今天」一張;
                工具卡改用線條圖示並依分類上色(做題紫、複習青綠、錯題本珊瑚、工具琥珀);考試制度速覽、建議使用順序移到最下面 -->
 <style>
   :root{
@@ -210,7 +211,7 @@
   .scard .plan li svg{width:16px;height:16px;vertical-align:-3px}
   .sect h2::before{width:10px;height:10px;border-radius:3px;background:var(--c,var(--accent))}
   .tc{border:0;box-shadow:none}
-  .tc:hover,.tc:active{box-shadow:var(--shadow2);border-color:transparent}
+  .tc:hover,.tc:active,.tc:focus-visible{box-shadow:0 0 0 2px var(--accent),var(--shadow2);outline:none}
   .tc .ic{background:var(--cb,var(--bg));color:var(--c,var(--ink))}
   .tc .ic svg{width:25px;height:25px}
   .tc .wn{background:var(--k-coral)}
