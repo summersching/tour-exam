@@ -1,4 +1,4 @@
-/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v319(2026-11-23)
+/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v325(2026-11-24)
    ------------------------------------------------------------------
    設計方向(A+B):暖米色底 + 深青綠主色,像紙本、安靜好讀;功能或分類各有自己的顏色(工具圖示底色),方便分辨。
    用法:每一頁在 </head> 前面加 <link rel="stylesheet" href="ui.css">(要放在頁面自己的 <style> 後面,才蓋得過各頁舊的設定)。
@@ -15,7 +15,8 @@
      .chip2.on          篩選小按鈕選中時用主色
      #fCert             「證照」篩選是分段切換(領隊 / 導遊 / 全部)
      頁首下方的列       切換列、篩選列、作答列(.bar .tabs .certbar .toolbar .nav .kbar)和頁面同底色,列裡的輸入框白底
-   變更履歷:v319 頁首下方的切換列、篩選列、作答列改成和頁面同底色(不再是整條白色橫帶、拿掉陰影,保留細線),
+   變更履歷:v325 頁首下方的列平常不顯示分隔線,黏在頂端、蓋住下方內容時才出現細線與淡陰影(prefs.js 加 is-stuck)
+             v319 頁首下方的切換列、篩選列、作答列改成和頁面同底色(不再是整條白色橫帶、拿掉陰影,保留細線),
              列裡的搜尋框與下拉選單改白底
              v302 改成暖米色 + 深青綠(原本冷灰 + 藍),頁首不再是白色色塊,加分類色
              v300 初版(淺色頁首、單一主色、返回連結、證照分段切換) */
@@ -64,8 +65,10 @@ header .home:hover,header .hubl:hover,header .home:focus-visible,header .hubl:fo
 #fCert .chip2:hover{color:var(--ink)}
 #fCert .chip2.on{background:var(--card);color:var(--ink);box-shadow:var(--ui-shadow);font-weight:700}
 
-/* 頁首下方的切換列、篩選列、作答列:和頁面同底色(不再是整條白色橫帶);黏頂時靠原本的細線和下面的內容分開 */
-body>.bar,body>.tabs,body>.certbar,body>.toolbar,body>.nav,.ktab>.toolbar,.ktab>.kbar,#quiz>.bar{background:var(--bg);box-shadow:none}
+/* 頁首下方的切換列、篩選列、作答列:和頁面同底色(不再是整條白色橫帶),平常不顯示分隔線;
+   黏在頂端、蓋住下方內容時(prefs.js 加 is-stuck)才出現細線與淡陰影 */
+body>.bar,body>.tabs,body>.certbar,body>.toolbar,body>.nav,.ktab>.toolbar,.ktab>.kbar,#quiz>.bar{background:var(--bg);box-shadow:none;border-bottom-color:transparent;transition:border-color .15s,box-shadow .15s}
+body>.bar.is-stuck,body>.tabs.is-stuck,body>.toolbar.is-stuck,body>.nav.is-stuck,.ktab>.toolbar.is-stuck,.ktab>.kbar.is-stuck,#quiz>.bar.is-stuck{border-bottom-color:var(--line);box-shadow:0 2px 6px rgba(43,42,39,.07)}
 /* 列裡的搜尋框、下拉選單改白底:米色底上才看得出是輸入框(#q 是幾頁用 id 寫死米色底的搜尋框) */
 body>.bar input:not([type=checkbox]):not([type=radio]):not([type=range]),body>.bar select,
 body>.toolbar input:not([type=checkbox]):not([type=radio]):not([type=range]),body>.toolbar select,

@@ -13,6 +13,7 @@
    需搭配:各頁深色區塊已改寫為
      @media(...dark){:root:not([data-theme="light"]){…}}  +  :root[data-theme="dark"]{…}
    變更履歷:
+     v325 (2026-11-24) 頁首下方的切換列、篩選列黏在頂端時加 is-stuck(ui.css 依此顯示細線與淡陰影)
      v1 (2026-09-29) 初版
 */
 (function(){
@@ -104,6 +105,22 @@
     });
     document.addEventListener('click',function(){ panel.classList.remove('on'); });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inject);
-  else inject();
+  /* v325 頁首下方的切換列、篩選列:黏在頂端、蓋住下方內容時才加 is-stuck(ui.css 依此顯示細線與淡陰影),平常和頁面融在一起。
+     作法:在每個黏頂的列前面放一個 1px 的隱形探針,探針捲出黏頂位置以上就代表這一列已經黏住 */
+  function markStuck(){
+    if(!('IntersectionObserver' in window))return;
+    var bands=document.querySelectorAll('body>.bar,body>.tabs,body>.certbar,body>.toolbar,body>.nav,.ktab>.toolbar,.ktab>.kbar,#quiz>.bar');
+    Array.prototype.forEach.call(bands,function(el){
+      var cs=getComputedStyle(el); if(cs.position!=='sticky')return;
+      var top=parseFloat(cs.top)||0, p=document.createElement('div');
+      p.className='stuck-probe'; p.setAttribute('aria-hidden','true');
+      p.style.cssText='height:1px;margin-bottom:-1px;visibility:hidden;pointer-events:none';
+      el.parentNode.insertBefore(p,el);
+      new IntersectionObserver(function(es){ var e=es[es.length-1]; el.classList.toggle('is-stuck',!e.isIntersecting&&e.boundingClientRect.top<top+1); },
+        {rootMargin:(-top-1)+'px 0px 0px 0px',threshold:0}).observe(p);
+    });
+  }
+  function ready(){ inject(); markStuck(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready);
+  else ready();
 })();

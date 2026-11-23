@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v305(2026-11-19)
+<!-- 講義 · v325(2026-11-24)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v305 新增「考法拆解」區塊(how:本章歷屆怎麼考、怎麼破解);重點整理可以自訂標題(key 的 h,例:延伸重點);小節標題 x:1 = 延伸補充(不分配歷屆題);
+     變更履歷:v325 圖解加示意圖用的繪圖樣式(海、岩石、山、扇形地分帶、河流、湧泉、地下水面),用半透明色,淺色深色都看得清楚
+              v305 新增「考法拆解」區塊(how:本章歷屆怎麼考、怎麼破解);重點整理可以自訂標題(key 的 h,例:延伸重點);小節標題 x:1 = 延伸補充(不分配歷屆題);
                    每節練習分配題目時不算章末的解題技巧、陷阱、時效、條文、範例、自我檢測(避免最後一節通吃)
               v304 本節練習加「看這節全部 N 題的問與答」:這節分到的每一題列出題目與正解(英語、日語附題目中譯),最多列最近的 40 題;
                    官方送分題標「一律給分」,不放進本節練習的 3 題
@@ -189,6 +190,23 @@
   .jfig .ln{stroke:var(--line);stroke-width:3}
   .jfig .d1{fill:var(--sel)} .jfig .d2{fill:var(--warn)}
   .jfig .bar{fill:var(--sel)} .jfig .bar.r{fill:var(--warn)}
+  /* v325 示意圖(地形剖面、俯視):半透明色,淺色深色都看得清楚 */
+  .jfig .gr{fill:rgba(150,111,74,.32);stroke:rgba(120,86,52,.85);stroke-width:1.3;stroke-linejoin:round}
+  .jfig .gc{fill:rgba(40,30,20,.5)}
+  .jfig .gh{fill:var(--card);stroke:rgba(120,86,52,.85);stroke-width:1.3}
+  .jfig .gs{fill:rgba(56,132,199,.3)}
+  .jfig .gw{fill:none;stroke:rgba(37,99,166,.8);stroke-width:1.5;stroke-linecap:round}
+  .jfig .gm{fill:rgba(120,110,95,.32);stroke:rgba(95,85,70,.8);stroke-width:1.2;stroke-linejoin:round}
+  .jfig .g1{fill:rgba(176,128,72,.38);stroke:rgba(140,100,55,.7);stroke-width:1}
+  .jfig .g2{fill:rgba(214,178,107,.34);stroke:rgba(170,135,70,.6);stroke-width:1}
+  .jfig .g3{fill:rgba(120,170,90,.3);stroke:rgba(90,140,65,.6);stroke-width:1}
+  .jfig .gv{fill:none;stroke:rgba(37,99,166,.85);stroke-width:2.2;stroke-linecap:round}
+  .jfig .gvd{fill:none;stroke:rgba(37,99,166,.7);stroke-width:1.6;stroke-dasharray:4 3;stroke-linecap:round}
+  .jfig .gp{fill:rgba(37,99,166,.9)}
+  .jfig .gk{fill:rgba(150,111,74,.55);stroke:rgba(120,86,52,.9);stroke-width:1}
+  .jfig .gg{fill:rgba(150,111,74,.22);stroke:rgba(120,86,52,.9);stroke-width:1.6;stroke-linejoin:round}
+  .jfig .gwt{fill:none;stroke:rgba(37,99,166,.9);stroke-width:1.6;stroke-dasharray:5 3}
+  .jfig .gd{fill:rgba(120,86,52,.55)}
   /* v285 重點整理卡:原本畫成「方框由上而下排列」的純文字圖改成條列卡(左欄標題、右欄說明;手機改上下排);標題用所在小節的強調色 */
   .jcard{margin:12px 0;background:var(--card);border:0;border-radius:14px;padding:10px 12px 8px}
   .jcard ul{list-style:none;margin:0;padding:0}
