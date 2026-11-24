@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v309
+/* jy_en.js — 講義:外語英語 · v328
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子 / 例子中譯 / 第 7 欄 { s 同義字, a 反義字 })、
    發音提醒(pron)、文法重點(gram),加上整理卡、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v328 (2026-11-24) 第 9 章閱讀測驗加示範例題(自編短文:一篇看懂六種題型、However 後面才是重點);考法拆解、解題技巧、易錯陷阱每條加「例」
      v309 (2026-11-19) 9 章加「本章考法拆解」(how,章首;依歷屆題型與各章解題技巧整理)
      v288 (2026-11-17) 單字表加同義字、反義字(706 個字;依該章的中文意思選常用的,沒有自然的就不放)
      v285 (2026-11-17) 各章圖解(方框條列文字,27 張)改成重點整理卡(card)
@@ -2049,7 +2050,11 @@ const JY_EN = {
         '**先讀題目與選項**再讀文章:知道要找什麼,讀的時候就會停在答案附近。',
         '**細節題用關鍵字定位**:人名、地名、數字、年份與大寫的專有名詞最好找;細節題大多照文章順序出。',
         '**字義題**把四個選項代回原句,意思通順又符合上下文的就是答案。',
-        '**時間分配**:先做字義、指代、細節題;主旨與推論題要讀完全文才看得準,可以最後做。'] },
+        '**時間分配**:先做字義、指代、細節題;主旨與推論題要讀完全文才看得準,可以最後做。'],
+        eg: ['看下方「示範例題」第 2 題:先知道要找「攤商被要求做什麼」,讀到 ask vendors 那一句就停下來。',
+          '示範第 2 題用 vendors、ask 定位到第 2 段;題目裡有數字、人名、地名時更好找。',
+          '示範第 4 題把 full / empty / wrapped / quiet 代回 packed with stalls,只有 full(擠滿)通順。',
+          '示範的 6 題裡,第 4、5 題(字義、指代)看一兩句就能答,先做;第 1 題主旨題讀完全文再做。'] },
       { t: 'h', text: '一、情境會話' },
       { t: 'p', html: '閱讀測驗是英語科的第 71 到 80 題:每年 2 篇文章、各 5 題,考主旨、細節、字義、指代與推論。文章主題多是<b>永續觀光、旅遊趨勢、交通、科技與台灣文化</b>。先用三段會話練習讀懂說明牌、新聞與公告,再學解題步驟。' },
       { t: 'dlg', h: '看懂景點說明牌(that is、in other words)', who: ['Guide 導遊', 'Tourist 遊客'], lines: [
@@ -2094,6 +2099,36 @@ const JY_EN = {
         rows: [['What is the passage mainly about?', '本文主要在談什麼', '第一段與最後一段,要涵蓋全文'], ['What is the best title for the passage?', '最適合的標題', '同主旨題,不能只講一段'], ['What is the purpose of the passage?', '寫作目的', '看作者立場:介紹、提醒、說服或比較'],
           ['According to the passage, ...?', '根據本文…', '用關鍵字回文章定位'], ['Which statement is TRUE / NOT true?', '何者正確 / 錯誤', '每個選項回文核對'], ['Which is NOT mentioned?', '何者沒有提到', '刪掉有提到的三個'],
           ['closest in meaning to "X"', '和 X 意思最接近', '看 X 前後的線索'], ['What does "it / them" refer to?', 'it / them 指的是什麼', '往前找最近的名詞'], ['What can be inferred?', '可以推論出什麼', '有根據、不說死的選項'], ['What does the sentence suggest?', '這句話暗示什麼', '看前後文的轉折']] },
+      { t: 'demo', h: '一篇短文看懂六種題型', note: '短文與題目為自編示範,內容只用來練習題型;正式考題請看下面的歷屆範例。',
+        psg: ['In many Taiwanese cities, night markets open after dark and stay busy until midnight. The narrow lanes are packed with stalls selling snacks such as oyster omelets, grilled squid and bubble tea. For many visitors, tasting street food here is the highlight of their trip.',
+          'However, the markets also face problems. Crowds leave large amounts of trash, and some nearby residents complain about the noise. To deal with this, some markets now ask vendors to use reusable bowls, and others have set up more recycling stations. Officials hope these changes will keep the markets lively but cleaner.'],
+        pz: ['在台灣許多城市,夜市天黑後開張,一直熱鬧到半夜。狹窄的巷子擠滿攤位,賣蚵仔煎、烤魷魚、珍珠奶茶等小吃。對許多遊客來說,在這裡吃小吃是整趟旅程的最高潮。',
+          '不過,夜市也有問題。人潮留下大量垃圾,附近有些居民抱怨噪音。為了解決這些問題,有些夜市現在要求攤商使用可重複使用的碗,也有夜市增設了資源回收站。官員希望這些改變能讓夜市熱鬧依舊,但更乾淨。'],
+        qs: [
+          { type: '主旨題', q: 'What is the passage mainly about?', qz: '本文主要在談什麼?',
+            opts: ['How to cook oyster omelets', 'The appeal of night markets and the problems they face', 'Why residents want to close night markets', 'The history of bubble tea'],
+            oz: ['怎麼煎蚵仔煎', '夜市的魅力與面臨的問題', '居民為什麼想關掉夜市', '珍珠奶茶的歷史'], ans: 1,
+            steps: ['看頭尾兩段:第 1 段講夜市的吸引力(小吃),第 2 段用 However 轉折,講問題(垃圾、噪音)與改善做法。', '主旨要涵蓋兩段 → B。A、D 只是第 1 段的細節或根本沒提;C 文章沒說居民要關夜市,是過度推論。'] },
+          { type: '細節題', q: 'According to the passage, what have some markets asked vendors to do?', qz: '根據本文,有些夜市要求攤商做什麼?',
+            opts: ['Close before midnight', 'Sell fewer snacks', 'Lower their prices', 'Use bowls that can be used again'],
+            oz: ['半夜前收攤', '少賣一些小吃', '降低價格', '使用可以再次使用的碗'], ans: 3,
+            steps: ['用題目的關鍵字 vendors、ask 回文章定位:第 2 段 ask vendors to use reusable bowls。', 'reusable = can be used again,正解把原文換個說法 → D。A 的 midnight 出現在第 1 段,講的是營業到半夜,不是規定(偷換)。'] },
+          { type: 'NOT 題', q: 'Which of the following is NOT mentioned as a snack sold at night markets?', qz: '下列哪一個不是本文提到的夜市小吃?',
+            opts: ['Grilled squid', 'Bubble tea', 'Stinky tofu', 'Oyster omelets'],
+            oz: ['烤魷魚', '珍珠奶茶', '臭豆腐', '蚵仔煎'], ans: 2,
+            steps: ['先把 NOT 圈起來:要找文章「沒提到」的那一個。', '回第 1 段核對 snacks such as oyster omelets, grilled squid and bubble tea,刪掉提到的三個 → C。臭豆腐雖然是常見的夜市小吃,但文章沒寫(常識腦補陷阱)。'] },
+          { type: '字義題', q: 'The word "packed" in the first paragraph is closest in meaning to ___.', qz: '第 1 段的 packed 意思最接近哪一個?',
+            opts: ['full', 'empty', 'wrapped', 'quiet'],
+            oz: ['滿的', '空的', '包裝好的', '安靜的'], ans: 0,
+            steps: ['看前後文:narrow lanes are packed with stalls(狹窄的巷子 ___ 攤位)。', '把選項代回原句:只有 full(擠滿)通順 → A。B empty 是反義陷阱;C wrapped 是 pack(打包)的另一個意思,放回句子不通。'] },
+          { type: '指代題', q: 'What does "these changes" in the last sentence refer to?', qz: '最後一句的 these changes 指的是什麼?',
+            opts: ['The complaints from residents', 'Visitors tasting street food', 'Using reusable bowls and adding recycling stations', 'Markets staying open until midnight'],
+            oz: ['居民的抱怨', '遊客吃小吃', '使用可重複使用的碗、增設回收站', '夜市營業到半夜'], ans: 2,
+            steps: ['指代題往前找最近的內容:these changes 的前一句講的是 reusable bowls 和 recycling stations。', '代回原句:官員希望「用環保碗、加回收站」能讓夜市更乾淨,說得通 → C。'] },
+          { type: '推論題', q: 'What can be inferred from the passage?', qz: '從本文可以推論出什麼?',
+            opts: ['Night markets will soon disappear.', 'All residents dislike night markets.', 'Tourists prefer restaurants to street food.', 'Officials want to solve the problems without closing the markets.'],
+            oz: ['夜市很快就會消失。', '所有居民都討厭夜市。', '遊客比較喜歡餐廳,不愛小吃。', '官員想在不關掉夜市的情況下解決問題。'], ans: 3,
+            steps: ['推論要有文章根據:最後一句 keep the markets lively but cleaner,既要更乾淨(解決垃圾問題),又要熱鬧依舊(不關掉夜市)→ D。', 'B 的 All 講太滿(原文是 some residents);A 文章沒說;C 和第 1 段的 highlight(最高潮)相反。'] }] },
       { t: 'ex', key: 'leader-115-71', steps: ['第 1 段講觀光帶來收入與工作(好處);第 2 段用 However 轉折,講利潤多流向外資、物價上漲(壞處)。', '標題要兩面都涵蓋:Effects Caused by Tourism(C);Benefits Brought by Tourism 只講好處,是以偏概全。'] },
       { t: 'h', text: '三、細節題:TRUE、NOT 與換句話說' },
       { t: 'p', html: '細節題很少照抄原文:正確選項通常把原句換個說法,可能是同義字(urgent = pressing)、詞性轉換、主動改被動,或把例子換成總稱(hotels, restaurants and shops = local businesses)。所以找到關鍵句後,要比對「意思」而不是比對字面;反過來,和原文字面最像的選項,常是偷換了對象、數字或範圍的陷阱。NOT 題先刪掉三個文章有寫的,剩下的就是答案。' },
@@ -2152,6 +2187,13 @@ const JY_EN = {
           ['109', '與「愛」有關的博物館;避開人潮、探索冷門旅遊地', '無菜單創意餐廳評論;塑膠污染'], ['108', '台灣溫泉觀光的優劣勢;科技如何改變觀光業', '永續發展與認證森林;噁心食物博物館'],
           ['107', '台瑞合作的漆藝展;速度時代下的火車旅行懷舊', '自拍亭與品牌行銷;個人空間與碰觸文化'], ['106', '豪華單車與健行旅遊;全球暖化與冰河期', '孟買便當快遞員;地質旅遊']],
         note: '永續與綠色觀光幾乎每年都考;近年加入 AI、自駕車、無人機等科技主題,也常以台灣景點(阿里山、龍山寺、小琉球)為題。' },
+      { t: 'demo', h: 'However 後面才是重點', note: '自編示範短文。',
+        psg: ['Many people think spring is the best time to visit Japan because of the cherry blossoms. However, autumn is less crowded, hotels are cheaper, and the red maple leaves are just as beautiful.'],
+        pz: ['很多人認為因為有櫻花,春天是去日本最好的時候。不過,秋天人比較少、飯店比較便宜,紅葉也一樣美。'],
+        type: '主旨題', q: 'What does the writer mainly want to say?', qz: '作者主要想說什麼?',
+        opts: ['Spring is the best season to visit Japan.', 'Hotels in Japan are always expensive.', 'Autumn is also a great time to visit Japan.', 'Cherry blossoms are more beautiful than maple leaves.'],
+        oz: ['春天是去日本最好的季節。', '日本的飯店總是很貴。', '秋天也是去日本的好時機。', '櫻花比楓葉美。'], ans: 2,
+        steps: ['However 前面是「很多人認為」(別人的看法),後面才是作者的重點:秋天人少、便宜,紅葉一樣美 → C。', 'A 是 However 前面別人的看法;B 的 always 講太滿,原文只說秋天比較便宜;D 和 just as beautiful(一樣美)不符。'] },
       { t: 'h', text: '六、常考的字' },
       { t: 'p', html: '閱讀文章的主題多半是永續觀光、旅遊趨勢、交通科技與臺灣文化,這一節依主題整理歷屆文章與題目裡的字,也列出字義題考過的難字。題目用語(infer、imply、primarily、closest in meaning)一定要先認得,才看得懂題目在問什麼;主題字讀過一次,下次遇到同類文章就能讀得快。' },
       { t: 'vocab', h: '題目用語', items: [
@@ -2252,7 +2294,12 @@ const JY_EN = {
         '細節題用**關鍵字定位**:人名、地名、數字、年份與大寫的專有名詞最好找。',
         '細節題大多照文章順序出:找不到時,往上一題答案的附近找。',
         '字義題把四個選項**代回原句**,意思通順又符合上下文的就是答案。',
-        '時間不夠時先做字義、指代、細節題;主旨與推論題要讀完全文才看得準,可以最後做。'] },
+        '時間不夠時先做字義、指代、細節題;主旨與推論題要讀完全文才看得準,可以最後做。'],
+        eg: ['題目問 What time does the museum close? → 讀文章時只找時間,看到 closes at 5 p.m. 就停,不用整篇逐字讀。',
+          '題目問 Where did the festival start in 2015? → 用 2015、festival 回文章掃,數字最顯眼,一眼就能找到那一句。',
+          '第 1 題的答案在第 1 段最後一句 → 第 2 題的答案通常在它後面(第 1 段末到第 2 段),不用從頭再找。',
+          'The lanes are packed with stalls.(選項 full / empty / wrapped / quiet)→ 代回去只有 full 通順:巷子擠滿攤位。',
+          '剩 5 分鐘、還有一篇沒讀 → 先做 closest in meaning to、What does it refer to 這種看一兩句就能答的題,主旨題最後再做。'] },
       { t: 'mn', h: '閱讀四步驟', text: '「先題、定位、比對、刪去」', ex: '先讀題目知道要找什麼,用關鍵字回文章定位,把選項和原句比對(認出換句話說),最後刪掉相反、沒提到、講太滿的選項。' },
       { t: 'trap', items: [
         '**以偏概全**:選項內容文章有提到,但只講其中一段,不能當主旨或標題。',
@@ -2260,7 +2307,13 @@ const JY_EN = {
         '**常識腦補**:選項聽起來合理,但文章沒寫,就不能選。',
         '**過度推論**:outweigh、always、the best 這類講太滿的說法,文章沒有說死就不能選。',
         '**反義陷阱**:字義題常放反義字當選項(subdued 的選項裡有 bright、colorful)。',
-        '**看漏否定字**:NOT、EXCEPT、FALSE 沒圈起來,很容易選成相符的那一個。'] },
+        '**看漏否定字**:NOT、EXCEPT、FALSE 沒圈起來,很容易選成相符的那一個。'],
+        eg: ['文章前半講夜市小吃、後半講垃圾問題;選項 Popular Snacks at Night Markets 只涵蓋前半,不能當標題。',
+          '原文 The bridge opened two years ago,選項寫 five years ago:字句很像,數字被換掉了。',
+          '文章列的小吃是蚵仔煎、烤魷魚、珍奶;選項 stinky tofu(臭豆腐)雖然夜市常見,文章沒寫就不能選。',
+          '原文 some residents complain(有些居民抱怨),選項 All residents dislike night markets 把 some 說成 all,講太滿。',
+          '',
+          'Which is NOT mentioned? 沒圈 NOT 的話,很容易順手選了文章有提到的 bubble tea。'] },
       { t: 'stale', text: '本章依 106–115 年英語科第 71–80 題(200 題、40 篇文章)整理;文章內容(例如票價、科技與產業現況)以出題當年為準,現在可能已有變動。' },
       { t: 'self', items: [
         ['英語科的閱讀測驗是第幾題?有幾篇文章?', '第 71–80 題;2 篇文章,各 5 題'],

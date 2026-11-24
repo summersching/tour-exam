@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v326(2026-11-24)
+<!-- 講義 · v328(2026-11-24)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v326 示意圖再加火山、珊瑚礁、玄武岩、舊海面、河道、堤防、滯洪池、皮膚分層、人形的繪圖樣式
+     變更履歷:v328 範例:解題技巧、易錯陷阱、考法拆解每條可加「例」(eg 陣列,與 items 對齊,空字串 = 不附);新增示範例題區塊(demo,自編短文與題目,附答案與解題步驟;快速複習也顯示、朗讀會唸、不算進每節練習的小節內容)
+              v326 示意圖再加火山、珊瑚礁、玄武岩、舊海面、河道、堤防、滯洪池、皮膚分層、人形的繪圖樣式
               v325 圖解加示意圖用的繪圖樣式(海、岩石、山、扇形地分帶、河流、湧泉、地下水面),用半透明色,淺色深色都看得清楚
               v305 新增「考法拆解」區塊(how:本章歷屆怎麼考、怎麼破解);重點整理可以自訂標題(key 的 h,例:延伸重點);小節標題 x:1 = 延伸補充(不分配歷屆題);
                    每節練習分配題目時不算章末的解題技巧、陷阱、時效、條文、範例、自我檢測(避免最後一節通吃)
@@ -576,6 +577,23 @@
   .jhow .mh svg{width:20px;height:20px}
   .jhow ul{margin:0;padding-left:1.2em;font-size:.92rem;line-height:1.7}
   .jhow li{margin:4px 0}
+  /* v328 範例:解題技巧、陷阱、考法拆解每條底下的「例」;示範例題(自編) */
+  .ieg{margin:4px 0 6px;padding:5px 10px;border-radius:8px;background:var(--bg);font-size:.86rem;line-height:1.65}
+  .ieg .iegl{display:inline-block;margin-right:6px;padding:0 7px;border-radius:999px;background:var(--c2);color:var(--card);font-size:.72rem;font-weight:800;line-height:1.5}
+  .jhow .ieg{background:var(--card)}
+  .jdemo{background:var(--card);border:1px dashed var(--c2);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .jdemo .src{font-size:.74rem;color:var(--c2);font-weight:700}
+  .jdemo .dpsg{background:var(--bg);border-radius:10px;padding:4px 12px;margin:8px 0;font-size:.92rem;line-height:1.75}
+  .jdemo .dpsg p{margin:6px 0}
+  .jdemo .dpz{margin:4px 0 6px;font-size:.84rem;color:var(--sub)} .jdemo .dpz summary{cursor:pointer;font-weight:700;color:var(--c2)}
+  .jdemo .dq{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+  .jdemo .dty{display:inline-block;font-size:.72rem;font-weight:800;color:var(--c2);border:1px solid var(--c2);border-radius:999px;padding:0 8px}
+  .jdemo .stem{font-weight:700;margin:4px 0}
+  .jdemo .szh{font-size:.84rem;color:var(--sub);margin:-2px 0 4px}
+  .jdemo .op{font-size:.88rem;padding:2px 0} .jdemo .op.ok{color:var(--ok);font-weight:800}
+  .jdemo .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
+  .jdemo ol{margin:6px 0;font-size:.88rem;background:var(--bg);border-radius:10px;padding:8px 10px 8px 2em}
+  .jdemo .dnote{font-size:.76rem;color:var(--sub);margin-top:8px}
   @media print{.sq,.nlx{display:none}}
 </style>
 <link rel="manifest" href="manifest.json">
@@ -703,7 +721,7 @@ function renderHot(J){
       + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('');
   });
 }
-const QUICK = { h:1, how:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1 };   // 快速複習顯示的區塊
+const QUICK = { h:1, how:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1, demo:1 };   // 快速複習顯示的區塊(v328 加示範例題)
 const QUIZ_N = 10, PROG_KEY = 'jy_prog';
 /* v253 章節分組:[組名, 起章, 迄章](目錄的分組標籤與標題、章節選單的群組;沒列的科目不分組) */
 const GROUPS = {
@@ -818,6 +836,17 @@ function exHtml(k, b, d){
     ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${esc(clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
     <button class="xopen" type="button" data-xs="${esc(k)}" data-xq="${esc(b.key)}">📖 看完整詳解</button></div>`;
+}
+/* v328 示範例題(demo,自編,不是歷屆題):說明題型與解題技巧用。psg 短文段落、pz 短文中譯(收合)、
+   qs:[{ type 題型, q 題目, qz 題目中譯, opts 四個選項, oz 選項中譯, ans 正解(0~3), steps 解題步驟 }](只有一題時也可直接寫在區塊上);
+   note 補充說明。英、日語的短文與選項點一下會唸 */
+function demoHtml(k, b){
+  const L = k === 'en' || k === 'jp', say = t => L ? ` data-say="${esc(sayText(t))}"` : '', qs = b.qs || [b];
+  const psg = b.psg ? `<div class="dpsg">${b.psg.map(t => `<p${say(t)}>${mk(esc(t))}</p>`).join('')}${b.pz ? `<details class="dpz"><summary>看中譯</summary>${b.pz.map(t => `<p>${esc(t)}</p>`).join('')}</details>` : ''}</div>` : '';
+  return `<div class="jdemo"><div class="src">✏️ 示範例題(自編)${b.h ? ' · ' + esc(b.h) : ''}</div>${psg}` + qs.map((q, n) => `<div class="dq">${q.type ? `<span class="dty">${esc(q.type)}</span>` : ''}
+    <div class="stem">${qs.length > 1 ? (n + 1) + '. ' : ''}${mk(esc(q.q))}</div>${q.qz ? `<div class="szh">${esc(q.qz)}</div>` : ''}
+    ${q.opts.map((o, i) => `<div class="op${i === q.ans ? ' ok' : ''}"${say(o)}>${'ABCD'[i]}. ${mk(esc(o))}${q.oz && q.oz[i] ? ` <span class="oz">${esc(q.oz[i])}</span>` : ''}${i === q.ans ? ' ✔' : ''}</div>`).join('')}
+    <ol>${q.steps.map(x => `<li>${mk(esc(x))}</li>`).join('')}</ol></div>`).join('') + (b.note ? `<div class="dnote">${esc(b.note)}</div>` : '') + '</div>';
 }
 function selfHtml(b){
   return `<div class="jself"><div class="mh">⏱ 一分鐘自我檢測</div><ol>${b.items.map(([q,a])=>`<li>${esc(q)}<button class="ans mask" type="button">${esc(a)}</button></li>`).join('')}</ol></div>`;
@@ -986,6 +1015,7 @@ function hl(s){   // s 已經過 esc()
   return out + hlNum(s.slice(last));
 }
 function mk(s){ return rb(s.replace(HL_MARK, '<b class="kn">$1</b>')); }   // 只轉手動標記;v263 {漢字|かな} 顯示成注音
+const egHtml = (b, i) => { const e = b.eg && b.eg[i]; return e ? `<div class="ieg"><span class="iegl">例</span>${mk(esc(e))}</div>` : ''; };   // v328 解題技巧、陷阱、考法拆解每條的範例(eg 與 items 對齊)
 /* v253 長段落自動條列:依句號、分號拆成一條一條(只在 <b>、括號、引號之外拆;分號前不到 18 字不拆);
    每條開頭是「短語:」的,把短語標成小標。內容文字不變,只改排版 */
 function pHtml(html){
@@ -1014,19 +1044,20 @@ function blockHtml(k, b, d){
     case 'h': return `<h3 class="jh">${esc(b.text)}</h3>`;
     case 'p': return pHtml(b.html);
     case 'key': return `<div class="jkeyb"><div class="mh">${b.h ? esc(b.h) : '📌 重點整理'}</div><ul class="jkey">${b.items.map(x=>`<li>${hl(esc(x))}</li>`).join('')}</ul></div>`;
-    case 'how': return `<div class="jhow"><div class="mh">${IC('route')}<span>本章考法拆解</span></div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;   // v305
+    case 'how': return `<div class="jhow"><div class="mh">${IC('route')}<span>本章考法拆解</span></div><ul>${b.items.map((x,i)=>`<li>${mk(esc(x))}${egHtml(b,i)}</li>`).join('')}</ul></div>`;   // v305;v328 每條可附例
     case 'fig': return figHtml(b);
     case 'card': return cardHtml(b);
     case 'map': return mapHtml(b);
     case 'link': return `<a class="jlink" href="${esc(b.href)}">${esc(b.text)}</a>`;
     case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
     case 'mn': return mnHtml(b, false);
-    case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;
-    case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul></div>`;
+    case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map((x,i)=>`<li>${mk(esc(x))}${egHtml(b,i)}</li>`).join('')}</ul></div>`;
+    case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map((x,i)=>`<li>${mk(esc(x))}${egHtml(b,i)}</li>`).join('')}</ul></div>`;
     case 'cmp': return cmpHtml(b);
     case 'stale': return `<div class="jstale">⏱ <b>時效提醒</b>:${esc(b.text)} <a href="法規異動.html">看「新制與法規異動」→</a></div>`;
     case 'law': return `<div class="jlaw"><div class="mh">⚖️ 條文原文</div><dl>${b.items.map(([n,t])=>`<dt>${esc(n)}${lawRefLink(n)}</dt><dd>${esc(t)}</dd>`).join('')}</dl></div>`;
     case 'ex': return exHtml(k, b, d);
+    case 'demo': return demoHtml(k, b);   // v328
     case 'self': return selfHtml(b);
     case 'vocab': return vocabHtml(b, d);
     case 'dlg': return dlgHtml(b, d);
@@ -1061,7 +1092,7 @@ function hydrateLawRef(){
    長段切成短句再唸(部分瀏覽器長句會中斷);朗讀中點任一區塊 → 從那裡開始;語速記在 pref_jy_rate */
 const TTS = (() => {
   const SS = window.speechSynthesis, RATES = [0.8, 1, 1.2, 1.5];
-  const SEL = '.chhead, .exam, .jhow, .jh, .jp, .jkey, .jfig, .jcard, .jmap, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jself, .jvoc, .jdlg, .jgram, .jpron';
+  const SEL = '.chhead, .exam, .jhow, .jh, .jp, .jkey, .jfig, .jcard, .jmap, .jtbl, .jmn, .jtip, .jtrap, .jcmp, .jstale, .jlaw, .jex, .jdemo, .jself, .jvoc, .jdlg, .jgram, .jpron';
   let Q = [], bi = 0, si = 0, on = false, paused = false, tok = 0, voice = null, enVoice = null, jaVoice = null;
   let rate = +PRACTICE.LSget('pref_jy_rate', 1); if (RATES.indexOf(rate) < 0) rate = 1;
   const pickVoice = () => { const vs = SS ? SS.getVoices() : []; voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_](Hant|HK)/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
@@ -1092,6 +1123,8 @@ const TTS = (() => {
       const ok = [...el.querySelectorAll('.op.ok')].map(o => T(o).replace(/✔/g, '').trim()).join(',或 ');
       return ['歷屆範例：' + T(el.querySelector('.stem')), ok && '正確答案 ' + ok, lis(el)].filter(Boolean).join('。');
     }
+    if (el.matches('.jdemo')) return ['示範例題'].concat([...el.querySelectorAll('.dq')].map(q => { const ok = q.querySelector('.op.ok');   // v328 題目、正解、步驟(短文點段落另外唸)
+      return [T(q.querySelector('.stem')), ok && '正確答案 ' + T(ok).replace(/✔/g, '').trim(), lis(q)].filter(Boolean).join('。'); })).join('。');
     if (el.matches('.jself')) return T(el.querySelector('.mh')) + '。' + [...el.querySelectorAll('li')].map(li => { const a = li.querySelector('.ans'); return T(li).replace(T(a), '').trim() + '。答案：' + T(a); }).join('。');
     if (el.matches('ul.jp')) return lis(el);   // v253 條列段落:一條一句
     return T(el);
@@ -1333,7 +1366,8 @@ function artLink(html, cid, sec){
    本章相關新制:newlaw.js 的新制卡,相關歷屆題屬於本章就列出(那些舊題的答案可能已改)
    考前速記:把本章的口訣、有數字的表格、易錯陷阱、自我檢測集中在一個視窗;外語:本章最常考的字、句型、發音提醒 */
 const SQ_N = 3, SQ_MIN = 0.04;   // 每節最多出幾題;相似度低於 SQ_MIN 的題目不分配
-const SQ_SKIP = new Set(['tip', 'trap', 'stale', 'law', 'ex', 'self', 'link', 'how']);   // v305 章末彙整的區塊不算進小節內容(它們放在最後一節,但講的是整章)
+const SQ_SKIP = new Set(['tip', 'trap', 'stale', 'law', 'ex', 'self', 'link', 'how']);
+SQ_SKIP.add('demo');   // v328 示範例題(自編)也不算進小節內容   // v305 章末彙整的區塊不算進小節內容(它們放在最後一節,但講的是整章)
 const SQ_STOP = new Set('the and for with that this from are was were you your have has had will would can could should may might not but all any one two three which what who whom whose when where why how into onto about than then them they their there these those its our out off over under very just also only more most much many some such each other another'.split(' '));
 const IC = n => (window.ICONS ? ICONS.svg(n) : '');
 function sqToks(s){
