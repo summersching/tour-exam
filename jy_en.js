@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v328
+/* jy_en.js — 講義:外語英語 · v332
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子 / 例子中譯 / 第 7 欄 { s 同義字, a 反義字 })、
    發音提醒(pron)、文法重點(gram),加上整理卡、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v332 (2026-11-24) 第 1~8 章解題技巧每條加「例」(32 個自編小題,附選項與判斷理由)
      v328 (2026-11-24) 第 9 章閱讀測驗加示範例題(自編短文:一篇看懂六種題型、However 後面才是重點);考法拆解、解題技巧、易錯陷阱每條加「例」
      v309 (2026-11-19) 9 章加「本章考法拆解」(how,章首;依歷屆題型與各章解題技巧整理)
      v288 (2026-11-17) 單字表加同義字、反義字(706 個字;依該章的中文意思選常用的,沒有自然的就不放)
@@ -222,7 +223,11 @@ const JY_EN = {
         '先找情境關鍵字:看到 Green Channel、duty-free → 申報(declare);看到 seat belt、cabin → 機上廣播。',
         '看空格前後的詞性:the、of 後面多半填名詞(validity、declaration、allowance),be 動詞後面多半填形容詞(valid、fragile、complimentary)。',
         '背搭配不背單字:baggage allowance、boarding pass、overhead compartment、connecting flight、file a claim。',
-        '對話題用疑問詞對答案:How long → 一段時間;Where → 地點;Could you → Sure / I am afraid …。'] },
+        '對話題用疑問詞對答案:How long → 一段時間;Where → 地點;Could you → Sure / I am afraid …。'],
+        eg: ['題目:Passengers with nothing to ___ may use the Green Channel.(declare / board / fasten / transfer)→ 看到 Green Channel → declare(申報)。',
+          '題目:Your passport must be ___ for at least six months.(valid / validity / validate / validly)→ be 動詞後面填形容詞 → valid。',
+          '題目:Please put your carry-on bag in the overhead ___.(compartment / department / apartment / appointment)→ overhead compartment 是固定搭配(頭頂置物櫃)。',
+          '對話:A: How long will you be staying? B: ___(For two weeks. / At the Grand Hotel. / By taxi.)→ How long 問一段時間 → For two weeks.'] },
       { t: 'trap', items: [
         '**customs**(海關)要用複數;custom 單數是「習俗」。',
         '**complimentary**(免費招待)不是 complementary(互補的)。',
@@ -445,7 +450,11 @@ const JY_EN = {
         '交通題先找方向與動作:bound for、call at、alighting、transfer;住宿題先找房型與人員:twin、concierge、valet。',
         'trans- 開頭的選項常一起出現:transfer 轉乘、transport 運輸、transplant 移植、transparent 透明。',
         '「免費」有不同說法:complimentary(免費招待)、courtesy(免費禮遇)、free;看搭配:courtesy shuttle、complimentary breakfast。',
-        '看到 prior to、in advance → 和事先預訂、確認有關(reconfirm、book、deposit)。'] },
+        '看到 prior to、in advance → 和事先預訂、確認有關(reconfirm、book、deposit)。'],
+        eg: ['題目:This train is ___ for Kaohsiung.(bound / bind / bond / bounce)→ 看方向 → bound for(開往)。',
+          '題目:You need to ___ to another bus at the next stop.(transfer / transport / transplant / transparent)→ 轉乘 → transfer。',
+          '題目:The hotel offers a ___ shuttle to the airport.(courtesy / courteous / curtain / curious)→ courtesy shuttle(免費接駁)。',
+          '題目:Please reconfirm your flight 72 hours ___ to departure.(prior / prefer / priority / previous)→ prior to(在…之前)。'] },
       { t: 'trap', items: [
         '**twin** room 是兩張單人床,**double** room 才是一張雙人床。',
         '**concierge** 是禮賓員,不是行李員(porter)或門僮(bellhop)。',
@@ -712,7 +721,11 @@ const JY_EN = {
         '餐飲題先判斷空格要的是「人」(vegetarian)、「菜」(entrée)還是「形容詞」(authentic、greasy)。',
         '相反詞常成對出現:overcharged(多收)/ undercharged(少收)、withdraw(提領)/ deposit(存入)。',
         'bargain 一字兩用:a good bargain(名詞,划算貨)、bargain for a good deal(動詞,殺價),用空格前後的詞性判斷。',
-        '對話題抓固定問答:How would you like your steak? → Medium;How would you like to pay? → By credit card。'] },
+        '對話題抓固定問答:How would you like your steak? → Medium;How would you like to pay? → By credit card。'],
+        eg: ['題目:As a ___, she does not eat meat or fish.(vegetarian / vegetable / vegetation / veteran)→ 空格要「人」→ vegetarian。',
+          '題目:I think I was ___; the bill is higher than the menu price.(overcharged / undercharged / discharged / recharged)→ 比菜單貴 → 多收了 → overcharged。',
+          '題目:This jacket was only 20 dollars. What a ___!(bargain / bargained / bargaining / bargains)→ a 後面要單數名詞 → bargain(划算貨)。',
+          '對話:A: How would you like your steak? B: ___(Medium, please. / By credit card. / For here.)→ 問熟度 → Medium, please.'] },
       { t: 'trap', items: [
         '考題裡的 **entrée** 是主菜(main course),不是開胃菜;開胃菜是 appetizer。',
         '**vegan** 比 **vegetarian** 嚴格:連蛋、奶都不吃。',
@@ -1013,7 +1026,11 @@ const JY_EN = {
         '看到 UNESCO、World Heritage → **designated as**(被指定為);看到 in memory of、festival → **commemorate**。',
         '形容美景的選項常一起出現,先看搭配:a breathtaking / panoramic / spectacular view。',
         '介紹景點的句子多是被動語態:is located、was built、is known for,空格前有 be 動詞就想到過去分詞。',
-        '臺灣景點題先認關鍵字:marble → Taroko、pebble → Qixingtan、rock formations → Yehliu、forest railway → Alishan。'] },
+        '臺灣景點題先認關鍵字:marble → Taroko、pebble → Qixingtan、rock formations → Yehliu、forest railway → Alishan。'],
+        eg: ['題目:The park was ___ as a World Heritage Site.(designated / designed / desired / destined)→ 看到 World Heritage → designated as(被指定為)。',
+          '題目:From the top, you can enjoy a ___ view of the city.(panoramic / panic / pandemic / pantomime)→ a panoramic view(全景)。',
+          '題目:The temple ___ in the 18th century.(was built / built / is building / has built)→ 景點介紹多用被動 → was built。',
+          '題目:___ Gorge is famous for its marble cliffs.(Taroko / Qixingtan / Yehliu / Alishan)→ 看到 marble → Taroko。'] },
       { t: 'trap', items: [
         '**dormant** volcano 是休眠火山,**extinct** volcano 才是死火山。',
         '**landmark** 是地標,**landscape** 是地形景觀,**scenery** 是整體風景(不可數)。',
@@ -1261,7 +1278,11 @@ const JY_EN = {
         '帶團題先抓情境:on time → **punctual**;get separated → **assembly point**;plan ahead → **itinerary**。',
         '環保題看正反:less trash → **reusable**;no longer provide plastic → **disposable** 被淘汰。',
         '看到 rules、regulations → **abide by**(遵守);看到 photos of people → **permission**。',
-        '對話題用疑問詞對答案:How long → 一段時間;What time → 時刻;Where → 地點。'] },
+        '對話題用疑問詞對答案:How long → 一段時間;What time → 時刻;Where → 地點。'],
+        eg: ['題目:Please be ___; the bus leaves at eight sharp.(punctual / punctured / punished / puzzled)→ 準時 → punctual。',
+          '題目:Bring your own ___ bottle to reduce trash.(reusable / disposable / refusable / reasonable)→ 要減少垃圾 → reusable(可重複使用)。',
+          '題目:All visitors must ___ by the park rules.(abide / avoid / abort / afford)→ abide by(遵守)。',
+          '對話:A: What time does the tour start? B: ___(At nine. / For three hours. / In the lobby.)→ What time 問時刻 → At nine.'] },
       { t: 'trap', items: [
         '**itinerary** 是行程表;**disorientation** 是迷失方向,不要被字首 dis- 騙。',
         '**reusable** 是可重複使用的,**disposable** 才是拋棄式。',
@@ -1523,7 +1544,11 @@ const JY_EN = {
         '看到 pickpockets、crowded → **fall prey to**、**beware of**;看到 doctor、medicine → **prescription**、**symptoms**。',
         '選項是長得像的字時,先看搭配:take **precautions**、report a **theft**、a **prescription** from your doctor。',
         '天災題看動詞:volcano → **erupt**;typhoon → **hit / strike**;train services → **disrupt**。',
-        '對話題:醫生問 How long have you …? 答一段時間或從何時開始(since this morning)。'] },
+        '對話題:醫生問 How long have you …? 答一段時間或從何時開始(since this morning)。'],
+        eg: ['題目:Tourists in crowded markets may fall ___ to pickpockets.(prey / pray / pay / play)→ fall prey to(成為…的受害者)。',
+          '題目:You need a ___ from your doctor to buy this medicine.(prescription / description / subscription / inscription)→ 看搭配 → a prescription from your doctor(處方箋)。',
+          '題目:Train services were ___ by the typhoon.(disrupted / erupted / corrupted / disposed)→ train services 搭 disrupt(中斷);volcano 才搭 erupt。',
+          '對話:Doctor: How long have you had this cough? Patient: ___(Since Monday. / Twice a day. / At the pharmacy.)→ 問持續多久 → Since Monday.'] },
       { t: 'trap', items: [
         '**prescription**(處方箋)不是 **recipe**(食譜)。',
         '**over-the-counter** 是不需處方箋的成藥,不是「櫃檯後面」的意思。',
@@ -1806,7 +1831,11 @@ const JY_EN = {
         '電話題看動作:轉接 → **transfer** / put through;對方付費 → **collect** call;國碼 → **country code**。',
         '片語題把空格和後面的介系詞連起來讀:___ with coworkers → get along;___ the company → on behalf of。',
         '看到 since + 過去時間、持續到現在 → 現在完成(進行)式:have been + V-ing。',
-        '口語慣用語別照字面翻:under the weather、smart cookie、butter up、cross your fingers。'] },
+        '口語慣用語別照字面翻:under the weather、smart cookie、butter up、cross your fingers。'],
+        eg: ['題目:Could you put me ___ to the front desk?(through / across / over / out)→ 轉接電話 → put through。',
+          '題目:She gets ___ well with her coworkers.(along / across / around / away)→ 空格連後面的 with 一起讀 → get along with(相處)。',
+          '題目:I ___ here since 2020.(have worked / work / worked / am working)→ since + 過去時間 → 現在完成式 have worked。',
+          'I am feeling under the weather today. → 不是「在天氣下面」,是「身體不舒服」。'] },
       { t: 'trap', items: [
         '**collect call** 是對方付費的電話,不是「收集電話」。',
         '**adapter** 只改插頭形狀,不改電壓;電壓不同要用 **converter**。',
@@ -2018,7 +2047,11 @@ const JY_EN = {
         '先看空格後面接什麼:子句 → although / even though;名詞 → **despite**;mind、feel like 後面 → V-ing。',
         '看到 Could you tell me、Do you know、I wonder → 間接問句,選「主詞 + 動詞」不倒裝的選項。',
         '看到 if 子句先看時態:had + p.p. → 主句 would have + p.p.;過去式 → would + 原形。',
-        '名詞後面的修飾語:自己在做選 V-ing(standing nearby),被做的選 p.p.(reserved、hidden、damaged)。'] },
+        '名詞後面的修飾語:自己在做選 V-ing(standing nearby),被做的選 p.p.(reserved、hidden、damaged)。'],
+        eg: ['題目:___ the rain, we went hiking.(Despite / Although / Because / Even though)→ 後面接名詞 the rain → Despite。',
+          '題目:Could you tell me where ___?(the station is / is the station / does the station / the station)→ 間接問句不倒裝 → the station is。',
+          '題目:If I had known, I ___ you.(would have told / will tell / would tell / told)→ if 子句是 had + p.p. → would have told。',
+          '題目:The man ___ near the door is our guide.(standing / stood / stands / to stand)→ 他自己在站 → standing。'] },
       { t: 'trap', items: [
         '**despite** 後面不能接子句(不說 despite it rained);接子句要用 although。',
         '時間、條件子句不用 will:When he **arrives**(不說 when he will arrive)。',
