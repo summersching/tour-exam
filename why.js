@@ -1,4 +1,4 @@
-/* why.js — 中文三科錯因標記(單一來源)· v209
+/* why.js — 中文三科錯因標記(單一來源)· v334
    ------------------------------------------------------------------
    答錯後標「為什麼錯」,錯題本 / 模擬測驗結果 / 儀表板共用:
      WHY.C                       錯因清單 [代碼, 圖示, 名稱, 說明]
@@ -12,6 +12,7 @@
      WHY.tipHtml(s, st)          最常見錯因的建議卡 HTML(沒有標記時回傳空字串)
    存放:localStorage wrong_why = { 'pr2:guide-112-3': 'num', … };題目移出錯題本後仍保留,長期的弱點型態看得到
    變更履歷:
+     v334 (2026-11-24) 錯因提示框拿掉粗左色條(只留細框)
      v209 (2026-11-02) 初版
 */
 (function () {
@@ -38,7 +39,7 @@
       + '.why .wy{border:1.5px solid var(--line,#e2e8f2);background:var(--card,#fff);color:var(--ink,#1c2330);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit}'
       + '.why .wy:hover{border-color:var(--sub,#5a6b82)}'
       + '.why .wy.on{background:var(--sel,#4f46e5);border-color:var(--sel,#4f46e5);color:#fff}'
-      + '.whytip{background:var(--card,#fff);border:1px solid var(--line,#e2e8f2);border-left:4px solid var(--sel,#4f46e5);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.84rem;line-height:1.65}'
+      + '.whytip{background:var(--card,#fff);border:1px solid var(--line,#e2e8f2);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.84rem;line-height:1.65}'
       + '.whytip b{color:var(--ink,#1c2330)} .whytip .wd{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0;color:var(--sub,#5a6b82);font-size:.78rem}'
       + '.whytip a{display:inline-block;margin-top:6px;font-weight:800;text-decoration:none;color:var(--sel,#4f46e5);border:1.5px solid var(--sel,#4f46e5);border-radius:10px;padding:3px 10px}'
       + '@media print{.why{display:none}}';

@@ -1,4 +1,4 @@
-/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v325(2026-11-24)
+/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v334(2026-11-24)
    ------------------------------------------------------------------
    設計方向(A+B):暖米色底 + 深青綠主色,像紙本、安靜好讀;功能或分類各有自己的顏色(工具圖示底色),方便分辨。
    用法:每一頁在 </head> 前面加 <link rel="stylesheet" href="ui.css">(要放在頁面自己的 <style> 後面,才蓋得過各頁舊的設定)。
@@ -15,7 +15,8 @@
      .chip2.on          篩選小按鈕選中時用主色
      #fCert             「證照」篩選是分段切換(領隊 / 導遊 / 全部)
      頁首下方的列       切換列、篩選列、作答列(.bar .tabs .certbar .toolbar .nav .kbar)和頁面同底色,列裡的輸入框白底
-   變更履歷:v325 頁首下方的列平常不顯示分隔線,黏在頂端、蓋住下方內容時才出現細線與淡陰影(prefs.js 加 is-stuck)
+   變更履歷:v334 攻略卡的例子(.egline、.egb 例 / .egb.no 反例),淺色、深色都看得清楚
+             v325 頁首下方的列平常不顯示分隔線,黏在頂端、蓋住下方內容時才出現細線與淡陰影(prefs.js 加 is-stuck)
              v319 頁首下方的切換列、篩選列、作答列改成和頁面同底色(不再是整條白色橫帶、拿掉陰影,保留細線),
              列裡的搜尋框與下拉選單改白底
              v302 改成暖米色 + 深青綠(原本冷灰 + 藍),頁首不再是白色色塊,加分類色
@@ -78,3 +79,9 @@ body>.toolbar input:not([type=checkbox]):not([type=radio]):not([type=range]),bod
 /* 列印:頁首一律白底黑字 */
 @media print{header{background:#fff!important;color:#000}header h1{color:#000}header p{color:#333}
   header .home,header .hubl{display:none!important}}
+/* v334 攻略卡(英語學習中心、英語詳解)的例子:例(主色)、反例(紅);和講義的「例」同一種樣子 */
+.egline{margin:4px 0 2px;padding:4px 9px;border-radius:8px;background:rgba(127,127,127,.08);font-size:.92em;line-height:1.6;font-weight:400}
+.egb{display:inline-block;margin-right:6px;padding:0 7px;border-radius:999px;background:var(--accent);color:var(--card);font-size:.72rem;font-weight:800;line-height:1.55;vertical-align:1px}
+.egb.no{background:#c8553d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .egb.no{background:#f08a6d}}
+:root[data-theme="dark"] .egb.no{background:#f08a6d}

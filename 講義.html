@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v328(2026-11-24)
+<!-- 講義 · v334(2026-11-24)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v328 範例:解題技巧、易錯陷阱、考法拆解每條可加「例」(eg 陣列,與 items 對齊,空字串 = 不附);新增示範例題區塊(demo,自編短文與題目,附答案與解題步驟;快速複習也顯示、朗讀會唸、不算進每節練習的小節內容)
+     變更履歷:v334 「例」的底色改成半透明白(跟著外框顏色走);示範例題拿掉虛線框;「反例:」開頭顯示紅色的反例;口訣也能附例(mn 的 eg)
+              v328 範例:解題技巧、易錯陷阱、考法拆解每條可加「例」(eg 陣列,與 items 對齊,空字串 = 不附);新增示範例題區塊(demo,自編短文與題目,附答案與解題步驟;快速複習也顯示、朗讀會唸、不算進每節練習的小節內容)
               v326 示意圖再加火山、珊瑚礁、玄武岩、舊海面、河道、堤防、滯洪池、皮膚分層、人形的繪圖樣式
               v325 圖解加示意圖用的繪圖樣式(海、岩石、山、扇形地分帶、河流、湧泉、地下水面),用半透明色,淺色深色都看得清楚
               v305 新增「考法拆解」區塊(how:本章歷屆怎麼考、怎麼破解);重點整理可以自訂標題(key 的 h,例:延伸重點);小節標題 x:1 = 延伸補充(不分配歷屆題);
@@ -578,10 +579,13 @@
   .jhow ul{margin:0;padding-left:1.2em;font-size:.92rem;line-height:1.7}
   .jhow li{margin:4px 0}
   /* v328 範例:解題技巧、陷阱、考法拆解每條底下的「例」;示範例題(自編) */
-  .ieg{margin:4px 0 6px;padding:5px 10px;border-radius:8px;background:var(--bg);font-size:.86rem;line-height:1.65}
+  .ieg{margin:4px 0 6px;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.62);font-size:.86rem;line-height:1.65}
   .ieg .iegl{display:inline-block;margin-right:6px;padding:0 7px;border-radius:999px;background:var(--c2);color:var(--card);font-size:.72rem;font-weight:800;line-height:1.5}
-  .jhow .ieg{background:var(--card)}
-  .jdemo{background:var(--card);border:1px dashed var(--c2);border-radius:12px;padding:10px 12px;margin:12px 0}
+  .iegl.no{background:#c8553d}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ieg{background:rgba(255,255,255,.07)}:root:not([data-theme="light"]) .iegl.no{background:#f08a6d}}
+  :root[data-theme="dark"] .ieg{background:rgba(255,255,255,.07)} :root[data-theme="dark"] .iegl.no{background:#f08a6d}
+  .jmn .ieg{margin-top:6px}
+  .jdemo{background:var(--card);border:0;border-radius:12px;padding:10px 12px;margin:12px 0}
   .jdemo .src{font-size:.74rem;color:var(--c2);font-weight:700}
   .jdemo .dpsg{background:var(--bg);border-radius:10px;padding:4px 12px;margin:8px 0;font-size:.92rem;line-height:1.75}
   .jdemo .dpsg p{margin:6px 0}
@@ -852,7 +856,7 @@ function selfHtml(b){
   return `<div class="jself"><div class="mh">⏱ 一分鐘自我檢測</div><ol>${b.items.map(([q,a])=>`<li>${esc(q)}<button class="ans mask" type="button">${esc(a)}</button></li>`).join('')}</ol></div>`;
 }
 function mnHtml(b, hide){
-  return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div></div>`;
+  return `<div class="jmn${hide?' hide':''}"><div class="mh">🎵 口訣${b.h?' · '+esc(b.h):''}</div><div class="mt">${esc(b.text)}</div><div class="mx">${esc(b.ex||'')}</div>${(b.eg||[]).map(egOne).join('')}</div>`;
 }
 /* v263 日語章同樣用這四種區塊:單字表第 2 欄是假名讀音(不是音標)、🔊 唸假名;例子、會話、文法裡可用 {漢字|かな} 注音;
    標題列多一個「🙈 遮住讀音」(自我測驗);發音提醒改叫「讀音提醒」。
@@ -1015,7 +1019,8 @@ function hl(s){   // s 已經過 esc()
   return out + hlNum(s.slice(last));
 }
 function mk(s){ return rb(s.replace(HL_MARK, '<b class="kn">$1</b>')); }   // 只轉手動標記;v263 {漢字|かな} 顯示成注音
-const egHtml = (b, i) => { const e = b.eg && b.eg[i]; return e ? `<div class="ieg"><span class="iegl">例</span>${mk(esc(e))}</div>` : ''; };   // v328 解題技巧、陷阱、考法拆解每條的範例(eg 與 items 對齊)
+const egOne = e => { const n = /^反例[:：]/.test(e), t = String(e).replace(/^(反例|例)[:：]\s*/, ''); return `<div class="ieg"><span class="iegl${n ? ' no' : ''}">${n ? '反例' : '例'}</span>${mk(esc(t))}</div>`; };   // v334 「反例:」開頭 → 紅色反例
+const egHtml = (b, i) => { const e = b.eg && b.eg[i]; return e ? egOne(e) : ''; };   // v328 解題技巧、陷阱、考法拆解每條的範例(eg 與 items 對齊)
 /* v253 長段落自動條列:依句號、分號拆成一條一條(只在 <b>、括號、引號之外拆;分號前不到 18 字不拆);
    每條開頭是「短語:」的,把短語標成小標。內容文字不變,只改排版 */
 function pHtml(html){

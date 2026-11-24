@@ -1,4 +1,4 @@
-/* ana.js — 詳解排版(單一來源)· v301
+/* ana.js — 詳解排版(單一來源)· v334
    ------------------------------------------------------------------
    中文三科解析 a 欄的「詳細版」結構:
      答 <b class='ac'>X 選項</b>
@@ -26,6 +26,7 @@
      年份可寫 1683、1895-1945(期間)、前221(西元前)、史前(排最前面);事件前加 * = 本題重點(綠色);data-era='none' 不分時期
    ANAUI.tline(items, {era}) / ANAUI.eraBar() → HTML(觀光圖鑑「臺灣史年表」也用)
    變更履歷:
+     v334 (2026-11-24) 詳解的小標拿掉左色條(只留淡底色)
      v301 (2026-11-19) 同考點小視窗連看幾題後,「← 回到上一題」旁邊多一顆「回到剛才的頁面」,一次關掉視窗、回到原本的位置
      v296 (2026-11-18) 歷屆同考點點了不換頁:原地跳出那一題的小視窗(複習頁、錯題本、模擬測驗等;講義詳解視窗另外處理)
      v166 (2026-11-17) 地圖程式網址改 worldmap.js?v=166(地名庫加桂林、張家界、黃山、富士山)、twgeo.js?v=163(靜態圖可指定圖層)
@@ -59,7 +60,7 @@
       '.xa table.xt th,.xa table.xt td{border:1px solid var(--line,#d8dee9);padding:5px 7px;text-align:left;vertical-align:top}' +
       '.xa table.xt th{background:rgba(127,127,127,.12);font-weight:800;white-space:nowrap}' +
       '.xa table.xt tr.ok td{background:rgba(34,197,94,.12);font-weight:700}' +
-      '.xa .xl{border-left:3px solid var(--accent,#2563eb);background:rgba(127,127,127,.08);padding:7px 10px;border-radius:0 8px 8px 0;font-size:.86rem;margin:6px 0}' +
+      '.xa .xl{background:rgba(127,127,127,.08);padding:7px 10px;border-radius:0 8px 8px 0;font-size:.86rem;margin:6px 0}' +
       '.xa figure.xm{margin:8px 0;text-align:center}.xa figure.xm img,.xa figure.xm svg{max-width:100%;height:auto}' +
       '.xa figure.xm figcaption{font-size:.78rem;color:var(--sub,#5a6b82);margin-top:2px}' +
       '.xa figure.xm .tgm{max-width:420px}.xm-nt{font-size:.74rem;color:var(--sub,#64748b);text-align:center;margin-top:2px;line-height:1.45}' +
