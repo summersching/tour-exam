@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v332
+/* jy_en.js — 講義:外語英語 · v333
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子 / 例子中譯 / 第 7 欄 { s 同義字, a 反義字 })、
    發音提醒(pron)、文法重點(gram),加上整理卡、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v333 (2026-11-24) 第 1~7 章加「五、延伸補充:還沒考過的常用字」(各 8 字,共 56 字;歷屆題目與選項都沒出現過、講義也還沒收)
      v332 (2026-11-24) 第 1~8 章解題技巧每條加「例」(32 個自編小題,附選項與判斷理由)
      v328 (2026-11-24) 第 9 章閱讀測驗加示範例題(自編短文:一篇看懂六種題型、However 後面才是重點);考法拆解、解題技巧、易錯陷阱每條加「例」
      v309 (2026-11-19) 9 章加「本章考法拆解」(how,章首;依歷屆題型與各章解題技巧整理)
@@ -246,7 +247,18 @@ const JY_EN = {
         ['飛機遇到的亂流?', 'turbulence'],
         ['機上「免費招待的」飲料?', 'complimentary drinks'],
         ['轉機停留?', 'layover'],
-        ['「不知道能不能給我一條毯子」開頭怎麼說?', 'I wonder if I could have a blanket.']] }
+        ['「不知道能不能給我一條毯子」開頭怎麼說?', 'I wonder if I could have a blanket.']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '機場與機上:還沒考過的字', items: [
+        ['red-eye flight', 'ˈrɛdˌaɪ ˌflaɪt', 'n.', '紅眼班機(深夜起飛、清晨抵達)', 'We took a red-eye flight to save a night at the hotel.', '我們搭紅眼班機,省下一晚住宿。', { s: 'overnight flight' }],
+        ['overbook', 'ˌoʊvɚˈbʊk', 'v.', '超賣(機位或房間)', 'The flight was overbooked, so they asked for volunteers.', '班機超賣,所以徵求自願改搭的旅客。', { s: 'oversell' }],
+        ['gate change', 'ˈgeɪt ˌtʃeɪndʒ', 'n.', '登機門更改', 'Please check the screen for any gate change.', '請注意螢幕上是否有登機門更改。'],
+        ['arrival hall', 'əˈraɪvəl ˌhɔl', 'n.', '入境大廳', 'Our guide will wait for us in the arrival hall.', '導遊會在入境大廳等我們。', { a: 'departure hall' }],
+        ['tray table', 'ˈtreɪ ˌteɪbəl', 'n.', '(座椅背後的)餐桌板', 'Please put your tray table in the upright position.', '請把餐桌板收好。'],
+        ['life vest', 'ˈlaɪf ˌvɛst', 'n.', '救生衣', 'Your life vest is under your seat.', '救生衣在您的座位下方。', { s: 'life jacket' }],
+        ['seat assignment', 'ˈsit əˌsaɪnmənt', 'n.', '座位安排', 'You can choose your seat assignment online.', '可以在網路上選座位。'],
+        ['frequent flyer', 'ˌfrikwənt ˈflaɪɚ', 'n.', '飛行常客(會員)', 'Frequent flyers can use their miles for free tickets.', '飛行常客可以用里程換免費機票。']] }
     ]
   }, {
     id: 'en-02', no: 2, t: '交通與住宿',
@@ -474,7 +486,18 @@ const JY_EN = {
         ['幫房客訂餐廳、買票的飯店人員?', 'concierge'],
         ['「可以告訴我怎麼去火車站嗎?」怎麼說?', 'Could you tell me how to get to the train station?'],
         ['結帳(結清帳單)?', 'settle the bill'],
-        ['冷氣壞了要找哪個部門?', 'maintenance']] }
+        ['冷氣壞了要找哪個部門?', 'maintenance']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '交通與住宿:還沒考過的字', items: [
+        ['minibar', 'ˈmɪniˌbɑr', 'n.', '(客房)迷你吧', 'Drinks from the minibar will be charged to your room.', '迷你吧的飲料會記在房帳上。'],
+        ['late check-out', 'ˌleɪt ˈtʃɛkˌaʊt', 'n.', '延後退房', 'Can I request a late check-out until 2 p.m.?', '可以延後到下午兩點退房嗎?', { a: 'early check-in' }],
+        ['cancellation policy', 'ˌkænsəˈleɪʃən ˌpɑləsi', 'n.', '取消政策(退訂規定)', 'Please read the cancellation policy before you book.', '訂房前請先看取消政策。'],
+        ['luggage storage', 'ˈlʌgɪdʒ ˌstɔrɪdʒ', 'n.', '行李寄放(處)', 'The hotel offers free luggage storage after check-out.', '飯店提供退房後免費寄放行李。', { s: 'baggage storage, left luggage' }],
+        ['do not disturb', 'ˌdu nɑt dɪˈstɝb', 'phr.', '請勿打擾(門牌)', 'Hang the Do Not Disturb sign on your door.', '把「請勿打擾」牌掛在門上。'],
+        ['connecting train', 'kəˈnɛktɪŋ ˌtreɪn', 'n.', '轉乘的火車', 'We have ten minutes to catch the connecting train.', '我們有十分鐘可以趕上轉乘的火車。'],
+        ['traffic jam', 'ˈtræfɪk ˌdʒæm', 'n.', '塞車', 'We were stuck in a traffic jam for an hour.', '我們塞車塞了一小時。', { s: 'congestion' }],
+        ['rush hour', 'ˈrʌʃ ˌaʊɚ', 'n.', '尖峰時段', 'Avoid the subway during rush hour.', '尖峰時段避開搭地鐵。', { s: 'peak hours', a: 'off-peak hours' }]] }
     ]
   }, {
     id: 'en-03', no: 3, t: '餐飲、購物與金錢',
@@ -745,7 +768,18 @@ const JY_EN = {
         ['「我只是隨便看看」?', 'I am just browsing.'],
         ['保固?', 'warranty'],
         ['從提款機領錢?', 'withdraw'],
-        ['申請退稅?', 'claim a tax refund']] }
+        ['申請退稅?', 'claim a tax refund']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '餐飲與購物:還沒考過的字', items: [
+        ['doggy bag', 'ˈdɔgi ˌbæg', 'n.', '(打包剩菜的)外帶袋', 'Could I have a doggy bag for the leftovers?', '剩下的菜可以幫我打包嗎?', { s: 'to-go box' }],
+        ['dietary restriction', 'ˈdaɪəˌtɛri rɪˌstrɪkʃən', 'n.', '飲食限制(素食、過敏、宗教等)', 'Please tell us about any dietary restrictions in advance.', '有任何飲食限制請事先告訴我們。'],
+        ['gluten-free', 'ˈglutənˌfri', 'adj.', '無麩質的', 'Do you have any gluten-free bread?', '有無麩質的麵包嗎?'],
+        ['food court', 'ˈfud ˌkɔrt', 'n.', '美食街', 'The mall has a food court on the top floor.', '購物中心頂樓有美食街。'],
+        ['price tag', 'ˈpraɪs ˌtæg', 'n.', '價格標籤', 'The price tag says 30 dollars.', '價格標籤寫 30 美元。'],
+        ['out of stock', 'ˌaʊt əv ˈstɑk', 'phr.', '缺貨', 'Sorry, this size is out of stock.', '抱歉,這個尺寸缺貨。', { s: 'sold out', a: 'in stock' }],
+        ['contactless payment', 'ˈkɑntæktləs ˌpeɪmənt', 'n.', '感應式付款', 'Most shops here accept contactless payment.', '這裡大部分的店都可以感應付款。'],
+        ['exact change', 'ɪgˌzækt ˈtʃeɪndʒ', 'n.', '剛好的零錢(不必找零)', 'The driver does not give change, so please have exact change.', '司機不找零,請準備剛好的零錢。']] }
     ]
   }, {
     id: 'en-04', no: 4, t: '景點、文化與藝術',
@@ -1050,7 +1084,18 @@ const JY_EN = {
         ['「端午節是為了紀念屈原」?', 'It commemorates Qu Yuan.'],
         ['布袋戲?', 'glove puppetry'],
         ['「這座廟建於 1738 年」用被動語態怎麼說?', 'The temple was built in 1738.'],
-        ['被指定為世界遺產?', 'be designated as a World Heritage Site']] }
+        ['被指定為世界遺產?', 'be designated as a World Heritage Site']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '景點與文化:還沒考過的字', items: [
+        ['mural', 'ˈmjʊrəl', 'n.', '壁畫', 'The old wall is now covered with colorful murals.', '老牆現在畫滿了彩色壁畫。', { s: 'wall painting' }],
+        ['pagoda', 'pəˈgoʊdə', 'n.', '(多層的)塔', 'The pagoda by the lake has seven stories.', '湖邊那座塔有七層。'],
+        ['night view', 'ˈnaɪt ˌvju', 'n.', '夜景', 'The night view from the mountain is amazing.', '從山上看的夜景很美。'],
+        ['street art', 'ˈstrit ˌɑrt', 'n.', '街頭藝術', 'This alley is famous for its street art.', '這條巷子以街頭藝術聞名。'],
+        ['photo spot', 'ˈfoʊtoʊ ˌspɑt', 'n.', '拍照景點', 'This bridge is a popular photo spot.', '這座橋是熱門的拍照景點。'],
+        ['admission ticket', 'ədˈmɪʃən ˌtɪkɪt', 'n.', '門票', 'The admission ticket includes an audio guide.', '門票含語音導覽。', { s: 'entrance ticket' }],
+        ['closing day', 'ˈkloʊzɪŋ ˌdeɪ', 'n.', '公休日', 'Check the closing day before you visit the museum.', '去博物館前先查公休日。'],
+        ['temple fair', 'ˈtɛmpəl ˌfɛr', 'n.', '廟會', 'The temple fair features lion dances and local snacks.', '廟會有舞獅表演和地方小吃。']] }
     ]
   }, {
     id: 'en-05', no: 5, t: '導遊帶團、行程與生態旅遊',
@@ -1301,7 +1346,18 @@ const JY_EN = {
         ['可重複使用的環保袋?', 'reusable bags'],
         ['遵守規定?', 'abide by the rules'],
         ['防蚊液?', 'insect repellent'],
-        ['「逛完博物館要多久?」怎麼問?', 'How long does it take to walk through the museum?']] }
+        ['「逛完博物館要多久?」怎麼問?', 'How long does it take to walk through the museum?']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '帶團與生態旅遊:還沒考過的字', items: [
+        ['headcount', 'ˈhɛdˌkaʊnt', 'n.', '清點人數', 'Let me do a quick headcount before we leave.', '出發前我快速點一下人數。', { s: 'roll call' }],
+        ['meeting point', 'ˈmitɪŋ ˌpɔɪnt', 'n.', '集合地點', 'Our meeting point is the main entrance.', '我們的集合地點是大門口。', { s: 'assembly point' }],
+        ['free time', 'ˌfri ˈtaɪm', 'n.', '自由活動時間', 'You will have one hour of free time in the market.', '在市場有一小時自由活動時間。'],
+        ['name tag', 'ˈneɪm ˌtæg', 'n.', '名牌', 'Please wear your name tag during the tour.', '參觀時請配戴名牌。'],
+        ['rest stop', 'ˈrɛst ˌstɑp', 'n.', '(公路)休息站', 'The bus will make a rest stop in 30 minutes.', '遊覽車 30 分鐘後會在休息站停車。', { s: 'service area' }],
+        ['buddy system', 'ˈbʌdi ˌsɪstəm', 'n.', '兩人一組互相照應', 'We use the buddy system when we snorkel.', '浮潛時我們兩人一組互相照應。'],
+        ['leave no trace', 'ˌliv noʊ ˈtreɪs', 'phr.', '無痕山林(不留下痕跡)', 'Please follow the leave no trace principles on the trail.', '在步道上請遵守無痕山林原則。'],
+        ['carrying capacity', 'ˈkæriɪŋ kəˌpæsəti', 'n.', '承載量', 'The island limits visitors so as not to exceed its carrying capacity.', '這座島限制遊客人數,以免超過承載量。']] }
     ]
   }, {
     id: 'en-06', no: 6, t: '安全、健康與緊急狀況',
@@ -1568,7 +1624,18 @@ const JY_EN = {
         ['被扒手盯上(成為受害者)?', 'fall prey to pickpockets'],
         ['做好預防措施?', 'take precautions'],
         ['火山爆發?', 'The volcano erupts.'],
-        ['地震時的自保口訣?', 'Drop, cover and hold on.']] }
+        ['地震時的自保口訣?', 'Drop, cover and hold on.']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '健康與安全:還沒考過的字', items: [
+        ['motion sickness', 'ˈmoʊʃən ˌsɪknəs', 'n.', '暈車、暈船', 'Take this pill before the boat ride if you get motion sickness.', '容易暈船的話,上船前先吃這顆藥。', { s: 'travel sickness' }],
+        ['dehydration', 'ˌdihaɪˈdreɪʃən', 'n.', '脫水', 'Drink plenty of water to avoid dehydration.', '多喝水以免脫水。'],
+        ['allergic reaction', 'əˌlɝdʒɪk riˈækʃən', 'n.', '過敏反應', 'She had an allergic reaction to peanuts.', '她吃花生起了過敏反應。'],
+        ['heatstroke', 'ˈhitˌstroʊk', 'n.', '中暑', 'Rest in the shade to prevent heatstroke.', '在陰涼處休息,預防中暑。', { s: 'sunstroke' }],
+        ['food poisoning', 'ˈfud ˌpɔɪzənɪŋ', 'n.', '食物中毒', 'Several tourists got food poisoning from the seafood.', '有幾位遊客吃海鮮食物中毒。'],
+        ['travel advisory', 'ˈtrævəl ədˌvaɪzəri', 'n.', '旅遊警示', 'Check the travel advisory before you go abroad.', '出國前先查旅遊警示。', { s: 'travel warning' }],
+        ['evacuation route', 'ɪˌvækjuˈeɪʃən ˌrut', 'n.', '疏散路線', 'The evacuation route is shown on the back of the door.', '疏散路線圖貼在門後。', { s: 'escape route' }],
+        ['ice pack', 'ˈaɪs ˌpæk', 'n.', '冰敷袋', 'Put an ice pack on the swollen ankle.', '在腫起來的腳踝上冰敷。', { s: 'cold pack' }]] }
     ]
   }, {
     id: 'en-07', no: 7, t: '生活、職場與溝通',
@@ -1855,7 +1922,18 @@ const JY_EN = {
         ['出差費用可以報帳(退還)?', 'be reimbursed'],
         ['和同事相處融洽?', 'get along with coworkers'],
         ['「我很期待見到你」?', 'I am looking forward to seeing you.'],
-        ['代表公司道歉?', 'apologize on behalf of the company']] }
+        ['代表公司道歉?', 'apologize on behalf of the company']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的常用字', x: 1 },
+      { t: 'p', html: '這一節收本章主題常用、但歷屆題目與選項都還沒出現過的字(出題次數 0)。不一定會考,但讀閱讀文章、實際帶團都用得到;每個字附音標、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '生活與溝通:還沒考過的字', items: [
+        ['voicemail', 'ˈvɔɪsˌmeɪl', 'n.', '語音信箱', 'Please leave a message on my voicemail.', '請在我的語音信箱留言。'],
+        ['roaming', 'ˈroʊmɪŋ', 'n.', '(手機)國際漫遊', 'Turn off data roaming to avoid high charges.', '關掉數據漫遊,以免被收高額費用。'],
+        ['SIM card', 'ˈsɪm ˌkɑrd', 'n.', 'SIM 卡(手機晶片卡)', 'You can buy a local SIM card at the airport.', '可以在機場買當地的 SIM 卡。'],
+        ['charger', 'ˈtʃɑrdʒɚ', 'n.', '充電器', 'I left my phone charger in the hotel room.', '我把手機充電器忘在飯店房間了。'],
+        ['time zone', 'ˈtaɪm ˌzoʊn', 'n.', '時區', 'Japan is in a time zone one hour ahead of Taiwan.', '日本的時區比臺灣快一小時。'],
+        ['video call', 'ˈvɪdioʊ ˌkɔl', 'n.', '視訊通話', 'She makes a video call to her family every night.', '她每天晚上和家人視訊通話。'],
+        ['deadline', 'ˈdɛdˌlaɪn', 'n.', '截止期限', 'The deadline for the tour payment is Friday.', '團費的繳款期限是星期五。', { s: 'due date' }],
+        ['small talk', 'ˈsmɔl ˌtɔk', 'n.', '閒聊、寒暄', 'Guides often make small talk with guests on the bus.', '導遊常在車上和客人閒聊。', { s: 'chitchat' }]] }
     ]
   }, {
     id: 'en-08', no: 8, t: '文法總整理',
