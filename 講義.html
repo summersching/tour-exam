@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v342(2026-11-25)
+<!-- 講義 · v343(2026-11-25)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v342 日語示範短文也能「🖍 看線索」(以「。」分句、注音照常顯示,圖例用本章的題型名稱);只有一段的短文,句子按鈕寫「第 N 句」;沒寫題型的句子按鈕是灰色
+     變更履歷:v343 圖解加航線圖的樣式:虛線框(飛越的國家)、飛機、上下客的綠字、只加油的橘字
+              v342 日語示範短文也能「🖍 看線索」(以「。」分句、注音照常顯示,圖例用本章的題型名稱);只有一段的短文,句子按鈕寫「第 N 句」;沒寫題型的句子按鈕是灰色
               v341 示範短文加「🖍 看線索」(先做題,再看六種題型的線索在文章哪裡,依題型上色);「📍第 N 段第 M 句」按鈕點了在小視窗開短文、標出那一句;易混比較可用 stack(手機一列一張卡);
                    遮住中文改放在各區塊的按鈕列(本節練習、歷屆範例、示範例題、文法例句、高頻字句,跟單字表、會話同一顆),拿掉右下角的按鈕
               v339 英語、日語右下角加「🙈 遮住中文」(整頁中文翻譯變模糊,點一下看那一段);英語重點表、易混比較、整理卡的英文格子加小 🔊,同義、反義字點了會唸;閱讀題的問與答依文章分組
@@ -194,6 +195,10 @@
   .jfig .ts{fill:var(--sub);font-size:11.5px}
   .jfig .tb{fill:var(--ink);font-size:14px;font-weight:800}
   .jfig .ar{stroke:var(--sub);stroke-width:2;marker-end:url(#jyArrow)}
+  /* v343 航線圖:虛線框 = 飛越的國家、飛機、綠字 = 上下客、橘字 = 只加油、灰字 = 說明 */
+  .jfig .fov{fill:none;stroke:var(--sub);stroke-width:1.3;stroke-dasharray:4 3}
+  .jfig .pl{fill:var(--info)} .jfig .pb{fill:var(--card)}
+  .jfig .fa{fill:var(--ok);font-size:11.5px;font-weight:800} .jfig .fw{fill:var(--warn);font-size:11.5px;font-weight:800} .jfig .fn{fill:var(--sub);font-size:11.5px;font-weight:700}
   .jfig .ln{stroke:var(--line);stroke-width:3}
   .jfig .d1{fill:var(--sel)} .jfig .d2{fill:var(--warn)}
   .jfig .bar{fill:var(--sel)} .jfig .bar.r{fill:var(--warn)}
