@@ -8,11 +8,13 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v339(2026-11-25)
+<!-- 講義 · v341(2026-11-25)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v339 英語、日語右下角加「🙈 遮住中文」(整頁中文翻譯變模糊,點一下看那一段);英語重點表、易混比較、整理卡的英文格子加小 🔊,同義、反義字點了會唸;閱讀題的問與答依文章分組
+     變更履歷:v341 示範短文加「🖍 看線索」(先做題,再看六種題型的線索在文章哪裡,依題型上色);「📍第 N 段第 M 句」按鈕點了在小視窗開短文、標出那一句;易混比較可用 stack(手機一列一張卡);
+                   遮住中文改放在各區塊的按鈕列(本節練習、歷屆範例、示範例題、文法例句、高頻字句,跟單字表、會話同一顆),拿掉右下角的按鈕
+              v339 英語、日語右下角加「🙈 遮住中文」(整頁中文翻譯變模糊,點一下看那一段);英語重點表、易混比較、整理卡的英文格子加小 🔊,同義、反義字點了會唸;閱讀題的問與答依文章分組
               v334 「例」的底色改成半透明白(跟著外框顏色走);示範例題拿掉虛線框;「反例:」開頭顯示紅色的反例;口訣也能附例(mn 的 eg)
               v328 範例:解題技巧、易錯陷阱、考法拆解每條可加「例」(eg 陣列,與 items 對齊,空字串 = 不附);新增示範例題區塊(demo,自編短文與題目,附答案與解題步驟;快速複習也顯示、朗讀會唸、不算進每節練習的小節內容)
               v326 示意圖再加火山、珊瑚礁、玄武岩、舊海面、河道、堤防、滯洪池、皮膚分層、人形的繪圖樣式
@@ -478,11 +480,11 @@
   /* v274 點讀(英語、日語講義):右下角按鈕,開啟後點英文或日文字看意思和發音 */
   #rdBtn{position:fixed;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
   #rdBtn.on{background:#2563eb} #rdBtn[hidden]{display:none}
-  /* v339 遮住中文(英語、日語講義):右下角按鈕在「點讀」上面 */
-  #zhBtn{position:fixed;right:14px;bottom:calc(122px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
-  #zhBtn.on{background:#2563eb} #zhBtn[hidden]{display:none}
-  .hidezh .vz,.hidezh .szh,.hidezh .oz,.hidezh .sqa-z,.hidezh .zhr{filter:blur(6px);user-select:none;cursor:pointer}
-  .hidezh .peek{filter:none;user-select:auto}
+  /* v341 遮住中文改放在各區塊的按鈕列(本節練習、歷屆範例、示範例題、文法例句、高頻字句,跟單字表、會話同一顆「🙈 遮住中文」,
+     不再有右下角按鈕):按了這一區的中文翻譯變模糊(題目與選項的中譯、問與答、英語選項裡夾的中文),點一下模糊的地方只看那一段 */
+  .hidez .szh,.hidez .oz,.hidez .sqa-z,.hidez .zhr{filter:blur(6px);user-select:none}
+  .hidez .vz,.hidez .szh,.hidez .oz,.hidez .sqa-z,.hidez .zhr{cursor:pointer}
+  .hidez .peek{filter:none;user-select:auto}
   /* v339 英語表格、整理卡的小 🔊;同義、反義字可點 */
   .spk.sm{width:auto;height:auto;padding:1px 5px;font-size:.74rem;border-radius:8px;margin-right:5px;vertical-align:1px;line-height:1.2}
   .spk.sm::before{content:"\1F50A"}
@@ -491,7 +493,7 @@
   #glossPop,.jlk{z-index:10002!important}
   body.jlk-on .jdlg .den,body.jlk-on .jvoc .vw,body.jlk-on .jvoc .ve .en,body.jlk-on .jgram .geg .en,body.jlk-on .jex .stem,body.jlk-on .jex .op{cursor:help}
   @media print{#rdBtn{display:none!important}}
-  @media print{#zhBtn,.spk.sm{display:none!important}.hidezh .vz,.hidezh .szh,.hidezh .oz,.hidezh .sqa-z,.hidezh .zhr{filter:none}}
+  @media print{.spk.sm{display:none!important}.hidez .szh,.hidez .oz,.hidez .sqa-z,.hidez .zhr,.hidez .peek{filter:none}}
   /* v273 講義內看完整詳解:從下方滑出的詳解視窗(不換頁) */
   .jex .xopen{display:inline-block;margin-top:6px;border:1.5px solid var(--c2);background:var(--card);color:var(--c2);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.85rem;font-family:inherit;cursor:pointer}
   .jex .xopen:active{transform:scale(.97)}
@@ -610,6 +612,30 @@
   .jdemo .oz{font-weight:400;color:var(--sub);font-size:.82rem;margin-left:4px}
   .jdemo ol{margin:6px 0;font-size:.88rem;background:var(--bg);border-radius:10px;padding:8px 10px 8px 2em}
   .jdemo .dnote{font-size:.76rem;color:var(--sub);margin-top:8px}
+  /* v341 示範短文「看線索」:題型顏色(主旨藍、細節綠、字義紫、指代橘、推論粉、目的青,沿用 --c1~--c6);指代題指的內容用虛線底線;
+     按「🖍 看線索」才上色、標「第 N 段」與句子號碼;「📍第 N 段第 M 句」按鈕(.dref)點了在小視窗開短文、標出那一句(.ds.hit) */
+  [data-ty=main]{--tc:var(--c2);--tb:var(--c2b)} [data-ty=det]{--tc:var(--c6);--tb:var(--c6b)} [data-ty=wd]{--tc:var(--c3);--tb:var(--c3b)}
+  [data-ty=ref]{--tc:var(--c4);--tb:var(--c4b)} [data-ty=inf]{--tc:var(--c5);--tb:var(--c5b)} [data-ty=pur]{--tc:var(--c1);--tb:var(--c1b)}
+  .jdemo .dclt{font-size:.78rem;color:var(--sub);margin:0 0 4px}
+  .dleg{display:none;flex-wrap:wrap;gap:4px 12px;font-size:.8rem;margin:4px 0 6px}
+  .jdemo.clue .dleg{display:flex}
+  .dleg>span{display:inline-flex;align-items:center;gap:4px}
+  .dleg i{display:inline-block;width:14px;height:12px;border-radius:3px;background:var(--tb);box-shadow:inset 0 -2px var(--tc)}
+  .dsn{display:none;margin-right:2px;font-size:.62rem;font-weight:800;color:var(--sub)}
+  .jdemo.clue .dsn,.dsht .dsn{display:inline}
+  .jdemo.clue .dpsg>p[data-pn]::before,.dsht .dpsg>p[data-pn]::before{content:attr(data-pn);display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line);border-radius:999px;font-size:.7rem;font-weight:800;color:var(--sub);line-height:1.5}
+  .jdemo.clue .dcl{background:var(--tb);box-shadow:inset 0 -2px var(--tc);border-radius:3px}
+  .jdemo.clue .dul,.dleg .dul{text-decoration:underline dashed var(--tc);text-decoration-thickness:2px;text-underline-offset:4px}
+  .jdemo.clue .dty[data-ty]{color:var(--tc);border-color:var(--tc);background:var(--tb)}
+  .dref{display:inline-block;margin:0 2px;padding:0 6px;border:0;border-radius:6px;font:inherit;font-size:.86em;font-weight:700;line-height:1.5;cursor:pointer;color:var(--tc,var(--c2));background:var(--tb,var(--c2b));box-shadow:inset 0 -1.5px var(--tc,var(--c2))}
+  .dref::before{content:"\1F4CD";margin-right:2px;font-size:.85em}
+  .dsht .dshn{font-size:.86rem;margin:2px 0 4px}
+  .dsht .dty{display:inline-block;font-size:.72rem;font-weight:800;color:var(--tc);border:1px solid var(--tc);background:var(--tb);border-radius:999px;padding:0 8px}
+  .dsht .dpsg{background:var(--bg);border-radius:10px;padding:4px 12px;margin:4px 0 8px;font-size:.95rem;line-height:1.8}
+  .dsht .dpsg p{margin:6px 0}
+  .dsht .ds.hit{background:var(--tb,var(--c2b));box-shadow:inset 0 -2px var(--tc,var(--c2));border-radius:3px}
+  .dsht .dpz{font-size:.88rem;color:var(--sub)} .dsht .dpz summary{cursor:pointer;font-weight:700;color:var(--c2)}
+  @media print{.jdemo .dclt{display:none}}
   @media print{.sq,.nlx{display:none}}
 </style>
 <link rel="manifest" href="manifest.json">
@@ -732,9 +758,9 @@ function renderHot(J){
     const grow = e => `<div class="hrow hg"><button class="spk" type="button" data-say="${esc(e.w)}" aria-label="聽 ${esc(e.w)} 的發音">🔊</button><div class="hb"><div><b class="hw">${esc(e.w)}</b><span class="hn">當干擾選項 ${e.n} 次</span></div>${e.z ? `<div class="vz">${esc(e.z)}</div>` : ''}</div></div>`;
     if (GU.length) parts.push(['guess', '🔮 可能會考(推估)', `歷屆當過 2 次以上干擾選項、還沒當過正解的字詞,共 ${GU.length} 個:出題者用過的字,之後可能改當正解;只是推估,不保證會考`, GU.map(grow).join('')]);
     parts.push(['gram', '📐 講義句型總表', `講義各章的句型與用法,共 ${G.length} 則`, G.map(({ ch, b }) => `<div class="hpat"><div class="hph"><span>🧩 ${esc(b.lbl || '文法')} · ${esc(b.h || '')}</span><button class="hch" type="button" data-go="${esc(ch.id)}">第 ${ch.no} 章 →</button></div><ul>${b.pat.map(x => `<li>${mk(esc(x))}</li>`).join('')}</ul></div>`).join('')]);
-    $('app').innerHTML = `<div class="tocnav"><select id="hotJump" aria-label="跳到某一段">${parts.map(([id, t]) => `<option value="${id}">${t}</option>`).join('')}</select></div>`
-      + `<div class="tip0">🔥 依歷屆試題統計:出題越多次的字句越該先背。點 🔊 聽發音,點「第 N 章 →」回講義看用法與例句。</div>`
-      + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('');
+    $('app').innerHTML = `<div class="jhot"><div class="tocnav"><select id="hotJump" aria-label="跳到某一段">${parts.map(([id, t]) => `<option value="${id}">${t}</option>`).join('')}</select></div>`
+      + `<div class="tip0">🔥 依歷屆試題統計:出題越多次的字句越該先背。點 🔊 聽發音,點「第 N 章 →」回講義看用法與例句。</div>` + ZTOOL   // v341 遮住中文
+      + parts.map(([id, t, sub, body]) => sec(id, t, sub) + body).join('') + '</div>';
   });
 }
 const QUICK = { h:1, how:1, key:1, fig:1, card:1, map:1, table:1, mn:1, tip:1, trap:1, cmp:1, stale:1, self:1, link:1, vocab:1, gram:1, pron:1, demo:1 };   // 快速複習顯示的區塊(v328 加示範例題)
@@ -799,6 +825,11 @@ function withPsg(d){   // v279 日語讀解文章(jp_psg.js,約 70 KB):範例、
   JPPP = JPPP || (window.JPREAD ? Promise.resolve() : PRACTICE.loadJs('jp_psg.js'));
   return JPPP.then(() => d).catch(() => { JPPP = null; return d; });
 }
+/* v341 遮住中文改放在各區塊的按鈕列(使用者:右下角那顆不對,要跟會話的「🙈 遮住中文」一樣在區塊裡):
+   本節練習、歷屆範例、示範例題、文法例句、高頻字句頁有中文翻譯時放這一顆(data-vz);按了只遮這一區(ZBOX 加 .hidez) */
+const ZTOOL = '<div class="dtools"><button class="vt" type="button" data-vz>🙈 遮住中文</button></div>';
+const ZBOX = '.jvoc, .jdlg, .jgram, .sq, .jex, .jdemo, .jhot';
+const hasZh = h => /class="(?:vz|szh|oz|sqa-z|zhr)"/.test(h);
 /* v339 遮住中文用:英語題目、選項裡夾的中文(例如「How long … ? 您打算待多久?」)包成 .zhr,整頁遮住中文時一起變模糊(填空的底線 ＿ 不算) */
 const zhw = s => esc(s).replace(/[\u3000-\u303F\u3400-\u9FFF\uFF00-\uFF3E\uFF40-\uFFEF][^A-Za-z<>&\uFF3F_]*/g, m => `<span class="zhr">${m}</span>`);
 const ZW = (k, s) => k === 'en' ? zhw(s) : esc(s);
@@ -858,19 +889,63 @@ function exHtml(k, b, d){
   const q = d && d.map[b.key]; if (!q) return '';
   const acc = SCORE.acc(q), a = (k === 'jp' && d.ana && d.ana[b.key]) || {}, oz = Array.isArray(a.oz) ? a.oz : [];
   const ozt = (o, i) => { const z = String(oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim(); return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };   // v263 日語選項中譯(去掉括號裡重複的日文)
-  return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>${psgOf(k, q)}
+  const zt = (k === 'en' || k === 'jp') && (a.zh || q.opts.some((o, i) => ozt(o, i) || hasZh(ZW(k, clean(o))))) ? ZTOOL : '';   // v341 有中文才放「遮住中文」
+  return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>${zt}${psgOf(k, q)}
     <div class="stem">${esc(clean(q.stem))}</div>${a.zh?`<div class="szh">${esc(a.zh)}</div>`:''}
     ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${ZW(k, clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
     <button class="xopen" type="button" data-xs="${esc(k)}" data-xq="${esc(b.key)}">📖 看完整詳解</button></div>`;
+}
+/* v341 示範短文「看線索」:demo 的題目可加 cl(文章裡的線索片語,上底色)與 ul(指代題指的內容,虛線底線),顏色依題型(DTY);
+   有線索的英語短文會分句(看線索時每段標「第 N 段」、每句前面小號碼),按「🖍 看線索」才上色(先自己做題,再對照);
+   內文寫〔段-句 題型〕(例如〔2-3 細節〕)會變成「📍第 2 段第 3 句」按鈕,點了在小視窗打開這一章的示範短文(有 ref 的 demo)並標出那一句 */
+const DTY = [['主旨', 'main'], ['細節', 'det'], ['NOT', 'det'], ['字義', 'wd'], ['指代', 'ref'], ['推論', 'inf'], ['目的', 'pur'], ['態度', 'pur']];
+const dty = s => { const m = DTY.find(([w]) => String(s || '').includes(w)); return m ? m[1] : ''; };
+const DLEG = [['main', '主旨'], ['det', '細節(含 NOT)'], ['wd', '字義'], ['ref', '指代'], ['inf', '推論'], ['pur', '目的 / 態度']];
+const DNAME = { main: '主旨題', det: '細節題', wd: '字義題', ref: '指代題', inf: '推論題', pur: '目的題' };
+const dSents = t => String(t).match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) || [String(t)];   // 英文短文分句(句後的空白跟著前一句)
+function dWrap(s, rs){   // 一句裡的線索包成 span(rs 只會整段包含、不會交叉;同起點時先開長的)
+  rs = rs.slice().sort((x, y) => x.a - y.a || y.b - x.b);
+  let out = '', i = 0; const st = [];
+  const shut = to => { while (st.length && st[st.length - 1].b <= to){ const r = st.pop(); out += esc(s.slice(i, r.b)) + '</span>'; i = r.b; } };
+  rs.forEach(r => { shut(r.a); out += esc(s.slice(i, r.a)) + `<span class="${r.c}" data-ty="${r.ty}">`; i = r.a; st.push(r); });
+  shut(s.length); return out + esc(s.slice(i));
+}
+function dPsg(b, hit){   // 分句的短文;hit = [段, 句, 題型]:只標那一句(小視窗用);沒有 hit:包上各題的線索(看線索用)
+  const SS = b.psg.map(dSents), R = SS.map(ss => ss.map(() => []));
+  if (!hit) (b.qs || [b]).forEach(q => [['dcl', q.cl], ['dul', q.ul]].forEach(([c, ps]) => (ps || []).forEach(ph => {
+    for (let p = 0; p < SS.length; p++) for (let n = 0; n < SS[p].length; n++){
+      const a = SS[p][n].indexOf(ph); if (a < 0) continue;
+      const r = { a, b: a + ph.length, c, ty: dty(q.type) };
+      if (!R[p][n].some(x => x.a < r.b && r.a < x.b && !(x.a <= r.a && r.b <= x.b) && !(r.a <= x.a && x.b <= r.b))) R[p][n].push(r);   // 交叉的不包(內容要避免)
+      return;
+    }
+  })));
+  return SS.map((ss, p) => `<p data-pn="第 ${p + 1} 段" data-say="${esc(sayText(b.psg[p]))}">` + ss.map((s, n) => { const h = !!hit && hit[0] === p + 1 && hit[1] === n + 1;
+    return `<span class="ds${h ? ' hit' : ''}"${h && hit[2] ? ` data-ty="${hit[2]}"` : ''}><sup class="dsn">${n + 1}</sup>${dWrap(s, R[p][n])}</span>`; }).join('') + '</p>').join('');
+}
+const DREF_RE = /〔(\d)-(\d)(?: (主旨|細節|字義|指代|推論|目的))?〕/g;
+const drefs = s => String(s).replace(DREF_RE, (m, p, n, t) => `<button class="dref" type="button" data-dref="${p}-${n}"${t ? ` data-ty="${dty(t)}"` : ''}>第 ${p} 段第 ${n} 句</button>`);
+function drefOpen(btn){   // 「第 N 段第 M 句」→ 小視窗開短文、標出那一句(附這一句的 🔊 與中譯)
+  const D = CUR && CUR.ch && CUR.ch.blocks.find(b => b.t === 'demo' && b.ref); if (!D) return;
+  const [p, n] = btn.dataset.dref.split('-').map(Number), ty = btn.dataset.ty || '', ss = dSents(D.psg[p - 1] || ''), s = String(ss[n - 1] || '').trim();
+  if (!s) return;
+  const zs = String((D.pz || [])[p - 1] || '').match(/[^。!?!?]+[。!?!?]?/g) || [], z = zs.length === ss.length ? zs[n - 1] : '';
+  XS.show(D.ref + ' · 第 ' + p + ' 段第 ' + n + ' 句', `<div class="dsht"><div class="dshn">${DNAME[ty] ? `<span class="dty" data-ty="${ty}">${DNAME[ty]}</span> ` : ''}標出來的是第 ${p} 段第 ${n} 句 <button class="spk sm" type="button" data-say="${esc(s)}" aria-label="聽這一句"></button></div>`
+    + `<div class="dpsg">${dPsg(D, [p, n, ty])}</div>${z ? `<details class="dpz"><summary>看這一句的中譯</summary><p>${esc(z)}</p></details>` : ''}</div>`, btn);
 }
 /* v328 示範例題(demo,自編,不是歷屆題):說明題型與解題技巧用。psg 短文段落、pz 短文中譯(收合)、
    qs:[{ type 題型, q 題目, qz 題目中譯, opts 四個選項, oz 選項中譯, ans 正解(0~3), steps 解題步驟 }](只有一題時也可直接寫在區塊上);
    note 補充說明。英、日語的短文與選項點一下會唸 */
 function demoHtml(k, b){
   const L = k === 'en' || k === 'jp', say = t => L ? ` data-say="${esc(sayText(t))}"` : '', qs = b.qs || [b];
-  const psg = b.psg ? `<div class="dpsg">${b.psg.map(t => `<p${say(t)}>${mk(esc(t))}</p>`).join('')}${b.pz ? `<details class="dpz"><summary>看中譯</summary>${b.pz.map(t => `<p>${esc(t)}</p>`).join('')}</details>` : ''}</div>` : '';
-  return `<div class="jdemo"><div class="src">✏️ 示範例題(自編)${b.h ? ' · ' + esc(b.h) : ''}</div>${psg}` + qs.map((q, n) => `<div class="dq">${q.type ? `<span class="dty">${esc(q.type)}</span>` : ''}
+  const CL = k === 'en' && !!b.psg && qs.some(q => q.cl || q.ul), used = new Set(qs.filter(q => q.cl || q.ul).map(q => dty(q.type)));   // v341 有線索才分句、加「看線索」
+  const ZQ = L && qs.some(q => q.qz || (q.oz || []).some(Boolean));   // v341 有題目或選項中譯才加「遮住中文」
+  const tools = CL || ZQ ? `<div class="dtools">${CL ? '<button class="vt" type="button" data-dcl>🖍 看線索</button>' : ''}${ZQ ? '<button class="vt" type="button" data-vz>🙈 遮住中文</button>' : ''}</div>` : '';
+  const clr = CL ? `<div class="dclt">先自己做題,再按「🖍 看線索」:每種題型的線索在文章哪裡,用顏色標出來</div>`
+    + `<div class="dleg">${DLEG.filter(x => used.has(x[0])).map(([t, n]) => `<span data-ty="${t}"><i></i>${n}</span>`).join('')}${qs.some(q => q.ul) ? '<span data-ty="ref"><span class="dul">虛線底線</span>= 指代題指的內容</span>' : ''}</div>` : '';
+  const psg = b.psg ? `<div class="dpsg">${CL ? dPsg(b) : b.psg.map(t => `<p${say(t)}>${mk(esc(t))}</p>`).join('')}${b.pz ? `<details class="dpz"><summary>看中譯</summary>${b.pz.map(t => `<p>${esc(t)}</p>`).join('')}</details>` : ''}</div>` : '';
+  return `<div class="jdemo"><div class="src">✏️ 示範例題(自編)${b.h ? ' · ' + esc(b.h) : ''}</div>${psg}${tools}${clr}` + qs.map((q, n) => `<div class="dq">${q.type ? `<span class="dty"${CL ? ` data-ty="${dty(q.type)}"` : ''}>${esc(q.type)}</span>` : ''}
     <div class="stem">${qs.length > 1 ? (n + 1) + '. ' : ''}${mk(esc(q.q))}</div>${q.qz ? `<div class="szh">${esc(q.qz)}</div>` : ''}
     ${q.opts.map((o, i) => `<div class="op${i === q.ans ? ' ok' : ''}"${say(o)}>${'ABCD'[i]}. ${mk(esc(o))}${q.oz && q.oz[i] ? ` <span class="oz">${esc(q.oz[i])}</span>` : ''}${i === q.ans ? ' ✔' : ''}</div>`).join('')}
     <ol>${q.steps.map(x => `<li>${mk(esc(x))}</li>`).join('')}</ol></div>`).join('') + (b.note ? `<div class="dnote">${esc(b.note)}</div>` : '') + '</div>';
@@ -971,7 +1046,7 @@ function dlgHtml(b, d){
     + (K.length ? `<div class="dkp">📝 ${J ? '本段用到的本章單字' : '本段關鍵字'}:${K.map(x => `<b>${esc(x.w)}</b>${x.n ? `<span class="n">考 ${x.n} 次</span>` : ''}`).join('、')}</div>` : '') + '</div>';
 }
 function gramHtml(b){
-  return `<div class="jgram"><div class="mh"><span>🧩 ${esc(b.lbl||'文法')}${b.h?' · '+esc(b.h):''}</span></div><div class="gpat">${b.pat.map(x=>`<div>${rb(esc(x))}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
+  return `<div class="jgram"><div class="mh"><span>🧩 ${esc(b.lbl||'文法')}${b.h?' · '+esc(b.h):''}</span>${(b.egs||[]).length?'<button class="vt" type="button" data-vz>🙈 遮住中文</button>':''}</div><div class="gpat">${b.pat.map(x=>`<div>${rb(esc(x))}</div>`).join('')}</div><ul class="gpt">${(b.points||[]).map(x=>`<li>${mk(esc(x))}</li>`).join('')}</ul>${(b.egs||[]).map(([en,zh])=>
     `<div class="geg"><button class="spk" type="button" data-say="${esc(sayText(en))}" aria-label="聽例句">🔊</button><div><div class="en">${mk(esc(en))}</div><div class="vz">${esc(zh)}</div></div></div>`).join('')}</div>`;
 }
 function pronHtml(b){
@@ -1023,7 +1098,7 @@ function mapLibsReady(ch){
   if (ms.some(b => b.w) && !(window.WMAP && WMAP.noteAna)) ps.push(new Promise(res => { const t = document.createElement('script'); t.src = 'worldmap.js?v=166'; t.onload = t.onerror = () => res(); document.head.appendChild(t); }));
   return Promise.all(ps);
 }
-function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(tdHtml)))}</div>`; }
+function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(tdHtml)), b.stack)}</div>`; }   // v341 stack:手機一列一張卡
 /* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
    「」『』引號內(原文用語或錯誤選項)、括號內與「N 年考題」(考題出處)、「第 N 條」不自動標。
    內容檔可用 **關鍵詞** 手動標紅(條列、表格、解題技巧、易錯陷阱都適用);解題技巧與易錯陷阱只標手動標記,不自動標數字(避免把錯誤數字標成重點) */
@@ -1039,9 +1114,9 @@ function hl(s){   // s 已經過 esc()
   s = rb(s);   // v263 日語注音
   let out = '', last = 0;
   s.replace(HL_MARK, (m, t, i) => { out += hlNum(s.slice(last, i)) + '<b class="kn">' + t + '</b>'; last = i + m.length; return m; });
-  return out + hlNum(s.slice(last));
+  return drefs(out + hlNum(s.slice(last)));   // v341 〔段-句 題型〕→ 短文句子按鈕
 }
-function mk(s){ return rb(s.replace(HL_MARK, '<b class="kn">$1</b>')); }   // 只轉手動標記;v263 {漢字|かな} 顯示成注音
+function mk(s){ return drefs(rb(s.replace(HL_MARK, '<b class="kn">$1</b>'))); }   // 只轉手動標記;v263 {漢字|かな} 顯示成注音
 const egOne = e => { const n = /^反例[:：]/.test(e), t = String(e).replace(/^(反例|例)[:：]\s*/, ''); return `<div class="ieg"><span class="iegl${n ? ' no' : ''}">${n ? '反例' : '例'}</span>${mk(esc(t))}</div>`; };   // v334 「反例:」開頭 → 紅色反例
 const egHtml = (b, i) => { const e = b.eg && b.eg[i]; return e ? egOne(e) : ''; };   // v328 解題技巧、陷阱、考法拆解每條的範例(eg 與 items 對齊)
 /* v253 長段落自動條列:依句號、分號拆成一條一條(只在 <b>、括號、引號之外拆;分號前不到 18 字不拆);
@@ -1322,28 +1397,6 @@ const RD = (() => {
   }
   return { sync, set, isOn: () => on };
 })();
-/* v339 遮住中文(英語、日語講義):右下角「🙈 遮住中文」把整頁的中文翻譯變模糊(單字、會話、例句、題目與選項的中譯、問與答),
-   點一下模糊的地方只看那一段;再按一次按鈕全部顯示;換到其他科目自動解除;設定記在 pref_jy_hidezh */
-const ZH = (() => {
-  let btn = null, on = !!PRACTICE.LSget('pref_jy_hidezh', false), subj = null;
-  const clearPeek = () => document.querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
-  function mount(){
-    if (btn) return;
-    btn = document.createElement('button'); btn.id = 'zhBtn'; btn.type = 'button'; btn.hidden = true;
-    btn.title = '遮住中文:中文翻譯變模糊,點一下模糊的地方只看那一段';
-    document.body.appendChild(btn);
-    btn.addEventListener('click', e => { e.stopPropagation(); set(!on); });
-  }
-  function apply(){
-    const act = on && (subj === 'en' || subj === 'jp');
-    document.body.classList.toggle('hidezh', act);
-    if (!act) clearPeek();
-    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on)); btn.textContent = on ? '👀 顯示中文' : '🙈 遮住中文';
-  }
-  function set(v){ mount(); on = !!v; PRACTICE.LSset('pref_jy_hidezh', on); clearPeek(); apply(); }
-  function sync(){ mount(); subj = cfg.subj; btn.hidden = !(subj === 'en' || subj === 'jp'); apply(); }
-  return { sync, set, isOn: () => on };
-})();
 function renderBar(){
   const S = SUBJS;
   document.body.dataset.sj = cfg.subj;   // v253 各科主色(屬性名不能用 data-subj:科目按鈕的點擊處理是找 [data-subj])
@@ -1351,7 +1404,6 @@ function renderBar(){
     return `<button class="chip${cfg.subj===s.k?' on':''}" type="button" data-subj="${s.k}">${s.name}<span class="n">${n}</span></button>`; }).join('');
   $('tabs').style.display = cfg.view === 'ch' ? 'none' : '';
   $('tabs').innerHTML = viewsOf(cfg.subj).map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
-  ZH.sync();   // v339 遮住中文按鈕:英語、日語才顯示
   RD.sync();   // v274 點讀按鈕:英語、日語才顯示,換科目時關閉
 }
 function noData(){
@@ -1476,7 +1528,7 @@ function sqHtml(k, items, i){
   const exKeys = new Set(CUR.ch.blocks.filter(b => b.t === 'ex').map(b => b.key));
   const pick = items.filter(x => sqOk(k, x.q, exKeys)).sort((a, b) => b.s - a.s || b.q.y - a.q.y).slice(0, SQ_N);
   return `<details class="sq" data-sq="${i}"><summary><span class="sq-ic">${IC('clipboard')}</span><b>本節練習</b><span class="sq-n">歷屆考過 ${n} 題 · 近 3 年 ${rc} 題</span></summary>
-    <div class="sq-b">${sqPat(k, items)}${pick.map(x => sqQ(k, x.q)).join('')}${sqAll(k, items)}</div></details>`;
+    <div class="sq-b">${(h => (hasZh(h) ? ZTOOL : '') + h)(sqPat(k, items) + pick.map(x => sqQ(k, x.q)).join('') + sqAll(k, items))}</div></details>`;   // v341 有中文才放「遮住中文」
 }
 /* v304 這節全部題目的問與答:依年份由新到舊,列題目與正解(送分題寫「全部給分」);英語、日語附題目中譯;最多 40 題 */
 const SQA_MAX = 40;
@@ -1759,7 +1811,9 @@ function openX(k, key, src, keep){
 }
 
 $('app').addEventListener('click', e=>{
-  if (document.body.classList.contains('hidezh')){ const pk = e.target.closest('.vz, .szh, .oz, .sqa-z, .zhr'); if (pk && !pk.classList.contains('peek')){ pk.classList.add('peek'); return; } }   // v339 遮住中文時點一下看那一段
+  if (e.target.closest('.hidez')){ const pk = e.target.closest('.vz, .szh, .oz, .sqa-z, .zhr'); if (pk && !pk.classList.contains('peek')){ pk.classList.add('peek'); return; } }   // v341 遮住中文的區塊:點一下模糊的地方只看那一段
+  const dcb = e.target.closest('[data-dcl]'); if (dcb){ const on = dcb.closest('.jdemo').classList.toggle('clue'); dcb.classList.toggle('on', on); dcb.textContent = on ? '🖍 收起線索' : '🖍 看線索'; return; }   // v341 示範短文看線索
+  const drf = e.target.closest('.dref'); if (drf){ drefOpen(drf); return; }   // v341 第 N 段第 M 句 → 小視窗標出那一句
   const so = e.target.closest('.sq-o'); if (so){ sqAnswer(so); return; }   // v303 本節練習作答
   const ar = e.target.closest('.aref'); if (ar){ ART.open(ar.dataset.law, ar.dataset.art, ar); return; }   // v287 內文條號 → 條文視窗
   const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
@@ -1767,7 +1821,7 @@ $('app').addEventListener('click', e=>{
   /* v255 英語發音:🔊、例句、會話泡泡 → 唸那個字或那一句;▶ 播放整段會話;🙈 遮住 / 顯示中文(自測) */
   const dp = e.target.closest('[data-dplay]'); if (dp){ SAY.play(dp.closest('.jdlg'), dp); return; }
   const vy = e.target.closest('[data-vy]'); if (vy){ const h = vy.closest('.jvoc, .jdlg').classList.toggle('hidey'); vy.textContent = h ? '👀 顯示讀音' : '🙈 遮住讀音'; vy.classList.toggle('on', h); return; }   // v263 日語:遮住假名讀音自我測驗
-  const vz = e.target.closest('[data-vz]'); if (vz){ const h = vz.closest('.jvoc, .jdlg').classList.toggle('hidez'); vz.textContent = h ? '👀 顯示中文' : '🙈 遮住中文'; vz.classList.toggle('on', h); return; }
+  const vz = e.target.closest('[data-vz]'); if (vz){ const bx = vz.closest(ZBOX), h = bx.classList.toggle('hidez'); bx.querySelectorAll('.peek').forEach(x => x.classList.remove('peek')); vz.textContent = h ? '👀 顯示中文' : '🙈 遮住中文'; vz.classList.toggle('on', h); return; }   // v341 本節練習、歷屆範例、示範例題、文法例句、高頻字句也用這一顆
   const sy = e.target.closest('[data-say]'); if (sy){ SAY.say(sy.dataset.say, sy.closest('.vrow, .geg, .prow, .db') || sy); return; }
   if (TTS.on && !e.target.closest('button, a, input')) TTS.jump(e.target);   // 朗讀中點區塊 → 從那裡開始
   const ans = e.target.closest('.ans'); if (ans){ ans.classList.toggle('mask'); return; }
