@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v341(2026-11-25)
+<!-- 講義 · v342(2026-11-25)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v341 示範短文加「🖍 看線索」(先做題,再看六種題型的線索在文章哪裡,依題型上色);「📍第 N 段第 M 句」按鈕點了在小視窗開短文、標出那一句;易混比較可用 stack(手機一列一張卡);
+     變更履歷:v342 日語示範短文也能「🖍 看線索」(以「。」分句、注音照常顯示,圖例用本章的題型名稱);只有一段的短文,句子按鈕寫「第 N 句」;沒寫題型的句子按鈕是灰色
+              v341 示範短文加「🖍 看線索」(先做題,再看六種題型的線索在文章哪裡,依題型上色);「📍第 N 段第 M 句」按鈕點了在小視窗開短文、標出那一句;易混比較可用 stack(手機一列一張卡);
                    遮住中文改放在各區塊的按鈕列(本節練習、歷屆範例、示範例題、文法例句、高頻字句,跟單字表、會話同一顆),拿掉右下角的按鈕
               v339 英語、日語右下角加「🙈 遮住中文」(整頁中文翻譯變模糊,點一下看那一段);英語重點表、易混比較、整理卡的英文格子加小 🔊,同義、反義字點了會唸;閱讀題的問與答依文章分組
               v334 「例」的底色改成半透明白(跟著外框顏色走);示範例題拿掉虛線框;「反例:」開頭顯示紅色的反例;口訣也能附例(mn 的 eg)
@@ -627,7 +628,7 @@
   .jdemo.clue .dcl{background:var(--tb);box-shadow:inset 0 -2px var(--tc);border-radius:3px}
   .jdemo.clue .dul,.dleg .dul{text-decoration:underline dashed var(--tc);text-decoration-thickness:2px;text-underline-offset:4px}
   .jdemo.clue .dty[data-ty]{color:var(--tc);border-color:var(--tc);background:var(--tb)}
-  .dref{display:inline-block;margin:0 2px;padding:0 6px;border:0;border-radius:6px;font:inherit;font-size:.86em;font-weight:700;line-height:1.5;cursor:pointer;color:var(--tc,var(--c2));background:var(--tb,var(--c2b));box-shadow:inset 0 -1.5px var(--tc,var(--c2))}
+  .dref{display:inline-block;margin:0 2px;padding:0 6px;border:0;border-radius:6px;font:inherit;font-size:.86em;font-weight:700;line-height:1.5;cursor:pointer;color:var(--tc,var(--sub));background:var(--tb,var(--line));box-shadow:inset 0 -1.5px var(--tc,var(--sub))}
   .dref::before{content:"\1F4CD";margin-right:2px;font-size:.85em}
   .dsht .dshn{font-size:.86rem;margin:2px 0 4px}
   .dsht .dty{display:inline-block;font-size:.72rem;font-weight:800;color:var(--tc);border:1px solid var(--tc);background:var(--tb);border-radius:999px;padding:0 8px}
@@ -899,17 +900,18 @@ function exHtml(k, b, d){
 /* v341 示範短文「看線索」:demo 的題目可加 cl(文章裡的線索片語,上底色)與 ul(指代題指的內容,虛線底線),顏色依題型(DTY);
    有線索的英語短文會分句(看線索時每段標「第 N 段」、每句前面小號碼),按「🖍 看線索」才上色(先自己做題,再對照);
    內文寫〔段-句 題型〕(例如〔2-3 細節〕)會變成「📍第 2 段第 3 句」按鈕,點了在小視窗打開這一章的示範短文(有 ref 的 demo)並標出那一句 */
-const DTY = [['主旨', 'main'], ['細節', 'det'], ['NOT', 'det'], ['字義', 'wd'], ['指代', 'ref'], ['推論', 'inf'], ['目的', 'pur'], ['態度', 'pur']];
+const DTY = [['主旨', 'main'], ['細節', 'det'], ['NOT', 'det'], ['字義', 'wd'], ['指代', 'ref'], ['推論', 'inf'], ['目的', 'pur'], ['態度', 'pur'], ['接續詞', 'wd'], ['指示詞', 'ref'], ['內容一致', 'det']];   // v342 加日語題型
 const dty = s => { const m = DTY.find(([w]) => String(s || '').includes(w)); return m ? m[1] : ''; };
 const DLEG = [['main', '主旨'], ['det', '細節(含 NOT)'], ['wd', '字義'], ['ref', '指代'], ['inf', '推論'], ['pur', '目的 / 態度']];
 const DNAME = { main: '主旨題', det: '細節題', wd: '字義題', ref: '指代題', inf: '推論題', pur: '目的題' };
-const dSents = t => String(t).match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) || [String(t)];   // 英文短文分句(句後的空白跟著前一句)
+const dSents = t => String(t).match(/[^.!?。！？]+[.!?。！？]+["')\]」』）]*\s*|[^.!?。！？]+$/g) || [String(t)];   // 短文分句(英文句號、問號;v342 日文「。」);句後的空白跟著前一句
 function dWrap(s, rs){   // 一句裡的線索包成 span(rs 只會整段包含、不會交叉;同起點時先開長的)
   rs = rs.slice().sort((x, y) => x.a - y.a || y.b - x.b);
   let out = '', i = 0; const st = [];
-  const shut = to => { while (st.length && st[st.length - 1].b <= to){ const r = st.pop(); out += esc(s.slice(i, r.b)) + '</span>'; i = r.b; } };
-  rs.forEach(r => { shut(r.a); out += esc(s.slice(i, r.a)) + `<span class="${r.c}" data-ty="${r.ty}">`; i = r.a; st.push(r); });
-  shut(s.length); return out + esc(s.slice(i));
+  const tx = x => rb(esc(x));   // v342 日文注音照常顯示(線索片語要包住完整的 {漢字|かな})
+  const shut = to => { while (st.length && st[st.length - 1].b <= to){ const r = st.pop(); out += tx(s.slice(i, r.b)) + '</span>'; i = r.b; } };
+  rs.forEach(r => { shut(r.a); out += tx(s.slice(i, r.a)) + `<span class="${r.c}" data-ty="${r.ty}">`; i = r.a; st.push(r); });
+  shut(s.length); return out + tx(s.slice(i));
 }
 function dPsg(b, hit){   // 分句的短文;hit = [段, 句, 題型]:只標那一句(小視窗用);沒有 hit:包上各題的線索(看線索用)
   const SS = b.psg.map(dSents), R = SS.map(ss => ss.map(() => []));
@@ -921,17 +923,20 @@ function dPsg(b, hit){   // 分句的短文;hit = [段, 句, 題型]:只標那�
       return;
     }
   })));
-  return SS.map((ss, p) => `<p data-pn="第 ${p + 1} 段" data-say="${esc(sayText(b.psg[p]))}">` + ss.map((s, n) => { const h = !!hit && hit[0] === p + 1 && hit[1] === n + 1;
+  return SS.map((ss, p) => `<p${SS.length > 1 ? ` data-pn="第 ${p + 1} 段"` : ''} data-say="${esc(sayText(b.psg[p]))}">` + ss.map((s, n) => { const h = !!hit && hit[0] === p + 1 && hit[1] === n + 1;
     return `<span class="ds${h ? ' hit' : ''}"${h && hit[2] ? ` data-ty="${hit[2]}"` : ''}><sup class="dsn">${n + 1}</sup>${dWrap(s, R[p][n])}</span>`; }).join('') + '</p>').join('');
 }
-const DREF_RE = /〔(\d)-(\d)(?: (主旨|細節|字義|指代|推論|目的))?〕/g;
-const drefs = s => String(s).replace(DREF_RE, (m, p, n, t) => `<button class="dref" type="button" data-dref="${p}-${n}"${t ? ` data-ty="${dty(t)}"` : ''}>第 ${p} 段第 ${n} 句</button>`);
+const DREF_RE = /〔(\d)-(\d)(?: (主旨|細節|字義|指代|推論|目的|接續詞|指示詞|內容一致))?〕/g;
+const drefDemo = () => CUR && CUR.ch && CUR.ch.blocks.find(b => b.t === 'demo' && b.ref);
+const drefLab = (p, n) => { const D = drefDemo(); return D && D.psg.length === 1 ? `第 ${n} 句` : `第 ${p} 段第 ${n} 句`; };   // v342 只有一段的短文不寫「第 1 段」
+const drefs = s => String(s).replace(DREF_RE, (m, p, n, t) => `<button class="dref" type="button" data-dref="${p}-${n}"${t ? ` data-ty="${dty(t)}"` : ''}>${drefLab(p, n)}</button>`);
 function drefOpen(btn){   // 「第 N 段第 M 句」→ 小視窗開短文、標出那一句(附這一句的 🔊 與中譯)
-  const D = CUR && CUR.ch && CUR.ch.blocks.find(b => b.t === 'demo' && b.ref); if (!D) return;
+  const D = drefDemo(); if (!D) return;
   const [p, n] = btn.dataset.dref.split('-').map(Number), ty = btn.dataset.ty || '', ss = dSents(D.psg[p - 1] || ''), s = String(ss[n - 1] || '').trim();
   if (!s) return;
   const zs = String((D.pz || [])[p - 1] || '').match(/[^。!?!?]+[。!?!?]?/g) || [], z = zs.length === ss.length ? zs[n - 1] : '';
-  XS.show(D.ref + ' · 第 ' + p + ' 段第 ' + n + ' 句', `<div class="dsht"><div class="dshn">${DNAME[ty] ? `<span class="dty" data-ty="${ty}">${DNAME[ty]}</span> ` : ''}標出來的是第 ${p} 段第 ${n} 句 <button class="spk sm" type="button" data-say="${esc(s)}" aria-label="聽這一句"></button></div>`
+  const lab = drefLab(p, n), nm = CUR.k === 'jp' ? ((D.qs || [D]).find(x => dty(x.type) === ty) || {}).type : DNAME[ty];   // v342 日語用本章的題型名稱
+  XS.show(D.ref + ' · ' + lab, `<div class="dsht"><div class="dshn">${nm ? `<span class="dty" data-ty="${ty}">${esc(nm)}</span> ` : ''}標出來的是${lab} <button class="spk sm" type="button" data-say="${esc(sayText(s))}" aria-label="聽這一句"></button></div>`
     + `<div class="dpsg">${dPsg(D, [p, n, ty])}</div>${z ? `<details class="dpz"><summary>看這一句的中譯</summary><p>${esc(z)}</p></details>` : ''}</div>`, btn);
 }
 /* v328 示範例題(demo,自編,不是歷屆題):說明題型與解題技巧用。psg 短文段落、pz 短文中譯(收合)、
@@ -939,11 +944,12 @@ function drefOpen(btn){   // 「第 N 段第 M 句」→ 小視窗開短文、�
    note 補充說明。英、日語的短文與選項點一下會唸 */
 function demoHtml(k, b){
   const L = k === 'en' || k === 'jp', say = t => L ? ` data-say="${esc(sayText(t))}"` : '', qs = b.qs || [b];
-  const CL = k === 'en' && !!b.psg && qs.some(q => q.cl || q.ul), used = new Set(qs.filter(q => q.cl || q.ul).map(q => dty(q.type)));   // v341 有線索才分句、加「看線索」
+  const CL = L && !!b.psg && qs.some(q => q.cl || q.ul), used = new Set(qs.filter(q => q.cl || q.ul).map(q => dty(q.type)));   // v341 有線索才分句、加「看線索」(v342 日語也可以)
+  const lab = t => k === 'jp' ? qs.filter(q => (q.cl || q.ul) && dty(q.type) === t).map(q => q.type).join(' / ') : DLEG.find(x => x[0] === t)[1], ulq = qs.find(q => q.ul);   // v342 日語圖例用本章的題型名稱
   const ZQ = L && qs.some(q => q.qz || (q.oz || []).some(Boolean));   // v341 有題目或選項中譯才加「遮住中文」
   const tools = CL || ZQ ? `<div class="dtools">${CL ? '<button class="vt" type="button" data-dcl>🖍 看線索</button>' : ''}${ZQ ? '<button class="vt" type="button" data-vz>🙈 遮住中文</button>' : ''}</div>` : '';
   const clr = CL ? `<div class="dclt">先自己做題,再按「🖍 看線索」:每種題型的線索在文章哪裡,用顏色標出來</div>`
-    + `<div class="dleg">${DLEG.filter(x => used.has(x[0])).map(([t, n]) => `<span data-ty="${t}"><i></i>${n}</span>`).join('')}${qs.some(q => q.ul) ? '<span data-ty="ref"><span class="dul">虛線底線</span>= 指代題指的內容</span>' : ''}</div>` : '';
+    + `<div class="dleg">${DLEG.filter(x => used.has(x[0])).map(([t]) => `<span data-ty="${t}"><i></i>${esc(lab(t))}</span>`).join('')}${ulq ? `<span data-ty="${dty(ulq.type)}"><span class="dul">虛線底線</span>= ${esc(ulq.type)}指的內容</span>` : ''}</div>` : '';
   const psg = b.psg ? `<div class="dpsg">${CL ? dPsg(b) : b.psg.map(t => `<p${say(t)}>${mk(esc(t))}</p>`).join('')}${b.pz ? `<details class="dpz"><summary>看中譯</summary>${b.pz.map(t => `<p>${esc(t)}</p>`).join('')}</details>` : ''}</div>` : '';
   return `<div class="jdemo"><div class="src">✏️ 示範例題(自編)${b.h ? ' · ' + esc(b.h) : ''}</div>${psg}${tools}${clr}` + qs.map((q, n) => `<div class="dq">${q.type ? `<span class="dty"${CL ? ` data-ty="${dty(q.type)}"` : ''}>${esc(q.type)}</span>` : ''}
     <div class="stem">${qs.length > 1 ? (n + 1) + '. ' : ''}${mk(esc(q.q))}</div>${q.qz ? `<div class="szh">${esc(q.qz)}</div>` : ''}

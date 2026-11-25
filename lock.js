@@ -1,4 +1,4 @@
-/* lock.js — 進入密碼(單一來源)· v132
+/* lock.js — 進入密碼(單一來源)· v342
    ------------------------------------------------------------------
    每一頁最前面載入(lock_config.js → lock.js),在畫面出現前先擋住:
      · LOCKCFG 是 null → 不上鎖,一切照舊
@@ -11,6 +11,8 @@
    APPLOCK.lock()     立即上鎖(清除這台裝置的記住狀態並重新整理)
    注意:這是網站入口的門鎖,擋住不知道密碼的人使用;題庫檔案本身仍放在公開的 GitHub 專案上。
    變更履歷:
+     v342 (2026-11-25) 上鎖畫面的 class 改成 al- 開頭並寫明 display:首頁的 .lk / .ic / .go 樣式會蓋過來,
+                       手機上「請輸入密碼」被擠成直排、輸入框很窄、「進入」超出畫面
      v132 (2026-10-06) 畫面簡化為「請輸入密碼 / 輸入框 / 進入」;一律記住這台裝置(不再勾選、不再 30 天到期);
                        設定檔沒載到時維持上鎖;localStorage 不能寫時退而記在這次開啟
      v131 (2026-10-06) 初版
@@ -53,16 +55,16 @@
     'html.app-locked #appLock{visibility:visible!important}' +
     '#appLock{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;' +
     'background:linear-gradient(160deg,#1e3a8a,#0f766e);font-family:"Segoe UI","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}' +
-    '#appLock .lk{width:100%;max-width:340px;background:#fff;color:#1c2330;border-radius:20px;padding:26px 22px 22px;box-shadow:0 18px 50px rgba(0,0,0,.35);text-align:center}' +
-    '#appLock .ic{font-size:2.4rem;line-height:1}#appLock h1{font-size:1.2rem;margin:10px 0 16px}' +
-    '#appLock input[type=password]{width:100%;box-sizing:border-box;border:1.5px solid #cbd5e1;border-radius:12px;padding:12px 14px;font-size:16px;font-family:inherit;color:#1c2330;background:#fff}' +
+    '#appLock .al-box{display:block;width:100%;max-width:340px;background:#fff;color:#1c2330;border-radius:20px;padding:26px 22px 22px;box-shadow:0 18px 50px rgba(0,0,0,.35);text-align:center}' +
+    '#appLock .al-ic{display:block;font-size:2.4rem;line-height:1}#appLock h1{display:block;font-size:1.2rem;font-weight:800;line-height:1.35;letter-spacing:0;color:inherit;margin:10px 0 16px}' +
+    '#appLock input[type=password]{display:block;margin:0;width:100%;box-sizing:border-box;border:1.5px solid #cbd5e1;border-radius:12px;padding:12px 14px;font-size:16px;font-family:inherit;color:#1c2330;background:#fff}' +
     '#appLock input[type=password]:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.18)}' +
-    '#appLock button.go{width:100%;border:0;border-radius:12px;padding:12px;font-size:1rem;font-weight:800;color:#fff;background:#2563eb;cursor:pointer;margin-top:12px;font-family:inherit}' +
-    '#appLock button.go:disabled{opacity:.6;cursor:default}' +
-    '#appLock .err{color:#c62a2a;font-size:.85rem;font-weight:700;margin-top:10px}#appLock .err:empty{margin-top:0}' +
-    '#appLock .shake{animation:lkShake .35s}@keyframes lkShake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}' +
-    '@media (prefers-color-scheme:dark){#appLock .lk{background:#1b2029;color:#e8edf5}' +
-    '#appLock input[type=password]{background:#12161c;color:#e8edf5;border-color:#334155}#appLock .err{color:#ff8080}}';
+    '#appLock button.al-go{display:block;width:100%;border:0;border-radius:12px;padding:12px;font-size:1rem;font-weight:800;color:#fff;background:#2563eb;cursor:pointer;margin-top:12px;font-family:inherit}' +
+    '#appLock button.al-go:disabled{opacity:.6;cursor:default}' +
+    '#appLock .al-err{color:#c62a2a;font-size:.85rem;font-weight:700;margin-top:10px}#appLock .al-err:empty{margin-top:0}' +
+    '#appLock .al-shake{animation:lkShake .35s}@keyframes lkShake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}' +
+    '@media (prefers-color-scheme:dark){#appLock .al-box{background:#1b2029;color:#e8edf5}' +
+    '#appLock input[type=password]{background:#12161c;color:#e8edf5;border-color:#334155}#appLock .al-err{color:#ff8080}}';
   (document.head || root).appendChild(css);
 
   function b64(buf) { return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
@@ -79,12 +81,12 @@
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-labelledby', 'lkTitle');
-    box.innerHTML = '<form class="lk" autocomplete="on">' +
-      '<div class="ic" aria-hidden="true">🔒</div><h1 id="lkTitle">請輸入密碼</h1>' +
+    box.innerHTML = '<form class="al-box" autocomplete="on">' +
+      '<div class="al-ic" aria-hidden="true">🔒</div><h1 id="lkTitle">請輸入密碼</h1>' +
       '<input type="text" name="username" value="考照App" autocomplete="username" hidden>' +
       '<input type="password" id="lkPw" autocomplete="current-password" enterkeyhint="go" aria-label="密碼" required>' +
-      '<button class="go" type="submit" id="lkGo">進入</button>' +
-      '<div class="err" id="lkErr" aria-live="polite"></div></form>';
+      '<button class="al-go" type="submit" id="lkGo">進入</button>' +
+      '<div class="al-err" id="lkErr" aria-live="polite"></div></form>';
     document.body.appendChild(box);
     var form = box.querySelector('form'), pw = box.querySelector('#lkPw'), err = box.querySelector('#lkErr'), go = box.querySelector('#lkGo');
     if (MISSING || !enabled()) {
@@ -121,7 +123,7 @@
         if (f.n >= MAXFAIL) { f.n = 0; f.until = Date.now() + WAIT * 1000; err.textContent = '輸錯 ' + MAXFAIL + ' 次,請 ' + WAIT + ' 秒後再試'; }
         else err.textContent = '密碼不對,還可以再試 ' + (MAXFAIL - f.n) + ' 次';
         lsSet(FKEY, f);
-        form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+        form.classList.remove('al-shake'); void form.offsetWidth; form.classList.add('al-shake');
         pw.select();
       }).catch(function () { go.disabled = false; err.textContent = '驗證失敗,請重新整理再試'; });
     };
