@@ -1,10 +1,11 @@
-/* jy_en.js — 講義:外語英語 · v336
+/* jy_en.js — 講義:外語英語 · v337
    ------------------------------------------------------------------
    結構同 jy_gh.js(章節 → 區塊);英語題庫(bank.js)沒有中文三科那種細類,match 一律用 add 列出題號,e2e 檢查每題只屬一章。
    v255 起改成依情境主題分章的新格式,每章有:情境會話(dlg)、單字表(vocab:字 / 音標 / 詞性 / 中文 / 例子 / 例子中譯 / 第 7 欄 { s 同義字, a 反義字 })、
    發音提醒(pron)、文法重點(gram),加上整理卡、表格、歷屆範例、解題技巧、自我檢測;字彙題與對話題依情境歸到同一章。
    會話、例句、說明與解題技巧皆自行撰寫;音標採美式發音(自行標注);歷屆題目引自考選部公開試題。
    變更履歷:
+     v337 (2026-11-24) 第 8 章加「五、延伸補充:還沒考過的句型」8 個(had better、would rather 等,歷屆題目與選項都沒出現過)
      v336 (2026-11-24) 第 1~8 章「考法拆解」「易錯陷阱」每條加「例」(考法 32 個、陷阱 54 個);第 9 章陷阱補上原本空著的 1 個例
      v334 (2026-11-24) 第 9 章口訣「閱讀四步驟」加一個例(用示範短文走一遍)、一個反例(逐字讀完才看題目)
      v333 (2026-11-24) 第 1~7 章加「五、延伸補充:還沒考過的常用字」(各 8 字,共 56 字;歷屆題目與選項都沒出現過、講義也還沒收)
@@ -2237,7 +2238,18 @@ const JY_EN = {
         ['Let’s call it a day, ___?', 'shall we'],
         ['搭渡輪?', 'by ferry'],
         ['「請留在座位上」?', 'Please remain seated.'],
-        ['6 點 45 分(用 quarter)?', 'a quarter to seven']] }
+        ['6 點 45 分(用 quarter)?', 'a quarter to seven']] },
+      { t: 'h', text: '五、延伸補充:還沒考過的句型', x: 1 },
+      { t: 'p', html: '這一節收常用、但歷屆題目與選項都還沒出現過的句型(出題次數 0)。每個句型附音標、用法、例句與中譯,點 🔊 可以聽發音。' },
+      { t: 'vocab', h: '還沒考過的句型', items: [
+        ['had better', 'hæd ˈbɛtɚ', 'phr.', '最好…(+ 原形動詞)', 'You had better take an umbrella with you.', '你最好帶把傘。'],
+        ['would rather', 'wʊd ˈræðɚ', 'phr.', '寧願…(+ 原形動詞,常配 than)', 'I would rather walk than take a taxi.', '我寧願走路,也不要搭計程車。'],
+        ['no sooner … than', 'noʊ ˈsunɚ ðæn', 'phr.', '一…就…(放句首要倒裝)', 'No sooner had we arrived than it started to rain.', '我們一到就開始下雨。'],
+        ['not until', 'nɑt ənˈtɪl', 'phr.', '直到…才…', 'The museum does not open until ten.', '博物館十點才開門。'],
+        ['it is time', 'ɪt ɪz ˈtaɪm', 'phr.', '該是…的時候了(後面接過去式)', 'It is time we went back to the hotel.', '該是我們回飯店的時候了。'],
+        ['as if', 'æz ˈɪf', 'conj.', '好像、彷彿(常用假設語氣)', 'He talks as if he had been there before.', '他說得好像以前去過那裡似的。'],
+        ['whether or not', 'ˈwɛðɚ ɔr ˈnɑt', 'conj.', '不論是否…', 'Whether or not it rains, the tour will go ahead.', '不論下不下雨,行程都照常進行。'],
+        ['enough to', 'ɪˈnʌf tu', 'phr.', '足以…(形容詞 + enough to)', 'The water is warm enough to swim in.', '水溫暖到可以下去游泳。']] }
     ]
   }, {
     id: 'en-09', no: 9, t: '閱讀測驗',
