@@ -8,11 +8,12 @@
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151613" media="(prefers-color-scheme: dark)">
 <title>講義</title>
-<!-- 講義 · v334(2026-11-24)
+<!-- 講義 · v339(2026-11-25)
      五科講義閱讀頁:章節目錄(本章考情 · 已讀 · 章末測驗成績)、章節內容(📖 完整閱讀 / ⚡ 快速複習)、口訣總表、圖解與整理卡、易混比較
      內容檔:jy_pr2.js(執業法規)、jy_pr.js(執業實務)、jy_gh.js(觀光資源)、jy_en.js(外語英語)、jy_jp.js(外語日語)
      本章考情與章末測驗即時由題庫計算(practice.js);章末測驗用 miniquiz.js,排除法規已修正題(stale.js)
-     變更履歷:v334 「例」的底色改成半透明白(跟著外框顏色走);示範例題拿掉虛線框;「反例:」開頭顯示紅色的反例;口訣也能附例(mn 的 eg)
+     變更履歷:v339 英語、日語右下角加「🙈 遮住中文」(整頁中文翻譯變模糊,點一下看那一段);英語重點表、易混比較、整理卡的英文格子加小 🔊,同義、反義字點了會唸;閱讀題的問與答依文章分組
+              v334 「例」的底色改成半透明白(跟著外框顏色走);示範例題拿掉虛線框;「反例:」開頭顯示紅色的反例;口訣也能附例(mn 的 eg)
               v328 範例:解題技巧、易錯陷阱、考法拆解每條可加「例」(eg 陣列,與 items 對齊,空字串 = 不附);新增示範例題區塊(demo,自編短文與題目,附答案與解題步驟;快速複習也顯示、朗讀會唸、不算進每節練習的小節內容)
               v326 示意圖再加火山、珊瑚礁、玄武岩、舊海面、河道、堤防、滯洪池、皮膚分層、人形的繪圖樣式
               v325 圖解加示意圖用的繪圖樣式(海、岩石、山、扇形地分帶、河流、湧泉、地下水面),用半透明色,淺色深色都看得清楚
@@ -477,9 +478,20 @@
   /* v274 點讀(英語、日語講義):右下角按鈕,開啟後點英文或日文字看意思和發音 */
   #rdBtn{position:fixed;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
   #rdBtn.on{background:#2563eb} #rdBtn[hidden]{display:none}
+  /* v339 遮住中文(英語、日語講義):右下角按鈕在「點讀」上面 */
+  #zhBtn{position:fixed;right:14px;bottom:calc(122px + env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:22px;padding:10px 15px;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;background:#5a6b82;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28)}
+  #zhBtn.on{background:#2563eb} #zhBtn[hidden]{display:none}
+  .hidezh .vz,.hidezh .szh,.hidezh .oz,.hidezh .sqa-z,.hidezh .zhr{filter:blur(6px);user-select:none;cursor:pointer}
+  .hidezh .peek{filter:none;user-select:auto}
+  /* v339 英語表格、整理卡的小 🔊;同義、反義字可點 */
+  .spk.sm{width:auto;height:auto;padding:1px 5px;font-size:.74rem;border-radius:8px;margin-right:5px;vertical-align:1px;line-height:1.2}
+  .spk.sm::before{content:"\1F50A"}
+  .sya{cursor:pointer;border-bottom:1px dotted currentColor}
+  .sqa-note{font-size:.84rem;color:var(--sub);margin:6px 0} .sqa-g{margin:6px 0 12px}
   #glossPop,.jlk{z-index:10002!important}
   body.jlk-on .jdlg .den,body.jlk-on .jvoc .vw,body.jlk-on .jvoc .ve .en,body.jlk-on .jgram .geg .en,body.jlk-on .jex .stem,body.jlk-on .jex .op{cursor:help}
   @media print{#rdBtn{display:none!important}}
+  @media print{#zhBtn,.spk.sm{display:none!important}.hidezh .vz,.hidezh .szh,.hidezh .oz,.hidezh .sqa-z,.hidezh .zhr{filter:none}}
   /* v273 講義內看完整詳解:從下方滑出的詳解視窗(不換頁) */
   .jex .xopen{display:inline-block;margin-top:6px;border:1.5px solid var(--c2);background:var(--card);color:var(--c2);border-radius:999px;padding:5px 13px;font-weight:700;font-size:.85rem;font-family:inherit;cursor:pointer}
   .jex .xopen:active{transform:scale(.97)}
@@ -787,6 +799,17 @@ function withPsg(d){   // v279 日語讀解文章(jp_psg.js,約 70 KB):範例、
   JPPP = JPPP || (window.JPREAD ? Promise.resolve() : PRACTICE.loadJs('jp_psg.js'));
   return JPPP.then(() => d).catch(() => { JPPP = null; return d; });
 }
+/* v339 遮住中文用:英語題目、選項裡夾的中文(例如「How long … ? 您打算待多久?」)包成 .zhr,整頁遮住中文時一起變模糊(填空的底線 ＿ 不算) */
+const zhw = s => esc(s).replace(/[\u3000-\u303F\u3400-\u9FFF\uFF00-\uFF3E\uFF40-\uFFEF][^A-Za-z<>&\uFF3F_]*/g, m => `<span class="zhr">${m}</span>`);
+const ZW = (k, s) => k === 'en' ? zhw(s) : esc(s);
+/* v339 英語講義的重點表、易混比較、整理卡:開頭是英文的格子前面加小 🔊(點了唸那格的英文,中文、圈號不唸);同義、反義字點了也會唸 */
+const enSay = c => plainText(String(c).replace(/\*\*/g, '')).replace(/[\u2460-\u24FF]/g, '').replace(/[\u3000-\u303F\u3400-\u9FFF\uFF00-\uFFEF][^A-Za-z]*/g, ' ').replace(/\s*\/\s*/g, ', ').replace(/\s+/g, ' ').trim();
+const spkSm = c => {
+  if (cfg.subj !== 'en' || !/^[\s"'“‘(]*[A-Za-z]/.test(plainText(String(c).replace(/\*\*/g, '')).replace(/^[\u2460-\u24FF]\s*/, ''))) return '';
+  const t = enSay(c); return /[A-Za-z]{2}/.test(t) ? `<button class="spk sm" type="button" data-say="${esc(t)}" aria-label="聽 ${esc(t)} 的發音"></button>` : '';
+};
+const tdHtml = c => spkSm(c) + hl(esc(c));
+const syW = s => String(s).split(/,\s*/).map(w => `<span class="sya" data-say="${esc(w)}">${esc(w)}</span>`).join(', ');
 const psgOf = (k, q) => k === 'en' && q.psg && window.ENREAD ? ENREAD.html(q, { open: false }) : k === 'jp' && window.JPREAD ? JPREAD.html(q, { open: false }) : '';   // v279 範例的閱讀題附文章(預設收合)
 function chapterQs(ch, d){
   if (!d) return [];
@@ -837,7 +860,7 @@ function exHtml(k, b, d){
   const ozt = (o, i) => { const z = String(oz[i] || '').replace(/\s*[(（][^()（）]*[)）]\s*$/, '').trim(); return z && z !== o ? ` <span class="oz">${esc(z)}</span>` : ''; };   // v263 日語選項中譯(去掉括號裡重複的日文)
   return `<div class="jex"><div class="src">📝 歷屆範例 · ${esc(PRACTICE.label(k,q))}${isOld(k,q)?' · ⚠ 法規已修正':''}</div>${psgOf(k, q)}
     <div class="stem">${esc(clean(q.stem))}</div>${a.zh?`<div class="szh">${esc(a.zh)}</div>`:''}
-    ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${esc(clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
+    ${q.opts.map((o,i)=>`<div class="op${acc.includes(i)?' ok':''}" data-say="${esc(clean(o))}">${'ABCD'[i]}. ${ZW(k, clean(o))}${ozt(o,i)}${acc.includes(i)?' ✔':''}</div>`).join('')}
     <ol>${b.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
     <button class="xopen" type="button" data-xs="${esc(k)}" data-xq="${esc(b.key)}">📖 看完整詳解</button></div>`;
 }
@@ -912,7 +935,7 @@ function vocabHtml(b, d){
   const items = b.items.map((x, i) => ({ x, i, f: fr(x[0]) })).sort((p, q) => q.f - p.f || p.i - q.i);   // v298 同一組裡考越多次的越前面
   return `<div class="jvoc"><div class="mh"><span>📚 單字${b.h?' · '+esc(b.h):''}</span>${J?'<span class="vts"><button class="vt" type="button" data-vy>🙈 遮住讀音</button><button class="vt" type="button" data-vz>🙈 遮住中文</button></span>':'<button class="vt" type="button" data-vz>🙈 遮住中文</button>'}</div>${first?(J?'<div class="vleg">「考 N 次」= 106–115 年日語試題的題目或選項出現過的題數(10 題以上紅底);每組依出題次數排</div>':'<div class="vleg">「考 N 次」= 106–115 年英語試題的題目或選項出現過的題數(10 題以上紅底),每組依出題次數排;<span class="vs"><span class="sy"><b>同</b>同義字</span><span class="an"><b>反</b>反義字</span></span></div>'):''}${items.map(({ x: [w,ipa,pos,zh,eg,egz,sa], f })=>{
     const sw = J && ipa ? ipa : plainText(w), se = J && ipa ? sayText(eg).split(w).join(ipa) : sayText(eg);   // 日語:單字與例子裡的這個字都唸假名讀音
-    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆${J?'日語':'英語'}試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${esc(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${esc(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
+    return `<div class="vrow"><button class="spk" type="button" data-say="${esc(sw)}" aria-label="聽 ${esc(plainText(w))} 的發音">🔊</button><div class="vb"><div class="vm"><span class="vw">${esc(w)}</span>${ipa?(J?`<span class="yomi">${esc(ipa)}</span>`:`<span class="ipa">/${esc(ipa)}/</span>`):''}${pos?`<span class="pos">${esc(pos)}</span>`:''}<span class="vz">${esc(zh)}</span>${f?`<span class="vf${f>=10?' hot':''}" title="歷屆${J?'日語':'英語'}試題的題目或選項出現過 ${f} 題">考 ${f} 次</span>`:''}</div>${eg?`<div class="ve"><span class="en" data-say="${esc(se)}">${rb(esc(eg))}</span><span class="vz">${esc(egz||'')}</span></div>`:''}${sa&&(sa.s||sa.a)?`<div class="vs">${sa.s?`<span class="sy"><b>同</b>${syW(sa.s)}</span>`:''}${sa.a?`<span class="an"><b>反</b>${syW(sa.a)}</span>`:''}</div>`:''}</div></div>`; }).join('')}</div>`;
 }
 /* v297 情境會話「劇本式」:說話者用一個字的小標(上方列出代表誰)、每句外文在上中文在下、細線分隔;
    會話下面列出本段關鍵字在歷屆考題出現幾次(英語:會話裡標記的關鍵字;日語:本章單字表裡、這段會話用到的字) */
@@ -961,8 +984,8 @@ function figHtml(b){ return `<figure class="jfig"><figcaption>🖼 ${esc(b.h)}</
    說明與註記的數字照重點表規則標紅 */
 function cardHtml(b){
   const row = ([t, ...ds]) => !t ? `<li class="cn">${ds.map(x=>hl(esc(x))).join(' ')}</li>`
-    : !ds.length ? `<li class="cl"><span class="ct">${esc(t)}</span></li>`
-    : `<li><span class="ct">${esc(t)}</span><span class="cd">${ds.map(x=>`<div>${hl(esc(x))}</div>`).join('')}</span></li>`;
+    : !ds.length ? `<li class="cl"><span class="ct">${spkSm(t)}${esc(t)}</span></li>`
+    : `<li><span class="ct">${spkSm(t)}${esc(t)}</span><span class="cd">${ds.map(x=>`<div>${hl(esc(x))}</div>`).join('')}</span></li>`;
   return `<div class="jcard"><div class="mh">🗂 整理卡:${esc(b.h)}</div><ul>${b.items.map(row).join('')}</ul>${b.note?`<div class="tn">${hl(esc(b.note))}</div>`:''}</div>`;
 }
 /* v286 位置圖 { t:'map', h, tw:{ marks:[[名, 經度, 緯度, 標籤, 顏色鍵或色碼, 標籤方向]], layers:{ rv, mt, pole, coast }, pkAll, rgPr, arrows, texts, tropic }
@@ -1000,7 +1023,7 @@ function mapLibsReady(ch){
   if (ms.some(b => b.w) && !(window.WMAP && WMAP.noteAna)) ps.push(new Promise(res => { const t = document.createElement('script'); t.src = 'worldmap.js?v=166'; t.onload = t.onerror = () => res(); document.head.appendChild(t); }));
   return Promise.all(ps);
 }
-function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))))}</div>`; }
+function cmpHtml(b){ return `<div class="jcmp"><div class="mh">⚖️ 易混比較:${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(tdHtml)))}</div>`; }
 /* v220 重點紅字:重點條列、重點表、易混比較裡的數字與日期(期限、金額、人數、年份)自動標紅;
    「」『』引號內(原文用語或錯誤選項)、括號內與「N 年考題」(考題出處)、「第 N 條」不自動標。
    內容檔可用 **關鍵詞** 手動標紅(條列、表格、解題技巧、易錯陷阱都適用);解題技巧與易錯陷阱只標手動標記,不自動標數字(避免把錯誤數字標成重點) */
@@ -1054,7 +1077,7 @@ function blockHtml(k, b, d){
     case 'card': return cardHtml(b);
     case 'map': return mapHtml(b);
     case 'link': return `<a class="jlink" href="${esc(b.href)}">${esc(b.text)}</a>`;
-    case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(c=>hl(esc(c)))), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
+    case 'table': return `<div class="jtbl"><div class="th">📋 ${esc(b.h)}</div>${tableHtml(b.head.map(esc), b.rows.map(r=>r.map(tdHtml)), b.stack)}${b.note?`<div class="tn">${esc(b.note)}</div>`:''}</div>`;
     case 'mn': return mnHtml(b, false);
     case 'tip': return `<div class="jtip"><div class="mh">🎯 解題技巧</div><ul>${b.items.map((x,i)=>`<li>${mk(esc(x))}${egHtml(b,i)}</li>`).join('')}</ul></div>`;
     case 'trap': return `<div class="jtrap"><div class="mh">⚠ 易錯陷阱</div><ul>${b.items.map((x,i)=>`<li>${mk(esc(x))}${egHtml(b,i)}</li>`).join('')}</ul></div>`;
@@ -1299,6 +1322,28 @@ const RD = (() => {
   }
   return { sync, set, isOn: () => on };
 })();
+/* v339 遮住中文(英語、日語講義):右下角「🙈 遮住中文」把整頁的中文翻譯變模糊(單字、會話、例句、題目與選項的中譯、問與答),
+   點一下模糊的地方只看那一段;再按一次按鈕全部顯示;換到其他科目自動解除;設定記在 pref_jy_hidezh */
+const ZH = (() => {
+  let btn = null, on = !!PRACTICE.LSget('pref_jy_hidezh', false), subj = null;
+  const clearPeek = () => document.querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
+  function mount(){
+    if (btn) return;
+    btn = document.createElement('button'); btn.id = 'zhBtn'; btn.type = 'button'; btn.hidden = true;
+    btn.title = '遮住中文:中文翻譯變模糊,點一下模糊的地方只看那一段';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', e => { e.stopPropagation(); set(!on); });
+  }
+  function apply(){
+    const act = on && (subj === 'en' || subj === 'jp');
+    document.body.classList.toggle('hidezh', act);
+    if (!act) clearPeek();
+    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on)); btn.textContent = on ? '👀 顯示中文' : '🙈 遮住中文';
+  }
+  function set(v){ mount(); on = !!v; PRACTICE.LSset('pref_jy_hidezh', on); clearPeek(); apply(); }
+  function sync(){ mount(); subj = cfg.subj; btn.hidden = !(subj === 'en' || subj === 'jp'); apply(); }
+  return { sync, set, isOn: () => on };
+})();
 function renderBar(){
   const S = SUBJS;
   document.body.dataset.sj = cfg.subj;   // v253 各科主色(屬性名不能用 data-subj:科目按鈕的點擊處理是找 [data-subj])
@@ -1306,6 +1351,7 @@ function renderBar(){
     return `<button class="chip${cfg.subj===s.k?' on':''}" type="button" data-subj="${s.k}">${s.name}<span class="n">${n}</span></button>`; }).join('');
   $('tabs').style.display = cfg.view === 'ch' ? 'none' : '';
   $('tabs').innerHTML = viewsOf(cfg.subj).map(([v,l])=>`<button class="tab${cfg.view===v?' on':''}" type="button" data-view="${v}">${l}</button>`).join('');
+  ZH.sync();   // v339 遮住中文按鈕:英語、日語才顯示
   RD.sync();   // v274 點讀按鈕:英語、日語才顯示,換科目時關閉
 }
 function noData(){
@@ -1419,8 +1465,8 @@ function sqOk(k, q, exKeys){
 function sqQ(k, q){
   const acc = SCORE.acc(q), O = window.OPTIMG;
   return `<div class="sq-q" data-k="${esc(k)}" data-key="${esc(PRACTICE.key(q))}" data-acc="${acc.join(',')}"><div class="sq-src">${esc(PRACTICE.label(k, q))}</div>
-    ${O && O.fig ? (O.fig(q) || '') : ''}<div class="sq-st">${esc(clean(q.stem))}</div>
-    ${q.opts.map((o, i) => `<button type="button" class="sq-o" data-i="${i}">${'ABCD'[i]}. ${O && O.html ? (O.html(q, i) || '') : ''}${esc(clean(o))}</button>`).join('')}
+    ${O && O.fig ? (O.fig(q) || '') : ''}<div class="sq-st">${ZW(k, clean(q.stem))}</div>
+    ${q.opts.map((o, i) => `<button type="button" class="sq-o" data-i="${i}">${'ABCD'[i]}. ${O && O.html ? (O.html(q, i) || '') : ''}${ZW(k, clean(o))}</button>`).join('')}
     <div class="sq-fb" hidden></div></div>`;
 }
 function sqHtml(k, items, i){
@@ -1434,12 +1480,20 @@ function sqHtml(k, items, i){
 }
 /* v304 這節全部題目的問與答:依年份由新到舊,列題目與正解(送分題寫「全部給分」);英語、日語附題目中譯;最多 40 題 */
 const SQA_MAX = 40;
+/* v339 閱讀題的問與答依文章分組:每組先放文章(預設收合,點開看全文),再列這篇的題目與正解;沒有文章的題目照舊一張清單 */
+const psgFull = (k, q) => k === 'en' && q.psg && window.ENREAD ? ENREAD.html(q, { open: false, full: true }) : psgOf(k, q);
+function sqaBody(k, xs, li){
+  const gs = [], m = new Map();
+  xs.forEach(x => { const p = psgFull(k, x.q); if (!m.has(p)){ const g = { p, xs: [] }; m.set(p, g); gs.push(g); } m.get(p).xs.push(x); });
+  if (!gs.some(g => g.p)) return `<ol>${xs.map(li).join('')}</ol>`;
+  return `<p class="sqa-note">閱讀題依文章分組:先點「📖」看文章,再看下面的題目與正解</p>` + gs.map(g => `<div class="sqa-g">${g.p}<ol>${g.xs.map(li).join('')}</ol></div>`).join('');
+}
 function sqAll(k, items){
   const d = CUR && CUR.d, list = items.slice().sort((a, b) => b.q.y - a.q.y || a.q.c.localeCompare(b.q.c) || a.q.no - b.q.no);
   const zh = q => { const z = k === 'en' ? q.zh : k === 'jp' ? ((d && d.ana && d.ana[PRACTICE.key(q)]) || {}).zh : ''; return z ? `<div class="sqa-z">${esc(plainText(String(z)).replace(/<[^>]*>/g, ''))}</div>` : ''; };
-  const ans = q => SCORE.free(q) ? (q.sungei === 2 ? '有作答就給分(官方送分)' : '一律給分(官方送分)') : SCORE.acc(q).map(i => 'ABCD'[i] + '. ' + esc(clean(q.opts[i]))).join(' / ');
-  const li = ({ q }) => `<li><span class="sqa-y">${PRACTICE.CNAME[q.c] || ''} ${q.y}-${q.no}</span><div class="sqa-q">${esc(clean(q.stem))}</div>${zh(q)}<div class="sqa-a">${ans(q)}</div></li>`;
-  return `<details class="sqa"><summary>看這節全部 ${items.length} 題的問與答</summary><ol>${list.slice(0, SQA_MAX).map(li).join('')}</ol>` +
+  const ans = q => SCORE.free(q) ? (q.sungei === 2 ? '有作答就給分(官方送分)' : '一律給分(官方送分)') : SCORE.acc(q).map(i => 'ABCD'[i] + '. ' + ZW(k, clean(q.opts[i]))).join(' / ');
+  const li = ({ q }) => `<li><span class="sqa-y">${PRACTICE.CNAME[q.c] || ''} ${q.y}-${q.no}</span><div class="sqa-q">${ZW(k, clean(q.stem))}</div>${zh(q)}<div class="sqa-a">${ans(q)}</div></li>`;
+  return `<details class="sqa"><summary>看這節全部 ${items.length} 題的問與答</summary>${sqaBody(k, list.slice(0, SQA_MAX), li)}` +
     (list.length > SQA_MAX ? `<p class="sq-more">只列最近的 ${SQA_MAX} 題,其他 ${list.length - SQA_MAX} 題可以用章末的「本章全部題目」練</p>` : '') + '</details>';
 }
 function sqAnswer(btn){
@@ -1705,6 +1759,7 @@ function openX(k, key, src, keep){
 }
 
 $('app').addEventListener('click', e=>{
+  if (document.body.classList.contains('hidezh')){ const pk = e.target.closest('.vz, .szh, .oz, .sqa-z, .zhr'); if (pk && !pk.classList.contains('peek')){ pk.classList.add('peek'); return; } }   // v339 遮住中文時點一下看那一段
   const so = e.target.closest('.sq-o'); if (so){ sqAnswer(so); return; }   // v303 本節練習作答
   const ar = e.target.closest('.aref'); if (ar){ ART.open(ar.dataset.law, ar.dataset.art, ar); return; }   // v287 內文條號 → 條文視窗
   const xq = e.target.closest('[data-xq]'); if (xq){ openX(xq.dataset.xs, xq.dataset.xq, xq); return; }   // v273 講義內看完整詳解
