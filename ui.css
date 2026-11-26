@@ -1,4 +1,4 @@
-/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v345(2026-11-26)
+/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v348(2026-11-26)
    ------------------------------------------------------------------
    設計方向(A+B):暖米色底 + 深青綠主色,像紙本、安靜好讀;功能或分類各有自己的顏色(工具圖示底色),方便分辨。
    用法:每一頁在 </head> 前面加 <link rel="stylesheet" href="ui.css">(要放在頁面自己的 <style> 後面,才蓋得過各頁舊的設定)。
@@ -15,7 +15,8 @@
      .chip2.on          篩選小按鈕選中時用主色
      #fCert             「證照」篩選是分段切換(領隊 / 導遊 / 全部)
      頁首下方的列       切換列、篩選列、作答列(.bar .tabs .certbar .toolbar .nav .kbar)和頁面同底色,列裡的輸入框白底
-   變更履歷:v345 攻略卡的範例短文(.spsg:看線索的題型顏色、遮住中文)、句子按鈕(.sref 與展開的 .spop)、可收合小節(.sx)、日語攻略卡(.jstcard)
+   變更履歷:v348 .passage.spsg:英語詳解的歷屆閱讀文章套用看線索、句子編號,沿用文章原本的外框與底色
+             v345 攻略卡的範例短文(.spsg:看線索的題型顏色、遮住中文)、句子按鈕(.sref 與展開的 .spop)、可收合小節(.sx)、日語攻略卡(.jstcard)
              v334 攻略卡的例子(.egline、.egb 例 / .egb.no 反例),淺色、深色都看得清楚
              v325 頁首下方的列平常不顯示分隔線,黏在頂端、蓋住下方內容時才出現細線與淡陰影(prefs.js 加 is-stuck)
              v319 頁首下方的切換列、篩選列、作答列改成和頁面同底色(不再是整條白色橫帶、拿掉陰影,保留細線),
@@ -89,6 +90,7 @@ body>.toolbar input:not([type=checkbox]):not([type=radio]):not([type=range]),bod
 /* v345 攻略卡的範例短文(英語夜市、日語垃圾桶):第 N 段、句子小編號、🖍 看線索(題型顏色)、🙈 遮住中文;動作寫在 strat.js */
 .spsg{margin:6px 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(127,127,127,.05);line-height:1.85;overflow-wrap:anywhere}
 .spsg .stb{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.passage.spsg{margin:12px 0;padding:14px 16px;border-radius:12px;background:var(--chipt)}   /* v348 英語詳解的文章:沿用 .passage 原本的外框與底色 */
 .spsg .stb button{font:inherit;font-size:.78rem;font-weight:700;line-height:1.6;padding:1px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
 .spsg .stb button.on{background:var(--accent);border-color:var(--accent);color:var(--card)}
 .spsg .sp{margin:6px 0 0}

@@ -142,6 +142,7 @@
 <script src="backlink.js" defer></script>
 <script src="en_review.js"></script>
 <script src="strat.js"></script>
+<script src="en_clue.js"></script>
 <script src="glossary.js" defer></script>
 <link rel="stylesheet" href="ui.css">
 </head>
@@ -304,7 +305,7 @@ function qCard(item){
     <div class="reveal fold">
       <div class="lbl">整句中譯</div><div class="zh">${item.zh}</div>
       ${SCORE.banner(item)}${SCORE.free(item)?'':`<div class="lbl">正解</div><div class="ana"><b style="color:var(--ok);font-weight:700">${SCORE.acc(item).map(k=>"ABCD"[k]+". "+item.opts[k]).join('<br>')}</b></div>`}
-      <div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,SCORE.acc(item),item.stem)}</div>
+      ${clueLine(item)}<div class="lbl">解析</div><div class="ana">${hlAna(item.ana,item.opts,SCORE.acc(item),item.stem)}</div>
       ${item.skill?`<div class="box skill"><b class="h">💡 考試技巧</b>${item.skill}</div>`:''}
       ${item.note?`<div class="box note"><b class="h">⚠️ 注意 / 易錯</b>${item.note}</div>`:''}
       ${item.gram?`<div class="box gram"><b class="h">📝 文法 / 句型</b>${item.gram}</div>`:''}
@@ -314,11 +315,18 @@ function qCard(item){
       ${NOTE.box('en',qref(item))}
     </div></div>`;
 }
+/* v348 閱讀題解析上面的「線索」一行(題型 + 📍 句子按鈕;資料在 en_clue.js) */
+function clueLine(item){
+  if(item.type!=='閱讀'||typeof ENCLUE==='undefined')return '';
+  const k=item.c+'-'+item.y,w=ENCLUE.where(k,item.no);
+  return w?ENCLUE.line(k,item,'p'+(ONE?'':item.c.charAt(0)+item.y+'-')+w.start):'';
+}
 /* 閱讀文章錨點:單一份卷 #p76 / 多份卷 #pg109-76(76 = 這篇的第一題),學習中心等處的「導109-76~80」出處連到這裡 */
 function psgId(u){return 'p'+(ONE?'':u.c.charAt(0)+u.y+'-')+u.start;}
 function passageHtml(item,u){
-  return `<div class="passage"${u&&u.start?` id="${psgId(u)}"`:''}><div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+
-    item.text.map(t=>`<p>${t}</p>`).join('')+
+  const ck=typeof ENCLUE!=='undefined'&&u&&u.c;   /* v348 有線索資料:句子編號 + 🖍 看線索 */
+  return `<div class="passage${ck?' spsg':''}"${u&&u.start?` id="${psgId(u)}"`:''}><div class="lbl">${item.label} ${sayBtn(item.text.join(' '))}</div>`+
+    (ck?ENCLUE.psg(u.c+'-'+u.y,item):item.text.map(t=>`<p>${t}</p>`).join(''))+
     (item.real?`<div class="box real"><b class="h">🎧 現場實用 / 口試</b>${item.real}</div>`:'')+
     `<div class="reveal"><div class="lbl">難字</div><table class="vocab">${vRows(item.vocab)}</table></div></div>`;
 }
