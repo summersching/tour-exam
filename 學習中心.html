@@ -303,6 +303,7 @@
 <script src="learn_en.js"></script>
 <script src="gram_en.js"></script>
 <script src="word_use.js"></script>
+<script src="strat.js"></script>
 <script>
 /* 資料 WORDS / GRAM / SKILL / NOTE / STRAT 在 learn_en.js */
 
@@ -468,7 +469,8 @@ updScore();
 function kText(h){return h.replace(/<[^>]+>/g,'').toLowerCase();}
 function kMeta(x){return '<div class="wsrc">'+(x.hits||[]).map(function(h){return hitA(h);}).join('')+'</div>';}
 function kCard(x,cls){return '<div class="kcard '+cls+'"><div class="khtml">'+x.html+'</div>'+kMeta(x)+'</div>';}
-function stratCard(s){return '<div class="kcard kstrat"><div class="ktt">'+s.title+'<span class="kall">適用全部年度</span></div><div class="khtml">'+s.html+'</div></div>';}
+function stratCard(s,kw){const h=kw?s.html.replace(/<details class="sx">/g,'<details class="sx" open>'):s.html;   /* 搜尋時小節全部展開 */
+  return '<div class="kcard kstrat"><div class="ktt">'+s.title+'<span class="kall">適用全部年度</span></div><div class="khtml stc">'+h+'</div></div>';}
 function kRender(id,data,cls,pre){
   const kw=document.getElementById(id+'-q').value.trim().toLowerCase();
   const arr=kw?data.filter(x=>kText(x.html).includes(kw)):data;
@@ -581,7 +583,7 @@ function renderNote(){kRender('note',scopedKB(NOTE),'n');}
 function renderSkill(){
   const kw=document.getElementById('skill-q').value.trim().toLowerCase();
   const strat=kw?STRAT.filter(s=>kText(s.title+s.html).includes(kw)):STRAT;
-  kRender('skill',scopedKB(SKILL),'s',strat.map(stratCard));
+  kRender('skill',scopedKB(SKILL),'s',strat.map(x=>stratCard(x,kw)));
 }
 document.getElementById('gram-q').addEventListener('input',renderGram);
 document.querySelector('.gseg').addEventListener('click',function(e){const b=e.target.closest('[data-gv]');if(!b||b.dataset.gv===GVIEW)return;GVIEW=b.dataset.gv;try{localStorage.setItem('pref_gram_view',GVIEW);}catch(err){}renderGram();window.scrollTo(0,0);});

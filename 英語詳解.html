@@ -141,6 +141,7 @@
 <script src="pwa.js" defer></script>
 <script src="backlink.js" defer></script>
 <script src="en_review.js"></script>
+<script src="strat.js"></script>
 <script src="glossary.js" defer></script>
 <link rel="stylesheet" href="ui.css">
 </head>
@@ -332,7 +333,7 @@ function render(){
     const D=EN_REVIEW[c+'-'+y], start=units.length;
     D.forEach((item,ix)=>{
       if(item.kind==='guide'){ if(plain&&ONE)units.push({html:`<div class="guide"><div class="lbl">${item.label}</div><ol>${item.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div style="margin-top:8px">${item.tip}</div></div>`}); return; }
-      if(item.kind==='strategy'){ if(plain&&ONE)units.push({html:`<div class="strategy"><button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb">${item.html}</div></div>`}); return; }
+      if(item.kind==='strategy'){ if(plain&&ONE)units.push({html:`<div class="strategy"><button class="stgh" type="button">${item.title}　<span class="stgar">▼ 點開</span></button><div class="stgb stc">${item.html}</div></div>`}); return; }
       if(item.kind==='passage'){ if(TYPE==='all'||TYPE==='閱讀'){ if(!kw){const nq=D.slice(ix+1).find(x=>x.kind==='q');units.push({item,c,y,start:nq?nq.no:0});} } return; }
       totalQ++;
       if(TYPE!=='all'&&item.type!==TYPE)return;

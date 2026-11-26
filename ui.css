@@ -1,4 +1,4 @@
-/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v334(2026-11-24)
+/* ui.css — 全站共用樣式(配色、頁首、篩選列)· v345(2026-11-26)
    ------------------------------------------------------------------
    設計方向(A+B):暖米色底 + 深青綠主色,像紙本、安靜好讀;功能或分類各有自己的顏色(工具圖示底色),方便分辨。
    用法:每一頁在 </head> 前面加 <link rel="stylesheet" href="ui.css">(要放在頁面自己的 <style> 後面,才蓋得過各頁舊的設定)。
@@ -15,7 +15,8 @@
      .chip2.on          篩選小按鈕選中時用主色
      #fCert             「證照」篩選是分段切換(領隊 / 導遊 / 全部)
      頁首下方的列       切換列、篩選列、作答列(.bar .tabs .certbar .toolbar .nav .kbar)和頁面同底色,列裡的輸入框白底
-   變更履歷:v334 攻略卡的例子(.egline、.egb 例 / .egb.no 反例),淺色、深色都看得清楚
+   變更履歷:v345 攻略卡的範例短文(.spsg:看線索的題型顏色、遮住中文)、句子按鈕(.sref 與展開的 .spop)、可收合小節(.sx)、日語攻略卡(.jstcard)
+             v334 攻略卡的例子(.egline、.egb 例 / .egb.no 反例),淺色、深色都看得清楚
              v325 頁首下方的列平常不顯示分隔線,黏在頂端、蓋住下方內容時才出現細線與淡陰影(prefs.js 加 is-stuck)
              v319 頁首下方的切換列、篩選列、作答列改成和頁面同底色(不再是整條白色橫帶、拿掉陰影,保留細線),
              列裡的搜尋框與下拉選單改白底
@@ -85,3 +86,53 @@ body>.toolbar input:not([type=checkbox]):not([type=radio]):not([type=range]),bod
 .egb.no{background:#c8553d}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .egb.no{background:#f08a6d}}
 :root[data-theme="dark"] .egb.no{background:#f08a6d}
+/* v345 攻略卡的範例短文(英語夜市、日語垃圾桶):第 N 段、句子小編號、🖍 看線索(題型顏色)、🙈 遮住中文;動作寫在 strat.js */
+.spsg{margin:6px 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(127,127,127,.05);line-height:1.85;overflow-wrap:anywhere}
+.spsg .stb{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.spsg .stb button{font:inherit;font-size:.78rem;font-weight:700;line-height:1.6;padding:1px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.spsg .stb button.on{background:var(--accent);border-color:var(--accent);color:var(--card)}
+.spsg .sp{margin:6px 0 0}
+.spsg .sn{display:inline-block;margin-right:6px;padding:0 8px;border-radius:999px;background:rgba(127,127,127,.15);color:var(--sub);font-size:.7rem;font-weight:800;line-height:1.6;vertical-align:1px}
+.spsg .sno{margin-right:1px;color:var(--sub);font-size:.6rem;font-weight:800}
+.spsg .sz{margin:2px 0 6px;color:var(--sub);font-size:.88em;line-height:1.65}
+.spsg.hidez .sz{filter:blur(5px);cursor:pointer;user-select:none}
+.spsg.hidez .sz.peek{filter:none}
+.spsg .snote{margin-top:6px;color:var(--sub);font-size:.75rem;line-height:1.55}
+.spsg .ss.sflash{background:rgba(255,196,0,.32);border-radius:4px}
+.spsg.clue .ck{background:var(--tb);box-shadow:inset 0 -2px 0 var(--tc);border-radius:3px}
+.spsg.clue .ck::after{content:attr(data-l);margin-left:3px;color:var(--tc);font-size:.6rem;font-weight:800;vertical-align:5px;white-space:nowrap}
+.spsg.clue .cu{text-decoration:underline dashed #c76b12;text-decoration-thickness:1.5px;text-underline-offset:6px}
+.ck[data-ty=main]{--tc:#2f6fd0;--tb:rgba(47,111,208,.14)}
+.ck[data-ty=det],.ck[data-ty=match]{--tc:#2e8b57;--tb:rgba(46,139,87,.16)}
+.ck[data-ty=wd],.ck[data-ty=conj]{--tc:#8a4fc8;--tb:rgba(138,79,200,.15)}
+.ck[data-ty=ref],.ck[data-ty=dem]{--tc:#c76b12;--tb:rgba(217,130,43,.18)}
+.ck[data-ty=inf]{--tc:#13807f;--tb:rgba(19,128,127,.15)}
+.ck[data-ty=pur]{--tc:#c0453a;--tb:rgba(192,69,58,.14)}
+.ck[data-ty=not]{--tc:#7a6650;--tb:rgba(122,102,80,.16)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ck[data-ty=main]{--tc:#82b1ff}:root:not([data-theme="light"]) .ck[data-ty=det],:root:not([data-theme="light"]) .ck[data-ty=match]{--tc:#6fd39b}:root:not([data-theme="light"]) .ck[data-ty=wd],:root:not([data-theme="light"]) .ck[data-ty=conj]{--tc:#c49cff}:root:not([data-theme="light"]) .ck[data-ty=ref],:root:not([data-theme="light"]) .ck[data-ty=dem]{--tc:#ffb15e}:root:not([data-theme="light"]) .ck[data-ty=inf]{--tc:#5fd0cf}:root:not([data-theme="light"]) .ck[data-ty=pur]{--tc:#ff8f80}:root:not([data-theme="light"]) .ck[data-ty=not]{--tc:#cdbba4}}
+:root[data-theme="dark"] .ck[data-ty=main]{--tc:#82b1ff}:root[data-theme="dark"] .ck[data-ty=det],:root[data-theme="dark"] .ck[data-ty=match]{--tc:#6fd39b}:root[data-theme="dark"] .ck[data-ty=wd],:root[data-theme="dark"] .ck[data-ty=conj]{--tc:#c49cff}:root[data-theme="dark"] .ck[data-ty=ref],:root[data-theme="dark"] .ck[data-ty=dem]{--tc:#ffb15e}:root[data-theme="dark"] .ck[data-ty=inf]{--tc:#5fd0cf}:root[data-theme="dark"] .ck[data-ty=pur]{--tc:#ff8f80}:root[data-theme="dark"] .ck[data-ty=not]{--tc:#cdbba4}
+/* v345 例子裡的句子按鈕(📍2-3、📍第 4 句)與點開後的那一句 */
+.sref{font:inherit;font-size:.74rem;font-weight:700;line-height:1.5;margin:0 2px;padding:0 7px;border:1px solid var(--accent);border-radius:999px;background:transparent;color:var(--accent);cursor:pointer;vertical-align:1px;white-space:nowrap}
+.sref.on{background:var(--accent);color:var(--card)}
+.spop{display:block;margin:5px 0 3px;padding:6px 10px;border-left:3px solid var(--accent);border-radius:6px;background:rgba(127,127,127,.09);font-size:.95em;line-height:1.65;overflow-wrap:anywhere}
+.spop .spt{display:block;color:var(--accent);font-size:.72rem;font-weight:800}
+.spop .spz{display:block;color:var(--sub);font-size:.92em}
+/* v345 攻略卡的可收合小節(點標題展開/收起) */
+.sx>summary{list-style:none;cursor:pointer}
+.sx>summary::-webkit-details-marker{display:none}
+.sx>summary>h4{display:inline-block}
+.sx>summary>h4::after{content:"　▸ 點開";color:var(--sub);font-size:.8em;font-weight:600}
+.sx[open]>summary>h4::after{content:"　▾ 收起"}
+/* v345 日語攻略卡(日語學習中心清單最上面、日文詳解篩選列下面;預設收起) */
+.jstcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin:10px 0;box-shadow:0 1px 5px rgba(0,0,0,.04)}
+.jstcard>summary{list-style:none;cursor:pointer;padding:11px 0;color:var(--accent);font-size:.96rem;font-weight:800}
+.jstcard>summary::-webkit-details-marker{display:none}
+.jstcard>summary::after{content:"　▼ 點開";color:var(--sub);font-size:.76rem;font-weight:600}
+.jstcard[open]>summary::after{content:"　▲ 收起"}
+.jstc{padding:0 0 12px;font-size:.9rem;line-height:1.75}
+.jstc h4{margin:12px 0 5px;color:var(--accent);font-size:.93rem}
+.jstc ul,.jstc ol{margin:4px 0;padding-left:20px}
+.jstc li{margin:4px 0}
+.jstc table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.86rem}
+.jstc td,.jstc th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+@media print{.jstcard{display:none!important}}

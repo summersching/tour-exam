@@ -152,6 +152,7 @@
 
 <main class="wrap">
   <div class="intro" id="intro">🎌 依考題分類整理:<b>漢字讀音</b>(讀音題的漢字詞)、<b>語彙</b>、<b>慣用句・諺語</b>、<b>敬語</b>、<b>讀解單字</b>。<b>×N</b> = 在幾題出現過,數字越大越常考。點 🔊 聽發音,點「領/導 年-題號」跳回原題。</div>
+  <div id="jstrat"></div>
   <div id="list"></div>
   <div id="flash">
     <div class="fcard" id="fcard"><div class="ftp" id="ftp"></div><div class="fw" id="fw"></div><div id="fback" style="display:none"><div class="fr" id="fr"></div><div class="fm" id="fm"></div></div></div>
@@ -195,6 +196,7 @@
 </main>
 
 <script src="learn_jp.js"></script>
+<script src="strat.js"></script>
 <script>
 const CNAME={l:'領',g:'導'}, CFULL={l:'leader',g:'guide'};
 const GROUPS=['漢字讀音','語彙','慣用句・諺語','敬語','讀解單字'];
@@ -325,10 +327,12 @@ document.querySelectorAll('.schip[data-dir]').forEach(function(c){c.onclick=func
 document.querySelectorAll('.schip[data-lv]').forEach(function(c){c.onclick=function(){qLevel=c.dataset.lv;document.querySelectorAll('.schip[data-lv]').forEach(x=>x.classList.toggle('on',x===c));newQ();};});
 
 /* ===== 模式切換 ===== */
-const mList=document.getElementById('mList'),mFlash=document.getElementById('mFlash'),mQuiz=document.getElementById('mQuiz'),flashEl=document.getElementById('flash'),introEl=document.getElementById('intro');
+const mList=document.getElementById('mList'),mFlash=document.getElementById('mFlash'),mQuiz=document.getElementById('mQuiz'),flashEl=document.getElementById('flash'),introEl=document.getElementById('intro'),stratEl=document.getElementById('jstrat');
+/* v345 日語攻略卡(資料在 strat.js 的 JPSTRAT):清單模式最上面,預設收起 */
+if(typeof JPSTRAT!=='undefined')stratEl.innerHTML=JPSTRAT.map(function(s){return '<details class="jstcard"><summary>'+s.title+'</summary><div class="stc jstc">'+s.html+'</div></details>';}).join('');
 function setMode(m){
   mList.classList.toggle('on',m==='list');mFlash.classList.toggle('on',m==='flash');mQuiz.classList.toggle('on',m==='quiz');
-  listEl.style.display=m==='list'?'':'none';introEl.style.display=m==='list'?'':'none';
+  listEl.style.display=m==='list'?'':'none';introEl.style.display=m==='list'?'':'none';stratEl.style.display=m==='list'?'':'none';
   flashEl.classList.toggle('on',m==='flash');quizEl.classList.toggle('on',m==='quiz');
   if(m==='flash'){deck=filtered();idx=0;showCard();}
   if(m==='quiz')newQ();

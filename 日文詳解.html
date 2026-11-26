@@ -116,6 +116,7 @@
 <script src="jp.js"></script>
 <script src="jp_ana.js" onerror="window.JPANA=window.JPANA||{}"></script>
 <script src="jp_psg.js"></script>
+<script src="strat.js"></script>
 <script src="kuromoji/kuromoji.js"></script>
 <script src="jplook.js"></script>
 <link rel="stylesheet" href="ui.css">
@@ -154,15 +155,7 @@
     <button class="sbtn" data-tog="hidek">🙈 隱藏讀音</button>
     <button class="sbtn on" data-tog="ozh">🈯 隱藏選項中文</button>
   </div>
-  <details class="strat"><summary>💡 日語考試 · 通用解題法</summary>
-  <ul>
-    <li><b>読み方(讀音)題</b>:選項是同一漢字的不同假名 → 先唸出來,靠語感刪掉不自然的;注意促音(っ)、長音、濁音。</li>
-    <li><b>文法/接續題</b>:看空格前後的<b>詞性與語氣</b>(逆接/順接/條件),把四個選項套回原句唸最通順的。</li>
-    <li><b>敬語</b>:對客人用尊敬語(いらっしゃる/ご覧になる)、對自己謙讓語(伺う/拝見する),別用反。</li>
-    <li><b>観光/接待情境字</b>:機場、飯店、行程、案內(導覽)是高頻,背固定講法比背單字快。</li>
-    <li><b>読解(長文)</b>:先看題目問什麼再回文章找;「本文の内容と合わない」題找一個和原文相反的敘述。</li>
-    <li><b>完全不會</b>:刪兩個、猜一個,絕不空白(不倒扣)。</li>
-  </ul></details>
+  <div id="jstrat"></div>
 </div>
 
 <main class="wrap" id="list"></main>
@@ -170,6 +163,8 @@
 <script>
 const LAB=['A','B','C','D'];
 const CNAME={leader:'領隊',guide:'導遊'};
+/* v345 日語攻略卡(資料在 strat.js 的 JPSTRAT;取代原本的「通用解題法」,預設收起) */
+if(typeof JPSTRAT!=='undefined')document.getElementById('jstrat').innerHTML=JPSTRAT.map(s=>`<details class="jstcard"><summary>${s.title}</summary><div class="stc jstc">${s.html}</div></details>`).join('');
 function jpData(q){return (typeof JPANA!=='undefined'&&JPANA[q.c+'-'+q.y+'-'+q.no])||null;}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 /* B1 閱讀偏好跨頁記憶(localStorage);pref_hide_zh 與錯題本共用 */
